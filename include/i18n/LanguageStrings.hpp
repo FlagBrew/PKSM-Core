@@ -40,11 +40,11 @@
 
 // A default. Set _PKSMCORE_GETLINE_FUNC to your STDIO getline function name if you want it to be different
 #ifndef _PKSMCORE_GETLINE_FUNC
-#define _PKSMCORE_GETLINE_FUNC __getline
+#define _PKSMCORE_GETLINE_FUNC getline
 #endif
 
 #ifndef _PKSMCORE_LANG_FOLDER
-#define _PKSMCORE_LANG_FOLDER "romfs:/i18n/"
+#error "Please set _PKSM_LANG_FOLDER for your project!"
 #endif
 
 class LanguageStrings
