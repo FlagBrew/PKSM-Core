@@ -38,6 +38,15 @@
 #include <unordered_map>
 #include <vector>
 
+// A default. Set _PKSMCORE_GETLINE_FUNC to your STDIO getline function name if you want it to be different
+#ifndef _PKSMCORE_GETLINE_FUNC
+#define _PKSMCORE_GETLINE_FUNC __getline
+#endif
+
+#ifndef _PKSMCORE_LANG_FOLDER
+#define _PKSMCORE_LANG_FOLDER "romfs:/i18n/"
+#endif
+
 class LanguageStrings
 {
 protected:
@@ -64,8 +73,7 @@ protected:
     template <typename T>
     static void load(Language lang, const std::string& name, std::map<T, std::string>& map)
     {
-        static constexpr const char* base = "romfs:/i18n/";
-        std::string path                  = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
+        std::string path = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name) ? _PKSMCORE_LANG_FOLDER + folder(lang) + name : _PKSMCORE_LANG_FOLDER + folder(Language::EN) + name;
 
         std::string tmp;
         FILE* values = fopen(path.c_str(), "rt");
@@ -81,7 +89,7 @@ protected:
             while (!feof(values) && !ferror(values))
             {
                 size = std::max(size, (size_t)128);
-                if (__getline(&data, &size, values) >= 0)
+                if (_PKSMCORE_GETLINE_FUNC(&data, &size, values) >= 0)
                 {
                     tmp = std::string(data);
                     tmp = tmp.substr(0, tmp.find('\n'));
