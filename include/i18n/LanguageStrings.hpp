@@ -28,6 +28,7 @@
 #define LANGUAGESTRINGS_HPP
 
 #include "Language.hpp"
+#include "PKSMCORE_CONFIG.h"
 #include "nlohmann/json.hpp"
 #include "utils/coretypes.h"
 #include "utils/generation.hpp"
@@ -37,15 +38,6 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-
-// A default. Set _PKSMCORE_GETLINE_FUNC to your STDIO getline function name if you want it to be different
-#ifndef _PKSMCORE_GETLINE_FUNC
-#define _PKSMCORE_GETLINE_FUNC getline
-#endif
-
-#ifndef _PKSMCORE_LANG_FOLDER
-#error "Please set _PKSM_LANG_FOLDER for your project!"
-#endif
 
 class LanguageStrings
 {
@@ -73,7 +65,8 @@ protected:
     template <typename T>
     static void load(Language lang, const std::string& name, std::map<T, std::string>& map)
     {
-        std::string path = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name) ? _PKSMCORE_LANG_FOLDER + folder(lang) + name : _PKSMCORE_LANG_FOLDER + folder(Language::EN) + name;
+        std::string path = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name) ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
+                                                                                   : _PKSMCORE_LANG_FOLDER + folder(Language::EN) + name;
 
         std::string tmp;
         FILE* values = fopen(path.c_str(), "rt");

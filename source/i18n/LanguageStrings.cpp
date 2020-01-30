@@ -117,7 +117,8 @@ LanguageStrings::LanguageStrings(Language lang)
 
 void LanguageStrings::load(Language lang, const std::string& name, std::vector<std::string>& array)
 {
-    std::string path                  = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name) ? _PKSMCORE_LANG_FOLDER + folder(lang) + name : _PKSMCORE_LANG_FOLDER + folder(Language::EN) + name;
+    std::string path = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name) ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
+                                                                               : _PKSMCORE_LANG_FOLDER + folder(Language::EN) + name;
 
     std::string tmp;
     FILE* values = fopen(path.c_str(), "rt");
@@ -151,7 +152,8 @@ void LanguageStrings::load(Language lang, const std::string& name, std::vector<s
 
 void LanguageStrings::load(Language lang, const std::string& name, nlohmann::json& json)
 {
-    std::string path = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name) ? _PKSMCORE_LANG_FOLDER + folder(lang) + name : _PKSMCORE_LANG_FOLDER + folder(Language::EN) + name;
+    std::string path = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name) ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
+                                                                               : _PKSMCORE_LANG_FOLDER + folder(Language::EN) + name;
 
     FILE* values = fopen(path.c_str(), "rt");
     if (values)
