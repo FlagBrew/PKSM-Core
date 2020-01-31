@@ -80,6 +80,8 @@ public:
 
     std::string boxName(u8 box) const override;
     void boxName(u8 box, const std::string& name) override;
+    u8 boxWallpaper(u8 box) const override;
+    void boxWallpaper(u8 box, u8 v) override;
 
     u8 currentBox(void) const override { return 0; } // TODO: confirm that this is not stored
     void currentBox(u8 v) override {}

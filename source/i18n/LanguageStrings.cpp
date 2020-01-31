@@ -25,7 +25,6 @@
  */
 
 #include "i18n/LanguageStrings.hpp"
-#include "format.h"
 #include "utils/io.hpp"
 #include "utils/utils.hpp"
 #include <stdio.h>
@@ -111,6 +110,7 @@ LanguageStrings::LanguageStrings(Language lang)
     load(lang, "/natures.txt", natures);
     load(lang, "/species.txt", speciess);
     load(lang, "/games.txt", games);
+    load(lang, "/locations3.txt", locations3);
     load(lang, "/locations4.txt", locations4);
     load(lang, "/locations5.txt", locations5);
     load(lang, "/locations6.txt", locations6);
@@ -289,6 +289,12 @@ const std::string& LanguageStrings::location(u16 v, Generation generation) const
     std::map<u16, std::string>::const_iterator i;
     switch (generation)
     {
+        case Generation::THREE:
+            if ((i = locations3.find(v)) != locations3.end())
+            {
+                return i->second;
+            }
+            break;
         case Generation::FOUR:
             if ((i = locations4.find(v)) != locations4.end())
             {
@@ -345,6 +351,8 @@ const std::map<u16, std::string>& LanguageStrings::locations(Generation g) const
     static std::map<u16, std::string> emptyMap;
     switch (g)
     {
+        case Generation::THREE:
+            return locations3;
         case Generation::FOUR:
             return locations4;
         case Generation::FIVE:

@@ -51,6 +51,7 @@ protected:
     std::vector<std::string> natures;
     std::vector<std::string> speciess;
     std::vector<std::string> games;
+    std::map<u16, std::string> locations3;
     std::map<u16, std::string> locations4;
     std::map<u16, std::string> locations5;
     std::map<u16, std::string> locations6;

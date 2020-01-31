@@ -613,7 +613,7 @@ std::string StringUtils::getString3(const u8* data, int ofs, int len, bool jp)
     auto& characters = jp ? G3_JP : G3_EN;
     std::u16string outString;
 
-    for (size_t i = 0; i < len; i++)
+    for (size_t i = 0; i < (size_t)len; i++)
     {
         if (data[ofs + i] < characters.size())
         {
@@ -649,7 +649,7 @@ void StringUtils::setString3(u8* data, const std::string& v, int ofs, int len, b
 
     data[outPos >= (size_t)len ? len - 1 : outPos] = 0xFF;
 
-    while(outPos < padTo)
+    while(outPos < (size_t)padTo)
     {
         data[ofs + outPos] = 0xFF;
         outPos++;
