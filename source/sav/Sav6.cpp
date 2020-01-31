@@ -723,19 +723,19 @@ void Sav6::item(const Item& item, Pouch pouch, u16 slot)
     switch (pouch)
     {
         case NormalItem:
-            std::copy(write.first, write.first + write.second, &data[PouchHeldItem + slot * 4]);
+            std::copy(write.begin(), write.end(), &data[PouchHeldItem + slot * 4]);
             break;
         case KeyItem:
-            std::copy(write.first, write.first + write.second, &data[PouchKeyItem + slot * 4]);
+            std::copy(write.begin(), write.end(), &data[PouchKeyItem + slot * 4]);
             break;
         case TM:
-            std::copy(write.first, write.first + write.second, &data[PouchTMHM + slot * 4]);
+            std::copy(write.begin(), write.end(), &data[PouchTMHM + slot * 4]);
             break;
         case Medicine:
-            std::copy(write.first, write.first + write.second, &data[PouchMedicine + slot * 4]);
+            std::copy(write.begin(), write.end(), &data[PouchMedicine + slot * 4]);
             break;
         case Berry:
-            std::copy(write.first, write.first + write.second, &data[PouchBerry + slot * 4]);
+            std::copy(write.begin(), write.end(), &data[PouchBerry + slot * 4]);
             break;
         default:
             return;

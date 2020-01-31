@@ -307,35 +307,36 @@ void SavSWSH::playedSeconds(u8 v)
 
 void SavSWSH::item(const Item& item, Pouch pouch, u16 slot)
 {
-    auto bytes = item.bytes();
+    Item8 item8 = (Item8)item;
+    auto write  = item.bytes();
     switch (pouch)
     {
         case Medicine:
-            std::copy(bytes.first, bytes.first + bytes.second, getBlock(Items)->decryptedData() + 4 * slot);
+            std::copy(write.begin(), write.end(), getBlock(Items)->decryptedData() + 4 * slot);
             break;
         case Ball:
-            std::copy(bytes.first, bytes.first + bytes.second, getBlock(Items)->decryptedData() + 0xF0 + 4 * slot);
+            std::copy(write.begin(), write.end(), getBlock(Items)->decryptedData() + 0xF0 + 4 * slot);
             break;
         case Battle:
-            std::copy(bytes.first, bytes.first + bytes.second, getBlock(Items)->decryptedData() + 0x168 + 4 * slot);
+            std::copy(write.begin(), write.end(), getBlock(Items)->decryptedData() + 0x168 + 4 * slot);
             break;
         case Berry:
-            std::copy(bytes.first, bytes.first + bytes.second, getBlock(Items)->decryptedData() + 0x1B8 + 4 * slot);
+            std::copy(write.begin(), write.end(), getBlock(Items)->decryptedData() + 0x1B8 + 4 * slot);
             break;
         case NormalItem:
-            std::copy(bytes.first, bytes.first + bytes.second, getBlock(Items)->decryptedData() + 0x2F8 + 4 * slot);
+            std::copy(write.begin(), write.end(), getBlock(Items)->decryptedData() + 0x2F8 + 4 * slot);
             break;
         case TM:
-            std::copy(bytes.first, bytes.first + bytes.second, getBlock(Items)->decryptedData() + 0xB90 + 4 * slot);
+            std::copy(write.begin(), write.end(), getBlock(Items)->decryptedData() + 0xB90 + 4 * slot);
             break;
         case Treasure:
-            std::copy(bytes.first, bytes.first + bytes.second, getBlock(Items)->decryptedData() + 0xED8 + 4 * slot);
+            std::copy(write.begin(), write.end(), getBlock(Items)->decryptedData() + 0xED8 + 4 * slot);
             break;
         case Ingredient:
-            std::copy(bytes.first, bytes.first + bytes.second, getBlock(Items)->decryptedData() + 0x1068 + 4 * slot);
+            std::copy(write.begin(), write.end(), getBlock(Items)->decryptedData() + 0x1068 + 4 * slot);
             break;
         case KeyItem:
-            std::copy(bytes.first, bytes.first + bytes.second, getBlock(Items)->decryptedData() + 0x11F8 + 4 * slot);
+            std::copy(write.begin(), write.end(), getBlock(Items)->decryptedData() + 0x11F8 + 4 * slot);
             break;
         default:
             break;

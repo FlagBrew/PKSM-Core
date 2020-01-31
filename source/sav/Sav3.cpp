@@ -716,22 +716,22 @@ void Sav3::item(const Item& item, Pouch pouch, u16 slot)
     switch (pouch)
     {
         case NormalItem:
-            std::copy(write.first, write.first + write.second, &data[OFS_PouchHeldItem + (slot * 4)]);
+            std::copy(write.begin(), write.end(), &data[OFS_PouchHeldItem + (slot * 4)]);
             break;
         case KeyItem:
-            std::copy(write.first, write.first + write.second, &data[OFS_PouchKeyItem + (slot * 4)]);
+            std::copy(write.begin(), write.end(), &data[OFS_PouchKeyItem + (slot * 4)]);
             break;
         case Ball:
-            std::copy(write.first, write.first + write.second, &data[OFS_PouchBalls + (slot * 4)]);
+            std::copy(write.begin(), write.end(), &data[OFS_PouchBalls + (slot * 4)]);
             break;
         case TM:
-            std::copy(write.first, write.first + write.second, &data[OFS_PouchTMHM + (slot * 4)]);
+            std::copy(write.begin(), write.end(), &data[OFS_PouchTMHM + (slot * 4)]);
             break;
         case Berry:
-            std::copy(write.first, write.first + write.second, &data[OFS_PouchBerry + (slot * 4)]);
+            std::copy(write.begin(), write.end(), &data[OFS_PouchBerry + (slot * 4)]);
             break;
         case PCItem:
-            std::copy(write.first, write.first + write.second, &data[OFS_PCItem + (slot * 4)]);
+            std::copy(write.begin(), write.end(), &data[OFS_PCItem + (slot * 4)]);
             break;
         default:
             return;

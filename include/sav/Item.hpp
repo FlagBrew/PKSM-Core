@@ -29,6 +29,7 @@
 
 #include "utils/endian.hpp"
 #include "utils/coretypes.h"
+#include "utils/endian.hpp"
 #include "utils/generation.hpp"
 
 class Item3;
@@ -43,13 +44,13 @@ class Item
 {
 public:
     virtual ~Item() {}
-    virtual Generation generation(void) const     = 0;
-    virtual u16 maxCount(void) const              = 0;
-    virtual u16 id(void) const                    = 0;
-    virtual u16 count(void) const                 = 0;
-    virtual std::pair<u8*, int> bytes(void) const = 0;
-    virtual void id(u16 id)                       = 0;
-    virtual void count(u16 id)                    = 0;
+    virtual Generation generation(void) const = 0;
+    virtual u16 maxCount(void) const          = 0;
+    virtual u16 id(void) const                = 0;
+    virtual u16 count(void) const             = 0;
+    virtual std::vector<u8> bytes(void) const = 0;
+    virtual void id(u16 id)                   = 0;
+    virtual void count(u16 id)                = 0;
     virtual operator Item3(void) const;
     virtual operator Item4(void) const;
     virtual operator Item5(void) const;
@@ -62,161 +63,148 @@ public:
 class Item3 : public Item
 {
 private:
-    struct
-    {
-        u16 id;
-        u16 count;
-    } itemData;
+    std::array<u8, 4> itemData;
 
 public:
     Item3(u8* data = nullptr, u16 securityKey = 0)
     {
         if (data)
         {
-            itemData.id = Endian::convertTo<u16>(data);
-            itemData.count = Endian::convertTo<u16>(data+2) ^ securityKey;
+            std::copy(data, data + 4, itemData.data());
+            Endian::convertFrom<u16>(itemData.data()+2, Endian::convertTo<u16>(itemData.data()+2) ^ securityKey);
         }
         else
         {
-            itemData = {0, 0};
+            itemData = {0, 0, 0, 0};
         }
     }
     Generation generation(void) const override { return Generation::THREE; }
     u16 maxCount(void) const override { return 0xFFFF; }
-    u16 id(void) const override { return itemData.id; }
-    void id(u16 v) override { itemData.id = v; }
-    u16 count(void) const override { return itemData.count; }
-    void count(u16 v) override { itemData.count = v; }
-    std::pair<u8*, int> bytes(void) const override { return {(u8*)&itemData, sizeof(itemData)}; }
+    u16 id(void) const override { return Endian::convertTo<u16>(itemData.data()); }
+    void id(u16 v) override { Endian::convertFrom<u16>(itemData.data(), v); }
+    u16 count(void) const override { return Endian::convertTo<u16>(itemData.data() + 2); }
+    void count(u16 v) override { Endian::convertFrom<u16>(itemData.data() + 2, v); }
+    std::vector<u8> bytes(void) const override { return std::vector<u8>{itemData.begin(), itemData.end()}; }
 };
 
 class Item4 : public Item
 {
 private:
-    struct
-    {
-        u16 id;
-        u16 count;
-    } itemData;
+    std::array<u8, 4> itemData;
 
 public:
     Item4(u8* data = nullptr)
     {
         if (data)
         {
-            std::copy(data, data + 4, (u8*)&itemData);
+            std::copy(data, data + 4, itemData.data());
         }
         else
         {
-            itemData = {0, 0};
+            itemData = {0, 0, 0, 0};
         }
     }
     Generation generation(void) const override { return Generation::FOUR; }
     u16 maxCount(void) const override { return 0xFFFF; }
-    u16 id(void) const override { return itemData.id; }
-    void id(u16 v) override { itemData.id = v; }
-    u16 count(void) const override { return itemData.count; }
-    void count(u16 v) override { itemData.count = v; }
-    std::pair<u8*, int> bytes(void) const override { return {(u8*)&itemData, sizeof(itemData)}; }
+    u16 id(void) const override { return Endian::convertTo<u16>(itemData.data()); }
+    void id(u16 v) override { Endian::convertFrom<u16>(itemData.data(), v); }
+    u16 count(void) const override { return Endian::convertTo<u16>(itemData.data() + 2); }
+    void count(u16 v) override { Endian::convertFrom<u16>(itemData.data() + 2, v); }
+    std::vector<u8> bytes(void) const override { return std::vector<u8>{itemData.begin(), itemData.end()}; }
 };
 
 class Item5 : public Item
 {
 private:
-    struct
-    {
-        u16 id;
-        u16 count;
-    } itemData;
+    std::array<u8, 4> itemData;
 
 public:
     Item5(u8* data = nullptr)
     {
         if (data)
         {
-            std::copy(data, data + 4, (u8*)&itemData);
+            std::copy(data, data + 4, itemData.data());
         }
         else
         {
-            itemData = {0, 0};
+            itemData = {0, 0, 0, 0};
         }
     }
     Generation generation(void) const override { return Generation::FIVE; }
     u16 maxCount(void) const override { return 0xFFFF; }
-    u16 id(void) const override { return itemData.id; }
-    void id(u16 v) override { itemData.id = v; }
-    u16 count(void) const override { return itemData.count; }
-    void count(u16 v) override { itemData.count = v; }
-    std::pair<u8*, int> bytes(void) const override { return {(u8*)&itemData, sizeof(itemData)}; }
+    u16 id(void) const override { return Endian::convertTo<u16>(itemData.data()); }
+    void id(u16 v) override { Endian::convertFrom<u16>(itemData.data(), v); }
+    u16 count(void) const override { return Endian::convertTo<u16>(itemData.data() + 2); }
+    void count(u16 v) override { Endian::convertFrom<u16>(itemData.data() + 2, v); }
+    std::vector<u8> bytes(void) const override { return std::vector<u8>{itemData.begin(), itemData.end()}; }
 };
 
 class Item6 : public Item
 {
 private:
-    struct
-    {
-        u16 id;
-        u16 count;
-    } itemData;
+    std::array<u8, 4> itemData;
 
 public:
     Item6(u8* data = nullptr)
     {
         if (data)
         {
-            std::copy(data, data + 4, (u8*)&itemData);
+            std::copy(data, data + 4, itemData.data());
         }
         else
         {
-            itemData = {0, 0};
+            itemData = {0, 0, 0, 0};
         }
     }
     Generation generation(void) const override { return Generation::SIX; }
     u16 maxCount(void) const override { return 0xFFFF; }
-    u16 id(void) const override { return itemData.id; }
-    void id(u16 v) override { itemData.id = v; }
-    u16 count(void) const override { return itemData.count; }
-    void count(u16 v) override { itemData.count = v; }
-    std::pair<u8*, int> bytes(void) const override { return {(u8*)&itemData, sizeof(itemData)}; }
+    u16 id(void) const override { return Endian::convertTo<u16>(itemData.data()); }
+    void id(u16 v) override { Endian::convertFrom<u16>(itemData.data(), v); }
+    u16 count(void) const override { return Endian::convertTo<u16>(itemData.data() + 2); }
+    void count(u16 v) override { Endian::convertFrom<u16>(itemData.data() + 2, v); }
+    std::vector<u8> bytes(void) const override { return std::vector<u8>{itemData.begin(), itemData.end()}; }
 };
 
 class Item7 : public Item
 {
 private:
-    struct
-    {
-        unsigned int id : 10;
-        unsigned int count : 10;
-        unsigned int freeSpace : 10;
-        unsigned int newFlag : 1;
-        unsigned int reserved : 1;
-    } itemData;
+    // Reference structure
+    // struct
+    // {
+    //     unsigned int id : 10;
+    //     unsigned int count : 10;
+    //     unsigned int freeSpace : 10;
+    //     unsigned int newFlag : 1;
+    //     unsigned int reserved : 1;
+    // };
+    u32 itemData = 0;
 
 public:
     Item7(u8* data = nullptr)
     {
         if (data)
         {
-            std::copy(data, data + 4, (u8*)&itemData);
-        }
-        else
-        {
-            itemData = {0, 0, 0, 0, 0};
+            itemData = Endian::convertTo<u32>(data);
         }
     }
     Generation generation(void) const override { return Generation::SEVEN; }
     u16 maxCount(void) const override { return 0x3FF; }
-    u16 id(void) const override { return itemData.id; }
-    void id(u16 v) override { itemData.id = std::min(v, (u16)0x3FF); }
-    u16 count(void) const override { return itemData.count; }
-    void count(u16 v) override { itemData.count = std::min(v, (u16)0x3FF); }
-    u16 freeSpaceIndex(void) const { return itemData.freeSpace; }
-    void freeSpaceIndex(u16 v) { itemData.freeSpace = std::min(v, (u16)0x3FF); }
-    bool newFlag(void) const { return itemData.newFlag; }
-    void newFlag(bool v) { itemData.newFlag = v ? 1 : 0; }
-    bool reserved(void) const { return itemData.reserved; }
-    void reserved(bool v) { itemData.reserved = v ? 1 : 0; }
-    std::pair<u8*, int> bytes(void) const override { return {(u8*)&itemData, sizeof(itemData)}; }
+    u16 id(void) const override { return itemData & 0x3FF; }
+    void id(u16 v) override { itemData = ((itemData & ~0x3FF) | std::min((u32)v, (u32)0x3FF)); }
+    u16 count(void) const override { return (itemData >> 10) & 0x3FF; }
+    void count(u16 v) override { itemData = (itemData & ~(0x3FF << 10)) | (std::min((u32)v, (u32)0x3FF) << 10); }
+    u16 freeSpaceIndex(void) const { return (itemData >> 20) & 0x3FF; }
+    void freeSpaceIndex(u16 v) { itemData = (itemData & ~(0x3FF << 20)) | (std::min((u32)v, (u32)0x3FF) << 20); }
+    bool newFlag(void) const { return (itemData >> 30) & 1; }
+    void newFlag(bool v) { itemData = (itemData & ~(1 << 30)) | (v ? 1 << 30 : 0); }
+    bool reserved(void) const { return (itemData >> 31) & 1; }
+    void reserved(bool v) { itemData = (itemData & ~(1 << 31)) | (v ? 1 << 31 : 0); }
+    std::vector<u8> bytes(void) const override
+    {
+        std::vector<u8> ret{4};
+        Endian::convertFrom<u32>(ret.data(), itemData);
+        return ret;
+    }
     operator Item7b(void) const override;
     operator Item8(void) const override;
 };
@@ -224,37 +212,40 @@ public:
 class Item7b : public Item
 {
 private:
-    struct
-    {
-        unsigned int id : 15;
-        unsigned int count : 15;
-        unsigned int newFlag : 1;
-        unsigned int reserved : 1;
-    } itemData;
+    // Reference structure
+    // struct
+    // {
+    // unsigned int id : 15;
+    // unsigned int count : 15;
+    // unsigned int newFlag : 1;
+    // unsigned int reserved : 1;
+    // };
+    u32 itemData = 0;
 
 public:
     Item7b(u8* data = nullptr)
     {
         if (data)
         {
-            std::copy(data, data + 4, (u8*)&itemData);
-        }
-        else
-        {
-            itemData = {0, 0, 0, 0};
+            itemData = Endian::convertTo<u32>(data);
         }
     }
     Generation generation(void) const override { return Generation::LGPE; }
     u16 maxCount(void) const override { return 0x7FFF; }
-    u16 id(void) const override { return itemData.id; }
-    void id(u16 v) override { itemData.id = std::min(v, (u16)0x7FFF); }
-    u16 count(void) const override { return itemData.count; }
-    void count(u16 v) override { itemData.count = std::min(v, (u16)0x7FFF); }
-    bool newFlag(void) const { return itemData.newFlag; }
-    void newFlag(bool v) { itemData.newFlag = v ? 1 : 0; }
-    bool reserved(void) const { return itemData.reserved; }
-    void reserved(bool v) { itemData.reserved = v ? 1 : 0; }
-    std::pair<u8*, int> bytes(void) const override { return {(u8*)&itemData, sizeof(itemData)}; }
+    u16 id(void) const override { return itemData & 0x7FFF; }
+    void id(u16 v) override { itemData = ((itemData & ~0x7FFF) | std::min((u32)v, (u32)0x7FFF)); }
+    u16 count(void) const override { return (itemData >> 15) & 0x7FFF; }
+    void count(u16 v) override { itemData = (itemData & ~(0x7FFF << 15)) | (std::min((u32)v, (u32)0x7FFF) << 15); }
+    bool newFlag(void) const { return (itemData >> 30) & 1; }
+    void newFlag(bool v) { itemData = (itemData & ~(1 << 30)) | (v ? 1 << 30 : 0); }
+    bool reserved(void) const { return (itemData >> 31) & 1; }
+    void reserved(bool v) { itemData = (itemData & ~(1 << 31)) | (v ? 1 << 31 : 0); }
+    std::vector<u8> bytes(void) const override
+    {
+        std::vector<u8> ret{4};
+        Endian::convertFrom<u32>(ret.data(), itemData);
+        return ret;
+    }
     operator Item7(void) const override;
     operator Item8(void) const override;
 };
@@ -262,37 +253,40 @@ public:
 class Item8 : public Item
 {
 private:
-    struct
-    {
-        unsigned int id : 15;
-        unsigned int count : 15;
-        unsigned int newFlag : 1;
-        unsigned int reserved : 1;
-    } itemData;
+    // Reference structure
+    // struct
+    // {
+    // unsigned int id : 15;
+    // unsigned int count : 15;
+    // unsigned int newFlag : 1;
+    // unsigned int reserved : 1;
+    // };
+    u32 itemData = 0;
 
 public:
     Item8(u8* data = nullptr)
     {
         if (data)
         {
-            std::copy(data, data + 4, (u8*)&itemData);
-        }
-        else
-        {
-            itemData = {0, 0, 0, 0};
+            itemData = Endian::convertTo<u32>(data);
         }
     }
     Generation generation(void) const override { return Generation::SEVEN; }
     u16 maxCount(void) const override { return 0x7FFF; }
-    u16 id(void) const override { return itemData.id; }
-    void id(u16 v) override { itemData.id = std::min(v, (u16)0x7FFF); }
-    u16 count(void) const override { return itemData.count; }
-    void count(u16 v) override { itemData.count = std::min(v, (u16)0x7FFF); }
-    bool newFlag(void) const { return itemData.newFlag; }
-    void newFlag(bool v) { itemData.newFlag = v ? 1 : 0; }
-    bool reserved(void) const { return itemData.reserved; }
-    void reserved(bool v) { itemData.reserved = v ? 1 : 0; }
-    std::pair<u8*, int> bytes(void) const override { return {(u8*)&itemData, sizeof(itemData)}; }
+    u16 id(void) const override { return itemData & 0x7FFF; }
+    void id(u16 v) override { itemData = ((itemData & ~0x7FFF) | std::min((u32)v, (u32)0x7FFF)); }
+    u16 count(void) const override { return (itemData >> 15) & 0x7FFF; }
+    void count(u16 v) override { itemData = (itemData & ~(0x7FFF << 15)) | (std::min((u32)v, (u32)0x7FFF) << 15); }
+    bool newFlag(void) const { return (itemData >> 30) & 1; }
+    void newFlag(bool v) { itemData = (itemData & ~(1 << 30)) | (v ? 1 << 30 : 0); }
+    bool reserved(void) const { return (itemData >> 31) & 1; }
+    void reserved(bool v) { itemData = (itemData & ~(1 << 31)) | (v ? 1 << 31 : 0); }
+    std::vector<u8> bytes(void) const override
+    {
+        std::vector<u8> ret{4};
+        Endian::convertFrom<u32>(ret.data(), itemData);
+        return ret;
+    }
     operator Item7(void) const override;
     operator Item7b(void) const override;
 };
