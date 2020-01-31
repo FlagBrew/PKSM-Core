@@ -1,6 +1,6 @@
 /*
- *   This file is part of PKSM-Core
- *   Copyright (C) 2016-2020 Bernardo Giordano, Admiral Fish, piepie62
+ *   This file is part of PKSM
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 #ifndef SAV5_HPP
 #define SAV5_HPP
 
-#include "Sav.hpp"
+#include "sav/Sav.hpp"
 #include "personal/personal.hpp"
 
 class Sav5 : public Sav
@@ -108,6 +108,8 @@ public:
     void cryptMysteryGiftData(void);
     std::string boxName(u8 box) const override;
     void boxName(u8 box, const std::string& name) override;
+    u8 boxWallpaper(u8 box) const override;
+    void boxWallpaper(u8 box, const u8 v) override;
     u8 partyCount(void) const override;
     void partyCount(u8 count) override;
 

@@ -1,6 +1,6 @@
 /*
- *   This file is part of PKSM-Core
- *   Copyright (C) 2016-2020 Bernardo Giordano, Admiral Fish, piepie62
+ *   This file is part of PKSM
+ *   Copyright (C) 2016-2019 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -628,7 +628,7 @@ std::string StringUtils::getString3(const u8* data, int ofs, int len, bool jp)
     return StringUtils::UTF16toUTF8(outString);
 }
 
-void StringUtils::setString3(u8* data, const std::string& v, int ofs, int len, bool jp)
+void StringUtils::setString3(u8* data, const std::string& v, int ofs, int len, bool jp, int padTo, u16 padWith)
 {
     auto& characters   = jp ? G3_JP : G3_EN;
     std::u16string str = StringUtils::UTF8toUTF16(v);
@@ -647,5 +647,11 @@ void StringUtils::setString3(u8* data, const std::string& v, int ofs, int len, b
         }
     }
 
-    data[outPos >= len ? len - 1 : outPos] = 0xFF;
+    data[outPos >= (size_t)len ? len - 1 : outPos] = 0xFF;
+
+    while(outPos < padTo)
+    {
+        data[ofs + outPos] = 0xFF;
+        outPos++;
+    }
 }

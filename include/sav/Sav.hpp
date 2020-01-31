@@ -77,6 +77,7 @@ protected:
     const u32 length;
     Game game;
     static u16 ccitt16(const u8* buf, u32 len);
+    static std::unique_ptr<Sav> checkGBAType(std::shared_ptr<u8[]> dt);
     static std::unique_ptr<Sav> checkDSType(std::shared_ptr<u8[]> dt);
     static bool validSequence(std::shared_ptr<u8[]> dt, size_t offset);
 
@@ -110,7 +111,8 @@ public:
         Candy,
         ZCrystals,
         Treasure,
-        Ingredient
+        Ingredient,
+        PCItem
     };
 
     struct giftData
@@ -196,6 +198,8 @@ public:
     virtual void cryptBoxData(bool crypted)                     = 0;
     virtual std::string boxName(u8 box) const                   = 0;
     virtual void boxName(u8 box, const std::string& name)       = 0;
+    virtual u8 boxWallpaper(u8 box) const                       = 0;
+    virtual void boxWallpaper(u8 box, const u8 v)               = 0;
     virtual u8 partyCount(void) const                           = 0;
     virtual void partyCount(u8 count)                           = 0;
     virtual void fixParty(void); // Has to be overridden by SavLGPE because it works stupidly

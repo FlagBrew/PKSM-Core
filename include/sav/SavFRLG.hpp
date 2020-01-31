@@ -24,25 +24,18 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef Game_HPP
-#define Game_HPP
+#ifndef SAVFRLG_HPP
+#define SAVFRLG_HPP
 
-enum class Game
+#include "sav/Sav3.hpp"
+
+class SavFRLG : public Sav3
 {
-    DP,
-    Pt,
-    HGSS,
-    BW,
-    B2W2,
-    XY,
-    ORAS,
-    SM,
-    USUM,
-    LGPE,
-    SWSH,
-    RS,
-    E,
-    FRLG
+public:
+    SavFRLG(std::shared_ptr<u8[]> dt);
+
+    std::map<Pouch, std::vector<int>> validItems(void) const override;
 };
+
 
 #endif

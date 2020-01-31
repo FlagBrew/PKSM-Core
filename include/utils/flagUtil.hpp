@@ -24,25 +24,18 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef Game_HPP
-#define Game_HPP
+#ifndef FLAG_UTIL_HPP
+#define FLAG_UTIL_HPP
 
-enum class Game
+#include "utils/coretypes.h"
+
+namespace FlagUtil
 {
-    DP,
-    Pt,
-    HGSS,
-    BW,
-    B2W2,
-    XY,
-    ORAS,
-    SM,
-    USUM,
-    LGPE,
-    SWSH,
-    RS,
-    E,
-    FRLG
-};
+	// Gets a bitflag from a byte array
+	bool getFlag(u8 *data, int offset, int bitIndex);
+
+	// Sets a bitflag in a byte array
+	void setFlag(u8 *data, int offset, int bitIndex, bool v);
+}
 
 #endif

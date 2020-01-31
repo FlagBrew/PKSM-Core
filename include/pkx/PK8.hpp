@@ -27,7 +27,7 @@
 #ifndef PK8_HPP
 #define PK8_HPP
 
-#include "PKX.hpp"
+#include "pkx/PKX.hpp"
 #include "personal/personal.hpp"
 
 class PK8 : public PKX
