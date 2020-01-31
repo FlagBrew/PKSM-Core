@@ -977,83 +977,54 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
 
 void SavLGPE::item(const Item& item, Pouch pouch, u16 slot)
 {
-    Item7b write   = (Item7b)item;
-    auto writeData = write.bytes();
+    Item7b item7b = (Item7b)item;
+    auto write    = item7b.bytes();
     switch (pouch)
     {
         case Pouch::Medicine:
             if (slot < 60)
             {
-                std::copy(writeData.first, writeData.first + writeData.second, &data[slot * 4]);
-            }
-            else
-            {
-                // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Medicine LGPE)");
+                std::copy(write.begin(), write.end(), &data[slot * 4]);
             }
             break;
         case Pouch::TM:
             if (slot < 108)
             {
-                std::copy(writeData.first, writeData.first + writeData.second, &data[0xF0 + slot * 4]);
-            }
-            else
-            {
-                // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(TM LGPE)");
+                std::copy(write.begin(), write.end(), &data[0xF0 + slot * 4]);
             }
             break;
         case Pouch::Candy:
             if (slot < 200)
             {
-                std::copy(writeData.first, writeData.first + writeData.second, &data[0x2A0 + slot * 4]);
-            }
-            else
-            {
-                // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Candy LGPE)");
+                std::copy(write.begin(), write.end(), &data[0x2A0 + slot * 4]);
             }
             break;
         case Pouch::ZCrystals:
             if (slot < 150)
             {
-                std::copy(writeData.first, writeData.first + writeData.second, &data[0x5C0 + slot * 4]);
-            }
-            else
-            {
-                // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(ZCrystals LGPE)");
+                std::copy(write.begin(), write.end(), &data[0x5C0 + slot * 4]);
             }
             break;
         case Pouch::Ball:
             if (slot < 50)
             {
-                std::copy(writeData.first, writeData.first + writeData.second, &data[0x818 + slot * 4]);
-            }
-            else
-            {
-                // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Ball LGPE)");
+                std::copy(write.begin(), write.end(), &data[0x818 + slot * 4]);
             }
             break;
         case Pouch::Battle:
             if (slot < 150)
             {
-                std::copy(writeData.first, writeData.first + writeData.second, &data[0x8E0 + slot * 4]);
-            }
-            else
-            {
-                // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Battle LGPE)");
+                std::copy(write.begin(), write.end(), &data[0x8E0 + slot * 4]);
             }
             break;
         case Pouch::KeyItem:
         case Pouch::NormalItem:
             if (slot < 150)
             {
-                std::copy(writeData.first, writeData.first + writeData.second, &data[0xB38 + slot * 4]);
-            }
-            else
-            {
-                // Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("REPORT_THIS") + " " + "(Normal/Key LGPE)");
+                std::copy(write.begin(), write.end(), &data[0xB38 + slot * 4]);
             }
             break;
         default:
-            // Gui::warn(i18n::localize("THE_FUCK"), std::to_string((int)pouch));
             break;
     }
 }
