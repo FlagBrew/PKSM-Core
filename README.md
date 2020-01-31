@@ -5,7 +5,7 @@ Usage in another project:
 
 Special info:
 - Your include path must have a file named `PKSMCORE_CONFIG.h` that includes some defines, listed below
-- All _PKSMCORE_DISABLE_*_STRINGS defines remove the dependency on the file(s) listed in parentheses after the removed method names being in _PKSMCORE_LANG_FOLDER
+- All \_PKSMCORE_DISABLE\_\*\_STRINGS defines remove the dependency on the file(s) listed in parentheses after the removed method names being in _PKSMCORE_LANG_FOLDER
 
 Defines:
 - _PKSMCORE_LANG_FOLDER: the folder from which languages are loaded
