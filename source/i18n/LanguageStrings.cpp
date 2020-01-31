@@ -51,6 +51,18 @@ namespace
         }
         return forms;
     }
+
+    std::string subregionFileName(u8 region)
+    {
+        std::string ret = "/subregions/000.txt";
+        for (int pos = 0; pos < 3; pos++)
+        {
+            char setMe                = '0' + (region % 10);
+            ret[ret.size() - 5 - pos] = setMe;
+            region /= 10;
+        }
+        return ret;
+    }
 }
 
 std::string LanguageStrings::folder(Language lang)
@@ -110,7 +122,7 @@ LanguageStrings::LanguageStrings(Language lang)
     for (auto i = countries.begin(); i != countries.end(); i++)
     {
         subregions[i->first] = {};
-        load(lang, fmt::format("/subregions/{:03d}.txt", i->first), subregions[i->first]);
+        load(lang, subregionFileName(i->first), subregions[i->first]);
     }
     load(lang, "/gui.json", gui);
 }
