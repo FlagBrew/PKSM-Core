@@ -9,6 +9,7 @@ Special info:
 Defines:
 - _PKSMCORE_LANG_FOLDER: the folder from which languages are loaded
 - _PKSMCORE_GETLINE_FUNC: the name of your stdio.h getline function
+- _PKSMCORE_DISABLE_THREAD_SAFE_RANDOM: if defined, thread_local is not used for the random number generator
 - FMT_HEADER_ONLY: needs to be defined to compile
 
 Necessary include directories:

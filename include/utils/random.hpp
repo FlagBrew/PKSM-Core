@@ -27,8 +27,13 @@
 #ifndef RANDOM_HPP
 #define RANDOM_HPP
 
+#include "PKSMCORE_CONFIG.h"
 #include <random>
 
+#ifdef _PKSMCORE_DISABLE_THREAD_SAFE_RANDOM
+inline std::mt19937 randomNumbers;
+#else
 inline thread_local std::mt19937 randomNumbers;
+#endif
 
 #endif
