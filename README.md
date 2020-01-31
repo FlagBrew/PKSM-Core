@@ -9,6 +9,7 @@ Special info:
 Defines:
 - _PKSMCORE_LANG_FOLDER: the folder from which languages are loaded
 - _PKSMCORE_GETLINE_FUNC: the name of your stdio.h getline function
+- FMT_HEADER_ONLY: needs to be defined to compile
 
 Necessary include directories:
 - fmt
