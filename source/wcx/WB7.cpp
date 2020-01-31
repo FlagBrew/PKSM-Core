@@ -379,12 +379,12 @@ std::string WB7::otName(Language lang) const
 
 std::string WB7::nickname() const
 {
-    return nickname(Language::EN);
+    return nickname(Language::ENG);
 }
 
 std::string WB7::otName() const
 {
-    return otName(Language::EN);
+    return otName(Language::ENG);
 }
 
 bool WB7::used() const

@@ -25,10 +25,20 @@
  */
 
 #include "i18n/LanguageStrings.hpp"
-#include "format.h"
 #include "utils/io.hpp"
 #include "utils/utils.hpp"
 #include <stdio.h>
+
+#ifdef _PKSMCORE_EXTRA_LANGUAGES
+#define LANGUAGES_TO_USE JPN, ENG, FRE, ITA, GER, SPA, KOR, CHS, CHT, _PKSMCORE_EXTRA_LANGUAGES
+#else
+#define LANGUAGES_TO_USE JPN, ENG, FRE, ITA, GER, SPA, KOR, CHS, CHT
+#endif
+
+#include "_map_macro.hpp"
+#define TO_FOLDER_CASE(lang)                                                                                                                         \
+    case Language::lang:                                                                                                                             \
+        return std::string(toLower(#lang));
 
 namespace
 {
@@ -63,60 +73,84 @@ namespace
         }
         return ret;
     }
+    constexpr std::string_view toLower(std::string_view str)
+    {
+        char ret[str.size() + 1] = {'\0'};
+        char upper[]             = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        char lower[]             = "abcdefghijklmnopqrstuvwxyz";
+        for (size_t i = 0; i < str.size(); i++)
+        {
+            auto found = std::find(std::begin(upper), std::end(upper), str[i]);
+            if (found != std::end(upper))
+            {
+                ret[i] = lower[std::distance(std::begin(upper), found)];
+            }
+        }
+        ret[str.size()] = '\0';
+        return std::string_view(ret);
+    }
 }
 
 std::string LanguageStrings::folder(Language lang)
 {
     switch (lang)
     {
-        case Language::EN:
-            return "en";
-        case Language::ES:
-            return "es";
-        case Language::DE:
-            return "de";
-        case Language::FR:
-            return "fr";
-        case Language::IT:
-            return "it";
-        case Language::JP:
-            return "jp";
-        case Language::KO:
-            return "ko";
-        case Language::NL:
-            return "nl";
-        case Language::PT:
-            return "pt";
-        case Language::ZH:
-            return "zh";
-        case Language::TW:
-            return "tw";
-        case Language::RO:
-            return "ro";
+        MAP(TO_FOLDER_CASE, LANGUAGES_TO_USE)
         default:
-            return "en";
+            return "eng";
     }
 
-    return "en";
+    return "eng";
 }
 
 LanguageStrings::LanguageStrings(Language lang)
 {
+#ifndef _PKSMCORE_DISABLE_ABILITY_STRINGS
     load(lang, "/abilities.txt", abilities);
+#endif
+
+#ifndef _PKSMCORE_DISABLE_BALL_STRINGS
     load(lang, "/balls.txt", balls);
+#endif
+
+#ifndef _PKSMCORE_DISABLE_FORM_STRINGS
     load(lang, "/forms.txt", forms);
+#endif
+
+#ifndef _PKSMCORE_DISABLE_HIDDEN_POWER_STRINGS
     load(lang, "/hp.txt", hps);
+#endif
+
+#ifndef _PKSMCORE_DISABLE_ITEM_STRINGS
     load(lang, "/items.txt", items);
+#endif
+
+#ifndef _PKSMCORE_DISABLE_MOVE_STRINGS
     load(lang, "/moves.txt", moves);
+#endif
+
+#ifndef _PKSMCORE_DISABLE_NATURE_STRINGS
     load(lang, "/natures.txt", natures);
+#endif
+
+#ifndef _PKSMCORE_DISABLE_SPECIES_STRINGS
     load(lang, "/species.txt", speciess);
+#endif
+
+#ifndef _PKSMCORE_DISABLE_GAME_STRINGS
     load(lang, "/games.txt", games);
+#endif
+
+#ifndef _PKSMCORE_DISABLE_LOCATION_STRINGS
     load(lang, "/locations4.txt", locations4);
     load(lang, "/locations5.txt", locations5);
     load(lang, "/locations6.txt", locations6);
     load(lang, "/locations7.txt", locations7);
     load(lang, "/locationsLGPE.txt", locationsLGPE);
     load(lang, "/locations8.txt", locations8);
+#endif
+
+#ifndef _PKSMCORE_DISABLE_GEO_STRINGS
     countries = {};
     load(lang, "/countries.txt", countries);
     for (auto i = countries.begin(); i != countries.end(); i++)
@@ -124,13 +158,17 @@ LanguageStrings::LanguageStrings(Language lang)
         subregions[i->first] = {};
         load(lang, subregionFileName(i->first), subregions[i->first]);
     }
+#endif
+
+#ifndef _PKSMCORE_DISABLE_GUI_STRINGS
     load(lang, "/gui.json", gui);
+#endif
 }
 
 void LanguageStrings::load(Language lang, const std::string& name, std::vector<std::string>& array)
 {
     std::string path = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name) ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
-                                                                               : _PKSMCORE_LANG_FOLDER + folder(Language::EN) + name;
+                                                                               : _PKSMCORE_LANG_FOLDER + folder(Language::ENG) + name;
 
     std::string tmp;
     FILE* values = fopen(path.c_str(), "rt");
@@ -165,7 +203,7 @@ void LanguageStrings::load(Language lang, const std::string& name, std::vector<s
 void LanguageStrings::load(Language lang, const std::string& name, nlohmann::json& json)
 {
     std::string path = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name) ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
-                                                                               : _PKSMCORE_LANG_FOLDER + folder(Language::EN) + name;
+                                                                               : _PKSMCORE_LANG_FOLDER + folder(Language::ENG) + name;
 
     FILE* values = fopen(path.c_str(), "rt");
     if (values)
@@ -175,16 +213,23 @@ void LanguageStrings::load(Language lang, const std::string& name, nlohmann::jso
     }
 }
 
+#ifndef _PKSMCORE_DISABLE_ABILITY_STRINGS
 const std::string& LanguageStrings::ability(u16 v) const
 {
-    return v < abilities.size() ? abilities.at(v) : localize("INVALID_ABILITY");
+    static std::string badString = "INVALID_ABILITY";
+    return v < abilities.size() ? abilities.at(v) : badString;
 }
+#endif
 
+#ifndef _PKSMCORE_DISABLE_BALL_STRINGS
 const std::string& LanguageStrings::ball(u8 v) const
 {
-    return v < balls.size() ? balls.at(v) : localize("INVALID_BALL");
+    static std::string badString = "INVALID_BALL";
+    return v < balls.size() ? balls.at(v) : badString;
 }
+#endif
 
+#ifndef _PKSMCORE_DISABLE_FORM_STRINGS
 const std::string& LanguageStrings::form(u16 species, u16 form, Generation generation) const
 {
     std::string sSpecies = std::to_string((int)species);
@@ -212,78 +257,76 @@ const std::string& LanguageStrings::form(u16 species, u16 form, Generation gener
             }
         }
     }
-    return localize("INVALID_FORM");
+    static std::string badString = "INVALID_FORM";
+    return badString;
 }
+#endif
 
+#ifndef _PKSMCORE_DISABLE_HIDDEN_POWER_STRINGS
 const std::string& LanguageStrings::hp(u8 v) const
 {
-    return v < hps.size() ? hps.at(v) : localize("INVALID_HP");
+    static std::string badString = "INVALID_HP";
+    return v < hps.size() ? hps.at(v) : badString;
 }
+#endif
 
+#ifndef _PKSMCORE_DISABLE_ITEM_STRINGS
 const std::string& LanguageStrings::item(u16 v) const
 {
-    return v < items.size() ? items.at(v) : localize("INVALID_ITEM");
+    static std::string badString = "INVALID_ITEM";
+    return v < items.size() ? items.at(v) : badString;
 }
-
-const std::string& LanguageStrings::move(u16 v) const
-{
-    return v < moves.size() ? moves.at(v) : localize("INVALID_MOVE");
-}
-
-const std::string& LanguageStrings::nature(u8 v) const
-{
-    return v < natures.size() ? natures.at(v) : localize("INVALID_NATURE");
-}
-
-const std::string& LanguageStrings::species(u16 v) const
-{
-    return v < speciess.size() ? speciess.at(v) : localize("INVALID_SPECIES");
-}
-
-const std::string& LanguageStrings::localize(const std::string& v) const
-{
-    if (!gui.contains(v))
-    {
-        const_cast<nlohmann::json&>(gui)[v] = "MISSING: " + v;
-    }
-    return gui.at(v).get_ref<const std::string&>();
-}
-
 const std::vector<std::string>& LanguageStrings::rawItems() const
 {
     return items;
 }
+#endif
 
+#ifndef _PKSMCORE_DISABLE_MOVE_STRINGS
+const std::string& LanguageStrings::move(u16 v) const
+{
+    static std::string badString = "INVALID_MOVE";
+    return v < moves.size() ? moves.at(v) : badString;
+}
 const std::vector<std::string>& LanguageStrings::rawMoves() const
 {
     return moves;
 }
+#endif
 
-const std::string& LanguageStrings::subregion(u8 country, u8 v) const
+#ifndef _PKSMCORE_DISABLE_NATURE_STRINGS
+const std::string& LanguageStrings::nature(u8 v) const
 {
-    auto i = subregions.find(country);
-    if (i != subregions.end())
-    {
-        auto j = i->second.find(v);
-        if (j != i->second.end())
-        {
-            return j->second;
-        }
-        return localize("INVALID_SUBREGION");
-    }
-    return localize("INVALID_COUNTRY");
+    static std::string badString = "INVALID_NATURE";
+    return v < natures.size() ? natures.at(v) : badString;
 }
+#endif
 
-const std::string& LanguageStrings::country(u8 v) const
+#ifndef _PKSMCORE_DISABLE_SPECIES_STRINGS
+const std::string& LanguageStrings::species(u16 v) const
 {
-    auto i = countries.find(v);
-    if (i != countries.end())
-    {
-        return i->second;
-    }
-    return localize("INVALID_COUNTRY");
+    static std::string badString = "INVALID_SPECIES";
+    return v < speciess.size() ? speciess.at(v) : badString;
 }
+#endif
 
+#ifndef _PKSMCORE_DISABLE_GAME_STRINGS
+const std::string& LanguageStrings::game(u8 v) const
+{
+    if (v < games.size() && games.at(v) != "")
+    {
+        return games.at(v);
+    }
+    static std::string badString = "INVALID_GAME";
+    return badString;
+}
+size_t LanguageStrings::numGameStrings() const
+{
+    return games.size();
+}
+#endif
+
+#ifndef _PKSMCORE_DISABLE_LOCATION_STRINGS
 const std::string& LanguageStrings::location(u16 v, Generation generation) const
 {
     std::map<u16, std::string>::const_iterator i;
@@ -328,18 +371,9 @@ const std::string& LanguageStrings::location(u16 v, Generation generation) const
         case Generation::UNUSED:
             break;
     }
-    return localize("INVALID_LOCATION");
+    static std::string badString = "INVALID_LOCATION";
+    return badString;
 }
-
-const std::string& LanguageStrings::game(u8 v) const
-{
-    if (v < games.size() && games.at(v) != "")
-    {
-        return games.at(v);
-    }
-    return localize("INVALID_GAME");
-}
-
 const std::map<u16, std::string>& LanguageStrings::locations(Generation g) const
 {
     static std::map<u16, std::string> emptyMap;
@@ -362,17 +396,39 @@ const std::map<u16, std::string>& LanguageStrings::locations(Generation g) const
     }
     return emptyMap;
 }
+#endif
 
-size_t LanguageStrings::numGameStrings() const
+#ifndef _PKSMCORE_DISABLE_GEO_STRINGS
+const std::string& LanguageStrings::subregion(u8 country, u8 v) const
 {
-    return games.size();
+    auto i = subregions.find(country);
+    if (i != subregions.end())
+    {
+        auto j = i->second.find(v);
+        if (j != i->second.end())
+        {
+            return j->second;
+        }
+        static std::string badString = "INVALID_SUBREGION";
+        return badString;
+    }
+    static std::string badString = "INVALID_COUNTRY";
+    return badString;
 }
-
+const std::string& LanguageStrings::country(u8 v) const
+{
+    auto i = countries.find(v);
+    if (i != countries.end())
+    {
+        return i->second;
+    }
+    static std::string badString = "INVALID_COUNTRY";
+    return badString;
+}
 const std::map<u8, std::string>& LanguageStrings::rawCountries() const
 {
     return countries;
 }
-
 const std::map<u8, std::string>& LanguageStrings::rawSubregions(u8 country) const
 {
     static std::map<u8, std::string> emptyMap;
@@ -383,3 +439,15 @@ const std::map<u8, std::string>& LanguageStrings::rawSubregions(u8 country) cons
     }
     return i->second;
 }
+#endif
+
+#ifndef _PKSMCORE_DISABLE_GUI_STRINGS
+const std::string& LanguageStrings::localize(const std::string& v) const
+{
+    if (!gui.contains(v))
+    {
+        const_cast<nlohmann::json&>(gui)[v] = "MISSING: " + v;
+    }
+    return gui.at(v).get_ref<const std::string&>();
+}
+#endif

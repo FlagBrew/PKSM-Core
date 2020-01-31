@@ -27,6 +27,8 @@
 #ifndef I18N_HPP
 #define I18N_HPP
 
+#include "PKSMCORE_CONFIG.h"
+
 #include "Language.hpp"
 #include "utils/coretypes.h"
 #include "utils/generation.hpp"
@@ -39,31 +41,64 @@ namespace i18n
     void init(Language lang);
     void exit(void);
 
-    const std::vector<std::string>& rawItems(Language lang);
-    const std::vector<std::string>& rawMoves(Language lang);
-    const std::map<u16, std::string>& locations(Language lang, Generation g);
-    const std::map<u8, std::string>& rawCountries(Language lang);
-    const std::map<u8, std::string>& rawSubregions(Language lang, u8 country);
-    size_t numGameStrings(Language lang);
-
-    const std::string& ability(Language lang, u16 value);
-    const std::string& ball(Language lang, u8 value);
-    const std::string& hp(Language lang, u8 value);
-    const std::string& item(Language lang, u16 value);
-    const std::string& move(Language lang, u16 value);
-    const std::string& nature(Language lang, u8 value);
-    const std::string& species(Language lang, u16 value);
-    const std::string& form(Language lang, u16 species, u16 form, Generation generation);
-    const std::string& location(Language lang, u16 value, Generation generation);
-    const std::string& location(Language lang, u16 value, u8 originGame);
-    const std::string& game(Language lang, u8 value);
-    const std::string& subregion(Language lang, u8 country, u8 value);
-    const std::string& country(Language lang, u8 value);
-
-    // Used for general GUI stuff; not for PKM values
-    const std::string& localize(Language lang, const std::string& index);
     const std::string& langString(Language l);
     Language langFromString(const std::string& value);
+
+#ifndef _PKSMCORE_DISABLE_ABILITY_STRINGS
+    const std::string& ability(Language lang, u16 value);
+#endif
+
+#ifndef _PKSMCORE_DISABLE_BALL_STRINGS
+    const std::string& ball(Language lang, u8 value);
+#endif
+
+#ifndef _PKSMCORE_DISABLE_FORM_STRINGS
+    const std::string& form(Language lang, u16 species, u16 form, Generation generation);
+#endif
+
+#ifndef _PKSMCORE_DISABLE_HIDDEN_POWER_STRINGS
+    const std::string& hp(Language lang, u8 value);
+#endif
+
+#ifndef _PKSMCORE_DISABLE_ITEM_STRINGS
+    const std::string& item(Language lang, u16 value);
+    const std::vector<std::string>& rawItems(Language lang);
+#endif
+
+#ifndef _PKSMCORE_DISABLE_MOVE_STRINGS
+    const std::string& move(Language lang, u16 value);
+    const std::vector<std::string>& rawMoves(Language lang);
+#endif
+
+#ifndef _PKSMCORE_DISABLE_NATURE_STRINGS
+    const std::string& nature(Language lang, u8 value);
+#endif
+
+#ifndef _PKSMCORE_DISABLE_SPECIES_STRINGS
+    const std::string& species(Language lang, u16 value);
+#endif
+
+#ifndef _PKSMCORE_DISABLE_GAME_STRINGS
+    const std::string& game(Language lang, u8 value);
+    size_t numGameStrings(Language lang);
+#endif
+
+#ifndef _PKSMCORE_DISABLE_LOCATION_STRINGS
+    const std::map<u16, std::string>& locations(Language lang, Generation g);
+    const std::string& location(Language lang, u16 value, Generation generation);
+    const std::string& location(Language lang, u16 value, u8 originGame);
+#endif
+
+#ifndef _PKSMCORE_DISABLE_GEO_STRINGS
+    const std::string& subregion(Language lang, u8 country, u8 value);
+    const std::map<u8, std::string>& rawSubregions(Language lang, u8 country);
+    const std::string& country(Language lang, u8 value);
+    const std::map<u8, std::string>& rawCountries(Language lang);
+#endif
+
+#ifndef _PKSMCORE_DISABLE_GUI_STRINGS
+    const std::string& localize(Language lang, const std::string& index);
+#endif
 };
 
 #endif

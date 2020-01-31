@@ -52,7 +52,7 @@ PGT::PGT(u8* pgt)
         pokemonData->fatefulEncounter(true);
         pokemonData->ball(4);
         pokemonData->version(10); // Diamond
-        pokemonData->language(Language::EN);
+        pokemonData->language(Language::ENG);
         pokemonData->nickname("MANAPHY");
         pokemonData->nicknamed(false);
         pokemonData->eggLocation(1);

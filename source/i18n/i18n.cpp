@@ -29,195 +29,55 @@
 #include <atomic>
 #include <unistd.h>
 
+#ifdef _PKSMCORE_EXTRA_LANGUAGES
+#define LANGUAGES_TO_USE JPN, ENG, FRE, ITA, GER, SPA, KOR, CHS, CHT, _PKSMCORE_EXTRA_LANGUAGES
+#else
+#define LANGUAGES_TO_USE JPN, ENG, FRE, ITA, GER, SPA, KOR, CHS, CHT
+#endif
+
+#include "_map_macro.hpp"
+#define MAKE_MAP(lang) ret.emplace(Language::lang, std::make_unique<LangRecord>());
+#define TO_STRING_CASE(lang)                                                                                                                         \
+    case Language::lang:                                                                                                                             \
+    {                                                                                                                                                \
+        static const std::string str = #lang;                                                                                                        \
+        return str;                                                                                                                                  \
+    }
+#define TO_IF_STRING(lang)                                                                                                                           \
+    if (value == #lang)                                                                                                                              \
+        return Language::lang;
+
 namespace
 {
-    LanguageStrings* jp     = nullptr;
-    std::atomic_flag jpInit = ATOMIC_FLAG_INIT;
-    LanguageStrings* en     = nullptr;
-    std::atomic_flag enInit = ATOMIC_FLAG_INIT;
-    LanguageStrings* fr     = nullptr;
-    std::atomic_flag frInit = ATOMIC_FLAG_INIT;
-    LanguageStrings* it     = nullptr;
-    std::atomic_flag itInit = ATOMIC_FLAG_INIT;
-    LanguageStrings* de     = nullptr;
-    std::atomic_flag deInit = ATOMIC_FLAG_INIT;
-    LanguageStrings* es     = nullptr;
-    std::atomic_flag esInit = ATOMIC_FLAG_INIT;
-    LanguageStrings* ko     = nullptr;
-    std::atomic_flag koInit = ATOMIC_FLAG_INIT;
-    LanguageStrings* zh     = nullptr;
-    std::atomic_flag zhInit = ATOMIC_FLAG_INIT;
-    LanguageStrings* tw     = nullptr;
-    std::atomic_flag twInit = ATOMIC_FLAG_INIT;
-    LanguageStrings* nl     = nullptr;
-    std::atomic_flag nlInit = ATOMIC_FLAG_INIT;
-    LanguageStrings* pt     = nullptr;
-    std::atomic_flag ptInit = ATOMIC_FLAG_INIT;
-    LanguageStrings* ru     = nullptr;
-    std::atomic_flag ruInit = ATOMIC_FLAG_INIT;
-    LanguageStrings* ro     = nullptr;
-    std::atomic_flag roInit = ATOMIC_FLAG_INIT;
+    struct LangRecord
+    {
+        LangRecord() {}
+        LanguageStrings* strings     = nullptr;
+        std::atomic_flag initialized = ATOMIC_FLAG_INIT;
+    };
+    std::map<Language, std::unique_ptr<LangRecord>> languages = []() {
+        std::map<Language, std::unique_ptr<LangRecord>> ret;
+        MAP(MAKE_MAP, LANGUAGES_TO_USE)
+        return std::move(ret);
+    }();
 
     LanguageStrings* stringsFor(Language lang)
     {
-        switch (lang)
+        auto found = languages.find(lang);
+        if (found == languages.end())
         {
-            case Language::JP:
-                if (!jpInit.test_and_set())
-                {
-                    jpInit.clear();
-                    i18n::init(lang);
-                }
-                while (!jp)
-                {
-                    usleep(100);
-                }
-                return jp;
-            case Language::EN:
-                if (!enInit.test_and_set())
-                {
-                    enInit.clear();
-                    i18n::init(lang);
-                }
-                while (!en)
-                {
-                    usleep(100);
-                }
-                return en;
-            case Language::FR:
-                if (!frInit.test_and_set())
-                {
-                    frInit.clear();
-                    i18n::init(lang);
-                }
-                while (!fr)
-                {
-                    usleep(100);
-                }
-                return fr;
-            case Language::IT:
-                if (!itInit.test_and_set())
-                {
-                    itInit.clear();
-                    i18n::init(lang);
-                }
-                while (!it)
-                {
-                    usleep(100);
-                }
-                return it;
-            case Language::DE:
-                if (!deInit.test_and_set())
-                {
-                    deInit.clear();
-                    i18n::init(lang);
-                }
-                while (!de)
-                {
-                    usleep(100);
-                }
-                return de;
-            case Language::ES:
-                if (!esInit.test_and_set())
-                {
-                    esInit.clear();
-                    i18n::init(lang);
-                }
-                while (!es)
-                {
-                    usleep(100);
-                }
-                return es;
-            case Language::KO:
-                if (!koInit.test_and_set())
-                {
-                    koInit.clear();
-                    i18n::init(lang);
-                }
-                while (!ko)
-                {
-                    usleep(100);
-                }
-                return ko;
-            case Language::ZH:
-                if (!zhInit.test_and_set())
-                {
-                    zhInit.clear();
-                    i18n::init(lang);
-                }
-                while (!zh)
-                {
-                    usleep(100);
-                }
-                return zh;
-            case Language::TW:
-                if (!twInit.test_and_set())
-                {
-                    twInit.clear();
-                    i18n::init(lang);
-                }
-                while (!tw)
-                {
-                    usleep(100);
-                }
-                return tw;
-            case Language::NL:
-                if (!nlInit.test_and_set())
-                {
-                    nlInit.clear();
-                    i18n::init(lang);
-                }
-                while (!nl)
-                {
-                    usleep(100);
-                }
-                return nl;
-            case Language::PT:
-                if (!ptInit.test_and_set())
-                {
-                    ptInit.clear();
-                    i18n::init(lang);
-                }
-                while (!pt)
-                {
-                    usleep(100);
-                }
-                return pt;
-            case Language::RU:
-                if (!ruInit.test_and_set())
-                {
-                    ruInit.clear();
-                    i18n::init(lang);
-                }
-                while (!ru)
-                {
-                    usleep(100);
-                }
-                return ru;
-            case Language::RO:
-                if (!roInit.test_and_set())
-                {
-                    roInit.clear();
-                    i18n::init(lang);
-                }
-                while (!ro)
-                {
-                    usleep(100);
-                }
-                return ro;
-            case Language::UNUSED:
-                break;
+            found = languages.find(Language::ENG);
         }
-        if (!enInit.test_and_set())
+        if (!found->second->initialized.test_and_set())
         {
-            enInit.clear();
-            i18n::init(lang);
+            found->second->initialized.clear();
+            i18n::init(found->first);
         }
-        while (!en)
+        while (!found->second->strings)
         {
             usleep(100);
         }
-        return en;
+        return found->second->strings;
     }
 
     const std::string emptyString                = "";
@@ -228,246 +88,32 @@ namespace
 
 void i18n::init(Language lang)
 {
-    switch (lang)
+    auto found = languages.find(lang);
+    if (found == languages.end())
     {
-        case Language::JP:
-            if (!jpInit.test_and_set())
-            {
-                jp = new LanguageStrings(Language::JP);
-            }
-            break;
-        case Language::EN:
-            if (!enInit.test_and_set())
-            {
-                en = new LanguageStrings(Language::EN);
-            }
-            break;
-        case Language::FR:
-            if (!frInit.test_and_set())
-            {
-                fr = new LanguageStrings(Language::FR);
-            }
-            break;
-        case Language::IT:
-            if (!itInit.test_and_set())
-            {
-                it = new LanguageStrings(Language::IT);
-            }
-            break;
-        case Language::DE:
-            if (!deInit.test_and_set())
-            {
-                de = new LanguageStrings(Language::DE);
-            }
-            break;
-        case Language::ES:
-            if (!esInit.test_and_set())
-            {
-                es = new LanguageStrings(Language::ES);
-            }
-            break;
-        case Language::KO:
-            if (!koInit.test_and_set())
-            {
-                ko = new LanguageStrings(Language::KO);
-            }
-            break;
-        case Language::ZH:
-            if (!zhInit.test_and_set())
-            {
-                zh = new LanguageStrings(Language::ZH);
-            }
-            break;
-        case Language::TW:
-            if (!twInit.test_and_set())
-            {
-                tw = new LanguageStrings(Language::TW);
-            }
-            break;
-        case Language::NL:
-            if (!nlInit.test_and_set())
-            {
-                nl = new LanguageStrings(Language::NL);
-            }
-            break;
-        case Language::PT:
-            if (!ptInit.test_and_set())
-            {
-                pt = new LanguageStrings(Language::PT);
-            }
-            break;
-        case Language::RU:
-            if (!ruInit.test_and_set())
-            {
-                ru = new LanguageStrings(Language::RU);
-            }
-            break;
-        case Language::RO:
-            if (!roInit.test_and_set())
-            {
-                ro = new LanguageStrings(Language::RO);
-            }
-            break;
-        case Language::UNUSED:
-            break;
+        found = languages.find(Language::ENG);
+    }
+    if (!found->second->initialized.test_and_set())
+    {
+        found->second->strings = new LanguageStrings(found->first);
     }
 }
 
 void i18n::exit(void)
 {
-    if (jpInit.test_and_set())
+    for (auto& lang : languages)
     {
-        while (!jp)
+        if (lang.second->initialized.test_and_set())
         {
-            usleep(100);
+            while (!lang.second->strings)
+            {
+                usleep(100);
+            }
+            delete lang.second->strings;
+            lang.second->strings = nullptr;
+            lang.second->initialized.clear();
         }
-        delete jp;
-        jpInit.clear();
     }
-    if (enInit.test_and_set())
-    {
-        while (!en)
-        {
-            usleep(100);
-        }
-        delete en;
-        enInit.clear();
-    }
-    if (frInit.test_and_set())
-    {
-        while (!fr)
-        {
-            usleep(100);
-        }
-        delete fr;
-        frInit.clear();
-    }
-    if (itInit.test_and_set())
-    {
-        while (!it)
-        {
-            usleep(100);
-        }
-        delete it;
-        itInit.clear();
-    }
-    if (deInit.test_and_set())
-    {
-        while (!de)
-        {
-            usleep(100);
-        }
-        delete de;
-        deInit.clear();
-    }
-    if (esInit.test_and_set())
-    {
-        while (!es)
-        {
-            usleep(100);
-        }
-        delete es;
-        esInit.clear();
-    }
-    if (koInit.test_and_set())
-    {
-        while (!ko)
-        {
-            usleep(100);
-        }
-        delete ko;
-        koInit.clear();
-    }
-    if (zhInit.test_and_set())
-    {
-        while (!zh)
-        {
-            usleep(100);
-        }
-        delete zh;
-        zhInit.clear();
-    }
-    if (twInit.test_and_set())
-    {
-        while (!tw)
-        {
-            usleep(100);
-        }
-        delete tw;
-        twInit.clear();
-    }
-    if (nlInit.test_and_set())
-    {
-        while (!nl)
-        {
-            usleep(100);
-        }
-        delete nl;
-        nlInit.clear();
-    }
-    if (ptInit.test_and_set())
-    {
-        while (!pt)
-        {
-            usleep(100);
-        }
-        delete pt;
-        ptInit.clear();
-    }
-    if (ruInit.test_and_set())
-    {
-        while (!ru)
-        {
-            usleep(100);
-        }
-        delete ru;
-        ruInit.clear();
-    }
-}
-
-const std::string& i18n::ability(Language lang, u16 val)
-{
-    return stringsFor(lang)->ability(val);
-}
-
-const std::string& i18n::ball(Language lang, u8 val)
-{
-    return stringsFor(lang)->ball(val);
-}
-
-const std::string& i18n::form(Language lang, u16 species, u16 form, Generation generation)
-{
-    return stringsFor(lang)->form(species, form, generation);
-}
-
-const std::string& i18n::hp(Language lang, u8 val)
-{
-    return stringsFor(lang)->hp(val);
-}
-
-const std::string& i18n::item(Language lang, u16 val)
-{
-    return stringsFor(lang)->item(val);
-}
-
-const std::string& i18n::move(Language lang, u16 val)
-{
-    return stringsFor(lang)->move(val);
-}
-
-const std::string& i18n::nature(Language lang, u8 val)
-{
-    return stringsFor(lang)->nature(val);
-}
-
-const std::string& i18n::species(Language lang, u16 val)
-{
-    return stringsFor(lang)->species(val);
-}
-
-const std::string& i18n::localize(Language lang, const std::string& val)
-{
-    return stringsFor(lang)->localize(val);
 }
 
 const std::string& i18n::langString(Language l)
@@ -483,24 +129,7 @@ const std::string& i18n::langString(Language l)
     static const std::string CHT = "CHT";
     switch (l)
     {
-        case Language::JP:
-            return JPN;
-        case Language::EN:
-            return ENG;
-        case Language::FR:
-            return FRE;
-        case Language::IT:
-            return ITA;
-        case Language::DE:
-            return GER;
-        case Language::ES:
-            return SPA;
-        case Language::KO:
-            return KOR;
-        case Language::ZH:
-            return CHS;
-        case Language::TW:
-            return CHT;
+        MAP(TO_STRING_CASE, LANGUAGES_TO_USE)
         default:
             return ENG;
     }
@@ -508,60 +137,90 @@ const std::string& i18n::langString(Language l)
 
 Language i18n::langFromString(const std::string& value)
 {
-    if (value == "JPN")
-    {
-        return Language::JP;
-    }
-    if (value == "ENG")
-    {
-        return Language::EN;
-    }
-    if (value == "FRE")
-    {
-        return Language::FR;
-    }
-    if (value == "ITA")
-    {
-        return Language::IT;
-    }
-    if (value == "GER")
-    {
-        return Language::DE;
-    }
-    if (value == "SPA")
-    {
-        return Language::ES;
-    }
-    if (value == "KOR")
-    {
-        return Language::KO;
-    }
-    if (value == "CHS")
-    {
-        return Language::ZH;
-    }
-    if (value == "CHT")
-    {
-        return Language::TW;
-    }
-    return Language::EN;
+    MAP(TO_IF_STRING, LANGUAGES_TO_USE)
+    return Language::ENG;
 }
 
+#ifndef _PKSMCORE_DISABLE_ABILITY_STRINGS
+const std::string& i18n::ability(Language lang, u16 val)
+{
+    return stringsFor(lang)->ability(val);
+}
+#endif
+
+#ifndef _PKSMCORE_DISABLE_BALL_STRINGS
+const std::string& i18n::ball(Language lang, u8 val)
+{
+    return stringsFor(lang)->ball(val);
+}
+#endif
+
+#ifndef _PKSMCORE_DISABLE_FORM_STRINGS
+const std::string& i18n::form(Language lang, u16 species, u16 form, Generation generation)
+{
+    return stringsFor(lang)->form(species, form, generation);
+}
+#endif
+
+#ifndef _PKSMCORE_DISABLE_HIDDEN_POWER_STRINGS
+const std::string& i18n::hp(Language lang, u8 val)
+{
+    return stringsFor(lang)->hp(val);
+}
+#endif
+
+#ifndef _PKSMCORE_DISABLE_ITEM_STRINGS
+const std::string& i18n::item(Language lang, u16 val)
+{
+    return stringsFor(lang)->item(val);
+}
 const std::vector<std::string>& i18n::rawItems(Language lang)
 {
     return stringsFor(lang)->rawItems();
 }
+#endif
 
+#ifndef _PKSMCORE_DISABLE_MOVE_STRINGS
+const std::string& i18n::move(Language lang, u16 val)
+{
+    return stringsFor(lang)->move(val);
+}
 const std::vector<std::string>& i18n::rawMoves(Language lang)
 {
     return stringsFor(lang)->rawMoves();
 }
+#endif
 
+#ifndef _PKSMCORE_DISABLE_NATURE_STRINGS
+const std::string& i18n::nature(Language lang, u8 val)
+{
+    return stringsFor(lang)->nature(val);
+}
+#endif
+
+#ifndef _PKSMCORE_DISABLE_SPECIES_STRINGS
+const std::string& i18n::species(Language lang, u16 val)
+{
+    return stringsFor(lang)->species(val);
+}
+#endif
+
+#ifndef _PKSMCORE_DISABLE_GAME_STRINGS
+const std::string& i18n::game(Language lang, u8 v)
+{
+    return stringsFor(lang)->game(v);
+}
+size_t i18n::numGameStrings(Language lang)
+{
+    return stringsFor(lang)->numGameStrings();
+}
+#endif
+
+#ifndef _PKSMCORE_DISABLE_LOCATION_STRINGS
 const std::string& i18n::location(Language lang, u16 v, Generation generation)
 {
     return stringsFor(lang)->location(v, generation);
 }
-
 const std::string& i18n::location(Language lang, u16 v, u8 originGame)
 {
     switch (originGame)
@@ -596,38 +255,34 @@ const std::string& i18n::location(Language lang, u16 v, u8 originGame)
     }
     return emptyString;
 }
-
-const std::string& i18n::game(Language lang, u8 v)
-{
-    return stringsFor(lang)->game(v);
-}
-
 const std::map<u16, std::string>& i18n::locations(Language lang, Generation g)
 {
     return stringsFor(lang)->locations(g);
 }
+#endif
 
-size_t i18n::numGameStrings(Language lang)
-{
-    return stringsFor(lang)->numGameStrings();
-}
-
+#ifndef _PKSMCORE_DISABLE_GEO_STRINGS
 const std::string& i18n::subregion(Language lang, u8 country, u8 value)
 {
     return stringsFor(lang)->subregion(country, value);
 }
-
 const std::string& i18n::country(Language lang, u8 value)
 {
     return stringsFor(lang)->country(value);
 }
-
 const std::map<u8, std::string>& i18n::rawCountries(Language lang)
 {
     return stringsFor(lang)->rawCountries();
 }
-
 const std::map<u8, std::string>& i18n::rawSubregions(Language lang, u8 country)
 {
     return stringsFor(lang)->rawSubregions(country);
 }
+#endif
+
+#ifndef _PKSMCORE_DISABLE_GUI_STRINGS
+const std::string& i18n::localize(Language lang, const std::string& val)
+{
+    return stringsFor(lang)->localize(val);
+}
+#endif
