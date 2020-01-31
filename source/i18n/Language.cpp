@@ -31,10 +31,11 @@
 
 namespace
 {
-    constexpr std::array<Language, 6> G3Langs = {Language::JP, Language::EN, Language::FR, Language::DE, Language::ES, Language::IT};
-    constexpr std::array<Language, 7> G4Langs = {Language::JP, Language::EN, Language::FR, Language::DE, Language::ES, Language::IT, Language::KO};
+    constexpr std::array<Language, 6> G3Langs = {Language::JPN, Language::ENG, Language::FRE, Language::GER, Language::SPA, Language::ITA};
+    constexpr std::array<Language, 7> G4Langs = {
+        Language::JPN, Language::ENG, Language::FRE, Language::GER, Language::SPA, Language::ITA, Language::KOR};
     constexpr std::array<Language, 9> G7Langs = {
-        Language::JP, Language::EN, Language::FR, Language::DE, Language::ES, Language::IT, Language::KO, Language::ZH, Language::TW};
+        Language::JPN, Language::ENG, Language::FRE, Language::GER, Language::SPA, Language::ITA, Language::KOR, Language::CHS, Language::CHT};
 }
 
 Language getSafeLanguage(Generation gen, Language orig)
@@ -48,7 +49,7 @@ Language getSafeLanguage(Generation gen, Language orig)
             {
                 return orig;
             }
-            return Language::EN;
+            return Language::ENG;
         case Generation::FOUR:
         case Generation::FIVE:
         case Generation::SIX:
@@ -56,7 +57,7 @@ Language getSafeLanguage(Generation gen, Language orig)
             {
                 return orig;
             }
-            return Language::EN;
+            return Language::ENG;
 
         case Generation::SEVEN:
         case Generation::LGPE:
@@ -65,7 +66,7 @@ Language getSafeLanguage(Generation gen, Language orig)
             {
                 return orig;
             }
-            return Language::EN;
+            return Language::ENG;
     }
-    return Language::EN;
+    return Language::ENG;
 }

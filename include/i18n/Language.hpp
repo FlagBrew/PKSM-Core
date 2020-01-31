@@ -27,25 +27,26 @@
 #ifndef LANGUAGE_HPP
 #define LANGUAGE_HPP
 
+#include "PKSMCORE_CONFIG.h"
+
 #include "utils/coretypes.h"
 #include "utils/generation.hpp"
 
 enum class Language : u8
 {
-    JP = 1,
-    EN,
-    FR,
-    IT,
-    DE,
+    JPN = 1,
+    ENG,
+    FRE,
+    ITA,
+    GER,
     UNUSED,
-    ES,
-    KO,
-    ZH,
-    TW,
-    NL,
-    PT,
-    RU,
-    RO
+    SPA,
+    KOR,
+    CHS,
+    CHT,
+#ifdef _PKSMCORE_EXTRA_LANGUAGES
+    _PKSMCORE_EXTRA_LANGUAGES
+#endif
 };
 
 Language getSafeLanguage(Generation gen, Language originalLang);

@@ -339,12 +339,12 @@ std::string WC8::otName(Language lang) const
 
 std::string WC8::nickname() const
 {
-    return nickname(Language::EN);
+    return nickname(Language::ENG);
 }
 
 std::string WC8::otName() const
 {
-    return otName(Language::EN);
+    return otName(Language::ENG);
 }
 
 bool WC8::used() const

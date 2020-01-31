@@ -97,7 +97,7 @@ int PK3::swapBits(int value, int p1, int p2)
 
 bool PK3::japanese(void) const
 {
-    return flagIsEgg() || language() == Language::JP;
+    return flagIsEgg() || language() == Language::JPN;
 }
 
 u16 PK3::calcChecksum() const
@@ -493,7 +493,7 @@ void PK3::egg(bool v)
     if (v)
     {
         nickname("タマゴ");
-        language(Language::JP);
+        language(Language::JPN);
     }
 }
 
