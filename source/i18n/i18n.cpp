@@ -52,11 +52,11 @@ namespace
     struct LangRecord
     {
         LangRecord() {}
-        LanguageStrings* strings     = nullptr;
-        std::atomic_flag initialized = ATOMIC_FLAG_INIT;
+        LanguageStrings* strings      = nullptr;
+        std::atomic<bool> initialized = false;
     };
-    std::map<Language, std::unique_ptr<LangRecord>> languages = []() {
-        std::map<Language, std::unique_ptr<LangRecord>> ret;
+    std::map<Language, LangRecord> languages = []() {
+        std::map<Language, LangRecord> ret;
         MAP(MAKE_MAP, LANGUAGES_TO_USE)
         return std::move(ret);
     }();
@@ -68,16 +68,15 @@ namespace
         {
             found = languages.find(Language::ENG);
         }
-        if (!found->second->initialized.test_and_set())
+        if (!found->second.initialized)
         {
-            found->second->initialized.clear();
             i18n::init(found->first);
         }
-        while (!found->second->strings)
+        while (!found->second.strings)
         {
             usleep(100);
         }
-        return found->second->strings;
+        return found->second.strings;
     }
 
     const std::string emptyString                = "";
@@ -93,9 +92,10 @@ void i18n::init(Language lang)
     {
         found = languages.find(Language::ENG);
     }
-    if (!found->second->initialized.test_and_set())
+    if (!found->second.initialized)
     {
-        found->second->strings = new LanguageStrings(found->first);
+        found->second.strings     = new LanguageStrings(found->first);
+        found->second.initialized = true;
     }
 }
 
@@ -103,15 +103,15 @@ void i18n::exit(void)
 {
     for (auto& lang : languages)
     {
-        if (lang.second->initialized.test_and_set())
+        if (lang.second.initialized)
         {
-            while (!lang.second->strings)
+            while (!lang.second.strings)
             {
                 usleep(100);
             }
-            delete lang.second->strings;
-            lang.second->strings = nullptr;
-            lang.second->initialized.clear();
+            delete lang.second.strings;
+            lang.second.strings     = nullptr;
+            lang.second.initialized = false;
         }
     }
 }
