@@ -143,6 +143,7 @@ public:
     static std::string folder(Language lang);
 
 #ifndef _PKSMCORE_DISABLE_ABILITY_STRINGS
+    const std::vector<std::string>& rawAbilities() const;
     const std::string& ability(u16 v) const;
 #endif
 
@@ -173,12 +174,14 @@ public:
 #endif
 
 #ifndef _PKSMCORE_DISABLE_SPECIES_STRINGS
+    const std::vector<std::string>& rawSpecies() const;
     const std::string& species(u16 v) const;
 #endif
 
 #ifndef _PKSMCORE_DISABLE_GAME_STRINGS
     const std::string& game(u8 v) const;
     size_t numGameStrings() const;
+    const std::vector<std::string>& rawGames() const;
 #endif
 
 #ifndef _PKSMCORE_DISABLE_LOCATION_STRINGS

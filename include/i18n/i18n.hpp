@@ -46,6 +46,7 @@ namespace i18n
 
 #ifndef _PKSMCORE_DISABLE_ABILITY_STRINGS
     const std::string& ability(Language lang, u16 value);
+    const std::vector<std::string>& rawAbilities(Language lang);
 #endif
 
 #ifndef _PKSMCORE_DISABLE_BALL_STRINGS
@@ -76,11 +77,13 @@ namespace i18n
 
 #ifndef _PKSMCORE_DISABLE_SPECIES_STRINGS
     const std::string& species(Language lang, u16 value);
+    const std::vector<std::string>& rawSpecies(Language lang);
 #endif
 
 #ifndef _PKSMCORE_DISABLE_GAME_STRINGS
     const std::string& game(Language lang, u8 value);
     size_t numGameStrings(Language lang);
+    const std::vector<std::string>& rawGames(Language lang);
 #endif
 
 #ifndef _PKSMCORE_DISABLE_LOCATION_STRINGS

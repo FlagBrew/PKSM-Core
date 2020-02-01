@@ -42,6 +42,7 @@
 
 namespace
 {
+#ifndef _PKSMCORE_DISABLE_FORM_STRINGS
     nlohmann::json& formJson()
     {
         static nlohmann::json forms;
@@ -61,7 +62,9 @@ namespace
         }
         return forms;
     }
+#endif
 
+#ifndef _PKSMCORE_DISABLE_GEO_STRINGS
     std::string subregionFileName(u8 region)
     {
         std::string ret = "/subregions/000.txt";
@@ -73,6 +76,7 @@ namespace
         }
         return ret;
     }
+#endif
     constexpr std::string_view toLower(std::string_view str)
     {
         char ret[str.size() + 1] = {'\0'};
@@ -220,6 +224,10 @@ const std::string& LanguageStrings::ability(u16 v) const
     static std::string badString = "INVALID_ABILITY";
     return v < abilities.size() ? abilities.at(v) : badString;
 }
+const std::vector<std::string>& LanguageStrings::rawAbilities() const
+{
+    return abilities;
+}
 #endif
 
 #ifndef _PKSMCORE_DISABLE_BALL_STRINGS
@@ -309,6 +317,10 @@ const std::string& LanguageStrings::species(u16 v) const
     static std::string badString = "INVALID_SPECIES";
     return v < speciess.size() ? speciess.at(v) : badString;
 }
+const std::vector<std::string>& LanguageStrings::rawSpecies() const
+{
+    return speciess;
+}
 #endif
 
 #ifndef _PKSMCORE_DISABLE_GAME_STRINGS
@@ -324,6 +336,10 @@ const std::string& LanguageStrings::game(u8 v) const
 size_t LanguageStrings::numGameStrings() const
 {
     return games.size();
+}
+const std::vector<std::string>& LanguageStrings::rawGames() const
+{
+    return games;
 }
 #endif
 

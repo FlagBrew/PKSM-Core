@@ -264,7 +264,7 @@ void Sav3::consoleRegion(u8 v)
 Language Sav3::language(void) const
 {
     // TODO: Other languages? Is this unused?
-    return japanese ? Language::JP : Language::EN;
+    return japanese ? Language::JPN : Language::ENG;
 }
 void Sav3::language(Language v)
 {
