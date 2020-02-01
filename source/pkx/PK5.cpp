@@ -211,19 +211,27 @@ u8 PK5::abilityNumber(void) const
 }
 void PK5::abilityNumber(u8 v)
 {
-    if (shiny())
+    if (v == 1 || v == 2)
     {
-        do
+        if (shiny())
         {
-            PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), v, PID(), generation()));
-        } while (!shiny());
+            do
+            {
+                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), v, PID(), generation()));
+            } while (!shiny());
+        }
+        else
+        {
+            do
+            {
+                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), v, PID(), generation()));
+            } while (shiny());
+        }
+        hiddenAbility(false);
     }
-    else
+    else // Hidden ability
     {
-        do
-        {
-            PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), v, PID(), generation()));
-        } while (shiny());
+        hiddenAbility(true);
     }
 }
 

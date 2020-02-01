@@ -424,7 +424,7 @@ u32 PKX::getRandomPID(u16 species, u8 gender, u8 originGame, u8 nature, u8 form,
 
     u8 genderType   = genderTypeFinder(species);
     bool g3unown    = (originGame <= 5 || gen == Generation::THREE) && species == 201;
-    u32 abilityBits = oldPid & 0x00010001;
+    u32 abilityBits = oldPid & (abilityNum == 2 ? 0x00010001 : 0);
     while (true)
     {
         u32 possiblePID = randomNumbers();
