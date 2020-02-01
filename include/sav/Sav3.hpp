@@ -49,7 +49,6 @@ protected:
     void initialize();
 
     const u16 CRC32(u8* data, int start, int length);
-    void setChecksums(void);
 
     static constexpr int SIZE_BLOCK      = 0x1000;
     static constexpr int BLOCK_COUNT     = 14;
@@ -111,7 +110,7 @@ public:
     Sav3(std::shared_ptr<u8[]> data);
     virtual ~Sav3() {}
     void resign(void);
-    void encrypt(void) override { resign(); }
+    void encrypt(void) override;
     void decrypt(void) override {}
 
     u16 TID(void) const override;

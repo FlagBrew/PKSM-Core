@@ -141,7 +141,7 @@ void Sav3::initialize(void)
     seenFlagOffsets = seenFlagOffsetsTemp;
 }
 
-void Sav3::resign(void)
+void Sav3::encrypt(void)
 {
     // Copy Box data back
     for (int i = 5; i < BLOCK_COUNT; i++)
@@ -152,7 +152,7 @@ void Sav3::resign(void)
         memcpy(data.get() + (blockIndex * SIZE_BLOCK) + ABO(), Box.get() + ((i - 5) * 0xF80), chunkLength[i]);
     }
 
-    setChecksums();
+    resign();
 }
 
 // TODO: Maybe move this elsewhere?
@@ -164,7 +164,7 @@ const u16 Sav3::CRC32(u8* dt, int start, int length)
     return (u16)(val + (val >> 16));
 }
 
-void Sav3::setChecksums(void)
+void Sav3::resign(void)
 {
     for (int i = 0; i < BLOCK_COUNT; i++)
     {
