@@ -644,11 +644,11 @@ void Sav6::boxName(u8 box, const std::string& name)
 
 u8 Sav6::boxWallpaper(u8 box) const
 {
-    // TODO
+    return data[0x4400 + 1054 + box];
 }
 void Sav6::boxWallpaper(u8 box, u8 v)
 {
-    // TODO
+    data[0x4400 + 1054 + box] = v;
 }
 
 u8 Sav6::partyCount(void) const

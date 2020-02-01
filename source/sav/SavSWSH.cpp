@@ -456,11 +456,11 @@ void SavSWSH::boxName(u8 box, const std::string& name)
 
 u8 SavSWSH::boxWallpaper(u8 box) const
 {
-    // TODO
+    return 0; // TODO: Make this actually get the wallpaper
 }
 void SavSWSH::boxWallpaper(u8 box, u8 v)
 {
-    // TODO
+    (void)v; // TODO: Make this actually set the wallpaper
 }
 
 u32 SavSWSH::boxOffset(u8 box, u8 slot) const

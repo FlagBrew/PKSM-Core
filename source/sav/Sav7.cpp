@@ -543,11 +543,11 @@ void Sav7::boxName(u8 box, const std::string& name)
 
 u8 Sav7::boxWallpaper(u8 box) const
 {
-    // TODO
+    return data[PCLayout + 1472 + box];
 }
 void Sav7::boxWallpaper(u8 box, u8 v)
 {
-    // TODO
+    data[PCLayout + 1472 + box] = v;
 }
 
 
