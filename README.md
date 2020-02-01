@@ -11,15 +11,15 @@ Defines:
 - _PKSMCORE_LANG_FOLDER: the folder from which languages are loaded
 - _PKSMCORE_GETLINE_FUNC: the name of your stdio.h getline function
 - _PKSMCORE_DISABLE_THREAD_SAFE_RANDOM: if defined, thread_local is not used for the random number generator
-- _PKSMCORE_DISABLE_ABILITY_STRINGS: removes `i18n::ability` (`abilities.txt`)
+- _PKSMCORE_DISABLE_ABILITY_STRINGS: removes `i18n::ability` and `i18n::rawAbilities` (`abilities.txt`)
 - _PKSMCORE_DISABLE_BALL_STRINGS: removes `i18n::ball` (`balls.txt`)
 - _PKSMCORE_DISABLE_FORM_STRINGS: removes `i18n::form` (`forms.txt`)
 - _PKSMCORE_DISABLE_HIDDEN_POWER_STRINGS: removes `i18n::hp` (`hp.txt`)
 - _PKSMCORE_DISABLE_ITEM_STRINGS: removes `i18n::item` and `i18n::rawItems` (`items.txt`)
 - _PKSMCORE_DISABLE_MOVE_STRINGS: removes `i18n::move` and `i18n::rawMoves` (`moves.txt`)
 - _PKSMCORE_DISABLE_NATURE_STRINGS: removes `i18n::nature` (`natures.txt`)
-- _PKSMCORE_DISABLE_SPECIES_STRINGS: removes `i18n::species` (`species.txt`)
-- _PKSMCORE_DISABLE_GAME_STRINGS: removes `i18n::game` (`games.txt`)
+- _PKSMCORE_DISABLE_SPECIES_STRINGS: removes `i18n::species` and `i18n::rawSpecies` (`species.txt`)
+- _PKSMCORE_DISABLE_GAME_STRINGS: removes `i18n::game` and `i18n::rawGames` (`games.txt`)
 - _PKSMCORE_DISABLE_LOCATION_STRINGS: removes `i18n::location` and `i18n::locations` (`locations3.txt`, `locations4.txt`, `locations5.txt`, `locations6.txt`, `locations7.txt`, `locationsLGPE.txt`, `locations8.txt`)
 - _PKSMCORE_DISABLE_GEO_STRINGS: removes `i18n::subregion`, `i18n::country`, `i18n::rawCountries`, and `i18n::rawSubregions` (`countries.txt`, `subregions/*`)
 - _PKSMCORE_DISABLE_GUI_STRINGS: removes `i18n::localize` (`gui.json`)
