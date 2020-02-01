@@ -64,6 +64,7 @@ class Item3 : public Item
 {
 private:
     std::array<u8, 4> itemData;
+    u16 key;
 
 public:
     Item3(u8* data = nullptr, u16 securityKey = 0)
@@ -72,6 +73,7 @@ public:
         {
             std::copy(data, data + 4, itemData.data());
             Endian::convertFrom<u16>(itemData.data() + 2, Endian::convertTo<u16>(itemData.data() + 2) ^ securityKey);
+            key = securityKey;
         }
         else
         {
@@ -84,7 +86,11 @@ public:
     void id(u16 v) override { Endian::convertFrom<u16>(itemData.data(), ItemConverter::nationalToG3(v)); }
     u16 count(void) const override { return Endian::convertTo<u16>(itemData.data() + 2); }
     void count(u16 v) override { Endian::convertFrom<u16>(itemData.data() + 2, v); }
-    std::vector<u8> bytes(void) const override { return std::vector<u8>{itemData.begin(), itemData.end()}; }
+    std::vector<u8> bytes(void) const override {
+        std::vector<u8> data{itemData.begin(), itemData.end()};
+        Endian::convertFrom<u16>(data.data() + 2, Endian::convertTo<u16>(data.data() + 2) ^ key);
+        return data;
+    }
 };
 
 class Item4 : public Item
