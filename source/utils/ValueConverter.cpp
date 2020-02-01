@@ -67,5 +67,5 @@ u16 ItemConverter::nationalToG3(u16 v)
     {
         return 0;
     }
-    return *it;
+    return std::distance(g3ToItem.begin(), it);
 }

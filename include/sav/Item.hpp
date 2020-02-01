@@ -31,6 +31,7 @@
 #include "utils/coretypes.h"
 #include "utils/endian.hpp"
 #include "utils/generation.hpp"
+#include "utils/ValueConverter.hpp"
 
 class Item3;
 class Item4;
@@ -80,8 +81,8 @@ public:
     }
     Generation generation(void) const override { return Generation::THREE; }
     u16 maxCount(void) const override { return 0xFFFF; }
-    u16 id(void) const override { return Endian::convertTo<u16>(itemData.data()); }
-    void id(u16 v) override { Endian::convertFrom<u16>(itemData.data(), v); }
+    u16 id(void) const override { return ItemConverter::g3ToNational(Endian::convertTo<u16>(itemData.data())); }
+    void id(u16 v) override { Endian::convertFrom<u16>(itemData.data(), ItemConverter::nationalToG3(v)); }
     u16 count(void) const override { return Endian::convertTo<u16>(itemData.data() + 2); }
     void count(u16 v) override { Endian::convertFrom<u16>(itemData.data() + 2, v); }
     std::vector<u8> bytes(void) const override { return std::vector<u8>{itemData.begin(), itemData.end()}; }
