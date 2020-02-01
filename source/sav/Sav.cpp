@@ -87,7 +87,7 @@ std::unique_ptr<Sav> Sav::getSave(std::shared_ptr<u8[]> dt, size_t length)
 
 std::unique_ptr<Sav> Sav::checkGBAType(std::shared_ptr<u8[]> dt)
 {
-    switch(Sav3::getVersion(dt))
+    switch (Sav3::getVersion(dt))
     {
         case Game::RS:
             return std::make_unique<SavRS>(dt);

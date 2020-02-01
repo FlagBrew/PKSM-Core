@@ -373,7 +373,8 @@ int adjustWallpaper(int value, int shift)
 u8 Sav4::boxWallpaper(u8 box) const
 {
     int offset = boxOffset(maxBoxes(), 0);
-    if (game == Game::HGSS) offset += 0x8;
+    if (game == Game::HGSS)
+        offset += 0x8;
     offset += (maxBoxes() * 0x28) + box;
 
     int v = data[offset];
@@ -388,7 +389,8 @@ void Sav4::boxWallpaper(u8 box, u8 v)
         v = adjustWallpaper(v, game == Game::Pt ? 0x8 : 0x10);
 
     int offset = boxOffset(maxBoxes(), 0);
-    if (game == Game::HGSS) offset += 0x8;
+    if (game == Game::HGSS)
+        offset += 0x8;
     offset += (maxBoxes() * 0x28) + box;
 
     if (offset < 0 || box > maxBoxes())

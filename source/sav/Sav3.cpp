@@ -37,13 +37,13 @@ const void Sav3::loadBlocks()
     std::array<int, BLOCK_COUNT> o1 = getBlockOrder(data, 0);
     // I removed a length > 0x10000, since length should always be 0x20000 I think that's fine?
     std::array<int, BLOCK_COUNT> o2 = getBlockOrder(data, 0xE000);
-    activeSAV = getActiveSaveIndex(data, o1, o2);
-    blockOrder = activeSAV == 0 ? o1 : o2;
+    activeSAV                       = getActiveSaveIndex(data, o1, o2);
+    blockOrder                      = activeSAV == 0 ? o1 : o2;
 
     for (int i = 0; i < BLOCK_COUNT; i++)
     {
-        unsigned int index = std::find(blockOrder.begin(), blockOrder.end(), i)-blockOrder.begin();
-        blockOfs[i] = index == blockOrder.size() ? -1 /*was int.MinValue*/ : (index * SIZE_BLOCK) + ABO();
+        unsigned int index = std::find(blockOrder.begin(), blockOrder.end(), i) - blockOrder.begin();
+        blockOfs[i]        = index == blockOrder.size() ? -1 /*was int.MinValue*/ : (index * SIZE_BLOCK) + ABO();
     }
 }
 
@@ -55,10 +55,10 @@ auto Sav3::getBlockOrder(std::shared_ptr<u8[]> dt, int ofs) -> std::array<int, B
     return order;
 }
 
-const int Sav3::getActiveSaveIndex(std::shared_ptr<u8[]> dt, std::array<int, BLOCK_COUNT> &blockOrder1, std::array<int, BLOCK_COUNT> &blockOrder2)
+const int Sav3::getActiveSaveIndex(std::shared_ptr<u8[]> dt, std::array<int, BLOCK_COUNT>& blockOrder1, std::array<int, BLOCK_COUNT>& blockOrder2)
 {
-    int zeroBlock1 = std::find(blockOrder1.begin(), blockOrder1.end(), 0)-blockOrder1.begin();
-    int zeroBlock2 = std::find(blockOrder2.begin(), blockOrder2.end(), 0)-blockOrder2.begin();
+    int zeroBlock1 = std::find(blockOrder1.begin(), blockOrder1.end(), 0) - blockOrder1.begin();
+    int zeroBlock2 = std::find(blockOrder2.begin(), blockOrder2.end(), 0) - blockOrder2.begin();
     if (zeroBlock2 == blockOrder2.size())
         return 0;
     if (zeroBlock1 == blockOrder1.size())
@@ -71,21 +71,23 @@ const int Sav3::getActiveSaveIndex(std::shared_ptr<u8[]> dt, std::array<int, BLO
 Game Sav3::getVersion(std::shared_ptr<u8[]> dt)
 {
     // Get block 0 offset
-    std::array<int, BLOCK_COUNT> o1 = getBlockOrder(dt, 0);
-    std::array<int, BLOCK_COUNT> o2 = getBlockOrder(dt, 0xE000);
-    int activeSAV = getActiveSaveIndex(dt, o1, o2);
-    std::array<int, BLOCK_COUNT> &order = activeSAV == 0 ? o1 : o2;
+    std::array<int, BLOCK_COUNT> o1     = getBlockOrder(dt, 0);
+    std::array<int, BLOCK_COUNT> o2     = getBlockOrder(dt, 0xE000);
+    int activeSAV                       = getActiveSaveIndex(dt, o1, o2);
+    std::array<int, BLOCK_COUNT>& order = activeSAV == 0 ? o1 : o2;
 
     int ABO = activeSAV * SIZE_BLOCK * 0xE;
 
-    int blockOfs0 = ((std::find(order.begin(), order.end(), 0)-order.begin()) * SIZE_BLOCK) + ABO;
+    int blockOfs0 = ((std::find(order.begin(), order.end(), 0) - order.begin()) * SIZE_BLOCK) + ABO;
 
     // Get version
     u32 gameCode = Endian::convertTo<u32>(&dt[blockOfs0 + 0xAC]);
     switch (gameCode)
     {
-        case 1: return Game::FRLG; // fixed value
-        case 0: return Game::RS; // no battle tower record data
+        case 1:
+            return Game::FRLG; // fixed value
+        case 0:
+            return Game::RS; // no battle tower record data
         default:
             // Ruby doesn't set data as far down as Emerald.
             // 00 FF 00 00 00 00 00 00 00 FF 00 00 00 00 00 00
@@ -106,7 +108,7 @@ Sav3::Sav3(std::shared_ptr<u8[]> dt) : Sav(dt, 0x20000)
     // Japanese games are limited to 5 character OT names; any unused characters are 0xFF.
     // 5 for JP, 7 for INT. There's always 1 terminator, thus we can check 0x6-0x7 being 0xFFFF = INT
     // OT name is stored at the top of the first block.
-    japanese = Endian::convertTo<s16>(&data[blockOfs[0]+0x6]) == 0;
+    japanese = Endian::convertTo<s16>(&data[blockOfs[0] + 0x6]) == 0;
 
     PokeDex = blockOfs[0] + 0x18;
 
@@ -121,7 +123,7 @@ void Sav3::initialize(void)
     // Copy chunk to the allocated location
     for (int i = 5; i < BLOCK_COUNT; i++)
     {
-        unsigned int blockIndex = std::find(blockOrder.begin(), blockOrder.end(), i)-blockOrder.begin();
+        unsigned int blockIndex = std::find(blockOrder.begin(), blockOrder.end(), i) - blockOrder.begin();
         if (blockIndex == blockOrder.size()) // block empty
             continue;
         memcpy(Box.get() + ((i - 5) * 0xF80), data.get() + (blockIndex * SIZE_BLOCK) + ABO(), chunkLength[i]);
@@ -131,8 +133,10 @@ void Sav3::initialize(void)
 
     // Sanity Check SeenFlagOffsets -- early saves may not have block 4 initialized yet
     std::vector<int> seenFlagOffsetsTemp;
-    for(auto seenFlagOffset : seenFlagOffsets) {
-        if(seenFlagOffset >= 0) seenFlagOffsetsTemp.push_back(seenFlagOffset);
+    for (auto seenFlagOffset : seenFlagOffsets)
+    {
+        if (seenFlagOffset >= 0)
+            seenFlagOffsetsTemp.push_back(seenFlagOffset);
     }
     seenFlagOffsets = seenFlagOffsetsTemp;
 }
@@ -142,7 +146,7 @@ void Sav3::resign(void)
     // Copy Box data back
     for (int i = 5; i < BLOCK_COUNT; i++)
     {
-        unsigned int blockIndex = std::find(blockOrder.begin(), blockOrder.end(), i)-blockOrder.begin();
+        unsigned int blockIndex = std::find(blockOrder.begin(), blockOrder.end(), i) - blockOrder.begin();
         if (blockIndex == blockOrder.size()) // block empty
             continue;
         memcpy(data.get() + (blockIndex * SIZE_BLOCK) + ABO(), Box.get() + ((i - 5) * 0xF80), chunkLength[i]);
@@ -152,7 +156,7 @@ void Sav3::resign(void)
 }
 
 // TODO: Maybe move this elsewhere?
-const u16 Sav3::CRC32(u8 *dt, int start, int length)
+const u16 Sav3::CRC32(u8* dt, int start, int length)
 {
     u32 val = 0;
     for (int i = start; i < start + length; i += 4)
@@ -164,7 +168,7 @@ void Sav3::setChecksums(void)
 {
     for (int i = 0; i < BLOCK_COUNT; i++)
     {
-        int ofs = ABO() + (i * SIZE_BLOCK);
+        int ofs   = ABO() + (i * SIZE_BLOCK);
         int index = blockOrder[i];
         if (index == -1)
             continue;
@@ -233,7 +237,6 @@ void Sav3::gender(u8 v)
     data[blockOfs[0] + 8] = v;
 }
 
-
 u8 Sav3::subRegion(void) const
 {
     return 0;
@@ -275,14 +278,15 @@ std::string Sav3::otName(void) const
 {
     return StringUtils::getString3(data.get(), blockOfs[0], japanese ? 5 : 7, japanese);
 }
-void Sav3::otName(const std::string &v)
+void Sav3::otName(const std::string& v)
 {
     StringUtils::setString3(data.get(), v, blockOfs[0], japanese ? 5 : 7, japanese, japanese ? 5 : 7, 0xFF);
 }
 
 u32 Sav3::money(void) const
 {
-    switch (game) {
+    switch (game)
+    {
         case Game::RS:
         case Game::E:
             return Endian::convertTo<u32>(&data[blockOfs[1] + 0x490]) ^ securityKey();
@@ -294,7 +298,8 @@ u32 Sav3::money(void) const
 }
 void Sav3::money(u32 v)
 {
-    switch (game) {
+    switch (game)
+    {
         case Game::RS:
         case Game::E:
             Endian::convertFrom<u32>(&data[blockOfs[1] + 0x0490], v ^ securityKey());
@@ -311,7 +316,8 @@ u32 Sav3::BP(void) const
 {
     return Endian::convertTo<u16>(&data[blockOfs[0] + 0xEB8]);
 }
-void Sav3::BP(u32 v) {
+void Sav3::BP(u32 v)
+{
     if (v > 9999)
     {
         v = 9999;
@@ -491,7 +497,7 @@ bool Sav3::canSetDex(int species)
         return false;
     if (species > maxSpecies())
         return false;
-    if (std::find_if(blockOfs.begin(), blockOfs.end(), [](const int& val){ return val < 0; }) != blockOfs.end())
+    if (std::find_if(blockOfs.begin(), blockOfs.end(), [](const int& val) { return val < 0; }) != blockOfs.end())
         return false;
     return true;
 }
@@ -537,24 +543,24 @@ void Sav3::dex(std::shared_ptr<PKX> pk)
 
 bool Sav3::getCaught(int species) const
 {
-    int bit = species - 1;
-    int ofs = bit >> 3;
+    int bit          = species - 1;
+    int ofs          = bit >> 3;
     int caughtOffset = PokeDex + 0x10;
     return FlagUtil::getFlag(data.get(), caughtOffset + ofs, bit & 7);
 }
 
 void Sav3::setCaught(int species, bool caught)
 {
-    int bit = species - 1;
-    int ofs = bit >> 3;
+    int bit          = species - 1;
+    int ofs          = bit >> 3;
     int caughtOffset = PokeDex + 0x10;
     FlagUtil::setFlag(data.get(), caughtOffset + ofs, bit & 7, caught);
 }
 
 bool Sav3::getSeen(int species) const
 {
-    int bit = species - 1;
-    int ofs = bit >> 3;
+    int bit        = species - 1;
+    int ofs        = bit >> 3;
     int seenOffset = PokeDex + 0x44;
     return FlagUtil::getFlag(data.get(), seenOffset + ofs, bit & 7);
 }
@@ -605,9 +611,7 @@ std::vector<Sav::giftData> Sav3::currentGifts(void) const
 }
 
 // Unused
-void Sav3::mysteryGift(WCX& wc, int& pos)
-{
-}
+void Sav3::mysteryGift(WCX& wc, int& pos) {}
 
 // Unused
 std::unique_ptr<WCX> Sav3::mysteryGift(int pos) const
@@ -631,10 +635,10 @@ void Sav3::cryptBoxData(bool crypted)
 }
 
 std::string Sav3::boxName(u8 box) const
-{   
+{
     return StringUtils::getString3(Box.get(), boxOffset(maxBoxes(), 0) + (box * 9), 9, japanese);
 }
-void Sav3::boxName(u8 box, const std::string &v)
+void Sav3::boxName(u8 box, const std::string& v)
 {
     return StringUtils::setString3(Box.get(), v, boxOffset(maxBoxes(), 0) + (box * 9), 8, japanese, 9);
 }
@@ -710,9 +714,9 @@ const std::set<int>& Sav3::availableBalls(void) const
 void Sav3::item(const Item& item, Pouch pouch, u16 slot)
 {
     Item3 inject = (Item3)item;
-    if(pouch != Pouch::PCItem)
+    if (pouch != Pouch::PCItem)
         inject.count(inject.count() ^ (u16)securityKey());
-    auto write   = inject.bytes();
+    auto write = inject.bytes();
     switch (pouch)
     {
         case NormalItem:
@@ -761,14 +765,9 @@ std::unique_ptr<Item> Sav3::item(Pouch pouch, u16 slot) const
 std::vector<std::pair<Sav::Pouch, int>> Sav3::pouches(void) const
 {
     // TODO: Is this the right thing for the int?
-    return {
-        {NormalItem, (OFS_PouchKeyItem - OFS_PouchHeldItem)/4},
-        {KeyItem, (OFS_PouchBalls - OFS_PouchKeyItem)/4},
-        {Ball, (OFS_PouchTMHM - OFS_PouchBalls)/4},
-        {TM, (OFS_PouchBerry - OFS_PouchTMHM)/4},
-        {Berry, game == Game::FRLG ? 43 : 46},
-        {PCItem, (OFS_PouchHeldItem - OFS_PCItem)/4}
-    };
+    return {{NormalItem, (OFS_PouchKeyItem - OFS_PouchHeldItem) / 4}, {KeyItem, (OFS_PouchBalls - OFS_PouchKeyItem) / 4},
+        {Ball, (OFS_PouchTMHM - OFS_PouchBalls) / 4}, {TM, (OFS_PouchBerry - OFS_PouchTMHM) / 4}, {Berry, game == Game::FRLG ? 43 : 46},
+        {PCItem, (OFS_PouchHeldItem - OFS_PCItem) / 4}};
 }
 
 std::string Sav3::pouchName(Language lang, Pouch pouch) const

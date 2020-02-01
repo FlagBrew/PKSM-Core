@@ -27,8 +27,8 @@
 #ifndef SAV3_HPP
 #define SAV3_HPP
 
-#include "sav/Sav.hpp"
 #include "personal/personal.hpp"
+#include "sav/Sav.hpp"
 #include <array>
 
 class Sav3 : public Sav
@@ -48,12 +48,12 @@ protected:
 
     void initialize();
 
-    const u16 CRC32(u8 *data, int start, int length);
+    const u16 CRC32(u8* data, int start, int length);
     void setChecksums(void);
 
-    static constexpr int SIZE_BLOCK = 0x1000;
-    static constexpr int BLOCK_COUNT = 14;
-    static constexpr int SIZE_RESERVED = 0x10000; // unpacked box data will start after the save data
+    static constexpr int SIZE_BLOCK      = 0x1000;
+    static constexpr int BLOCK_COUNT     = 14;
+    static constexpr int SIZE_RESERVED   = 0x10000; // unpacked box data will start after the save data
     static constexpr int SIZE_BLOCK_USED = 0xF80;
 
     std::array<int, BLOCK_COUNT> blockOrder, blockOfs;
@@ -61,10 +61,10 @@ protected:
 
     const void loadBlocks();
     static std::array<int, BLOCK_COUNT> getBlockOrder(std::shared_ptr<u8[]> dt, int ofs);
-    const static int getActiveSaveIndex(std::shared_ptr<u8[]> dt, std::array<int, BLOCK_COUNT> &blockOrder1, std::array<int, BLOCK_COUNT> &blockOrder2);
+    const static int getActiveSaveIndex(
+        std::shared_ptr<u8[]> dt, std::array<int, BLOCK_COUNT>& blockOrder1, std::array<int, BLOCK_COUNT>& blockOrder2);
 
-    static constexpr u16 chunkLength[14] =
-    {
+    static constexpr u16 chunkLength[14] = {
         0xf2c, // 0 | Small Block (Trainer Info)
         0xf80, // 1 | Large Block Part 1
         0xf80, // 2 | Large Block Part 2
@@ -82,7 +82,7 @@ protected:
     };
 
     static constexpr unsigned int SIZE_STORED = 80;
-    static constexpr unsigned int SIZE_PARTY = 100;
+    static constexpr unsigned int SIZE_PARTY  = 100;
 
     int ABO() { return activeSAV * SIZE_BLOCK * 0xE; };
 

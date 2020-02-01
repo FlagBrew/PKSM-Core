@@ -27,8 +27,8 @@
 #ifndef SAV5_HPP
 #define SAV5_HPP
 
-#include "sav/Sav.hpp"
 #include "personal/personal.hpp"
+#include "sav/Sav.hpp"
 
 class Sav5 : public Sav
 {

@@ -649,7 +649,7 @@ void StringUtils::setString3(u8* data, const std::string& v, int ofs, int len, b
 
     data[outPos >= (size_t)len ? len - 1 : outPos] = 0xFF;
 
-    while(outPos < (size_t)padTo)
+    while (outPos < (size_t)padTo)
     {
         data[ofs + outPos] = 0xFF;
         outPos++;

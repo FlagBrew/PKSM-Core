@@ -37,5 +37,4 @@ public:
     std::map<Pouch, std::vector<int>> validItems(void) const override;
 };
 
-
 #endif

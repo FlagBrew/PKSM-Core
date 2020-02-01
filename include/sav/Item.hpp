@@ -27,11 +27,10 @@
 #ifndef ITEM_HPP
 #define ITEM_HPP
 
-#include "utils/endian.hpp"
+#include "utils/ValueConverter.hpp"
 #include "utils/coretypes.h"
 #include "utils/endian.hpp"
 #include "utils/generation.hpp"
-#include "utils/ValueConverter.hpp"
 
 class Item3;
 class Item4;
@@ -72,7 +71,7 @@ public:
         if (data)
         {
             std::copy(data, data + 4, itemData.data());
-            Endian::convertFrom<u16>(itemData.data()+2, Endian::convertTo<u16>(itemData.data()+2) ^ securityKey);
+            Endian::convertFrom<u16>(itemData.data() + 2, Endian::convertTo<u16>(itemData.data() + 2) ^ securityKey);
         }
         else
         {
