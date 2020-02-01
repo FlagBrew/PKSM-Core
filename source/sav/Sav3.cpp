@@ -285,7 +285,7 @@ u32 Sav3::money(void) const
     switch (game) {
         case Game::RS:
         case Game::E:
-            return Endian::convertTo<u32>(&data[blockOfs[1] + 0x490]);// ^ securityKey();
+            return Endian::convertTo<u32>(&data[blockOfs[1] + 0x490]) ^ securityKey();
         case Game::FRLG:
             return Endian::convertTo<u32>(&data[blockOfs[1] + 0x290]) ^ securityKey();
         default:
@@ -317,7 +317,7 @@ void Sav3::BP(u32 v) {
         v = 9999;
     }
 
-    Endian::convertFrom<u16>(&data[blockOfs[0] = 0xEB8], v);
+    Endian::convertFrom<u16>(&data[blockOfs[0] + 0xEB8], v);
 }
 
 // TODO:? BPEarned
