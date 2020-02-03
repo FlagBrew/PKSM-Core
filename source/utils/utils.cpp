@@ -584,6 +584,22 @@ std::string& StringUtils::toLower(std::string& in)
     return in;
 }
 
+// Converts a single latin character from half-width to full-width
+char16_t tofullwidth(char16_t c)
+{
+    if (c == ' ')
+        c = u'　';
+    else if (c >= '!' && c <= '~')
+        c += 0xFEE0;
+    return c;
+}
+
+std::u16string& StringUtils::toFullWidth(std::u16string& in)
+{
+    std::transform(in.begin(), in.end(), in.begin(), tofullwidth);
+    return in;
+}
+
 std::string StringUtils::transString45(const std::string& str)
 {
     return UTF16toUTF8(transString45(UTF8toUTF16(str)));
@@ -632,6 +648,8 @@ void StringUtils::setString3(u8* data, const std::string& v, int ofs, int len, b
 {
     auto& characters   = jp ? G3_JP : G3_EN;
     std::u16string str = StringUtils::UTF8toUTF16(v);
+    if (jp)
+        str = StringUtils::toFullWidth(str);
 
     size_t outPos;
     for (outPos = 0; outPos < std::min((size_t)len, str.size()); outPos++)
@@ -647,7 +665,7 @@ void StringUtils::setString3(u8* data, const std::string& v, int ofs, int len, b
         }
     }
 
-    data[outPos >= (size_t)len ? len - 1 : outPos] = 0xFF;
+    data[ofs + (outPos >= (size_t)len ? len - 1 : outPos)] = 0xFF;
 
     while (outPos < (size_t)padTo)
     {

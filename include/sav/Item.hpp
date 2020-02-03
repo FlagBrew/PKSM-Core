@@ -86,7 +86,8 @@ public:
     void id(u16 v) override { Endian::convertFrom<u16>(itemData.data(), ItemConverter::nationalToG3(v)); }
     u16 count(void) const override { return Endian::convertTo<u16>(itemData.data() + 2); }
     void count(u16 v) override { Endian::convertFrom<u16>(itemData.data() + 2, v); }
-    std::vector<u8> bytes(void) const override {
+    std::vector<u8> bytes(void) const override
+    {
         std::vector<u8> data{itemData.begin(), itemData.end()};
         Endian::convertFrom<u16>(data.data() + 2, Endian::convertTo<u16>(data.data() + 2) ^ key);
         return data;
