@@ -339,15 +339,18 @@ void Sav4::cryptBoxData(bool crypted)
 
 void Sav4::mysteryGift(WCX& wc, int& pos)
 {
-    PGT* pgt                            = (PGT*)&wc;
-    data[WondercardFlags + (2047 >> 3)] = 0x80;
-    std::copy(pgt->rawData(), pgt->rawData() + PGT::length, &data[WondercardData + pos * PGT::length]);
-    pos++;
-    if (game == Game::DP)
+    if (wc.generation() == Generation::FOUR)
     {
-        static constexpr u32 dpSlotActive = 0xEDB88320;
-        const int ofs                     = WondercardFlags + 0x100;
-        Endian::convertFrom<u32>(&data[ofs + 4 * pos], dpSlotActive);
+        PGT* pgt                            = (PGT*)&wc;
+        data[WondercardFlags + (2047 >> 3)] = 0x80;
+        std::copy(pgt->rawData(), pgt->rawData() + PGT::length, &data[WondercardData + pos * PGT::length]);
+        pos++;
+        if (game == Game::DP)
+        {
+            static constexpr u32 dpSlotActive = 0xEDB88320;
+            const int ofs                     = WondercardFlags + 0x100;
+            Endian::convertFrom<u32>(&data[ofs + 4 * pos], dpSlotActive);
+        }
     }
 }
 

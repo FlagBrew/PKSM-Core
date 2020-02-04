@@ -625,353 +625,356 @@ void SavLGPE::cryptBoxData(bool crypted)
 
 void SavLGPE::mysteryGift(WCX& wc, int& pos)
 {
-    WB7* wb7 = (WB7*)&wc;
-    if (wb7->pokemon())
+    if (wc.generation() == Generation::LGPE)
     {
-        if (boxedPkm() == maxSlot())
+        WB7* wb7 = (WB7*)&wc;
+        if (wb7->pokemon())
         {
-            // Gui::warn(i18n::localize("LGPE_TOO_MANY_PKM"), i18n::localize("BAD_INJECT"));
-            return;
-        }
-        std::shared_ptr<PB7> pkm = std::make_shared<PB7>();
-        pkm->species(wb7->species());
-        pkm->alternativeForm(wb7->alternativeForm());
-        if (wb7->level() > 0)
-        {
-            pkm->level(wb7->level());
-            pkm->partyLevel(wb7->level());
-        }
-        else
-        {
-            pkm->level(randomNumbers() % 100 + 1);
-            pkm->partyLevel(pkm->level());
-        }
-        if (wb7->metLevel() > 0)
-        {
-            pkm->metLevel(wb7->metLevel());
-        }
-        else
-        {
-            pkm->metLevel(pkm->level());
-        }
-        pkm->TID(wb7->TID());
-        pkm->SID(wb7->SID());
-        for (int i = 0; i < 4; i++)
-        {
-            pkm->move(i, wb7->move(i));
-            pkm->relearnMove(i, wb7->move(i));
-        }
-        if (wb7->nature() == 255)
-        {
-            pkm->nature(randomNumbers() % 25);
-        }
-        else
-        {
-            pkm->nature(wb7->nature());
-        }
-        if (wb7->gender() == 3)
-        {
-            pkm->gender(randomNumbers() % 3);
-        }
-        else
-        {
-            pkm->gender(wb7->gender());
-        }
-        pkm->heldItem(wb7->heldItem());
-        pkm->encryptionConstant(wb7->encryptionConstant());
-        if (wb7->version() == 0)
-        {
-            pkm->version(wb7->version());
-        }
-        else
-        {
-            pkm->version(version());
-        }
-        pkm->language(language());
-        pkm->ball(wb7->ball());
-        pkm->country(country());
-        pkm->region(subRegion());
-        pkm->consoleRegion(consoleRegion());
-        pkm->metLocation(wb7->metLocation());
-        pkm->eggLocation(wb7->eggLocation());
-        for (int i = 0; i < 6; i++)
-        {
-            pkm->awakened(Stat(i), wb7->awakened(Stat(i)));
-            pkm->ev(Stat(i), wb7->ev(Stat(i)));
-        }
-        if (wb7->nickname((Language)language()).length() == 0)
-        {
-            pkm->nickname(i18n::species(language(), pkm->species()));
-        }
-        else
-        {
-            pkm->nickname(wb7->nickname((Language)language()));
-            pkm->nicknamed(pkm->nickname() != i18n::species(language(), pkm->species()));
-        }
-        if (wb7->otName((Language)language()).length() == 0)
-        {
-            pkm->otName(otName());
-            pkm->otGender(gender());
-            pkm->currentHandler(0);
-        }
-        else
-        {
-            pkm->otName(wb7->otName((Language)language()));
-            pkm->htName(otName());
-            pkm->otGender(wb7->otGender());
-            pkm->htGender(gender());
-            pkm->otFriendship(PersonalLGPE::baseFriendship(pkm->formSpecies()));
-            pkm->currentHandler(1);
-        }
-
-        int perfectIVs = 0;
-        for (int i = 0; i < 6; i++)
-        {
-            pkm->iv(Stat(i), randomNumbers() % 30 + 1); // Initialize IVs so that none are perfect (though they can be close)
-            if (wb7->iv(Stat(i)) - 0xFC < 3)
+            if (boxedPkm() == maxSlot())
             {
-                perfectIVs = wb7->iv(Stat(i)) - 0xFB; // How many perfects should there be?
-                break;
+                // Gui::warn(i18n::localize("LGPE_TOO_MANY_PKM"), i18n::localize("BAD_INJECT"));
+                return;
             }
-        }
-        if (perfectIVs > 0)
-        {
-            for (int i = 0; i < perfectIVs; i++)
+            std::shared_ptr<PB7> pkm = std::make_shared<PB7>();
+            pkm->species(wb7->species());
+            pkm->alternativeForm(wb7->alternativeForm());
+            if (wb7->level() > 0)
             {
-                Stat chosenIV;
-                do
-                {
-                    chosenIV = Stat(randomNumbers() % 6);
-                } while (pkm->iv(chosenIV) == 31);
-                pkm->iv(chosenIV, 31);
+                pkm->level(wb7->level());
+                pkm->partyLevel(wb7->level());
             }
+            else
+            {
+                pkm->level(randomNumbers() % 100 + 1);
+                pkm->partyLevel(pkm->level());
+            }
+            if (wb7->metLevel() > 0)
+            {
+                pkm->metLevel(wb7->metLevel());
+            }
+            else
+            {
+                pkm->metLevel(pkm->level());
+            }
+            pkm->TID(wb7->TID());
+            pkm->SID(wb7->SID());
+            for (int i = 0; i < 4; i++)
+            {
+                pkm->move(i, wb7->move(i));
+                pkm->relearnMove(i, wb7->move(i));
+            }
+            if (wb7->nature() == 255)
+            {
+                pkm->nature(randomNumbers() % 25);
+            }
+            else
+            {
+                pkm->nature(wb7->nature());
+            }
+            if (wb7->gender() == 3)
+            {
+                pkm->gender(randomNumbers() % 3);
+            }
+            else
+            {
+                pkm->gender(wb7->gender());
+            }
+            pkm->heldItem(wb7->heldItem());
+            pkm->encryptionConstant(wb7->encryptionConstant());
+            if (wb7->version() == 0)
+            {
+                pkm->version(wb7->version());
+            }
+            else
+            {
+                pkm->version(version());
+            }
+            pkm->language(language());
+            pkm->ball(wb7->ball());
+            pkm->country(country());
+            pkm->region(subRegion());
+            pkm->consoleRegion(consoleRegion());
+            pkm->metLocation(wb7->metLocation());
+            pkm->eggLocation(wb7->eggLocation());
             for (int i = 0; i < 6; i++)
             {
-                if (pkm->iv(Stat(i)) != 31)
+                pkm->awakened(Stat(i), wb7->awakened(Stat(i)));
+                pkm->ev(Stat(i), wb7->ev(Stat(i)));
+            }
+            if (wb7->nickname((Language)language()).length() == 0)
+            {
+                pkm->nickname(i18n::species(language(), pkm->species()));
+            }
+            else
+            {
+                pkm->nickname(wb7->nickname((Language)language()));
+                pkm->nicknamed(pkm->nickname() != i18n::species(language(), pkm->species()));
+            }
+            if (wb7->otName((Language)language()).length() == 0)
+            {
+                pkm->otName(otName());
+                pkm->otGender(gender());
+                pkm->currentHandler(0);
+            }
+            else
+            {
+                pkm->otName(wb7->otName((Language)language()));
+                pkm->htName(otName());
+                pkm->otGender(wb7->otGender());
+                pkm->htGender(gender());
+                pkm->otFriendship(PersonalLGPE::baseFriendship(pkm->formSpecies()));
+                pkm->currentHandler(1);
+            }
+
+            int perfectIVs = 0;
+            for (int i = 0; i < 6; i++)
+            {
+                pkm->iv(Stat(i), randomNumbers() % 30 + 1); // Initialize IVs so that none are perfect (though they can be close)
+                if (wb7->iv(Stat(i)) - 0xFC < 3)
+                {
+                    perfectIVs = wb7->iv(Stat(i)) - 0xFB; // How many perfects should there be?
+                    break;
+                }
+            }
+            if (perfectIVs > 0)
+            {
+                for (int i = 0; i < perfectIVs; i++)
+                {
+                    Stat chosenIV;
+                    do
+                    {
+                        chosenIV = Stat(randomNumbers() % 6);
+                    } while (pkm->iv(chosenIV) == 31);
+                    pkm->iv(chosenIV, 31);
+                }
+                for (int i = 0; i < 6; i++)
+                {
+                    if (pkm->iv(Stat(i)) != 31)
+                    {
+                        pkm->iv(Stat(i), randomNumbers() % 32);
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < 6; i++)
                 {
                     pkm->iv(Stat(i), randomNumbers() % 32);
                 }
             }
-        }
-        else
-        {
+
+            if (wb7->otGender() == 3)
+            {
+                pkm->TID(TID());
+                pkm->SID(SID());
+            }
+
+            // Sets the ability to the one specific to the formSpecies and sets abilitynumber (Why? Don't quite understand that)
+            switch (wb7->abilityType())
+            {
+                case 0:
+                case 1:
+                case 2:
+                    pkm->ability(wb7->abilityType());
+                    break;
+                case 3:
+                case 4:
+                    pkm->ability(randomNumbers() % (wb7->abilityType() - 1));
+                    break;
+            }
+
+            switch (wb7->PIDType())
+            {
+                case 0: // Fixed value
+                    pkm->PID(wb7->PID());
+                    break;
+                case 1: // Random
+                    pkm->PID((u32)randomNumbers());
+                    break;
+                case 2: // Always shiny
+                    pkm->PID((u32)randomNumbers());
+                    pkm->shiny(true);
+                    break;
+                case 3: // Never shiny
+                    pkm->PID((u32)randomNumbers());
+                    pkm->shiny(false);
+                    break;
+            }
+
+            if (wb7->egg())
+            {
+                pkm->egg(true);
+                pkm->eggYear(wb7->year());
+                pkm->eggMonth(wb7->month());
+                pkm->eggDay(wb7->day());
+                pkm->nickname(i18n::species(language(), pkm->species()));
+                pkm->nicknamed(true);
+            }
+
+            pkm->metDay(wb7->day());
+            pkm->metMonth(wb7->month());
+            pkm->metYear(wb7->year());
+            pkm->currentFriendship(PersonalLGPE::baseFriendship(pkm->formSpecies()));
+
+            pkm->partyCP(pkm->CP());
+            pkm->partyCurrHP(pkm->stat(Stat::HP));
             for (int i = 0; i < 6; i++)
             {
-                pkm->iv(Stat(i), randomNumbers() % 32);
+                pkm->partyStat(Stat(i), pkm->stat(Stat(i)));
             }
+
+            pkm->height(randomNumbers() % 256);
+            pkm->weight(randomNumbers() % 256);
+            pkm->fatefulEncounter(true);
+
+            pkm->refreshChecksum();
+            SavLGPE::pkm(pkm, boxedPkm()); // qualify so there are no stupid errors
+            boxedPkm(this->boxedPkm() + 1);
         }
-
-        if (wb7->otGender() == 3)
+        else if (wb7->item())
         {
-            pkm->TID(TID());
-            pkm->SID(SID());
-        }
-
-        // Sets the ability to the one specific to the formSpecies and sets abilitynumber (Why? Don't quite understand that)
-        switch (wb7->abilityType())
-        {
-            case 0:
-            case 1:
-            case 2:
-                pkm->ability(wb7->abilityType());
-                break;
-            case 3:
-            case 4:
-                pkm->ability(randomNumbers() % (wb7->abilityType() - 1));
-                break;
-        }
-
-        switch (wb7->PIDType())
-        {
-            case 0: // Fixed value
-                pkm->PID(wb7->PID());
-                break;
-            case 1: // Random
-                pkm->PID((u32)randomNumbers());
-                break;
-            case 2: // Always shiny
-                pkm->PID((u32)randomNumbers());
-                pkm->shiny(true);
-                break;
-            case 3: // Never shiny
-                pkm->PID((u32)randomNumbers());
-                pkm->shiny(false);
-                break;
-        }
-
-        if (wb7->egg())
-        {
-            pkm->egg(true);
-            pkm->eggYear(wb7->year());
-            pkm->eggMonth(wb7->month());
-            pkm->eggDay(wb7->day());
-            pkm->nickname(i18n::species(language(), pkm->species()));
-            pkm->nicknamed(true);
-        }
-
-        pkm->metDay(wb7->day());
-        pkm->metMonth(wb7->month());
-        pkm->metYear(wb7->year());
-        pkm->currentFriendship(PersonalLGPE::baseFriendship(pkm->formSpecies()));
-
-        pkm->partyCP(pkm->CP());
-        pkm->partyCurrHP(pkm->stat(Stat::HP));
-        for (int i = 0; i < 6; i++)
-        {
-            pkm->partyStat(Stat(i), pkm->stat(Stat(i)));
-        }
-
-        pkm->height(randomNumbers() % 256);
-        pkm->weight(randomNumbers() % 256);
-        pkm->fatefulEncounter(true);
-
-        pkm->refreshChecksum();
-        SavLGPE::pkm(pkm, boxedPkm()); // qualify so there are no stupid errors
-        boxedPkm(this->boxedPkm() + 1);
-    }
-    else if (wb7->item())
-    {
-        static constexpr int tms[] = {328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349,
-            350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376,
-            377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387};
-        for (int itemNum = 0; itemNum < wb7->items(); itemNum++)
-        {
-            Pouch place                     = NormalItem;
-            int slot                        = -1;
-            static constexpr Pouch search[] = {NormalItem, TM, Medicine, Candy, ZCrystals, Ball, Battle};
-            static constexpr int limits[]   = {150, 108, 60, 200, 150, 50, 150};
-            for (int i = 0; i < 7; i++)
+            static constexpr int tms[] = {328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348,
+                349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375,
+                376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387};
+            for (int itemNum = 0; itemNum < wb7->items(); itemNum++)
             {
-                for (int j = 0; j < limits[i]; j++)
+                Pouch place                     = NormalItem;
+                int slot                        = -1;
+                static constexpr Pouch search[] = {NormalItem, TM, Medicine, Candy, ZCrystals, Ball, Battle};
+                static constexpr int limits[]   = {150, 108, 60, 200, 150, 50, 150};
+                for (int i = 0; i < 7; i++)
                 {
-                    auto find = item(search[i], j);
-                    if (!find)
+                    for (int j = 0; j < limits[i]; j++)
                     {
-                        break; // End of item list
-                    }
-                    if (find->id() == wb7->object(itemNum))
-                    {
-                        if (std::find(tms, tms + 60, find->id()) == tms + 60)
+                        auto find = item(search[i], j);
+                        if (!find)
                         {
-                            slot  = j;
-                            place = search[i];
+                            break; // End of item list
                         }
-                        else
-                            slot = -2;
+                        if (find->id() == wb7->object(itemNum))
+                        {
+                            if (std::find(tms, tms + 60, find->id()) == tms + 60)
+                            {
+                                slot  = j;
+                                place = search[i];
+                            }
+                            else
+                                slot = -2;
+                            break;
+                        }
+                    }
+                    if (slot != -1)
+                    {
                         break;
                     }
                 }
-                if (slot != -1)
-                {
-                    break;
-                }
-            }
 
-            if (slot == -2)
-            {
-                // Gui::warn(i18n::localize("LGPE_HAS_TM"));
-                return;
-            }
-            else if (slot != -1)
-            {
-                auto inject = item(place, slot);
-                inject->count(inject->count() + wb7->objectQuantity(itemNum));
-                item(*inject, place, slot);
-            }
-            else
-            {
-                static constexpr int medicines[] = {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 38, 39, 40, 41, 709, 903};
-                static constexpr int zCrystals[] = {51, 53, 81, 82, 83, 84, 85, 849};
-                static constexpr int balls[]     = {1, 2, 3, 4, 12, 164, 166, 168, 861, 862, 863, 864, 865, 866};
-                static constexpr int battle[]    = {
-                    55, 56, 57, 58, 59, 60, 61, 62, 656, 659, 660, 661, 662, 663, 671, 672, 675, 676, 678, 679, 760, 762, 770, 773};
-                Item7b inject;
-                inject.id(wb7->object(itemNum));
-                inject.count(wb7->objectQuantity(itemNum));
-                inject.newFlag(true);
-                if (inject.id() >= 960) // Start of candies
+                if (slot == -2)
                 {
-                    for (int i = 0; i < 200; i++)
-                    {
-                        if (!item(Candy, i)) // If slot is empty
-                        {
-                            item(inject, Candy, i);
-                            return;
-                        }
-                    }
+                    // Gui::warn(i18n::localize("LGPE_HAS_TM"));
+                    return;
                 }
-                else if (std::find(medicines, medicines + 22, inject.id()) != medicines + 22)
+                else if (slot != -1)
                 {
-                    for (int i = 0; i < 60; i++)
-                    {
-                        if (!item(Medicine, i))
-                        {
-                            item(inject, Medicine, i);
-                            return;
-                        }
-                    }
-                }
-                else if (std::find(tms, tms + 60, inject.id()) != tms + 60)
-                {
-                    for (int i = 0; i < 108; i++)
-                    {
-                        if (!item(TM, i))
-                        {
-                            item(inject, TM, i);
-                            return;
-                        }
-                    }
-                }
-                else if (std::find(zCrystals, zCrystals + 8, inject.id()) != zCrystals + 8)
-                {
-                    for (int i = 0; i < 150; i++)
-                    {
-                        if (!item(ZCrystals, i))
-                        {
-                            item(inject, TM, i);
-                            return;
-                        }
-                    }
-                }
-                else if (std::find(balls, balls + 14, inject.id()) != balls + 14)
-                {
-                    for (int i = 0; i < 50; i++)
-                    {
-                        if (!item(Ball, i))
-                        {
-                            item(inject, Ball, i);
-                            return;
-                        }
-                    }
-                }
-                else if (std::find(battle, battle + 24, inject.id()) != battle + 24)
-                {
-                    for (int i = 0; i < 150; i++)
-                    {
-                        if (!item(Battle, i))
-                        {
-                            item(inject, Battle, i);
-                            return;
-                        }
-                    }
+                    auto inject = item(place, slot);
+                    inject->count(inject->count() + wb7->objectQuantity(itemNum));
+                    item(*inject, place, slot);
                 }
                 else
                 {
-                    for (int i = 0; i < 150; i++)
+                    static constexpr int medicines[] = {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 38, 39, 40, 41, 709, 903};
+                    static constexpr int zCrystals[] = {51, 53, 81, 82, 83, 84, 85, 849};
+                    static constexpr int balls[]     = {1, 2, 3, 4, 12, 164, 166, 168, 861, 862, 863, 864, 865, 866};
+                    static constexpr int battle[]    = {
+                        55, 56, 57, 58, 59, 60, 61, 62, 656, 659, 660, 661, 662, 663, 671, 672, 675, 676, 678, 679, 760, 762, 770, 773};
+                    Item7b inject;
+                    inject.id(wb7->object(itemNum));
+                    inject.count(wb7->objectQuantity(itemNum));
+                    inject.newFlag(true);
+                    if (inject.id() >= 960) // Start of candies
                     {
-                        if (!item(NormalItem, i))
+                        for (int i = 0; i < 200; i++)
                         {
-                            item(inject, NormalItem, i);
-                            return;
+                            if (!item(Candy, i)) // If slot is empty
+                            {
+                                item(inject, Candy, i);
+                                return;
+                            }
+                        }
+                    }
+                    else if (std::find(medicines, medicines + 22, inject.id()) != medicines + 22)
+                    {
+                        for (int i = 0; i < 60; i++)
+                        {
+                            if (!item(Medicine, i))
+                            {
+                                item(inject, Medicine, i);
+                                return;
+                            }
+                        }
+                    }
+                    else if (std::find(tms, tms + 60, inject.id()) != tms + 60)
+                    {
+                        for (int i = 0; i < 108; i++)
+                        {
+                            if (!item(TM, i))
+                            {
+                                item(inject, TM, i);
+                                return;
+                            }
+                        }
+                    }
+                    else if (std::find(zCrystals, zCrystals + 8, inject.id()) != zCrystals + 8)
+                    {
+                        for (int i = 0; i < 150; i++)
+                        {
+                            if (!item(ZCrystals, i))
+                            {
+                                item(inject, TM, i);
+                                return;
+                            }
+                        }
+                    }
+                    else if (std::find(balls, balls + 14, inject.id()) != balls + 14)
+                    {
+                        for (int i = 0; i < 50; i++)
+                        {
+                            if (!item(Ball, i))
+                            {
+                                item(inject, Ball, i);
+                                return;
+                            }
+                        }
+                    }
+                    else if (std::find(battle, battle + 24, inject.id()) != battle + 24)
+                    {
+                        for (int i = 0; i < 150; i++)
+                        {
+                            if (!item(Battle, i))
+                            {
+                                item(inject, Battle, i);
+                                return;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < 150; i++)
+                        {
+                            if (!item(NormalItem, i))
+                            {
+                                item(inject, NormalItem, i);
+                                return;
+                            }
                         }
                     }
                 }
             }
         }
-    }
-    else
-    {
-        // Gui::warn("This is icky and currently unimplemented.", "Requires dumb stuff to happen");
+        else
+        {
+            // Gui::warn("This is icky and currently unimplemented.", "Requires dumb stuff to happen");
+        }
     }
 }
 

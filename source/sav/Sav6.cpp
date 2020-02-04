@@ -620,16 +620,19 @@ int Sav6::dexCaught(void) const
 
 void Sav6::mysteryGift(WCX& wc, int& pos)
 {
-    WC6* wc6 = (WC6*)&wc;
-    data[WondercardFlags + wc6->ID() / 8] |= 0x1 << (wc6->ID() % 8);
-    std::copy(wc6->rawData(), wc6->rawData() + WC6::length, &data[WondercardData + WC6::length * pos]);
-    if (game == Game::ORAS && wc6->ID() == 2048 && wc6->object() == 726)
+    if (wc.generation() == Generation::SIX)
     {
-        static constexpr u32 EON_MAGIC = 0x225D73C2;
-        Endian::convertFrom<u32>(&data[0x319B8], EON_MAGIC);
-        Endian::convertFrom<u32>(&data[0x319DE], EON_MAGIC);
+        WC6* wc6 = (WC6*)&wc;
+        data[WondercardFlags + wc6->ID() / 8] |= 0x1 << (wc6->ID() % 8);
+        std::copy(wc6->rawData(), wc6->rawData() + WC6::length, &data[WondercardData + WC6::length * pos]);
+        if (game == Game::ORAS && wc6->ID() == 2048 && wc6->object() == 726)
+        {
+            static constexpr u32 EON_MAGIC = 0x225D73C2;
+            Endian::convertFrom<u32>(&data[0x319B8], EON_MAGIC);
+            Endian::convertFrom<u32>(&data[0x319DE], EON_MAGIC);
+        }
+        pos = (pos + 1) % 24;
     }
-    pos = (pos + 1) % 24;
 }
 
 std::string Sav6::boxName(u8 box) const

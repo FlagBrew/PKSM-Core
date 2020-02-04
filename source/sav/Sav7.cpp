@@ -524,10 +524,13 @@ int Sav7::dexCaught(void) const
 
 void Sav7::mysteryGift(WCX& wc, int& pos)
 {
-    WC7* wc7 = (WC7*)&wc;
-    data[WondercardFlags + wc7->ID() / 8] |= 0x1 << (wc7->ID() % 8);
-    std::copy(wc7->rawData(), wc7->rawData() + WC7::length, &data[WondercardData + WC7::length * pos]);
-    pos = (pos + 1) % maxWondercards();
+    if (wc.generation() == Generation::SEVEN)
+    {
+        WC7* wc7 = (WC7*)&wc;
+        data[WondercardFlags + wc7->ID() / 8] |= 0x1 << (wc7->ID() % 8);
+        std::copy(wc7->rawData(), wc7->rawData() + WC7::length, &data[WondercardData + WC7::length * pos]);
+        pos = (pos + 1) % maxWondercards();
+    }
 }
 
 std::string Sav7::boxName(u8 box) const

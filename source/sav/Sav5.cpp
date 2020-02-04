@@ -419,11 +419,14 @@ int Sav5::dexCaught(void) const
 
 void Sav5::mysteryGift(WCX& wc, int& pos)
 {
-    PGF* pgf = (PGF*)&wc;
+    if (wc.generation() == Generation::FIVE)
+    {
+        PGF* pgf = (PGF*)&wc;
 
-    data[WondercardFlags + (pgf->ID() / 8)] |= 0x1 << (pgf->ID() & 7);
-    std::copy(pgf->rawData(), pgf->rawData() + PGF::length, &data[WondercardData + pos * PGF::length]);
-    pos = (pos + 1) % 12;
+        data[WondercardFlags + (pgf->ID() / 8)] |= 0x1 << (pgf->ID() & 7);
+        std::copy(pgf->rawData(), pgf->rawData() + PGF::length, &data[WondercardData + pos * PGF::length]);
+        pos = (pos + 1) % 12;
+    }
 }
 
 std::string Sav5::boxName(u8 box) const
