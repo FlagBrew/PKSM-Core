@@ -190,6 +190,24 @@ public:
     std::string pouchName(Language lang, Pouch pouch) const override;
 
     u8 formCount(u16 species) const override { return 0; } // TODO: Do this somehow?
+
+    u16 rtcInitialDay(void) const;
+    void rtcInitialDay(u16 v);
+    u8 rtcInitialHour(void) const;
+    void rtcInitialHour(u8 v);
+    u8 rtcInitialMinute(void) const;
+    void rtcInitialMinute(u8 v);
+    u8 rtcInitialSecond(void) const;
+    void rtcInitialSecond(u8 v);
+
+    u16 rtcElapsedDay(void) const;
+    void rtcElapsedDay(u16 v);
+    u8 rtcElapsedHour(void) const;
+    void rtcElapsedHour(u8 v);
+    u8 rtcElapsedMinute(void) const;
+    void rtcElapsedMinute(u8 v);
+    u8 rtcElapsedSecond(void) const;
+    void rtcElapsedSecond(u8 v);
 };
 
 #endif

@@ -790,3 +790,107 @@ std::string Sav3::pouchName(Language lang, Pouch pouch) const
             return "";
     }
 }
+
+u16 Sav3::rtcInitialDay(void) const
+{
+    if (game == Game::FRLG)
+        return 0;
+    return Endian::convertTo<u16>(&data[blockOfs[0] + 0x98]);
+}
+void Sav3::rtcInitialDay(u16 v)
+{
+    if (game == Game::FRLG)
+        return;
+    Endian::convertFrom<u16>(&data[blockOfs[0] + 0x98], v);
+}
+
+u8 Sav3::rtcInitialHour(void) const
+{
+    if (game == Game::FRLG)
+        return 0;
+    return data[blockOfs[0] + 0x98 + 2];
+}
+void Sav3::rtcInitialHour(u8 v)
+{
+    if (game == Game::FRLG)
+        return;
+    data[blockOfs[0] + 0x98 + 2] = v;
+}
+
+u8 Sav3::rtcInitialMinute(void) const
+{
+    if (game == Game::FRLG)
+        return 0;
+    return data[blockOfs[0] + 0x98 + 3];
+}
+void Sav3::rtcInitialMinute(u8 v)
+{
+    if (game == Game::FRLG)
+        return;
+    data[blockOfs[0] + 0x98 + 3] = v;
+}
+
+u8 Sav3::rtcInitialSecond(void) const
+{
+    if (game == Game::FRLG)
+        return 0;
+    return data[blockOfs[0] + 0x98 + 4];
+}
+void Sav3::rtcInitialSecond(u8 v)
+{
+    if (game == Game::FRLG)
+        return;
+    data[blockOfs[0] + 0x98 + 4] = v;
+}
+
+u16 Sav3::rtcElapsedDay(void) const
+{
+    if (game == Game::FRLG)
+        return 0;
+    return Endian::convertTo<u16>(&data[blockOfs[0] + 0xA0]);
+}
+void Sav3::rtcElapsedDay(u16 v)
+{
+    if (game == Game::FRLG)
+        return;
+    Endian::convertFrom<u16>(&data[blockOfs[0] + 0xA0], v);
+}
+
+u8 Sav3::rtcElapsedHour(void) const
+{
+    if (game == Game::FRLG)
+        return 0;
+    return data[blockOfs[0] + 0xA0 + 2];
+}
+void Sav3::rtcElapsedHour(u8 v)
+{
+    if (game == Game::FRLG)
+        return;
+    data[blockOfs[0] + 0xA0 + 2] = v;
+}
+
+u8 Sav3::rtcElapsedMinute(void) const
+{
+    if (game == Game::FRLG)
+        return 0;
+    return data[blockOfs[0] + 0xA0 + 3];
+}
+void Sav3::rtcElapsedMinute(u8 v)
+{
+    if (game == Game::FRLG)
+        return;
+    data[blockOfs[0] + 0xA0 + 3] = v;
+}
+
+u8 Sav3::rtcElapsedSecond(void) const
+{
+    if (game == Game::FRLG)
+        return 0;
+    return data[blockOfs[0] + 0xA0 + 4];
+}
+void Sav3::rtcElapsedSecond(u8 v)
+{
+    if (game == Game::FRLG)
+        return;
+    data[blockOfs[0] + 0xA0 + 4] = v;
+}
