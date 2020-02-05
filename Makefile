@@ -4,7 +4,8 @@ SOURCES		:=	source \
 				source/pkx \
 				source/sav \
 				source/utils \
-				source/wcx
+				source/wcx \
+				swshcrypto
 
 INCLUDES	:=	include \
 				include/i18n \
@@ -12,7 +13,8 @@ INCLUDES	:=	include \
 				include/pkx \
 				include/sav \
 				include/utils \
-				include/wcx
+				include/wcx \
+				swshcrypto
 
 format:
 	clang-format -i -style=file $(foreach dir,$(SOURCES),$(wildcard $(dir)/*.c) $(wildcard $(dir)/*.cpp)) $(foreach dir,$(INCLUDES),$(wildcard $(dir)/*.h) $(wildcard $(dir)/*.hpp))

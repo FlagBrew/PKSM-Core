@@ -30,6 +30,7 @@
 #include "utils/endian.hpp"
 #include "utils/flagUtil.hpp"
 #include "utils/utils.hpp"
+#include "WCX/WCX.hpp"
 #include <algorithm>
 
 const void Sav3::loadBlocks()
@@ -616,7 +617,7 @@ void Sav3::mysteryGift(WCX& wc, int& pos) {}
 // Unused
 std::unique_ptr<WCX> Sav3::mysteryGift(int pos) const
 {
-    // TODO: return a null WCX
+    return nullptr;
 }
 
 void Sav3::cryptBoxData(bool crypted)
