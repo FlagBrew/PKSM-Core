@@ -30,7 +30,7 @@
 #include "utils/endian.hpp"
 #include "utils/flagUtil.hpp"
 #include "utils/utils.hpp"
-#include "WCX/WCX.hpp"
+#include "wcx/WCX.hpp"
 #include <algorithm>
 
 const void Sav3::loadBlocks()
@@ -480,11 +480,7 @@ void Sav3::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 
 void Sav3::trade(std::shared_ptr<PKX> pk)
 {
-    // TODO: This is copied from gen 4 and probably needs to change some
-    if (pk->egg() && (otName() != pk->otName() || TID() != pk->TID() || SID() != pk->SID() || gender() != pk->otGender()))
-    {
-        pk->metLocation(2002);
-    }
+    (void)pk;
 }
 
 std::shared_ptr<PKX> Sav3::emptyPkm() const
