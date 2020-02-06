@@ -479,7 +479,7 @@ void PK3::iv(Stat stat, u8 v)
     u32 buffer = Endian::convertTo<u32>(data + 0x48);
     buffer &= ~(0x1F << 5 * u8(stat));
     buffer |= v << (5 * u8(stat));
-    Endian::convertFrom<u32>(data + 0x38, buffer);
+    Endian::convertFrom<u32>(data + 0x48, buffer);
 }
 
 bool PK3::egg() const
