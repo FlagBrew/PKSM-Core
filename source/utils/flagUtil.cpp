@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM-Core
- *   Copyright (C) 2016-2020 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2020 Bernardo Giordano, Admiral Fish, piepie62, Pk11
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,48 +24,17 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "utils/ValueConverter.hpp"
-#include "utils/g3values.h"
-#include <algorithm>
+#include "utils/flagUtil.hpp"
 
-u16 SpeciesConverter::g3ToNational(u16 v)
+bool FlagUtil::getFlag(u8* data, int offset, int bitIndex)
 {
-    if (v < g3ToSpecies.size())
-    {
-        return g3ToSpecies[v];
-    }
-    return 0;
+    bitIndex &= 7; // ensure bit access is 0-7
+    return (data[offset] >> bitIndex & 1) != 0;
 }
 
-u16 SpeciesConverter::nationalToG3(u16 v)
+void FlagUtil::setFlag(u8* data, int offset, int bitIndex, bool v)
 {
-    if (v < speciesToG3.size())
-    {
-        return speciesToG3[v];
-    }
-    return 0;
-}
-
-u16 ItemConverter::g3ToNational(u16 v)
-{
-    if (v < g3ToItem.size())
-    {
-        return g3ToItem[v];
-    }
-    return 0;
-}
-
-u16 ItemConverter::nationalToG3(u16 v)
-{
-    if (v == 0)
-    {
-        return 0;
-    }
-
-    auto it = std::find(g3ToItem.begin(), g3ToItem.end(), v);
-    if (it == g3ToItem.end())
-    {
-        return 0;
-    }
-    return std::distance(g3ToItem.begin(), it);
+    bitIndex &= 7; // ensure bit access is 0-7
+    data[offset] &= (u8) ~(1 << bitIndex);
+    data[offset] |= (u8)((v ? 1 : 0) << bitIndex);
 }

@@ -543,6 +543,15 @@ void Sav7::boxName(u8 box, const std::string& name)
     StringUtils::setString(data.get(), StringUtils::transString67(name), PCLayout + 0x22 * box, 17);
 }
 
+u8 Sav7::boxWallpaper(u8 box) const
+{
+    return data[PCLayout + 1472 + box];
+}
+void Sav7::boxWallpaper(u8 box, u8 v)
+{
+    data[PCLayout + 1472 + box] = v;
+}
+
 u8 Sav7::partyCount(void) const
 {
     return data[Party + 6 * 260];

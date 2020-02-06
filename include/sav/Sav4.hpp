@@ -27,8 +27,8 @@
 #ifndef SAV4_HPP
 #define SAV4_HPP
 
-#include "Sav.hpp"
 #include "personal/personal.hpp"
+#include "sav/Sav.hpp"
 
 class Sav4 : public Sav
 {
@@ -118,6 +118,8 @@ public:
     void cryptBoxData(bool crypted) override;
     std::string boxName(u8 box) const override;
     void boxName(u8 box, const std::string& name) override;
+    u8 boxWallpaper(u8 box) const override;
+    void boxWallpaper(u8 box, const u8 v) override;
     u8 partyCount(void) const override;
     void partyCount(u8 count) override;
 

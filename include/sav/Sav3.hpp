@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM-Core
- *   Copyright (C) 2016-2020 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2020 Bernardo Giordano, Admiral Fish, piepie62, Pk11
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,30 +24,93 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef SAV5_HPP
-#define SAV5_HPP
+#ifndef SAV3_HPP
+#define SAV3_HPP
 
 #include "personal/personal.hpp"
 #include "sav/Sav.hpp"
+#include <array>
 
-class Sav5 : public Sav
+class Sav3 : public Sav
 {
 protected:
-    int PCLayout, Trainer1, Trainer2, BattleSubway, PokeDexLanguageFlags;
-    int maxSpecies(void) const override { return 649; }
-    int maxMove(void) const override { return 559; }
-    int maxItem(void) const override { return game == Game::BW ? 632 : 638; }
-    int maxAbility(void) const override { return 164; }
-    int maxBall(void) const override { return 0x19; }
+    bool japanese;
+    int maxSpecies(void) const override { return 386; } // Index 412
+    int maxMove(void) const override { return 354; }
+    int maxItem(void) const override { return 374; }
+    int maxAbility(void) const override { return 77; }
+    int maxBall(void) const override { return 0xC; }
+    int OFS_PCItem, OFS_PouchHeldItem, OFS_PouchKeyItem, OFS_PouchBalls, OFS_PouchTMHM, OFS_PouchBerry, eventFlag;
 
-private:
-    int dexFormIndex(int species, int formct) const;
+    mutable std::set<int> items, moves, species, abilities, balls;
+
+    std::shared_ptr<u8[]> Box; // TODO: Rename this?
+
+    void initialize();
+
+    const u16 CRC32(u8* data, int start, int length);
+
+    static constexpr int SIZE_BLOCK      = 0x1000;
+    static constexpr int BLOCK_COUNT     = 14;
+    static constexpr int SIZE_RESERVED   = 0x10000; // unpacked box data will start after the save data
+    static constexpr int SIZE_BLOCK_USED = 0xF80;
+
+    std::array<int, BLOCK_COUNT> blockOrder, blockOfs;
+    std::vector<int> seenFlagOffsets;
+
+    const void loadBlocks();
+    static std::array<int, BLOCK_COUNT> getBlockOrder(std::shared_ptr<u8[]> dt, int ofs);
+    const static int getActiveSaveIndex(
+        std::shared_ptr<u8[]> dt, std::array<int, BLOCK_COUNT>& blockOrder1, std::array<int, BLOCK_COUNT>& blockOrder2);
+
+    static constexpr u16 chunkLength[14] = {
+        0xf2c, // 0 | Small Block (Trainer Info)
+        0xf80, // 1 | Large Block Part 1
+        0xf80, // 2 | Large Block Part 2
+        0xf80, // 3 | Large Block Part 3
+        0xf08, // 4 | Large Block Part 4
+        0xf80, // 5 | PC Block 0
+        0xf80, // 6 | PC Block 1
+        0xf80, // 7 | PC Block 2
+        0xf80, // 8 | PC Block 3
+        0xf80, // 9 | PC Block 4
+        0xf80, // A | PC Block 5
+        0xf80, // B | PC Block 6
+        0xf80, // C | PC Block 7
+        0x7d0  // D | PC Block 8
+    };
+
+    static constexpr unsigned int SIZE_STORED = 80;
+    static constexpr unsigned int SIZE_PARTY  = 100;
+
+    int ABO() { return activeSAV * SIZE_BLOCK * 0xE; };
+
+    int activeSAV;
+
+    u32 securityKey() const;
+
+    bool getEventFlag(int flagNumber) const;
+    void setEventFlag(int flagNumber, bool value);
+
+    bool canSetDex(int species);
+
+    u32 dexPIDUnown(void);
+    void dexPIDUnown(u32 v);
+    u32 dexPIDSpinda(void);
+    void dexPIDSpinda(u32 v);
+
+    bool getCaught(int species) const;
+    void setCaught(int species, bool caught);
+    bool getSeen(int species) const;
+    void setSeen(int species, bool seen);
 
 public:
-    Sav5(std::shared_ptr<u8[]> data, u32 length) : Sav(data, length) {}
-    virtual ~Sav5() {}
-    virtual void resign(void) = 0;
-    void encrypt(void) override { resign(); }
+    static Game getVersion(std::shared_ptr<u8[]> dt);
+
+    Sav3(std::shared_ptr<u8[]> data);
+    virtual ~Sav3() {}
+    void resign(void);
+    void encrypt(void) override;
     void decrypt(void) override {}
 
     u16 TID(void) const override;
@@ -91,8 +154,8 @@ public:
     // NOTICE: this sets a pkx into the savefile, not a ekx
     // that's because PKSM works with decrypted boxes and
     // crypts them back during resigning
-    void pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade) override;
     void pkm(std::shared_ptr<PKX> pk, u8 slot) override;
+    void pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade) override;
 
     void trade(std::shared_ptr<PKX> pk) override;
     std::shared_ptr<PKX> emptyPkm() const override;
@@ -105,17 +168,16 @@ public:
     void mysteryGift(WCX& wc, int& pos) override;
     std::unique_ptr<WCX> mysteryGift(int pos) const override;
     void cryptBoxData(bool crypted) override;
-    void cryptMysteryGiftData(void);
     std::string boxName(u8 box) const override;
     void boxName(u8 box, const std::string& name) override;
     u8 boxWallpaper(u8 box) const override;
-    void boxWallpaper(u8 box, const u8 v) override;
+    void boxWallpaper(u8 box, u8 v) override;
     u8 partyCount(void) const override;
     void partyCount(u8 count) override;
 
-    int maxBoxes(void) const override { return 24; }
-    size_t maxWondercards(void) const override { return 12; }
-    Generation generation(void) const override { return Generation::FIVE; }
+    int maxBoxes(void) const override { return 14; }
+    size_t maxWondercards(void) const override { return 0; }
+    Generation generation(void) const override { return Generation::THREE; }
     const std::set<int>& availableItems(void) const override;
     const std::set<int>& availableMoves(void) const override;
     const std::set<int>& availableSpecies(void) const override;
@@ -127,7 +189,25 @@ public:
     std::vector<std::pair<Pouch, int>> pouches(void) const override;
     std::string pouchName(Language lang, Pouch pouch) const override;
 
-    u8 formCount(u16 species) const override { return PersonalBWB2W2::formCount(species); }
+    u8 formCount(u16 species) const override { return 0; } // TODO: Do this somehow?
+
+    u16 rtcInitialDay(void) const;
+    void rtcInitialDay(u16 v);
+    u8 rtcInitialHour(void) const;
+    void rtcInitialHour(u8 v);
+    u8 rtcInitialMinute(void) const;
+    void rtcInitialMinute(u8 v);
+    u8 rtcInitialSecond(void) const;
+    void rtcInitialSecond(u8 v);
+
+    u16 rtcElapsedDay(void) const;
+    void rtcElapsedDay(u16 v);
+    u8 rtcElapsedHour(void) const;
+    void rtcElapsedHour(u8 v);
+    u8 rtcElapsedMinute(void) const;
+    void rtcElapsedMinute(u8 v);
+    u8 rtcElapsedSecond(void) const;
+    void rtcElapsedSecond(u8 v);
 };
 
 #endif

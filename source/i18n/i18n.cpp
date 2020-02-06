@@ -146,6 +146,10 @@ const std::string& i18n::ability(Language lang, u16 val)
 {
     return stringsFor(lang)->ability(val);
 }
+const std::vector<std::string>& i18n::rawAbilities(Language lang)
+{
+    return stringsFor(lang)->rawAbilities();
+}
 #endif
 
 #ifndef _PKSMCORE_DISABLE_BALL_STRINGS
@@ -203,6 +207,10 @@ const std::string& i18n::species(Language lang, u16 val)
 {
     return stringsFor(lang)->species(val);
 }
+const std::vector<std::string>& i18n::rawSpecies(Language lang)
+{
+    return stringsFor(lang)->rawSpecies();
+}
 #endif
 
 #ifndef _PKSMCORE_DISABLE_GAME_STRINGS
@@ -213,6 +221,10 @@ const std::string& i18n::game(Language lang, u8 v)
 size_t i18n::numGameStrings(Language lang)
 {
     return stringsFor(lang)->numGameStrings();
+}
+const std::vector<std::string>& i18n::rawGames(Language lang)
+{
+    return stringsFor(lang)->rawGames();
 }
 #endif
 
@@ -225,6 +237,12 @@ const std::string& i18n::location(Language lang, u16 v, u8 originGame)
 {
     switch (originGame)
     {
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+            return location(lang, v, Generation::THREE);
         case 7:
         case 8:
         case 10:

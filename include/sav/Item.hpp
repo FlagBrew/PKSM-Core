@@ -27,10 +27,12 @@
 #ifndef ITEM_HPP
 #define ITEM_HPP
 
+#include "utils/ValueConverter.hpp"
 #include "utils/coretypes.h"
 #include "utils/endian.hpp"
 #include "utils/generation.hpp"
 
+class Item3;
 class Item4;
 class Item5;
 class Item6;
@@ -49,12 +51,48 @@ public:
     virtual std::vector<u8> bytes(void) const = 0;
     virtual void id(u16 id)                   = 0;
     virtual void count(u16 id)                = 0;
+    virtual operator Item3(void) const;
     virtual operator Item4(void) const;
     virtual operator Item5(void) const;
     virtual operator Item6(void) const;
     virtual operator Item7(void) const;
     virtual operator Item7b(void) const;
     virtual operator Item8(void) const;
+};
+
+class Item3 : public Item
+{
+private:
+    std::array<u8, 4> itemData;
+    u16 key;
+
+public:
+    Item3(u8* data = nullptr, u16 securityKey = 0)
+    {
+        if (data)
+        {
+            std::copy(data, data + 4, itemData.data());
+            Endian::convertFrom<u16>(itemData.data() + 2, Endian::convertTo<u16>(itemData.data() + 2) ^ securityKey);
+            key = securityKey;
+        }
+        else
+        {
+            itemData = {0, 0, 0, 0};
+        }
+    }
+    Generation generation(void) const override { return Generation::THREE; }
+    u16 maxCount(void) const override { return 0xFFFF; }
+    // TODO: Review and decide whether to use internal or national ID's (HMs and FRLG/E's added Key Items are missing from national)
+    u16 id(void) const override { return ItemConverter::g3ToNational(Endian::convertTo<u16>(itemData.data())); }
+    void id(u16 v) override { Endian::convertFrom<u16>(itemData.data(), ItemConverter::nationalToG3(v)); }
+    u16 count(void) const override { return Endian::convertTo<u16>(itemData.data() + 2); }
+    void count(u16 v) override { Endian::convertFrom<u16>(itemData.data() + 2, v); }
+    std::vector<u8> bytes(void) const override
+    {
+        std::vector<u8> data{itemData.begin(), itemData.end()};
+        Endian::convertFrom<u16>(data.data() + 2, Endian::convertTo<u16>(data.data() + 2) ^ key);
+        return data;
+    }
 };
 
 class Item4 : public Item

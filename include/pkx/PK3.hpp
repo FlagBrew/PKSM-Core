@@ -27,8 +27,8 @@
 #ifndef PK3_HPP
 #define PK3_HPP
 
-#include "PKX.hpp"
 #include "personal/personal.hpp"
+#include "pkx/PKX.hpp"
 
 class PK3 : public PKX
 {

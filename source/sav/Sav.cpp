@@ -29,10 +29,13 @@
 #include "sav/SavB2W2.hpp"
 #include "sav/SavBW.hpp"
 #include "sav/SavDP.hpp"
+#include "sav/SavE.hpp"
+#include "sav/SavFRLG.hpp"
 #include "sav/SavHGSS.hpp"
 #include "sav/SavLGPE.hpp"
 #include "sav/SavORAS.hpp"
 #include "sav/SavPT.hpp"
+#include "sav/SavRS.hpp"
 #include "sav/SavSUMO.hpp"
 #include "sav/SavSWSH.hpp"
 #include "sav/SavUSUM.hpp"
@@ -70,11 +73,28 @@ std::unique_ptr<Sav> Sav::getSave(std::shared_ptr<u8[]> dt, size_t length)
             return std::make_unique<SavXY>(dt);
         case 0x80000:
             return checkDSType(dt);
+        case 0x20000:
+            return checkGBAType(dt);
         case 0xB8800:
         case 0x100000:
             return std::make_unique<SavLGPE>(dt);
         case 0x17195E:
             return std::make_unique<SavSWSH>(dt);
+        default:
+            return std::unique_ptr<Sav>(nullptr);
+    }
+}
+
+std::unique_ptr<Sav> Sav::checkGBAType(std::shared_ptr<u8[]> dt)
+{
+    switch (Sav3::getVersion(dt))
+    {
+        case Game::RS:
+            return std::make_unique<SavRS>(dt);
+        case Game::E:
+            return std::make_unique<SavE>(dt);
+        case Game::FRLG:
+            return std::make_unique<SavFRLG>(dt);
         default:
             return std::unique_ptr<Sav>(nullptr);
     }
@@ -172,6 +192,8 @@ std::shared_ptr<PKX> Sav::transfer(std::shared_ptr<PKX> pk)
     {
         switch (generation())
         {
+            case Generation::THREE:
+                return pk->convertToG3(*this);
             case Generation::FOUR:
                 return pk->convertToG4(*this);
             case Generation::FIVE:
@@ -219,6 +241,7 @@ u32 Sav::displayTID() const
 {
     switch (generation())
     {
+        case Generation::THREE:
         case Generation::FOUR:
         case Generation::FIVE:
         case Generation::SIX:
@@ -237,6 +260,7 @@ u32 Sav::displaySID() const
 {
     switch (generation())
     {
+        case Generation::THREE:
         case Generation::FOUR:
         case Generation::FIVE:
         case Generation::SIX:

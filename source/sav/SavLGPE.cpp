@@ -415,6 +415,16 @@ void SavLGPE::boxName(u8 box, const std::string& name)
     (void)box, (void)name;
 }
 
+u8 SavLGPE::boxWallpaper(u8 box) const
+{
+    return 0;
+}
+
+void SavLGPE::boxWallpaper(u8 box, u8 v)
+{
+    (void)v;
+}
+
 int SavLGPE::dexFormCount(int species) const
 {
     for (int i = 0; i < 62; i += 2)

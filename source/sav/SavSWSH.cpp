@@ -454,6 +454,15 @@ void SavSWSH::boxName(u8 box, const std::string& name)
     StringUtils::setString(getBlock(BoxLayout)->decryptedData(), name, box * 0x22, 17);
 }
 
+u8 SavSWSH::boxWallpaper(u8 box) const
+{
+    return 0; // TODO: Make this actually get the wallpaper
+}
+void SavSWSH::boxWallpaper(u8 box, u8 v)
+{
+    (void)v; // TODO: Make this actually set the wallpaper
+}
+
 u32 SavSWSH::boxOffset(u8 box, u8 slot) const
 {
     return 0x158 * slot + 0x158 * 30 * box;

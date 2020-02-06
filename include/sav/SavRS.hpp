@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM-Core
- *   Copyright (C) 2016-2020 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2020 Bernardo Giordano, Admiral Fish, piepie62, Pk11
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,48 +24,17 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "utils/ValueConverter.hpp"
-#include "utils/g3values.h"
-#include <algorithm>
+#ifndef SAVRS_HPP
+#define SAVRS_HPP
 
-u16 SpeciesConverter::g3ToNational(u16 v)
+#include "sav/Sav3.hpp"
+
+class SavRS : public Sav3
 {
-    if (v < g3ToSpecies.size())
-    {
-        return g3ToSpecies[v];
-    }
-    return 0;
-}
+public:
+    SavRS(std::shared_ptr<u8[]> dt);
 
-u16 SpeciesConverter::nationalToG3(u16 v)
-{
-    if (v < speciesToG3.size())
-    {
-        return speciesToG3[v];
-    }
-    return 0;
-}
+    std::map<Pouch, std::vector<int>> validItems(void) const override;
+};
 
-u16 ItemConverter::g3ToNational(u16 v)
-{
-    if (v < g3ToItem.size())
-    {
-        return g3ToItem[v];
-    }
-    return 0;
-}
-
-u16 ItemConverter::nationalToG3(u16 v)
-{
-    if (v == 0)
-    {
-        return 0;
-    }
-
-    auto it = std::find(g3ToItem.begin(), g3ToItem.end(), v);
-    if (it == g3ToItem.end())
-    {
-        return 0;
-    }
-    return std::distance(g3ToItem.begin(), it);
-}
+#endif

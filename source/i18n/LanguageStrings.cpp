@@ -42,6 +42,7 @@
 
 namespace
 {
+#ifndef _PKSMCORE_DISABLE_FORM_STRINGS
     nlohmann::json& formJson()
     {
         static nlohmann::json forms;
@@ -61,7 +62,9 @@ namespace
         }
         return forms;
     }
+#endif
 
+#ifndef _PKSMCORE_DISABLE_GEO_STRINGS
     std::string subregionFileName(u8 region)
     {
         std::string ret = "/subregions/000.txt";
@@ -73,6 +76,7 @@ namespace
         }
         return ret;
     }
+#endif
     constexpr std::string_view toLower(std::string_view str)
     {
         char ret[str.size() + 1] = {'\0'};
@@ -142,6 +146,7 @@ LanguageStrings::LanguageStrings(Language lang)
 #endif
 
 #ifndef _PKSMCORE_DISABLE_LOCATION_STRINGS
+    load(lang, "/locations3.txt", locations3);
     load(lang, "/locations4.txt", locations4);
     load(lang, "/locations5.txt", locations5);
     load(lang, "/locations6.txt", locations6);
@@ -218,6 +223,10 @@ const std::string& LanguageStrings::ability(u16 v) const
 {
     static std::string badString = "INVALID_ABILITY";
     return v < abilities.size() ? abilities.at(v) : badString;
+}
+const std::vector<std::string>& LanguageStrings::rawAbilities() const
+{
+    return abilities;
 }
 #endif
 
@@ -308,6 +317,10 @@ const std::string& LanguageStrings::species(u16 v) const
     static std::string badString = "INVALID_SPECIES";
     return v < speciess.size() ? speciess.at(v) : badString;
 }
+const std::vector<std::string>& LanguageStrings::rawSpecies() const
+{
+    return speciess;
+}
 #endif
 
 #ifndef _PKSMCORE_DISABLE_GAME_STRINGS
@@ -324,6 +337,10 @@ size_t LanguageStrings::numGameStrings() const
 {
     return games.size();
 }
+const std::vector<std::string>& LanguageStrings::rawGames() const
+{
+    return games;
+}
 #endif
 
 #ifndef _PKSMCORE_DISABLE_LOCATION_STRINGS
@@ -332,6 +349,12 @@ const std::string& LanguageStrings::location(u16 v, Generation generation) const
     std::map<u16, std::string>::const_iterator i;
     switch (generation)
     {
+        case Generation::THREE:
+            if ((i = locations3.find(v)) != locations3.end())
+            {
+                return i->second;
+            }
+            break;
         case Generation::FOUR:
             if ((i = locations4.find(v)) != locations4.end())
             {
@@ -379,6 +402,8 @@ const std::map<u16, std::string>& LanguageStrings::locations(Generation g) const
     static std::map<u16, std::string> emptyMap;
     switch (g)
     {
+        case Generation::THREE:
+            return locations3;
         case Generation::FOUR:
             return locations4;
         case Generation::FIVE:

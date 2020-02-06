@@ -27,8 +27,8 @@
 #ifndef PK6_HPP
 #define PK6_HPP
 
-#include "PKX.hpp"
 #include "personal/personal.hpp"
+#include "pkx/PKX.hpp"
 
 class PK6 : public PKX
 {
@@ -41,7 +41,7 @@ public:
     PK6(u8* dt, bool party = false, bool directAccess = false);
     virtual ~PK6() {}
 
-    // std::shared_ptr<PKX> convertToG3(Sav& save) const override;
+    std::shared_ptr<PKX> convertToG3(Sav& save) const override;
     std::shared_ptr<PKX> convertToG4(Sav& save) const override;
     std::shared_ptr<PKX> convertToG5(Sav& save) const override;
     std::shared_ptr<PKX> convertToG7(Sav& save) const override;
