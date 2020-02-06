@@ -23,7 +23,7 @@ Defines:
 - _PKSMCORE_DISABLE_LOCATION_STRINGS: removes `i18n::location` and `i18n::locations` (`locations3.txt`, `locations4.txt`, `locations5.txt`, `locations6.txt`, `locations7.txt`, `locationsLGPE.txt`, `locations8.txt`)
 - _PKSMCORE_DISABLE_GEO_STRINGS: removes `i18n::subregion`, `i18n::country`, `i18n::rawCountries`, and `i18n::rawSubregions` (`countries.txt`, `subregions/*`)
 - _PKSMCORE_DISABLE_GUI_STRINGS: removes `i18n::localize` (`gui.json`)
-- _PKSMCORE_EXTRA_LANGUAGES: If defined, this must be a comma-separated list of language names. They will be added to the Language enum in order of appearance in the list with values starting at `u8(Language::CHT) + 1`, and will work properly with all i18n functions. If a given file 
+- _PKSMCORE_EXTRA_LANGUAGES: If defined, this must be a comma-separated list of language names. They will be added to the Language enum in order of appearance in the list with values starting at `u8(Language::CHT) + 1`, and will work properly with all i18n functions. If a given file for a language does not exist, it will use the English version. If there's no English version, it will likely fail gracefully, but I'd suggest staying away from that situation.
 
 Necessary include directories:
 - memecrypto
