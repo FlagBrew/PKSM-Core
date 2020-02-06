@@ -188,7 +188,7 @@ public:
     std::vector<std::pair<Pouch, int>> pouches(void) const override;
     std::string pouchName(Language lang, Pouch pouch) const override;
 
-    u8 formCount(u16 species) const override { return 0; } // TODO: Do this somehow?
+    u8 formCount(u16 species) const override { return PersonalRSFRLGE::formCount(species); }
 
     u16 rtcInitialDay(void) const;
     void rtcInitialDay(u16 v);

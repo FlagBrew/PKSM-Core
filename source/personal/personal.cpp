@@ -174,4 +174,17 @@ namespace PersonalRSFRLGE
     u8 baseFriendship(u16 species) { return personal_rsfrlge[species * 13 + 0x9]; }
     u8 expType(u16 species) { return personal_rsfrlge[species * 13 + 0xA]; }
     u8 ability(u16 species, u8 n) { return personal_rsfrlge[species * 13 + 0xB + n]; }
+    u8 formCount(u16 species)
+    {
+        switch (species)
+        {
+            default:
+                return 1;
+            case 201: // Unown
+                return 28;
+            case 386: // Deoxys
+            case 351: // Castform
+                return 4;
+        }
+    }
 }

@@ -153,6 +153,7 @@ namespace PersonalRSFRLGE
     u8 baseFriendship(u16 species);
     u8 expType(u16 species);
     u8 ability(u16 species, u8 n);
+    u8 formCount(u16 species);
 }
 
 #endif
