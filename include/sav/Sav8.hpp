@@ -38,6 +38,8 @@ protected:
 
     int Items, BoxLayout, Misc, TrainerCard, PlayTime, Status;
 
+    bool encrypted = false;
+
     int maxSpecies(void) const override { return 890; }
     int maxMove(void) const override { return 796; }
     int maxItem(void) const override { return 1578; }
@@ -50,8 +52,8 @@ public:
 
     std::shared_ptr<SCBlock> getBlock(u32 key) const;
 
-    void encrypt(void) override;
-    void decrypt(void) override;
+    void finishEditing(void) override;
+    void beginEditing(void) override;
 
     void trade(std::shared_ptr<PKX> pk) override;
     std::shared_ptr<PKX> emptyPkm() const override;

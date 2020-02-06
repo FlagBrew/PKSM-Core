@@ -48,7 +48,7 @@ protected:
 
     void initialize();
 
-    const u16 CRC32(u8* data, int start, int length);
+    u16 CRC32(u8* data, int start, int length);
 
     static constexpr int SIZE_BLOCK      = 0x1000;
     static constexpr int BLOCK_COUNT     = 14;
@@ -58,10 +58,9 @@ protected:
     std::array<int, BLOCK_COUNT> blockOrder, blockOfs;
     std::vector<int> seenFlagOffsets;
 
-    const void loadBlocks();
+    void loadBlocks();
     static std::array<int, BLOCK_COUNT> getBlockOrder(std::shared_ptr<u8[]> dt, int ofs);
-    const static int getActiveSaveIndex(
-        std::shared_ptr<u8[]> dt, std::array<int, BLOCK_COUNT>& blockOrder1, std::array<int, BLOCK_COUNT>& blockOrder2);
+    static int getActiveSaveIndex(std::shared_ptr<u8[]> dt, std::array<int, BLOCK_COUNT>& blockOrder1, std::array<int, BLOCK_COUNT>& blockOrder2);
 
     static constexpr u16 chunkLength[14] = {
         0xf2c, // 0 | Small Block (Trainer Info)
@@ -110,8 +109,8 @@ public:
     Sav3(std::shared_ptr<u8[]> data);
     virtual ~Sav3() {}
     void resign(void);
-    void encrypt(void) override;
-    void decrypt(void) override {}
+    void finishEditing(void) override;
+    void beginEditing(void) override {}
 
     u16 TID(void) const override;
     void TID(u16 v) override;

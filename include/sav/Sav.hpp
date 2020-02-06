@@ -132,10 +132,11 @@ public:
     Sav(std::shared_ptr<u8[]> data, u32 length) : data(data), length(length) {}
     Sav(const Sav& save) = delete;
     Sav& operator=(const Sav& save) = delete;
-    // Should be used before writing
-    virtual void encrypt(void) = 0;
-    // Should only be used after encrypt() was used
-    virtual void decrypt(void) = 0;
+    // Readies the save for serialization in signed/encrypted form
+    virtual void finishEditing(void) = 0;
+    // Must be called to continue editing after calling finishEditing.
+    // Not necessary directly after construction
+    virtual void beginEditing(void) = 0;
 
     std::shared_ptr<PKX> transfer(std::shared_ptr<PKX> pk);
     static bool isValidDSSave(std::shared_ptr<u8[]> dt);

@@ -33,7 +33,7 @@
 #include "wcx/WCX.hpp"
 #include <algorithm>
 
-const void Sav3::loadBlocks()
+void Sav3::loadBlocks()
 {
     std::array<int, BLOCK_COUNT> o1 = getBlockOrder(data, 0);
     // I removed a length > 0x10000, since length should always be 0x20000 I think that's fine?
@@ -56,7 +56,7 @@ auto Sav3::getBlockOrder(std::shared_ptr<u8[]> dt, int ofs) -> std::array<int, B
     return order;
 }
 
-const int Sav3::getActiveSaveIndex(std::shared_ptr<u8[]> dt, std::array<int, BLOCK_COUNT>& blockOrder1, std::array<int, BLOCK_COUNT>& blockOrder2)
+int Sav3::getActiveSaveIndex(std::shared_ptr<u8[]> dt, std::array<int, BLOCK_COUNT>& blockOrder1, std::array<int, BLOCK_COUNT>& blockOrder2)
 {
     int zeroBlock1 = std::find(blockOrder1.begin(), blockOrder1.end(), 0) - blockOrder1.begin();
     int zeroBlock2 = std::find(blockOrder2.begin(), blockOrder2.end(), 0) - blockOrder2.begin();
@@ -142,7 +142,7 @@ void Sav3::initialize(void)
     seenFlagOffsets = seenFlagOffsetsTemp;
 }
 
-void Sav3::encrypt(void)
+void Sav3::finishEditing(void)
 {
     // Copy Box data back
     for (int i = 5; i < BLOCK_COUNT; i++)
@@ -157,7 +157,7 @@ void Sav3::encrypt(void)
 }
 
 // TODO: Maybe move this elsewhere?
-const u16 Sav3::CRC32(u8* dt, int start, int length)
+u16 Sav3::CRC32(u8* dt, int start, int length)
 {
     u32 val = 0;
     for (int i = start; i < start + length; i += 4)
@@ -304,8 +304,10 @@ void Sav3::money(u32 v)
         case Game::RS:
         case Game::E:
             Endian::convertFrom<u32>(&data[blockOfs[1] + 0x0490], v ^ securityKey());
+            break;
         case Game::FRLG:
             Endian::convertFrom<u32>(&data[blockOfs[1] + 0x0290], v ^ securityKey());
+            break;
         default:
             break;
     }

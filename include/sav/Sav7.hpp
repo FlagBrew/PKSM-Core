@@ -54,8 +54,8 @@ public:
     virtual ~Sav7() {}
     u16 check16(u8* buf, u32 blockID, u32 len) const;
     virtual void resign(void) = 0;
-    void encrypt(void) override { resign(); }
-    void decrypt(void) override {}
+    void finishEditing(void) override { resign(); }
+    void beginEditing(void) override {}
 
     u16 TID(void) const override;
     void TID(u16 v) override;

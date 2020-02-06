@@ -47,8 +47,8 @@ public:
     Sav5(std::shared_ptr<u8[]> data, u32 length) : Sav(data, length) {}
     virtual ~Sav5() {}
     virtual void resign(void) = 0;
-    void encrypt(void) override { resign(); }
-    void decrypt(void) override {}
+    void finishEditing(void) override { resign(); }
+    void beginEditing(void) override {}
 
     u16 TID(void) const override;
     void TID(u16 v) override;

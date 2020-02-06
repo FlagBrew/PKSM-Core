@@ -133,20 +133,26 @@ void Sav8::trade(std::shared_ptr<PKX> pk)
     }
 }
 
-void Sav8::encrypt()
+void Sav8::finishEditing()
 {
-    for (auto& block : blocks)
+    if (!encrypted)
     {
-        block->encrypt();
-    }
+        for (auto& block : blocks)
+        {
+            block->encrypt();
+        }
 
-    swshcrypto_applyXor(data, length);
-    swshcrypto_sign(data, length);
+        swshcrypto_applyXor(data, length);
+        swshcrypto_sign(data, length);
+    }
 }
 
-void Sav8::decrypt()
+void Sav8::beginEditing()
 {
-    swshcrypto_applyXor(data, length);
+    if (encrypted)
+    {
+        swshcrypto_applyXor(data, length);
+    }
 
     // I could decrypt every block here, but why not just let them be done on the fly via the functions that need them?
 }
