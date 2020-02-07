@@ -45,6 +45,8 @@ public:
     PB7(PrivateConstructor, u8* dt, bool party = true, bool directAccess = false);
     virtual ~PB7() {}
 
+    std::string extension() const override { return ".pb7"; }
+
     // std::unique_ptr<PK3> convertToG3(Sav& save) const override;
     // std::unique_ptr<PK4> convertToG4(Sav& save) const override;
     // std::unique_ptr<PK5> convertToG5(Sav& save) const override;

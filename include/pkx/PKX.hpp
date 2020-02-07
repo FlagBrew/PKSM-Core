@@ -91,6 +91,8 @@ public:
     PKX& operator=(const PKX& pk) = delete;
     bool operator==(const PKFilter& filter) const;
 
+    virtual std::string extension(void) const { return ".pk" + genToString(generation()); }
+
     u8* rawData(void) { return data; }
     u32 getLength(void) const { return length; }
     virtual bool isParty(void) const = 0;

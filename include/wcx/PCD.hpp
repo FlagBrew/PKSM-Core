@@ -35,6 +35,8 @@ class PCD : public PGT
 public:
     PCD(u8* pcd) : PGT(pcd), name(StringUtils::getString4(pcd, 0x104, 0x24)) {}
 
+    std::string extension() const override { return ".pcd"; }
+
     static constexpr int length = 856;
     std::string title(void) const override { return name; };
 

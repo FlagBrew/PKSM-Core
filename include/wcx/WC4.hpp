@@ -27,13 +27,15 @@
 #ifndef WC4_HPP
 #define WC4_HPP
 
-#include "wcx/PGT.hpp"
 #include "utils/utils.hpp"
+#include "wcx/PGT.hpp"
 
 class WC4 : public PGT
 {
 public:
     WC4(u8* wc4) : PGT(wc4), name(StringUtils::getString4(wc4, 0x104, 0x24)) {}
+
+    std::string extension() const override { return ".wc4"; }
 
     static constexpr int length = 856;
     std::string title(void) const override { return name; };

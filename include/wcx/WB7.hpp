@@ -43,6 +43,8 @@ public:
     WB7(u8* dt, bool full = false);
     virtual ~WB7() {}
 
+    std::string extension() const override { return ".wb7"; }
+
     Generation generation(void) const override;
     bool bean(void) const override;
     bool BP(void) const override;

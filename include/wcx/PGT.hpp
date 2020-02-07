@@ -44,6 +44,8 @@ public:
     PGT(u8* pgt);
     virtual ~PGT();
 
+    virtual std::string extension() const override { return ".pgt"; }
+
     Generation generation() const override;
     bool bean(void) const override;
     bool BP(void) const override;

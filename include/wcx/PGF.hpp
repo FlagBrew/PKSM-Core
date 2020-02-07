@@ -40,6 +40,8 @@ public:
     PGF(u8* pgf);
     virtual ~PGF(){};
 
+    std::string extension() const override { return ".pgf"; }
+
     Generation generation(void) const override;
     u16 ID(void) const override;
     std::string title(void) const override;
