@@ -147,7 +147,7 @@ constexpr DexEntry LittleEndian::convertTo<DexEntry>(const u8* data)
 }
 
 template <>
-constexpr void LittleEndian::convertFrom(u8* data, DexEntry entry)
+constexpr void LittleEndian::convertFrom<DexEntry>(u8* data, const DexEntry& entry)
 {
     u64 w64 = entry.seenNonShinyMale | (u64(entry.seenNonShinyMaleGiga) << 63);
     LittleEndian::convertFrom<u64>(data, w64);
