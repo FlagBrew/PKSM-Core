@@ -128,8 +128,8 @@ public:
     void cryptBoxData(bool crypted) override;
     std::string boxName(u8 box) const override;
     void boxName(u8 box, const std::string& name) override;
-    u8 boxWallpaper(u8 box) const override;
-    void boxWallpaper(u8 box, u8 v) override;
+    u8 boxWallpaper(u8) const override { return 0; }
+    void boxWallpaper(u8, u8) override {}
     u8 partyCount(void) const override;
     void partyCount(u8 count) override;
 
