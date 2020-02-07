@@ -24,50 +24,37 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef ENDIAN_HPP
-#define ENDIAN_HPP
-
-#if __cplusplus > 201703L
-#include "../../source/utils/cpp20endian.hpp"
-#else
-
 #include "utils/coretypes.h"
 #include <array>
+#include <bit>
 #include <string.h>
 #include <type_traits>
 #include <vector>
 
 namespace Endian
 {
-    // Endianness checking found in https://stackoverflow.com/questions/4239993/determining-endianness-at-compile-time
     // Only works with integral types
     template <typename T>
-    void convertFrom(u8* dest, const T& orig)
+    constexpr void convertFrom(u8* dest, T orig)
     {
         static_assert(std::is_integral_v<T>);
-#if defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN || defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__ ||                    \
-    defined(__BIG_ENDIAN__) || defined(__ARMEB__) || defined(__THUMBEB__) || defined(__AARCH64EB__) || defined(_MIBSEB) || defined(__MIBSEB) ||      \
-    defined(__MIBSEB__)
+        if (!std::is_constant_evaluated() && std::endian::little == std::endian::native)
         {
-            // Explicitly allowed by the C++ standard
-            u8* from = (u8*)&orig;
+            memcpy(dest, &orig, sizeof(T));
+        }
+        else
+        {
             for (size_t i = 0; i < sizeof(T); i++)
             {
-                dest[i] = from[sizeof(T) - 1 - i];
+                dest[i] = u8(orig);
+                orig >>= 8;
             }
         }
-#elif defined(__BYTE_ORDER) && __BYTE_ORDER == __LITTLE_ENDIAN || defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ ||            \
-    defined(__LITTLE_ENDIAN__) || defined(__ARMEL__) || defined(__THUMBEL__) || defined(__AARCH64EL__) || defined(_MIPSEL) || defined(__MIPSEL) ||   \
-    defined(__MIPSEL__)
-        memcpy(dest, &orig, sizeof(T));
-#else
-#error "I don't know what architecture this is!"
-#endif
     }
 
     // Array-based implementation
     template <typename T, size_t N>
-    void convertFrom(u8* dest, const T (&array)[N])
+    constexpr void convertFrom(u8* dest, const T (&array)[N])
     {
         for (size_t i = 0; i < N; i++)
         {
@@ -78,7 +65,7 @@ namespace Endian
 
     // Another array-based implementation
     template <typename T, size_t N>
-    void convertFrom(u8* dest, const std::array<T, N>& array)
+    constexpr void convertFrom(u8* dest, const std::array<T, N>& array)
     {
         for (size_t i = 0; i < N; i++)
         {
@@ -87,7 +74,7 @@ namespace Endian
         }
     }
 
-    // And now... vector
+    // And now... vector. Can't be constexpr, because vectors aren't constexpr
     template <typename T>
     void convertFrom(u8* dest, const std::vector<T>& vector)
     {
@@ -100,29 +87,37 @@ namespace Endian
 
     // Same as above, just with automatic handling of data lifetime
     template <typename T>
-    auto convertFrom(const T& orig) -> std::array<u8, sizeof(T)>
+    constexpr auto convertFrom(const T& orig) -> std::array<u8, sizeof(T)>
     {
-        std::array<u8, sizeof(T)> ret;
+        static_assert(std::is_integral_v<T>);
+        std::array<u8, sizeof(T)> ret{};
         convertFrom(ret.data(), orig);
         return ret;
     }
 
     template <typename T, size_t N>
-    auto convertFrom(const T (&array)[N]) -> std::array<u8, sizeof(T) * N>
+    constexpr auto convertFrom(const T (&array)[N]) -> std::array<u8, sizeof(T) * N>
     {
-        std::array<u8, sizeof(T) * N> ret;
-        convertFrom(ret.data(), array);
+        std::array<u8, sizeof(T) * N> ret{};
+        for (size_t i = 0; i < N; i++)
+        {
+            convertFrom(ret.data() + i * sizeof(T), array[i]);
+        }
         return ret;
     }
 
     template <typename T, size_t N>
-    auto convertFrom(const std::array<T, N>& array) -> std::array<u8, sizeof(T) * N>
+    constexpr auto convertFrom(const std::array<T, N>& array) -> std::array<u8, sizeof(T) * N>
     {
-        std::array<u8, sizeof(T) * N> ret;
-        convertFrom(ret.data(), array);
+        std::array<u8, sizeof(T) * N> ret{};
+        for (size_t i = 0; i < N; i++)
+        {
+            convertFrom(ret.data() + i * sizeof(T), array[i]);
+        }
         return ret;
     }
 
+    // Can't be constexpr because vectors aren't constexpr
     template <typename T>
     std::vector<u8> convertFrom(const std::vector<T>& vector)
     {
@@ -132,34 +127,28 @@ namespace Endian
     }
 
     template <typename T>
-    T convertTo(const u8* from)
+    constexpr T convertTo(const u8* from)
     {
         static_assert(std::is_integral_v<T>);
         T dest = 0;
-#if defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN || defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__ ||                    \
-    defined(__BIG_ENDIAN__) || defined(__ARMEB__) || defined(__THUMBEB__) || defined(__AARCH64EB__) || defined(_MIBSEB) || defined(__MIBSEB) ||      \
-    defined(__MIBSEB__)
+        if (!std::is_constant_evaluated() && std::endian::native == std::endian::little)
+        {
+            memcpy(&dest, from, sizeof(T));
+        }
+        else
         {
             for (size_t i = 0; i < sizeof(T); i++)
             {
                 dest |= T(from[i]) << (i * 8);
             }
         }
-#elif defined(__BYTE_ORDER) && __BYTE_ORDER == __LITTLE_ENDIAN || defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ ||            \
-    defined(__LITTLE_ENDIAN__) || defined(__ARMEL__) || defined(__THUMBEL__) || defined(__AARCH64EL__) || defined(_MIPSEL) || defined(__MIPSEL) ||   \
-    defined(__MIPSEL__)
-        // Already in proper format
-        memcpy(&dest, from, sizeof(T));
-#else
-#error "I don't know what architecture this is!"
-#endif
         return dest;
     }
 
     template <typename T, size_t N>
-    std::array<T, N> convertTo(const u8* from)
+    constexpr std::array<T, N> convertTo(const u8* from)
     {
-        std::array<T, N> ret;
+        std::array<T, N> ret{};
         for (size_t i = 0; i < N; i++)
         {
             ret[i] = convertTo<T>(from + i * sizeof(T));
@@ -167,7 +156,3 @@ namespace Endian
         return ret;
     }
 }
-
-#endif
-
-#endif
