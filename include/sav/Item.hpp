@@ -72,7 +72,7 @@ public:
         if (data)
         {
             std::copy(data, data + 4, itemData.data());
-            Endian::convertFrom<u16>(itemData.data() + 2, Endian::convertTo<u16>(itemData.data() + 2) ^ securityKey);
+            LittleEndian::convertFrom<u16>(itemData.data() + 2, LittleEndian::convertTo<u16>(itemData.data() + 2) ^ securityKey);
             key = securityKey;
         }
         else
@@ -83,14 +83,14 @@ public:
     Generation generation(void) const override { return Generation::THREE; }
     u16 maxCount(void) const override { return 0xFFFF; }
     // TODO: Review and decide whether to use internal or national ID's (HMs and FRLG/E's added Key Items are missing from national)
-    u16 id(void) const override { return ItemConverter::g3ToNational(Endian::convertTo<u16>(itemData.data())); }
-    void id(u16 v) override { Endian::convertFrom<u16>(itemData.data(), ItemConverter::nationalToG3(v)); }
-    u16 count(void) const override { return Endian::convertTo<u16>(itemData.data() + 2); }
-    void count(u16 v) override { Endian::convertFrom<u16>(itemData.data() + 2, v); }
+    u16 id(void) const override { return ItemConverter::g3ToNational(LittleEndian::convertTo<u16>(itemData.data())); }
+    void id(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data(), ItemConverter::nationalToG3(v)); }
+    u16 count(void) const override { return LittleEndian::convertTo<u16>(itemData.data() + 2); }
+    void count(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data() + 2, v); }
     std::vector<u8> bytes(void) const override
     {
         std::vector<u8> data{itemData.begin(), itemData.end()};
-        Endian::convertFrom<u16>(data.data() + 2, Endian::convertTo<u16>(data.data() + 2) ^ key);
+        LittleEndian::convertFrom<u16>(data.data() + 2, LittleEndian::convertTo<u16>(data.data() + 2) ^ key);
         return data;
     }
 };
@@ -114,10 +114,10 @@ public:
     }
     Generation generation(void) const override { return Generation::FOUR; }
     u16 maxCount(void) const override { return 0xFFFF; }
-    u16 id(void) const override { return Endian::convertTo<u16>(itemData.data()); }
-    void id(u16 v) override { Endian::convertFrom<u16>(itemData.data(), v); }
-    u16 count(void) const override { return Endian::convertTo<u16>(itemData.data() + 2); }
-    void count(u16 v) override { Endian::convertFrom<u16>(itemData.data() + 2, v); }
+    u16 id(void) const override { return LittleEndian::convertTo<u16>(itemData.data()); }
+    void id(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data(), v); }
+    u16 count(void) const override { return LittleEndian::convertTo<u16>(itemData.data() + 2); }
+    void count(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data() + 2, v); }
     std::vector<u8> bytes(void) const override { return std::vector<u8>{itemData.begin(), itemData.end()}; }
 };
 
@@ -140,10 +140,10 @@ public:
     }
     Generation generation(void) const override { return Generation::FIVE; }
     u16 maxCount(void) const override { return 0xFFFF; }
-    u16 id(void) const override { return Endian::convertTo<u16>(itemData.data()); }
-    void id(u16 v) override { Endian::convertFrom<u16>(itemData.data(), v); }
-    u16 count(void) const override { return Endian::convertTo<u16>(itemData.data() + 2); }
-    void count(u16 v) override { Endian::convertFrom<u16>(itemData.data() + 2, v); }
+    u16 id(void) const override { return LittleEndian::convertTo<u16>(itemData.data()); }
+    void id(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data(), v); }
+    u16 count(void) const override { return LittleEndian::convertTo<u16>(itemData.data() + 2); }
+    void count(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data() + 2, v); }
     std::vector<u8> bytes(void) const override { return std::vector<u8>{itemData.begin(), itemData.end()}; }
 };
 
@@ -166,10 +166,10 @@ public:
     }
     Generation generation(void) const override { return Generation::SIX; }
     u16 maxCount(void) const override { return 0xFFFF; }
-    u16 id(void) const override { return Endian::convertTo<u16>(itemData.data()); }
-    void id(u16 v) override { Endian::convertFrom<u16>(itemData.data(), v); }
-    u16 count(void) const override { return Endian::convertTo<u16>(itemData.data() + 2); }
-    void count(u16 v) override { Endian::convertFrom<u16>(itemData.data() + 2, v); }
+    u16 id(void) const override { return LittleEndian::convertTo<u16>(itemData.data()); }
+    void id(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data(), v); }
+    u16 count(void) const override { return LittleEndian::convertTo<u16>(itemData.data() + 2); }
+    void count(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data() + 2, v); }
     std::vector<u8> bytes(void) const override { return std::vector<u8>{itemData.begin(), itemData.end()}; }
 };
 
@@ -192,7 +192,7 @@ public:
     {
         if (data)
         {
-            itemData = Endian::convertTo<u32>(data);
+            itemData = LittleEndian::convertTo<u32>(data);
         }
     }
     Generation generation(void) const override { return Generation::SEVEN; }
@@ -210,7 +210,7 @@ public:
     std::vector<u8> bytes(void) const override
     {
         std::vector<u8> ret{4};
-        Endian::convertFrom<u32>(ret.data(), itemData);
+        LittleEndian::convertFrom<u32>(ret.data(), itemData);
         return ret;
     }
     operator Item7b(void) const override;
@@ -235,7 +235,7 @@ public:
     {
         if (data)
         {
-            itemData = Endian::convertTo<u32>(data);
+            itemData = LittleEndian::convertTo<u32>(data);
         }
     }
     Generation generation(void) const override { return Generation::LGPE; }
@@ -251,7 +251,7 @@ public:
     std::vector<u8> bytes(void) const override
     {
         std::vector<u8> ret{4};
-        Endian::convertFrom<u32>(ret.data(), itemData);
+        LittleEndian::convertFrom<u32>(ret.data(), itemData);
         return ret;
     }
     operator Item7(void) const override;
@@ -276,7 +276,7 @@ public:
     {
         if (data)
         {
-            itemData = Endian::convertTo<u32>(data);
+            itemData = LittleEndian::convertTo<u32>(data);
         }
     }
     Generation generation(void) const override { return Generation::SEVEN; }
@@ -292,7 +292,7 @@ public:
     std::vector<u8> bytes(void) const override
     {
         std::vector<u8> ret{4};
-        Endian::convertFrom<u32>(ret.data(), itemData);
+        LittleEndian::convertFrom<u32>(ret.data(), itemData);
         return ret;
     }
     operator Item7(void) const override;

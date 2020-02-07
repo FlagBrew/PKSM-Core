@@ -69,7 +69,7 @@ Generation WC8::generation() const
 
 u16 WC8::ID() const
 {
-    return Endian::convertTo<u16>(data + 8);
+    return LittleEndian::convertTo<u16>(data + 8);
 }
 
 std::string WC8::title() const
@@ -130,7 +130,7 @@ u16 WC8::object(void) const
 
 u16 WC8::object(int index) const
 {
-    return Endian::convertTo<u16>(data + 0x20 + index * 4);
+    return LittleEndian::convertTo<u16>(data + 0x20 + index * 4);
 }
 
 int WC8::items(void) const
@@ -145,7 +145,7 @@ u16 WC8::objectQuantity(void) const
 
 u16 WC8::objectQuantity(int index) const
 {
-    return Endian::convertTo<u16>(data + 0x22 + index * 4);
+    return LittleEndian::convertTo<u16>(data + 0x22 + index * 4);
 }
 
 u8 WC8::PIDType(void) const
@@ -160,27 +160,27 @@ bool WC8::shiny(void) const
 
 u16 WC8::TID(void) const
 {
-    return Endian::convertTo<u16>(data + 0x20);
+    return LittleEndian::convertTo<u16>(data + 0x20);
 }
 
 u16 WC8::SID(void) const
 {
-    return Endian::convertTo<u16>(data + 0x22);
+    return LittleEndian::convertTo<u16>(data + 0x22);
 }
 
 u8 WC8::version(void) const
 {
-    return Endian::convertTo<u32>(data + 0x24);
+    return LittleEndian::convertTo<u32>(data + 0x24);
 }
 
 u32 WC8::encryptionConstant(void) const
 {
-    return Endian::convertTo<u32>(data + 0x28);
+    return LittleEndian::convertTo<u32>(data + 0x28);
 }
 
 u32 WC8::PID(void) const
 {
-    return Endian::convertTo<u32>(data + 0x2C);
+    return LittleEndian::convertTo<u32>(data + 0x2C);
 }
 
 u8 WC8::ball(void) const
@@ -190,22 +190,22 @@ u8 WC8::ball(void) const
 
 u16 WC8::heldItem(void) const
 {
-    return Endian::convertTo<u16>(data + 0x22E);
+    return LittleEndian::convertTo<u16>(data + 0x22E);
 }
 
 u16 WC8::move(u8 m) const
 {
-    return Endian::convertTo<u16>(data + 0x230 + m * 2);
+    return LittleEndian::convertTo<u16>(data + 0x230 + m * 2);
 }
 
 u16 WC8::relearnMove(u8 index) const
 {
-    return Endian::convertTo<u16>(data + 0x238 + index * 2);
+    return LittleEndian::convertTo<u16>(data + 0x238 + index * 2);
 }
 
 u16 WC8::species(void) const
 {
-    return Endian::convertTo<u16>(data + 0x240);
+    return LittleEndian::convertTo<u16>(data + 0x240);
 }
 
 u8 WC8::alternativeForm(void) const
@@ -304,17 +304,17 @@ u8 WC8::otFeeling(void) const
 
 u16 WC8::otTextvar(void) const
 {
-    return Endian::convertTo<u16>(data + 0x27C);
+    return LittleEndian::convertTo<u16>(data + 0x27C);
 }
 
 u16 WC8::eggLocation(void) const
 {
-    return Endian::convertTo<u16>(data + 0x228);
+    return LittleEndian::convertTo<u16>(data + 0x228);
 }
 
 u16 WC8::metLocation(void) const
 {
-    return Endian::convertTo<u16>(data + 0x22A);
+    return LittleEndian::convertTo<u16>(data + 0x22A);
 }
 
 bool WC8::ribbon(u8 category, u8 index) const

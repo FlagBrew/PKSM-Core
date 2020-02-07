@@ -37,7 +37,138 @@
 #include <type_traits>
 #include <vector>
 
-namespace Endian
+namespace BigEndian
+{
+    // Endianness checking found in https://stackoverflow.com/questions/4239993/determining-endianness-at-compile-time
+    // Only works with integral types
+    template <typename T>
+    void convertFrom(u8* dest, const T& orig)
+    {
+        static_assert(std::is_integral_v<T>);
+#if defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN || defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__ ||                    \
+    defined(__BIG_ENDIAN__) || defined(__ARMEB__) || defined(__THUMBEB__) || defined(__AARCH64EB__) || defined(_MIBSEB) || defined(__MIBSEB) ||      \
+    defined(__MIBSEB__)
+        memcpy(dest, &orig, sizeof(T));
+#elif defined(__BYTE_ORDER) && __BYTE_ORDER == __LITTLE_ENDIAN || defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ ||            \
+    defined(__LITTLE_ENDIAN__) || defined(__ARMEL__) || defined(__THUMBEL__) || defined(__AARCH64EL__) || defined(_MIPSEL) || defined(__MIPSEL) ||   \
+    defined(__MIPSEL__)
+        {
+            // Explicitly allowed by the C++ standard
+            u8* from = (u8*)&orig;
+            for (size_t i = 0; i < sizeof(T); i++)
+            {
+                dest[i] = from[sizeof(T) - 1 - i];
+            }
+        }
+#else
+#error "I don't know what architecture this is!"
+#endif
+    }
+
+    // Array-based implementation
+    template <typename T, size_t N>
+    void convertFrom(u8* dest, const T (&array)[N])
+    {
+        for (size_t i = 0; i < N; i++)
+        {
+            convertFrom(dest, array[i]);
+            dest += sizeof(T);
+        }
+    }
+
+    // Another array-based implementation
+    template <typename T, size_t N>
+    void convertFrom(u8* dest, const std::array<T, N>& array)
+    {
+        for (size_t i = 0; i < N; i++)
+        {
+            convertFrom(dest, array[i]);
+            dest += sizeof(T);
+        }
+    }
+
+    // And now... vector
+    template <typename T>
+    void convertFrom(u8* dest, const std::vector<T>& vector)
+    {
+        for (size_t i = 0; i < vector.size(); i++)
+        {
+            convertFrom(dest, vector[i]);
+            dest += sizeof(T);
+        }
+    }
+
+    // Same as above, just with automatic handling of data lifetime
+    template <typename T>
+    auto convertFrom(const T& orig) -> std::array<u8, sizeof(T)>
+    {
+        std::array<u8, sizeof(T)> ret;
+        convertFrom(ret.data(), orig);
+        return ret;
+    }
+
+    template <typename T, size_t N>
+    auto convertFrom(const T (&array)[N]) -> std::array<u8, sizeof(T) * N>
+    {
+        std::array<u8, sizeof(T) * N> ret;
+        convertFrom(ret.data(), array);
+        return ret;
+    }
+
+    template <typename T, size_t N>
+    auto convertFrom(const std::array<T, N>& array) -> std::array<u8, sizeof(T) * N>
+    {
+        std::array<u8, sizeof(T) * N> ret;
+        convertFrom(ret.data(), array);
+        return ret;
+    }
+
+    template <typename T>
+    std::vector<u8> convertFrom(const std::vector<T>& vector)
+    {
+        std::vector<u8> ret(vector.size() * sizeof(T));
+        convertFrom(ret.data(), vector);
+        return ret;
+    }
+
+    template <typename T>
+    T convertTo(const u8* from)
+    {
+        static_assert(std::is_integral_v<T>);
+        T dest = 0;
+#if defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN || defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__ ||                    \
+    defined(__BIG_ENDIAN__) || defined(__ARMEB__) || defined(__THUMBEB__) || defined(__AARCH64EB__) || defined(_MIBSEB) || defined(__MIBSEB) ||      \
+    defined(__MIBSEB__)
+        // Already in proper format
+        memcpy(&dest, from, sizeof(T));
+#elif defined(__BYTE_ORDER) && __BYTE_ORDER == __LITTLE_ENDIAN || defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ ||            \
+    defined(__LITTLE_ENDIAN__) || defined(__ARMEL__) || defined(__THUMBEL__) || defined(__AARCH64EL__) || defined(_MIPSEL) || defined(__MIPSEL) ||   \
+    defined(__MIPSEL__)
+        {
+            for (size_t i = 0; i < sizeof(T); i++)
+            {
+                dest |= T(from[i]) << ((sizeof(T) - i - 1) * 8);
+            }
+        }
+#else
+#error "I don't know what architecture this is!"
+#endif
+        return dest;
+    }
+
+    template <typename T, size_t N>
+    std::array<T, N> convertTo(const u8* from)
+    {
+        std::array<T, N> ret;
+        for (size_t i = 0; i < N; i++)
+        {
+            ret[i] = convertTo<T>(from + i * sizeof(T));
+        }
+        return ret;
+    }
+}
+
+namespace LittleEndian
 {
     // Endianness checking found in https://stackoverflow.com/questions/4239993/determining-endianness-at-compile-time
     // Only works with integral types

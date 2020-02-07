@@ -159,7 +159,7 @@ void PK5::crypt(void)
 
 bool PK5::isEncrypted() const
 {
-    return Endian::convertTo<u32>(data + 0x64) != 0;
+    return LittleEndian::convertTo<u32>(data + 0x64) != 0;
 }
 
 PK5::PK5(PrivateConstructor, u8* dt, bool party, bool direct) : PKX(dt, party ? PARTY_LENGTH : BOX_LENGTH, direct)
@@ -239,74 +239,74 @@ void PK5::abilityNumber(u8 v)
 
 u32 PK5::PID(void) const
 {
-    return Endian::convertTo<u32>(data);
+    return LittleEndian::convertTo<u32>(data);
 }
 void PK5::PID(u32 v)
 {
-    Endian::convertFrom<u32>(data, v);
+    LittleEndian::convertFrom<u32>(data, v);
 }
 
 u16 PK5::sanity(void) const
 {
-    return Endian::convertTo<u16>(data + 0x04);
+    return LittleEndian::convertTo<u16>(data + 0x04);
 }
 void PK5::sanity(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x04, v);
+    LittleEndian::convertFrom<u16>(data + 0x04, v);
 }
 
 u16 PK5::checksum(void) const
 {
-    return Endian::convertTo<u16>(data + 0x06);
+    return LittleEndian::convertTo<u16>(data + 0x06);
 }
 void PK5::checksum(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x06, v);
+    LittleEndian::convertFrom<u16>(data + 0x06, v);
 }
 
 u16 PK5::species(void) const
 {
-    return Endian::convertTo<u16>(data + 0x08);
+    return LittleEndian::convertTo<u16>(data + 0x08);
 }
 void PK5::species(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x08, v);
+    LittleEndian::convertFrom<u16>(data + 0x08, v);
 }
 
 u16 PK5::heldItem(void) const
 {
-    return Endian::convertTo<u16>(data + 0x0A);
+    return LittleEndian::convertTo<u16>(data + 0x0A);
 }
 void PK5::heldItem(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x0A, v);
+    LittleEndian::convertFrom<u16>(data + 0x0A, v);
 }
 
 u16 PK5::TID(void) const
 {
-    return Endian::convertTo<u16>(data + 0x0C);
+    return LittleEndian::convertTo<u16>(data + 0x0C);
 }
 void PK5::TID(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x0C, v);
+    LittleEndian::convertFrom<u16>(data + 0x0C, v);
 }
 
 u16 PK5::SID(void) const
 {
-    return Endian::convertTo<u16>(data + 0x0E);
+    return LittleEndian::convertTo<u16>(data + 0x0E);
 }
 void PK5::SID(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x0E, v);
+    LittleEndian::convertFrom<u16>(data + 0x0E, v);
 }
 
 u32 PK5::experience(void) const
 {
-    return Endian::convertTo<u32>(data + 0x10);
+    return LittleEndian::convertTo<u32>(data + 0x10);
 }
 void PK5::experience(u32 v)
 {
-    Endian::convertFrom<u32>(data + 0x10, v);
+    LittleEndian::convertFrom<u32>(data + 0x10, v);
 }
 
 u8 PK5::otFriendship(void) const
@@ -392,11 +392,11 @@ void PK5::ribbon(u8 ribcat, u8 ribnum, u8 v)
 
 u16 PK5::move(u8 m) const
 {
-    return Endian::convertTo<u16>(data + 0x28 + m * 2);
+    return LittleEndian::convertTo<u16>(data + 0x28 + m * 2);
 }
 void PK5::move(u8 m, u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x28 + m * 2, v);
+    LittleEndian::convertFrom<u16>(data + 0x28 + m * 2, v);
 }
 
 u16 PK5::relearnMove(u8 m) const
@@ -428,34 +428,34 @@ void PK5::PPUp(u8 m, u8 v)
 
 u8 PK5::iv(Stat stat) const
 {
-    u32 buffer = Endian::convertTo<u32>(data + 0x38);
+    u32 buffer = LittleEndian::convertTo<u32>(data + 0x38);
     return (u8)((buffer >> 5 * u8(stat)) & 0x1F);
 }
 
 void PK5::iv(Stat stat, u8 v)
 {
-    u32 buffer = Endian::convertTo<u32>(data + 0x38);
+    u32 buffer = LittleEndian::convertTo<u32>(data + 0x38);
     buffer &= ~(0x1F << 5 * u8(stat));
     buffer |= v << (5 * u8(stat));
-    Endian::convertFrom<u32>(data + 0x38, buffer);
+    LittleEndian::convertFrom<u32>(data + 0x38, buffer);
 }
 
 bool PK5::egg(void) const
 {
-    return ((Endian::convertTo<u32>(data + 0x38) >> 30) & 0x1) == 1;
+    return ((LittleEndian::convertTo<u32>(data + 0x38) >> 30) & 0x1) == 1;
 }
 void PK5::egg(bool v)
 {
-    Endian::convertFrom<u32>(data + 0x38, (u32)((Endian::convertTo<u32>(data + 0x38) & ~0x40000000) | (u32)(v ? 0x40000000 : 0)));
+    LittleEndian::convertFrom<u32>(data + 0x38, (u32)((LittleEndian::convertTo<u32>(data + 0x38) & ~0x40000000) | (u32)(v ? 0x40000000 : 0)));
 }
 
 bool PK5::nicknamed(void) const
 {
-    return ((Endian::convertTo<u32>(data + 0x38) >> 31) & 0x1) == 1;
+    return ((LittleEndian::convertTo<u32>(data + 0x38) >> 31) & 0x1) == 1;
 }
 void PK5::nicknamed(bool v)
 {
-    Endian::convertFrom<u32>(data + 0x38, (Endian::convertTo<u32>(data + 0x38) & 0x7FFFFFFF) | (v ? 0x80000000 : 0));
+    LittleEndian::convertFrom<u32>(data + 0x38, (LittleEndian::convertTo<u32>(data + 0x38) & 0x7FFFFFFF) | (v ? 0x80000000 : 0));
 }
 
 bool PK5::fatefulEncounter(void) const
@@ -609,20 +609,20 @@ void PK5::metDay(u8 v)
 
 u16 PK5::eggLocation(void) const
 {
-    return Endian::convertTo<u16>(data + 0x7E);
+    return LittleEndian::convertTo<u16>(data + 0x7E);
 }
 void PK5::eggLocation(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x7E, v);
+    LittleEndian::convertFrom<u16>(data + 0x7E, v);
 }
 
 u16 PK5::metLocation(void) const
 {
-    return Endian::convertTo<u16>(data + 0x80);
+    return LittleEndian::convertTo<u16>(data + 0x80);
 }
 void PK5::metLocation(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x80, v);
+    LittleEndian::convertFrom<u16>(data + 0x80, v);
 }
 
 u8 PK5::pkrs(void) const
@@ -693,7 +693,7 @@ void PK5::refreshChecksum(void)
     u16 chk = 0;
     for (u8 i = 8; i < BOX_LENGTH; i += 2)
     {
-        chk += Endian::convertTo<u16>(data + i);
+        chk += LittleEndian::convertTo<u16>(data + i);
     }
     checksum(chk);
 }
@@ -845,14 +845,14 @@ int PK5::partyCurrHP(void) const
     {
         return -1;
     }
-    return Endian::convertTo<u16>(data + 0x8E);
+    return LittleEndian::convertTo<u16>(data + 0x8E);
 }
 
 void PK5::partyCurrHP(u16 v)
 {
     if (isParty())
     {
-        Endian::convertFrom<u16>(data + 0x8E, v);
+        LittleEndian::convertFrom<u16>(data + 0x8E, v);
     }
 }
 
@@ -862,14 +862,14 @@ int PK5::partyStat(Stat stat) const
     {
         return -1;
     }
-    return Endian::convertTo<u16>(data + 0x90 + u8(stat) * 2);
+    return LittleEndian::convertTo<u16>(data + 0x90 + u8(stat) * 2);
 }
 
 void PK5::partyStat(Stat stat, u16 v)
 {
     if (isParty())
     {
-        Endian::convertFrom<u16>(data + 0x90 + u8(stat) * 2, v);
+        LittleEndian::convertFrom<u16>(data + 0x90 + u8(stat) * 2, v);
     }
 }
 

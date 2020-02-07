@@ -37,7 +37,7 @@ namespace
 {
     bool isPKM(u8* pkmData)
     {
-        if (Endian::convertTo<u16>(pkmData + 8) == 0)
+        if (LittleEndian::convertTo<u16>(pkmData + 8) == 0)
         {
             return false;
         }
@@ -58,12 +58,12 @@ u32 SavLGPE::boxOffset(u8 box, u8 slot) const
 
 u16 SavLGPE::partyBoxSlot(u8 slot) const
 {
-    return Endian::convertTo<u16>(&data[0x5A00 + slot * 2]);
+    return LittleEndian::convertTo<u16>(&data[0x5A00 + slot * 2]);
 }
 
 void SavLGPE::partyBoxSlot(u8 slot, u16 v)
 {
-    Endian::convertFrom<u16>(&data[0x5A00 + slot * 2], v);
+    LittleEndian::convertFrom<u16>(&data[0x5A00 + slot * 2], v);
 }
 
 u32 SavLGPE::partyOffset(u8 slot) const
@@ -78,22 +78,22 @@ u32 SavLGPE::partyOffset(u8 slot) const
 
 u16 SavLGPE::boxedPkm() const
 {
-    return Endian::convertTo<u16>(&data[0x5A00 + 14]);
+    return LittleEndian::convertTo<u16>(&data[0x5A00 + 14]);
 }
 
 void SavLGPE::boxedPkm(u16 v)
 {
-    Endian::convertFrom<u16>(&data[0x5A00 + 14], v);
+    LittleEndian::convertFrom<u16>(&data[0x5A00 + 14], v);
 }
 
 u16 SavLGPE::followPkm() const
 {
-    return Endian::convertTo<u16>(&data[0x5A00 + 12]);
+    return LittleEndian::convertTo<u16>(&data[0x5A00 + 12]);
 }
 
 void SavLGPE::followPkm(u16 v)
 {
-    Endian::convertFrom<u16>(&data[0x5A00 + 12], v);
+    LittleEndian::convertFrom<u16>(&data[0x5A00 + 12], v);
 }
 
 u8 SavLGPE::partyCount() const
@@ -183,7 +183,7 @@ void SavLGPE::resign()
     for (u8 i = 0; i < blockCount; i++)
     {
         std::copy(&data[chkofs[i]], &data[chkofs[i] + chklen[i]], tmp);
-        Endian::convertFrom<u16>(&data[csoff + i * 8], check16(tmp, Endian::convertTo<u16>(&data[csoff + i * 8 - 2]), chklen[i]));
+        LittleEndian::convertFrom<u16>(&data[csoff + i * 8], check16(tmp, LittleEndian::convertTo<u16>(&data[csoff + i * 8 - 2]), chklen[i]));
     }
 
     delete[] tmp;
@@ -191,22 +191,22 @@ void SavLGPE::resign()
 
 u16 SavLGPE::TID() const
 {
-    return Endian::convertTo<u16>(&data[0x1000]);
+    return LittleEndian::convertTo<u16>(&data[0x1000]);
 }
 
 void SavLGPE::TID(u16 v)
 {
-    Endian::convertFrom<u16>(&data[0x1000], v);
+    LittleEndian::convertFrom<u16>(&data[0x1000], v);
 }
 
 u16 SavLGPE::SID() const
 {
-    return Endian::convertTo<u16>(&data[0x1002]);
+    return LittleEndian::convertTo<u16>(&data[0x1002]);
 }
 
 void SavLGPE::SID(u16 v)
 {
-    Endian::convertFrom<u16>(&data[0x1002], v);
+    LittleEndian::convertFrom<u16>(&data[0x1002], v);
 }
 
 u8 SavLGPE::version() const
@@ -251,12 +251,12 @@ void SavLGPE::otName(const std::string& v)
 
 u32 SavLGPE::money() const
 {
-    return Endian::convertTo<u32>(&data[0x4C04]);
+    return LittleEndian::convertTo<u32>(&data[0x4C04]);
 }
 
 void SavLGPE::money(u32 v)
 {
-    Endian::convertFrom<u32>(&data[0x4C04], v);
+    LittleEndian::convertFrom<u32>(&data[0x4C04], v);
 }
 
 u8 SavLGPE::badges() const
@@ -280,12 +280,12 @@ u8 SavLGPE::badges() const
 
 u16 SavLGPE::playedHours(void) const
 {
-    return Endian::convertTo<u16>(&data[0x45400]);
+    return LittleEndian::convertTo<u16>(&data[0x45400]);
 }
 
 void SavLGPE::playedHours(u16 v)
 {
-    Endian::convertFrom<u16>(&data[0x45400], v);
+    LittleEndian::convertFrom<u16>(&data[0x45400], v);
 }
 
 u8 SavLGPE::playedMinutes(void) const
@@ -530,7 +530,7 @@ void SavLGPE::dex(std::shared_ptr<PKX> pk)
     {
         if ((data[PokeDex + 0x84] & (1 << (shift + 4))) != 0)
         { // Already 2
-            Endian::convertFrom<u32>(&data[PokeDex + 0x8E8 + shift * 4], pk->encryptionConstant());
+            LittleEndian::convertFrom<u32>(&data[PokeDex + 0x8E8 + shift * 4], pk->encryptionConstant());
             data[PokeDex + 0x84] |= (u8)(1 << shift);
         }
         else if ((data[PokeDex + 0x84] & (1 << shift)) == 0)

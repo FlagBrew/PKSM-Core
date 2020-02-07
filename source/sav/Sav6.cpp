@@ -34,20 +34,20 @@
 
 u16 Sav6::TID(void) const
 {
-    return Endian::convertTo<u16>(&data[TrainerCard]);
+    return LittleEndian::convertTo<u16>(&data[TrainerCard]);
 }
 void Sav6::TID(u16 v)
 {
-    Endian::convertFrom<u16>(&data[TrainerCard], v);
+    LittleEndian::convertFrom<u16>(&data[TrainerCard], v);
 }
 
 u16 Sav6::SID(void) const
 {
-    return Endian::convertTo<u16>(&data[TrainerCard + 2]);
+    return LittleEndian::convertTo<u16>(&data[TrainerCard + 2]);
 }
 void Sav6::SID(u16 v)
 {
-    Endian::convertFrom<u16>(&data[TrainerCard + 2], v);
+    LittleEndian::convertFrom<u16>(&data[TrainerCard + 2], v);
 }
 
 u8 Sav6::version(void) const
@@ -115,20 +115,20 @@ void Sav6::otName(const std::string& v)
 
 u32 Sav6::money(void) const
 {
-    return Endian::convertTo<u32>(&data[Trainer2 + 0x8]);
+    return LittleEndian::convertTo<u32>(&data[Trainer2 + 0x8]);
 }
 void Sav6::money(u32 v)
 {
-    Endian::convertFrom<u32>(&data[Trainer2 + 0x8], v);
+    LittleEndian::convertFrom<u32>(&data[Trainer2 + 0x8], v);
 }
 
 u32 Sav6::BP(void) const
 {
-    return Endian::convertTo<u32>(&data[Trainer2 + (game == Game::XY ? 0x3C : 0x30)]);
+    return LittleEndian::convertTo<u32>(&data[Trainer2 + (game == Game::XY ? 0x3C : 0x30)]);
 }
 void Sav6::BP(u32 v)
 {
-    Endian::convertFrom<u32>(&data[Trainer2 + (game == Game::XY ? 0x3C : 0x30)], v);
+    LittleEndian::convertFrom<u32>(&data[Trainer2 + (game == Game::XY ? 0x3C : 0x30)], v);
 }
 
 u8 Sav6::badges(void) const
@@ -144,11 +144,11 @@ u8 Sav6::badges(void) const
 
 u16 Sav6::playedHours(void) const
 {
-    return Endian::convertTo<u16>(&data[PlayTime]);
+    return LittleEndian::convertTo<u16>(&data[PlayTime]);
 }
 void Sav6::playedHours(u16 v)
 {
-    Endian::convertFrom<u16>(&data[PlayTime], v);
+    LittleEndian::convertFrom<u16>(&data[PlayTime], v);
 }
 
 u8 Sav6::playedMinutes(void) const
@@ -542,8 +542,8 @@ void Sav6::dex(std::shared_ptr<PKX> pk)
     data[PokeDexLanguageFlags + (bit * 7 + lang) / 8] |= (u8)(1 << ((bit * 7 + lang) % 8));
 
     // Set DexNav count (only if not encountered previously)
-    if (game == Game::ORAS && Endian::convertTo<u16>(&data[EncounterCount + (pk->species() - 1) * 2]) == 0)
-        Endian::convertFrom<u16>(&data[EncounterCount + (pk->species() - 1) * 2], 1);
+    if (game == Game::ORAS && LittleEndian::convertTo<u16>(&data[EncounterCount + (pk->species() - 1) * 2]) == 0)
+        LittleEndian::convertFrom<u16>(&data[EncounterCount + (pk->species() - 1) * 2], 1);
 
     // Set Form flags
     int fc = PersonalXYORAS::formCount(pk->species());
@@ -615,8 +615,8 @@ void Sav6::mysteryGift(WCX& wc, int& pos)
         if (game == Game::ORAS && wc6->ID() == 2048 && wc6->object() == 726)
         {
             static constexpr u32 EON_MAGIC = 0x225D73C2;
-            Endian::convertFrom<u32>(&data[0x319B8], EON_MAGIC);
-            Endian::convertFrom<u32>(&data[0x319DE], EON_MAGIC);
+            LittleEndian::convertFrom<u32>(&data[0x319B8], EON_MAGIC);
+            LittleEndian::convertFrom<u32>(&data[0x319DE], EON_MAGIC);
         }
         pos = (pos + 1) % 24;
     }
@@ -690,7 +690,7 @@ std::vector<Sav::giftData> Sav6::currentGifts(void) const
         if (*(wonderCards + i * WC6::length + 0x51) == 0)
         {
             ret.emplace_back(StringUtils::getString(wonderCards + i * WC6::length, 0x2, 36), "",
-                Endian::convertTo<u16>(wonderCards + i * WC6::length + 0x82), *(wonderCards + i * WC6::length + 0x84),
+                LittleEndian::convertTo<u16>(wonderCards + i * WC6::length + 0x82), *(wonderCards + i * WC6::length + 0x84),
                 *(wonderCards + i * WC6::length + 0xA1));
         }
         else

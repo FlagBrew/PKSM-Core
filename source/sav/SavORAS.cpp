@@ -60,7 +60,7 @@ void SavORAS::resign(void)
     for (u8 i = 0; i < blockCount; i++)
     {
         std::copy(&data[chkofs[i]], &data[chkofs[i] + chklen[i]], tmp);
-        Endian::convertFrom<u16>(&data[csoff + i * 8], ccitt16(tmp, chklen[i]));
+        LittleEndian::convertFrom<u16>(&data[csoff + i * 8], ccitt16(tmp, chklen[i]));
     }
 
     delete[] tmp;

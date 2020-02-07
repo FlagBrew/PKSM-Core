@@ -72,7 +72,7 @@ void PK4::crypt(void)
 
 bool PK4::isEncrypted() const
 {
-    return Endian::convertTo<u32>(data + 0x64) != 0;
+    return LittleEndian::convertTo<u32>(data + 0x64) != 0;
 }
 
 PK4::PK4(PrivateConstructor, u8* dt, bool party, bool direct) : PKX(dt, party ? PARTY_LENGTH : BOX_LENGTH, direct)
@@ -144,74 +144,74 @@ void PK4::abilityNumber(u8 v)
 
 u32 PK4::PID(void) const
 {
-    return Endian::convertTo<u32>(data);
+    return LittleEndian::convertTo<u32>(data);
 }
 void PK4::PID(u32 v)
 {
-    Endian::convertFrom<u32>(data, v);
+    LittleEndian::convertFrom<u32>(data, v);
 }
 
 u16 PK4::sanity(void) const
 {
-    return Endian::convertTo<u16>(data + 0x04);
+    return LittleEndian::convertTo<u16>(data + 0x04);
 }
 void PK4::sanity(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x04, v);
+    LittleEndian::convertFrom<u16>(data + 0x04, v);
 }
 
 u16 PK4::checksum(void) const
 {
-    return Endian::convertTo<u16>(data + 0x06);
+    return LittleEndian::convertTo<u16>(data + 0x06);
 }
 void PK4::checksum(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x06, v);
+    LittleEndian::convertFrom<u16>(data + 0x06, v);
 }
 
 u16 PK4::species(void) const
 {
-    return Endian::convertTo<u16>(data + 0x08);
+    return LittleEndian::convertTo<u16>(data + 0x08);
 }
 void PK4::species(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x08, v);
+    LittleEndian::convertFrom<u16>(data + 0x08, v);
 }
 
 u16 PK4::heldItem(void) const
 {
-    return Endian::convertTo<u16>(data + 0x0A);
+    return LittleEndian::convertTo<u16>(data + 0x0A);
 }
 void PK4::heldItem(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x0A, v);
+    LittleEndian::convertFrom<u16>(data + 0x0A, v);
 }
 
 u16 PK4::TID(void) const
 {
-    return Endian::convertTo<u16>(data + 0x0C);
+    return LittleEndian::convertTo<u16>(data + 0x0C);
 }
 void PK4::TID(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x0C, v);
+    LittleEndian::convertFrom<u16>(data + 0x0C, v);
 }
 
 u16 PK4::SID(void) const
 {
-    return Endian::convertTo<u16>(data + 0x0E);
+    return LittleEndian::convertTo<u16>(data + 0x0E);
 }
 void PK4::SID(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x0E, v);
+    LittleEndian::convertFrom<u16>(data + 0x0E, v);
 }
 
 u32 PK4::experience(void) const
 {
-    return Endian::convertTo<u32>(data + 0x10);
+    return LittleEndian::convertTo<u32>(data + 0x10);
 }
 void PK4::experience(u32 v)
 {
-    Endian::convertFrom<u32>(data + 0x10, v);
+    LittleEndian::convertFrom<u32>(data + 0x10, v);
 }
 
 u8 PK4::otFriendship(void) const
@@ -297,11 +297,11 @@ void PK4::ribbon(u8 ribcat, u8 ribnum, u8 v)
 
 u16 PK4::move(u8 m) const
 {
-    return Endian::convertTo<u16>(data + 0x28 + m * 2);
+    return LittleEndian::convertTo<u16>(data + 0x28 + m * 2);
 }
 void PK4::move(u8 m, u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x28 + m * 2, v);
+    LittleEndian::convertFrom<u16>(data + 0x28 + m * 2, v);
 }
 
 u16 PK4::relearnMove(u8 m) const
@@ -333,34 +333,34 @@ void PK4::PPUp(u8 m, u8 v)
 
 u8 PK4::iv(Stat stat) const
 {
-    u32 buffer = Endian::convertTo<u32>(data + 0x38);
+    u32 buffer = LittleEndian::convertTo<u32>(data + 0x38);
     return (u8)((buffer >> 5 * u8(stat)) & 0x1F);
 }
 
 void PK4::iv(Stat stat, u8 v)
 {
-    u32 buffer = Endian::convertTo<u32>(data + 0x38);
+    u32 buffer = LittleEndian::convertTo<u32>(data + 0x38);
     buffer &= ~(0x1F << 5 * u8(stat));
     buffer |= v << (5 * u8(stat));
-    Endian::convertFrom<u32>(data + 0x38, buffer);
+    LittleEndian::convertFrom<u32>(data + 0x38, buffer);
 }
 
 bool PK4::egg(void) const
 {
-    return ((Endian::convertTo<u32>(data + 0x38) >> 30) & 0x1) == 1;
+    return ((LittleEndian::convertTo<u32>(data + 0x38) >> 30) & 0x1) == 1;
 }
 void PK4::egg(bool v)
 {
-    Endian::convertFrom<u32>(data + 0x38, (u32)((Endian::convertTo<u32>(data + 0x38) & ~0x40000000) | (u32)(v ? 0x40000000 : 0)));
+    LittleEndian::convertFrom<u32>(data + 0x38, (u32)((LittleEndian::convertTo<u32>(data + 0x38) & ~0x40000000) | (u32)(v ? 0x40000000 : 0)));
 }
 
 bool PK4::nicknamed(void) const
 {
-    return ((Endian::convertTo<u32>(data + 0x38) >> 31) & 0x1) == 1;
+    return ((LittleEndian::convertTo<u32>(data + 0x38) >> 31) & 0x1) == 1;
 }
 void PK4::nicknamed(bool v)
 {
-    Endian::convertFrom<u32>(data + 0x38, (Endian::convertTo<u32>(data + 0x38) & 0x7FFFFFFF) | (v ? 0x80000000 : 0));
+    LittleEndian::convertFrom<u32>(data + 0x38, (LittleEndian::convertTo<u32>(data + 0x38) & 0x7FFFFFFF) | (v ? 0x80000000 : 0));
 }
 
 bool PK4::fatefulEncounter(void) const
@@ -518,55 +518,55 @@ void PK4::metDay(u8 v)
 
 u16 PK4::eggLocation(void) const
 {
-    u16 hgssLoc = Endian::convertTo<u16>(data + 0x44);
+    u16 hgssLoc = LittleEndian::convertTo<u16>(data + 0x44);
     if (hgssLoc != 0)
         return hgssLoc;
-    return Endian::convertTo<u16>(data + 0x7E);
+    return LittleEndian::convertTo<u16>(data + 0x7E);
 }
 void PK4::eggLocation(u16 v)
 {
     if (v == 0)
     {
-        Endian::convertFrom<u16>(data + 0x44, v);
-        Endian::convertFrom<u16>(data + 0x7E, v);
+        LittleEndian::convertFrom<u16>(data + 0x44, v);
+        LittleEndian::convertFrom<u16>(data + 0x7E, v);
     }
     else if ((v < 2000 && v > 111) || (v < 3000 && v > 2010))
     {
-        Endian::convertFrom<u16>(data + 0x44, v);
-        Endian::convertFrom<u16>(data + 0x7E, 0xBBA);
+        LittleEndian::convertFrom<u16>(data + 0x44, v);
+        LittleEndian::convertFrom<u16>(data + 0x7E, 0xBBA);
     }
     else
     {
         // If this pokemon is from Platinum, HeartGold, or SoulSilver
-        Endian::convertFrom<u16>(data + 0x44, (version() == 12 || version() == 7 || version() == 8) ? v : 0);
-        Endian::convertFrom<u16>(data + 0x7E, v);
+        LittleEndian::convertFrom<u16>(data + 0x44, (version() == 12 || version() == 7 || version() == 8) ? v : 0);
+        LittleEndian::convertFrom<u16>(data + 0x7E, v);
     }
 }
 
 u16 PK4::metLocation(void) const
 {
-    u16 hgssLoc = Endian::convertTo<u16>(data + 0x46);
+    u16 hgssLoc = LittleEndian::convertTo<u16>(data + 0x46);
     if (hgssLoc != 0)
         return hgssLoc;
-    return Endian::convertTo<u16>(data + 0x80);
+    return LittleEndian::convertTo<u16>(data + 0x80);
 }
 void PK4::metLocation(u16 v)
 {
     if (v == 0)
     {
-        Endian::convertFrom<u16>(data + 0x46, v);
-        Endian::convertFrom<u16>(data + 0x80, v);
+        LittleEndian::convertFrom<u16>(data + 0x46, v);
+        LittleEndian::convertFrom<u16>(data + 0x80, v);
     }
     else if ((v < 2000 && v > 111) || (v < 3000 && v > 2010))
     {
-        Endian::convertFrom<u16>(data + 0x46, v);
-        Endian::convertFrom<u16>(data + 0x80, 0xBBA);
+        LittleEndian::convertFrom<u16>(data + 0x46, v);
+        LittleEndian::convertFrom<u16>(data + 0x80, 0xBBA);
     }
     else
     {
         // If this pokemon is from Platinum, HeartGold, or SoulSilver
-        Endian::convertFrom<u16>(data + 0x46, (version() == 12 || version() == 7 || version() == 8) ? v : 0);
-        Endian::convertFrom<u16>(data + 0x80, v);
+        LittleEndian::convertFrom<u16>(data + 0x46, (version() == 12 || version() == 7 || version() == 8) ? v : 0);
+        LittleEndian::convertFrom<u16>(data + 0x80, v);
     }
 }
 
@@ -657,7 +657,7 @@ void PK4::refreshChecksum(void)
     u16 chk = 0;
     for (u8 i = 8; i < BOX_LENGTH; i += 2)
     {
-        chk += Endian::convertTo<u16>(data + i);
+        chk += LittleEndian::convertTo<u16>(data + i);
     }
     checksum(chk);
 }
@@ -809,14 +809,14 @@ int PK4::partyCurrHP(void) const
     {
         return -1;
     }
-    return Endian::convertTo<u16>(data + 0x8E);
+    return LittleEndian::convertTo<u16>(data + 0x8E);
 }
 
 void PK4::partyCurrHP(u16 v)
 {
     if (isParty())
     {
-        Endian::convertFrom<u16>(data + 0x8E, v);
+        LittleEndian::convertFrom<u16>(data + 0x8E, v);
     }
 }
 
@@ -826,14 +826,14 @@ int PK4::partyStat(Stat stat) const
     {
         return -1;
     }
-    return Endian::convertTo<u16>(data + 0x90 + u8(stat) * 2);
+    return LittleEndian::convertTo<u16>(data + 0x90 + u8(stat) * 2);
 }
 
 void PK4::partyStat(Stat stat, u16 v)
 {
     if (isParty())
     {
-        Endian::convertFrom<u16>(data + 0x90 + u8(stat) * 2, v);
+        LittleEndian::convertFrom<u16>(data + 0x90 + u8(stat) * 2, v);
     }
 }
 
@@ -968,10 +968,10 @@ std::unique_ptr<PK5> PK4::convertToG5(Sav& save) const
     auto pk5 = PKX::getPKM<Generation::FIVE>(const_cast<u8*>(data));
 
     // Clear HGSS data
-    Endian::convertFrom<u16>(pk5->rawData() + 0x86, 0);
+    LittleEndian::convertFrom<u16>(pk5->rawData() + 0x86, 0);
 
     // Clear PtHGSS met data
-    Endian::convertFrom<u32>(pk5->rawData() + 0x44, 0);
+    LittleEndian::convertFrom<u32>(pk5->rawData() + 0x44, 0);
 
     time_t t              = time(NULL);
     struct tm* timeStruct = gmtime((const time_t*)&t);

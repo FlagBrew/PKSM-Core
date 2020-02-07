@@ -324,9 +324,9 @@ u8 PKX::genFromBytes(u8* data, size_t length)
     {
         // decrypt data if necessary
         PK4 test(PrivateConstructor{}, data);
-        if (Endian::convertTo<u16>(test.rawData() + 4) == 0 &&
-            (Endian::convertTo<u16>(test.rawData() + 0x80) >= 0x3333 || test.rawData()[0x5F] >= 0x10) &&
-            Endian::convertTo<u16>(test.rawData() + 0x46) == 0)
+        if (LittleEndian::convertTo<u16>(test.rawData() + 4) == 0 &&
+            (LittleEndian::convertTo<u16>(test.rawData() + 0x80) >= 0x3333 || test.rawData()[0x5F] >= 0x10) &&
+            LittleEndian::convertTo<u16>(test.rawData() + 0x46) == 0)
         {
             return 5;
         }

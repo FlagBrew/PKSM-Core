@@ -51,7 +51,7 @@ Generation WC7::generation(void) const
 
 u16 WC7::ID(void) const
 {
-    return Endian::convertTo<u16>(data);
+    return LittleEndian::convertTo<u16>(data);
 }
 
 std::string WC7::title(void) const
@@ -61,11 +61,11 @@ std::string WC7::title(void) const
 
 u32 WC7::rawDate(void) const
 {
-    return Endian::convertTo<u32>(data + 0x4C);
+    return LittleEndian::convertTo<u32>(data + 0x4C);
 }
 void WC7::rawDate(u32 v)
 {
-    Endian::convertFrom<u32>(data + 0x4C, v);
+    LittleEndian::convertFrom<u32>(data + 0x4C, v);
 }
 
 u32 WC7::year(void) const
@@ -151,7 +151,7 @@ u16 WC7::object(void) const
 
 u16 WC7::object(int index) const
 {
-    return Endian::convertTo<u16>(data + 0x68 + index * 4);
+    return LittleEndian::convertTo<u16>(data + 0x68 + index * 4);
 }
 
 int WC7::items(void) const
@@ -166,7 +166,7 @@ u16 WC7::objectQuantity(void) const
 
 u16 WC7::objectQuantity(int index) const
 {
-    return Endian::convertTo<u16>(data + 0x6A + index * 4);
+    return LittleEndian::convertTo<u16>(data + 0x6A + index * 4);
 }
 
 bool WC7::pokemon(void) const
@@ -186,12 +186,12 @@ bool WC7::shiny(void) const
 
 u16 WC7::TID(void) const
 {
-    return Endian::convertTo<u16>(data + 0x68);
+    return LittleEndian::convertTo<u16>(data + 0x68);
 }
 
 u16 WC7::SID(void) const
 {
-    return Endian::convertTo<u16>(data + 0x6A);
+    return LittleEndian::convertTo<u16>(data + 0x6A);
 }
 
 u8 WC7::version(void) const
@@ -201,7 +201,7 @@ u8 WC7::version(void) const
 
 u32 WC7::encryptionConstant(void) const
 {
-    return Endian::convertTo<u32>(data + 0x70);
+    return LittleEndian::convertTo<u32>(data + 0x70);
 }
 
 u8 WC7::ball(void) const
@@ -211,17 +211,17 @@ u8 WC7::ball(void) const
 
 u16 WC7::heldItem(void) const
 {
-    return Endian::convertTo<u16>(data + 0x78);
+    return LittleEndian::convertTo<u16>(data + 0x78);
 }
 
 u16 WC7::move(u8 m) const
 {
-    return Endian::convertTo<u16>(data + 0x7A + m * 2);
+    return LittleEndian::convertTo<u16>(data + 0x7A + m * 2);
 }
 
 u16 WC7::species(void) const
 {
-    return Endian::convertTo<u16>(data + 0x82);
+    return LittleEndian::convertTo<u16>(data + 0x82);
 }
 
 u8 WC7::alternativeForm(void) const
@@ -236,7 +236,7 @@ Language WC7::language(void) const
 
 std::string WC7::nickname(void) const
 {
-    return Endian::convertTo<u16>(data + 0x86) != 0 ? StringUtils::getString(data, 0x86, 12) : "Pokemon Name";
+    return LittleEndian::convertTo<u16>(data + 0x86) != 0 ? StringUtils::getString(data, 0x86, 12) : "Pokemon Name";
 } // Localization::speciesName(species()); }
 
 u8 WC7::nature(void) const
@@ -275,7 +275,7 @@ u8 WC7::metLevel(void) const
 
 std::string WC7::otName(void) const
 {
-    return Endian::convertTo<u16>(data + 0xB6) != 0 ? StringUtils::getString(data, 0xB6, 12) : "Your OT Name";
+    return LittleEndian::convertTo<u16>(data + 0xB6) != 0 ? StringUtils::getString(data, 0xB6, 12) : "Your OT Name";
 }
 
 u8 WC7::level(void) const
@@ -290,12 +290,12 @@ bool WC7::egg(void) const
 
 u16 WC7::eggLocation(void) const
 {
-    return Endian::convertTo<u16>(data + 0xA4);
+    return LittleEndian::convertTo<u16>(data + 0xA4);
 }
 
 u16 WC7::metLocation(void) const
 {
-    return Endian::convertTo<u16>(data + 0xA6);
+    return LittleEndian::convertTo<u16>(data + 0xA6);
 }
 
 u8 WC7::contest(u8 index) const
@@ -315,17 +315,17 @@ u8 WC7::otGender(void) const
 
 u16 WC7::additionalItem(void) const
 {
-    return Endian::convertTo<u16>(data + 0xD2);
+    return LittleEndian::convertTo<u16>(data + 0xD2);
 }
 
 u32 WC7::PID(void) const
 {
-    return Endian::convertTo<u32>(data + 0xD4);
+    return LittleEndian::convertTo<u32>(data + 0xD4);
 }
 
 u16 WC7::relearnMove(u8 index) const
 {
-    return Endian::convertTo<u16>(data + 0xD8 + index * 2);
+    return LittleEndian::convertTo<u16>(data + 0xD8 + index * 2);
 }
 
 u8 WC7::otIntensity(void) const

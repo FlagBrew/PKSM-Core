@@ -127,7 +127,7 @@ u16 PGT::object(void) const
     {
         return 467;
     }
-    return Endian::convertTo<u16>(data + 0x4);
+    return LittleEndian::convertTo<u16>(data + 0x4);
 }
 
 u8 PGT::flags(void) const

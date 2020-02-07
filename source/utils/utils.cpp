@@ -427,12 +427,12 @@ void StringUtils::setString(u8* data, const std::u16string& v, int ofs, int len,
     int i = 0;
     for (; i < std::min(len - 1, (int)v.size()); i++) // len includes terminator
     {
-        Endian::convertFrom<char16_t>(data + ofs + i * 2, v[i]);
+        LittleEndian::convertFrom<char16_t>(data + ofs + i * 2, v[i]);
     }
-    Endian::convertFrom<char16_t>(data + ofs + i++ * 2, terminator); // Set terminator
+    LittleEndian::convertFrom<char16_t>(data + ofs + i++ * 2, terminator); // Set terminator
     for (; i < len; i++)
     {
-        Endian::convertFrom<char16_t>(data + ofs + i * 2, padding); // Set final padding bytes
+        LittleEndian::convertFrom<char16_t>(data + ofs + i * 2, padding); // Set final padding bytes
     }
 }
 
@@ -448,7 +448,7 @@ std::string StringUtils::getString4(const u8* data, int ofs, int len)
     char addChar[4];
     for (u8 i = 0; i < len; i += 2)
     {
-        u16 temp = Endian::convertTo<u16>(data + ofs + i);
+        u16 temp = LittleEndian::convertTo<u16>(data + ofs + i);
         if (temp == 0xFFFF)
             break;
         u16 index     = std::distance(G4Values, std::find(G4Values, G4Values + G4TEXT_LENGTH, temp));

@@ -52,7 +52,7 @@ auto Sav3::getBlockOrder(std::shared_ptr<u8[]> dt, int ofs) -> std::array<int, B
 {
     std::array<int, BLOCK_COUNT> order;
     for (int i = 0; i < BLOCK_COUNT; i++)
-        order[i] = Endian::convertTo<s16>(&dt[ofs + (i * SIZE_BLOCK) + 0xFF4]);
+        order[i] = LittleEndian::convertTo<s16>(&dt[ofs + (i * SIZE_BLOCK) + 0xFF4]);
     return order;
 }
 
@@ -64,8 +64,8 @@ int Sav3::getActiveSaveIndex(std::shared_ptr<u8[]> dt, std::array<int, BLOCK_COU
         return 0;
     if (zeroBlock1 == blockOrder1.size())
         return 1;
-    u32 count1 = Endian::convertTo<u32>(&dt[(zeroBlock1 * SIZE_BLOCK) + 0x0FFC]);
-    u32 count2 = Endian::convertTo<u32>(&dt[(zeroBlock2 * SIZE_BLOCK) + 0xEFFC]);
+    u32 count1 = LittleEndian::convertTo<u32>(&dt[(zeroBlock1 * SIZE_BLOCK) + 0x0FFC]);
+    u32 count2 = LittleEndian::convertTo<u32>(&dt[(zeroBlock2 * SIZE_BLOCK) + 0xEFFC]);
     return count1 > count2 ? 0 : 1;
 }
 
@@ -82,7 +82,7 @@ Game Sav3::getVersion(std::shared_ptr<u8[]> dt)
     int blockOfs0 = ((std::find(order.begin(), order.end(), 0) - order.begin()) * SIZE_BLOCK) + ABO;
 
     // Get version
-    u32 gameCode = Endian::convertTo<u32>(&dt[blockOfs0 + 0xAC]);
+    u32 gameCode = LittleEndian::convertTo<u32>(&dt[blockOfs0 + 0xAC]);
     switch (gameCode)
     {
         case 1:
@@ -94,9 +94,9 @@ Game Sav3::getVersion(std::shared_ptr<u8[]> dt)
             // 00 FF 00 00 00 00 00 00 00 FF 00 00 00 00 00 00
             // ^ byte pattern in Emerald saves, is all zero in Ruby/Sapphire as far as I can tell.
             // Some saves have had data @ 0x550
-            if (Endian::convertTo<u64>(&dt[blockOfs0 + 0xEE0]) != 0)
+            if (LittleEndian::convertTo<u64>(&dt[blockOfs0 + 0xEE0]) != 0)
                 return Game::E;
-            if (Endian::convertTo<u64>(&dt[blockOfs0 + 0xEE8]) != 0)
+            if (LittleEndian::convertTo<u64>(&dt[blockOfs0 + 0xEE8]) != 0)
                 return Game::E;
             return Game::RS;
     }
@@ -109,7 +109,7 @@ Sav3::Sav3(std::shared_ptr<u8[]> dt) : Sav(dt, 0x20000)
     // Japanese games are limited to 5 character OT names; any unused characters are 0xFF.
     // 5 for JP, 7 for INT. There's always 1 terminator, thus we can check 0x6-0x7 being 0xFFFF = INT
     // OT name is stored at the top of the first block.
-    japanese = Endian::convertTo<s16>(&data[blockOfs[0] + 0x6]) == 0;
+    japanese = LittleEndian::convertTo<s16>(&data[blockOfs[0] + 0x6]) == 0;
 
     PokeDex = blockOfs[0] + 0x18;
 
@@ -161,7 +161,7 @@ u16 Sav3::CRC32(u8* dt, int start, int length)
 {
     u32 val = 0;
     for (int i = start; i < start + length; i += 4)
-        val += Endian::convertTo<u32>(&dt[i]);
+        val += LittleEndian::convertTo<u32>(&dt[i]);
     return (u16)(val + (val >> 16));
 }
 
@@ -175,17 +175,17 @@ void Sav3::resign(void)
             continue;
         int len = chunkLength[index];
         u16 chk = CRC32(data.get(), ofs, len);
-        Endian::convertFrom<u16>(&data[ofs + 0xFF6], chk);
+        LittleEndian::convertFrom<u16>(&data[ofs + 0xFF6], chk);
     }
 
     // Hall of Fame Checksums
     {
         u16 chk = CRC32(data.get(), 0x1C000, SIZE_BLOCK_USED);
-        Endian::convertFrom<u16>(&data[0x1CFF4], chk);
+        LittleEndian::convertFrom<u16>(&data[0x1CFF4], chk);
     }
     {
         u16 chk = CRC32(data.get(), 0x1D000, SIZE_BLOCK_USED);
-        Endian::convertFrom<u16>(&data[0x1DFF4], chk);
+        LittleEndian::convertFrom<u16>(&data[0x1DFF4], chk);
     }
 }
 
@@ -194,9 +194,9 @@ u32 Sav3::securityKey(void) const
     switch (game)
     {
         case Game::E:
-            return Endian::convertTo<u32>(&data[blockOfs[0] + 0xAC]);
+            return LittleEndian::convertTo<u32>(&data[blockOfs[0] + 0xAC]);
         case Game::FRLG:
-            return Endian::convertTo<u32>(&data[blockOfs[0] + 0xF20]);
+            return LittleEndian::convertTo<u32>(&data[blockOfs[0] + 0xF20]);
         default:
             return 0u;
     }
@@ -204,20 +204,20 @@ u32 Sav3::securityKey(void) const
 
 u16 Sav3::TID(void) const
 {
-    return Endian::convertTo<u16>(&data[blockOfs[0] + 0xA]);
+    return LittleEndian::convertTo<u16>(&data[blockOfs[0] + 0xA]);
 }
 void Sav3::TID(u16 v)
 {
-    Endian::convertFrom<u16>(&data[blockOfs[0] + 0xA], v);
+    LittleEndian::convertFrom<u16>(&data[blockOfs[0] + 0xA], v);
 }
 
 u16 Sav3::SID(void) const
 {
-    return Endian::convertTo<u16>(&data[blockOfs[0] + 0xC]);
+    return LittleEndian::convertTo<u16>(&data[blockOfs[0] + 0xC]);
 }
 void Sav3::SID(u16 v)
 {
-    Endian::convertFrom<u16>(&data[blockOfs[0] + 0xC], v);
+    LittleEndian::convertFrom<u16>(&data[blockOfs[0] + 0xC], v);
 }
 
 u8 Sav3::version(void) const
@@ -290,9 +290,9 @@ u32 Sav3::money(void) const
     {
         case Game::RS:
         case Game::E:
-            return Endian::convertTo<u32>(&data[blockOfs[1] + 0x490]) ^ securityKey();
+            return LittleEndian::convertTo<u32>(&data[blockOfs[1] + 0x490]) ^ securityKey();
         case Game::FRLG:
-            return Endian::convertTo<u32>(&data[blockOfs[1] + 0x290]) ^ securityKey();
+            return LittleEndian::convertTo<u32>(&data[blockOfs[1] + 0x290]) ^ securityKey();
         default:
             return int(game);
     }
@@ -303,10 +303,10 @@ void Sav3::money(u32 v)
     {
         case Game::RS:
         case Game::E:
-            Endian::convertFrom<u32>(&data[blockOfs[1] + 0x0490], v ^ securityKey());
+            LittleEndian::convertFrom<u32>(&data[blockOfs[1] + 0x0490], v ^ securityKey());
             break;
         case Game::FRLG:
-            Endian::convertFrom<u32>(&data[blockOfs[1] + 0x0290], v ^ securityKey());
+            LittleEndian::convertFrom<u32>(&data[blockOfs[1] + 0x0290], v ^ securityKey());
             break;
         default:
             break;
@@ -317,7 +317,7 @@ void Sav3::money(u32 v)
 
 u32 Sav3::BP(void) const
 {
-    return Endian::convertTo<u16>(&data[blockOfs[0] + 0xEB8]);
+    return LittleEndian::convertTo<u16>(&data[blockOfs[0] + 0xEB8]);
 }
 void Sav3::BP(u32 v)
 {
@@ -326,7 +326,7 @@ void Sav3::BP(u32 v)
         v = 9999;
     }
 
-    Endian::convertFrom<u16>(&data[blockOfs[0] + 0xEB8], v);
+    LittleEndian::convertFrom<u16>(&data[blockOfs[0] + 0xEB8], v);
 }
 
 // TODO:? BPEarned
@@ -390,11 +390,11 @@ u8 Sav3::badges(void) const
 
 u16 Sav3::playedHours(void) const
 {
-    return Endian::convertTo<u16>(&data[blockOfs[0] + 0xE]);
+    return LittleEndian::convertTo<u16>(&data[blockOfs[0] + 0xE]);
 }
 void Sav3::playedHours(u16 v)
 {
-    Endian::convertFrom<u16>(&data[blockOfs[0] + 0xE], v);
+    LittleEndian::convertFrom<u16>(&data[blockOfs[0] + 0xE], v);
 }
 
 u8 Sav3::playedMinutes(void) const
@@ -490,20 +490,20 @@ bool Sav3::canSetDex(int species)
 
 u32 Sav3::dexPIDUnown(void)
 {
-    return Endian::convertTo<u32>(&data[PokeDex + 0x4]);
+    return LittleEndian::convertTo<u32>(&data[PokeDex + 0x4]);
 }
 void Sav3::dexPIDUnown(u32 v)
 {
-    Endian::convertFrom<u32>(&data[PokeDex + 0x4], v);
+    LittleEndian::convertFrom<u32>(&data[PokeDex + 0x4], v);
 }
 
 u32 Sav3::dexPIDSpinda(void)
 {
-    return Endian::convertTo<u32>(&data[PokeDex + 0x8]);
+    return LittleEndian::convertTo<u32>(&data[PokeDex + 0x8]);
 }
 void Sav3::dexPIDSpinda(u32 v)
 {
-    Endian::convertFrom<u32>(&data[PokeDex + 0x8], v);
+    LittleEndian::convertFrom<u32>(&data[PokeDex + 0x8], v);
 }
 
 void Sav3::dex(std::shared_ptr<PKX> pk)
@@ -781,13 +781,13 @@ u16 Sav3::rtcInitialDay(void) const
 {
     if (game == Game::FRLG)
         return 0;
-    return Endian::convertTo<u16>(&data[blockOfs[0] + 0x98]);
+    return LittleEndian::convertTo<u16>(&data[blockOfs[0] + 0x98]);
 }
 void Sav3::rtcInitialDay(u16 v)
 {
     if (game == Game::FRLG)
         return;
-    Endian::convertFrom<u16>(&data[blockOfs[0] + 0x98], v);
+    LittleEndian::convertFrom<u16>(&data[blockOfs[0] + 0x98], v);
 }
 
 u8 Sav3::rtcInitialHour(void) const
@@ -833,13 +833,13 @@ u16 Sav3::rtcElapsedDay(void) const
 {
     if (game == Game::FRLG)
         return 0;
-    return Endian::convertTo<u16>(&data[blockOfs[0] + 0xA0]);
+    return LittleEndian::convertTo<u16>(&data[blockOfs[0] + 0xA0]);
 }
 void Sav3::rtcElapsedDay(u16 v)
 {
     if (game == Game::FRLG)
         return;
-    Endian::convertFrom<u16>(&data[blockOfs[0] + 0xA0], v);
+    LittleEndian::convertFrom<u16>(&data[blockOfs[0] + 0xA0], v);
 }
 
 u8 Sav3::rtcElapsedHour(void) const

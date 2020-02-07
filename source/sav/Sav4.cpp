@@ -51,7 +51,7 @@ void Sav4::GBO(void)
         return;
     }
 
-    u16 c1 = Endian::convertTo<u16>(&data[ofs]), c2 = Endian::convertTo<u16>(&data[ofs + 0x40000]);
+    u16 c1 = LittleEndian::convertTo<u16>(&data[ofs]), c2 = LittleEndian::convertTo<u16>(&data[ofs + 0x40000]);
 
     gbo = (c1 >= c2) ? 0 : 0x40000;
 }
@@ -76,7 +76,7 @@ void Sav4::SBO(void)
         return;
     }
 
-    u16 c1 = Endian::convertTo<u16>(&data[ofs]), c2 = Endian::convertTo<u16>(&data[ofs + 0x40000]);
+    u16 c1 = LittleEndian::convertTo<u16>(&data[ofs]), c2 = LittleEndian::convertTo<u16>(&data[ofs + 0x40000]);
 
     sbo = (c1 >= c2) ? 0 : 0x40000;
 }
@@ -93,31 +93,31 @@ void Sav4::resign(void)
 
     std::copy(&data[gbo + general[0]], &data[gbo + general[1]], tmp);
     cs = ccitt16(tmp, general[1] - general[0]);
-    Endian::convertFrom<u16>(&data[gbo + general[2]], cs);
+    LittleEndian::convertFrom<u16>(&data[gbo + general[2]], cs);
 
     std::copy(&data[sbo + storage[0]], &data[sbo + storage[1]], tmp);
     cs = ccitt16(tmp, storage[1] - storage[0]);
-    Endian::convertFrom<u16>(&data[sbo + storage[2]], cs);
+    LittleEndian::convertFrom<u16>(&data[sbo + storage[2]], cs);
 
     delete[] tmp;
 }
 
 u16 Sav4::TID(void) const
 {
-    return Endian::convertTo<u16>(&data[Trainer1 + 0x10]);
+    return LittleEndian::convertTo<u16>(&data[Trainer1 + 0x10]);
 }
 void Sav4::TID(u16 v)
 {
-    Endian::convertFrom<u16>(&data[Trainer1 + 0x10], v);
+    LittleEndian::convertFrom<u16>(&data[Trainer1 + 0x10], v);
 }
 
 u16 Sav4::SID(void) const
 {
-    return Endian::convertTo<u16>(&data[Trainer1 + 0x12]);
+    return LittleEndian::convertTo<u16>(&data[Trainer1 + 0x12]);
 }
 void Sav4::SID(u16 v)
 {
-    Endian::convertFrom<u16>(&data[Trainer1 + 0x12], v);
+    LittleEndian::convertFrom<u16>(&data[Trainer1 + 0x12], v);
 }
 
 u8 Sav4::version(void) const
@@ -185,20 +185,20 @@ void Sav4::otName(const std::string& v)
 
 u32 Sav4::money(void) const
 {
-    return Endian::convertTo<u32>(&data[Trainer1 + 0x14]);
+    return LittleEndian::convertTo<u32>(&data[Trainer1 + 0x14]);
 }
 void Sav4::money(u32 v)
 {
-    Endian::convertFrom<u32>(&data[Trainer1 + 0x14], v);
+    LittleEndian::convertFrom<u32>(&data[Trainer1 + 0x14], v);
 }
 
 u32 Sav4::BP(void) const
 {
-    return Endian::convertTo<u16>(&data[Trainer1 + 0x20]);
+    return LittleEndian::convertTo<u16>(&data[Trainer1 + 0x20]);
 } // Returns Coins @ Game Corner
 void Sav4::BP(u32 v)
 {
-    Endian::convertFrom<u32>(&data[Trainer1 + 0x20], v);
+    LittleEndian::convertFrom<u32>(&data[Trainer1 + 0x20], v);
 }
 
 u8 Sav4::badges(void) const
@@ -222,11 +222,11 @@ u8 Sav4::badges(void) const
 
 u16 Sav4::playedHours(void) const
 {
-    return Endian::convertTo<u16>(&data[Trainer1 + 0x22]);
+    return LittleEndian::convertTo<u16>(&data[Trainer1 + 0x22]);
 }
 void Sav4::playedHours(u16 v)
 {
-    Endian::convertFrom<u16>(&data[Trainer1 + 0x22], v);
+    LittleEndian::convertFrom<u16>(&data[Trainer1 + 0x22], v);
 }
 
 u8 Sav4::playedMinutes(void) const
@@ -336,7 +336,7 @@ void Sav4::mysteryGift(WCX& wc, int& pos)
         {
             static constexpr u32 dpSlotActive = 0xEDB88320;
             const int ofs                     = WondercardFlags + 0x100;
-            Endian::convertFrom<u32>(&data[ofs + 4 * pos], dpSlotActive);
+            LittleEndian::convertFrom<u32>(&data[ofs + 4 * pos], dpSlotActive);
         }
     }
 }
@@ -628,7 +628,7 @@ std::vector<u8> Sav4::getForms(u16 species)
     switch (species)
     {
         case 479: // Rotom
-            return getDexFormValues(Endian::convertTo<u32>(data.get() + formOffset2), 3, 6);
+            return getDexFormValues(LittleEndian::convertTo<u32>(data.get() + formOffset2), 3, 6);
         case 492: // Shaymin
             return getDexFormValues(data[formOffset2 + 4], 1, 2);
         case 487: // Giratina
@@ -706,7 +706,7 @@ void Sav4::setForms(std::vector<u8> forms, u16 species)
     {
         case 479: // Rotom
         {
-            auto values = Endian::convertFrom(setDexFormValues(forms, 3, 6));
+            auto values = LittleEndian::convertFrom(setDexFormValues(forms, 3, 6));
             for (int i = 0; i < values.size(); i++)
             {
                 data[formOffset2 + i] = values[i];

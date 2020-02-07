@@ -111,26 +111,26 @@ namespace
 }
 
 template <>
-DexEntry Endian::convertTo<DexEntry>(const u8* data)
+constexpr DexEntry LittleEndian::convertTo<DexEntry>(const u8* data)
 {
-    DexEntry ret;
-    u64 v64                  = Endian::convertTo<u64>(data);
+    DexEntry ret{};
+    u64 v64                  = LittleEndian::convertTo<u64>(data);
     ret.seenNonShinyMale     = v64;
     ret.seenNonShinyMaleGiga = v64 >> 63;
 
-    v64                        = Endian::convertTo<u64>(data + 8);
+    v64                        = LittleEndian::convertTo<u64>(data + 8);
     ret.seenNonShinyFemale     = v64;
     ret.seenNonShinyFemaleGiga = v64 >> 63;
 
-    v64                   = Endian::convertTo<u64>(data + 16);
+    v64                   = LittleEndian::convertTo<u64>(data + 16);
     ret.seenShinyMale     = v64;
     ret.seenShinyMaleGiga = v64 >> 63;
 
-    v64                     = Endian::convertTo<u64>(data + 24);
+    v64                     = LittleEndian::convertTo<u64>(data + 24);
     ret.seenShinyFemale     = v64;
     ret.seenShinyFemaleGiga = v64 >> 63;
 
-    u32 v32           = Endian::convertTo<u32>(data + 32);
+    u32 v32           = LittleEndian::convertTo<u32>(data + 32);
     ret.owned         = v32 & 1;
     ret.ownedGiga     = (v32 >> 1) & 1;
     ret.languages     = (v32 >> 2) & 0x1FFF;
@@ -139,35 +139,35 @@ DexEntry Endian::convertTo<DexEntry>(const u8* data)
     ret.displayGender = (v32 >> 29) & 3;
     ret.displayShiny  = v32 >> 31;
 
-    ret.battled = Endian::convertTo<u32>(data + 36);
-    ret.unk1    = Endian::convertTo<u32>(data + 40);
-    ret.unk2    = Endian::convertTo<u32>(data + 44);
+    ret.battled = LittleEndian::convertTo<u32>(data + 36);
+    ret.unk1    = LittleEndian::convertTo<u32>(data + 40);
+    ret.unk2    = LittleEndian::convertTo<u32>(data + 44);
 
     return ret;
 }
 
 template <>
-void Endian::convertFrom<DexEntry>(u8* data, const DexEntry& entry)
+constexpr void LittleEndian::convertFrom(u8* data, DexEntry entry)
 {
     u64 w64 = entry.seenNonShinyMale | (u64(entry.seenNonShinyMaleGiga) << 63);
-    Endian::convertFrom<u64>(data, w64);
+    LittleEndian::convertFrom<u64>(data, w64);
 
     w64 = entry.seenNonShinyFemale | (u64(entry.seenNonShinyFemaleGiga) << 63);
-    Endian::convertFrom<u64>(data + 8, w64);
+    LittleEndian::convertFrom<u64>(data + 8, w64);
 
     w64 = entry.seenShinyMale | (u64(entry.seenShinyMaleGiga) << 63);
-    Endian::convertFrom<u64>(data + 16, w64);
+    LittleEndian::convertFrom<u64>(data + 16, w64);
 
     w64 = entry.seenShinyFemale | (u64(entry.seenShinyFemaleGiga) << 63);
-    Endian::convertFrom<u64>(data + 24, w64);
+    LittleEndian::convertFrom<u64>(data + 24, w64);
 
     u32 w32 = entry.owned | (entry.ownedGiga << 1) | (entry.languages << 2) | (entry.displayFormID << 15) | (entry.displayGiga << 28) |
               (entry.displayGender << 29) | (entry.displayShiny << 31);
-    Endian::convertFrom<u32>(data + 32, w32);
+    LittleEndian::convertFrom<u32>(data + 32, w32);
 
-    Endian::convertFrom<u32>(data + 36, entry.battled);
-    Endian::convertFrom<u32>(data + 40, entry.unk1);
-    Endian::convertFrom<u32>(data + 44, entry.unk2);
+    LittleEndian::convertFrom<u32>(data + 36, entry.battled);
+    LittleEndian::convertFrom<u32>(data + 40, entry.unk1);
+    LittleEndian::convertFrom<u32>(data + 44, entry.unk2);
 }
 
 SavSWSH::SavSWSH(std::shared_ptr<u8[]> dt) : Sav8(dt, 0x17195E)
@@ -188,22 +188,22 @@ SavSWSH::SavSWSH(std::shared_ptr<u8[]> dt) : Sav8(dt, 0x17195E)
 
 u16 SavSWSH::TID(void) const
 {
-    return Endian::convertTo<u16>(getBlock(Status)->decryptedData() + 0xA0);
+    return LittleEndian::convertTo<u16>(getBlock(Status)->decryptedData() + 0xA0);
 }
 void SavSWSH::TID(u16 v)
 {
-    Endian::convertFrom<u16>(getBlock(Status)->decryptedData() + 0xA0, v);
-    Endian::convertFrom<u32>(getBlock(TrainerCard)->decryptedData() + 0x1C, displayTID());
+    LittleEndian::convertFrom<u16>(getBlock(Status)->decryptedData() + 0xA0, v);
+    LittleEndian::convertFrom<u32>(getBlock(TrainerCard)->decryptedData() + 0x1C, displayTID());
 }
 
 u16 SavSWSH::SID(void) const
 {
-    return Endian::convertTo<u16>(getBlock(Status)->decryptedData() + 0xA2);
+    return LittleEndian::convertTo<u16>(getBlock(Status)->decryptedData() + 0xA2);
 }
 void SavSWSH::SID(u16 v)
 {
-    Endian::convertFrom<u16>(getBlock(Status)->decryptedData() + 0xA2, v);
-    Endian::convertFrom<u32>(getBlock(TrainerCard)->decryptedData() + 0x1C, displayTID());
+    LittleEndian::convertFrom<u16>(getBlock(Status)->decryptedData() + 0xA2, v);
+    LittleEndian::convertFrom<u32>(getBlock(TrainerCard)->decryptedData() + 0x1C, displayTID());
 }
 
 u8 SavSWSH::version(void) const
@@ -257,20 +257,20 @@ void SavSWSH::jerseyNum(const std::string& v)
 
 u32 SavSWSH::money(void) const
 {
-    return Endian::convertTo<u32>(getBlock(Misc)->decryptedData());
+    return LittleEndian::convertTo<u32>(getBlock(Misc)->decryptedData());
 }
 void SavSWSH::money(u32 v)
 {
-    Endian::convertFrom<u32>(getBlock(Misc)->decryptedData(), v);
+    LittleEndian::convertFrom<u32>(getBlock(Misc)->decryptedData(), v);
 }
 
 u32 SavSWSH::BP(void) const
 {
-    return Endian::convertTo<u32>(getBlock(Misc)->decryptedData() + 4);
+    return LittleEndian::convertTo<u32>(getBlock(Misc)->decryptedData() + 4);
 }
 void SavSWSH::BP(u32 v)
 {
-    Endian::convertFrom<u32>(getBlock(Misc)->decryptedData() + 4, v);
+    LittleEndian::convertFrom<u32>(getBlock(Misc)->decryptedData() + 4, v);
 }
 
 u8 SavSWSH::badges(void) const
@@ -280,11 +280,11 @@ u8 SavSWSH::badges(void) const
 
 u16 SavSWSH::playedHours(void) const
 {
-    return Endian::convertTo<u16>(getBlock(PlayTime)->decryptedData());
+    return LittleEndian::convertTo<u16>(getBlock(PlayTime)->decryptedData());
 }
 void SavSWSH::playedHours(u16 v)
 {
-    Endian::convertFrom<u16>(getBlock(PlayTime)->decryptedData(), v);
+    LittleEndian::convertFrom<u16>(getBlock(PlayTime)->decryptedData(), v);
 }
 
 u8 SavSWSH::playedMinutes(void) const
@@ -540,7 +540,7 @@ void SavSWSH::dex(std::shared_ptr<PKX> pk)
     if (u16 index = ((PK8*)pk.get())->pokedexIndex())
     {
         u8* entryAddr  = getBlock(PokeDex)->decryptedData() + sizeof(DexEntry) * index;
-        DexEntry entry = Endian::convertTo<DexEntry>(entryAddr);
+        DexEntry entry = LittleEndian::convertTo<DexEntry>(entryAddr);
 
         u16 form = pk->alternativeForm();
         if (pk->species() == 869) // Alcremie
@@ -565,7 +565,7 @@ void SavSWSH::dex(std::shared_ptr<PKX> pk)
             entry.battled++;
         }
 
-        Endian::convertFrom<DexEntry>(entryAddr, entry);
+        LittleEndian::convertFrom<DexEntry>(entryAddr, entry);
     }
 }
 

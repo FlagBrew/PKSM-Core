@@ -63,7 +63,7 @@ void SavUSUM::resign(void)
     for (u8 i = 0; i < blockCount; i++)
     {
         std::copy(&data[chkofs[i]], &data[chkofs[i] + chklen[i]], tmp);
-        Endian::convertFrom<u16>(&data[csoff + i * 8], check16(tmp, Endian::convertTo<u16>(&data[csoff + i * 8 - 2]), chklen[i]));
+        LittleEndian::convertFrom<u16>(&data[csoff + i * 8], check16(tmp, LittleEndian::convertTo<u16>(&data[csoff + i * 8 - 2]), chklen[i]));
     }
 
     delete[] tmp;

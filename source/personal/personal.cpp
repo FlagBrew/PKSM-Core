@@ -48,7 +48,7 @@ namespace PersonalLGPE
     u8 baseFriendship(u16 species) { return personal_lgpe[species * 17 + 0x9]; }
     u8 expType(u16 species) { return personal_lgpe[species * 17 + 0xA]; }
     u8 ability(u16 species, u8 n) { return personal_lgpe[species * 17 + 0xB + n]; }
-    u16 formStatIndex(u16 species) { return Endian::convertTo<u16>((u8*)personal_lgpe + species * 17 + 0xE); }
+    u16 formStatIndex(u16 species) { return LittleEndian::convertTo<u16>((u8*)personal_lgpe + species * 17 + 0xE); }
     u8 formCount(u16 species) { return personal_lgpe[species * 17 + 0x10]; }
 }
 
@@ -66,7 +66,7 @@ namespace PersonalSMUSUM
     u8 baseFriendship(u16 species) { return personal_smusum[species * 17 + 0x9]; }
     u8 expType(u16 species) { return personal_smusum[species * 17 + 0xA]; }
     u8 ability(u16 species, u8 n) { return personal_smusum[species * 17 + 0xB + n]; }
-    u16 formStatIndex(u16 species) { return Endian::convertTo<u16>((u8*)personal_smusum + species * 17 + 0xE); }
+    u16 formStatIndex(u16 species) { return LittleEndian::convertTo<u16>((u8*)personal_smusum + species * 17 + 0xE); }
     u8 formCount(u16 species) { return personal_smusum[species * 17 + 0x10]; }
 }
 
@@ -84,7 +84,7 @@ namespace PersonalXYORAS
     u8 baseFriendship(u16 species) { return personal_xyoras[species * 17 + 0x9]; }
     u8 expType(u16 species) { return personal_xyoras[species * 17 + 0xA]; }
     u8 ability(u16 species, u8 n) { return personal_xyoras[species * 17 + 0xB + n]; }
-    u16 formStatIndex(u16 species) { return Endian::convertTo<u16>((u8*)personal_xyoras + species * 17 + 0xE); }
+    u16 formStatIndex(u16 species) { return LittleEndian::convertTo<u16>((u8*)personal_xyoras + species * 17 + 0xE); }
     u8 formCount(u16 species) { return personal_xyoras[species * 17 + 0x10]; }
 }
 
@@ -102,7 +102,7 @@ namespace PersonalBWB2W2
     u8 baseFriendship(u16 species) { return personal_bwb2w2[species * 17 + 0x9]; }
     u8 expType(u16 species) { return personal_bwb2w2[species * 17 + 0xA]; }
     u8 ability(u16 species, u8 n) { return personal_bwb2w2[species * 17 + 0xB + n]; }
-    u16 formStatIndex(u16 species) { return Endian::convertTo<u16>((u8*)personal_bwb2w2 + species * 17 + 0xE); }
+    u16 formStatIndex(u16 species) { return LittleEndian::convertTo<u16>((u8*)personal_bwb2w2 + species * 17 + 0xE); }
     u8 formCount(u16 species) { return personal_bwb2w2[species * 17 + 0x10]; }
 }
 
@@ -120,7 +120,7 @@ namespace PersonalDPPtHGSS
     u8 baseFriendship(u16 species) { return personal_dppthgss[species * 16 + 0x9]; }
     u8 expType(u16 species) { return personal_dppthgss[species * 16 + 0xA]; }
     u8 ability(u16 species, u8 n) { return personal_dppthgss[species * 16 + 0xB + n]; }
-    u16 formStatIndex(u16 species) { return Endian::convertTo<u16>((u8*)personal_dppthgss + species * 16 + 0xD); }
+    u16 formStatIndex(u16 species) { return LittleEndian::convertTo<u16>((u8*)personal_dppthgss + species * 16 + 0xD); }
     // Normalized to fit with other formCounts' return values
     u8 formCount(u16 species)
     {
@@ -154,9 +154,9 @@ namespace PersonalSWSH
     u8 baseFriendship(u16 species) { return personal_swsh[species * 36 + 0x9]; }
     u8 expType(u16 species) { return personal_swsh[species * 36 + 0xA]; }
     u8 formCount(u16 species) { return personal_swsh[species * 36 + 0xB]; }
-    u16 ability(u16 species, u8 n) { return Endian::convertTo<u16>((u8*)personal_swsh + species * 36 + 0xC + 2 * n); }
-    u16 formStatIndex(u16 species) { return Endian::convertTo<u16>((u8*)personal_swsh + species * 36 + 0x12); }
-    u16 pokedexIndex(u16 species) { return Endian::convertTo<u16>((u8*)personal_swsh + species * 36 + 0x14); }
+    u16 ability(u16 species, u8 n) { return LittleEndian::convertTo<u16>((u8*)personal_swsh + species * 36 + 0xC + 2 * n); }
+    u16 formStatIndex(u16 species) { return LittleEndian::convertTo<u16>((u8*)personal_swsh + species * 36 + 0x12); }
+    u16 pokedexIndex(u16 species) { return LittleEndian::convertTo<u16>((u8*)personal_swsh + species * 36 + 0x14); }
     bool canLearnTR(u16 species, u8 trID) { return (personal_swsh[species * 36 + 0x16 + (trID >> 3)] & (1 << (trID & 7))) != 0 ? true : false; }
 }
 

@@ -41,7 +41,7 @@ Generation PGF::generation(void) const
 
 u16 PGF::ID(void) const
 {
-    return Endian::convertTo<u16>(data + 0xB0);
+    return LittleEndian::convertTo<u16>(data + 0xB0);
 }
 
 std::string PGF::title(void) const
@@ -56,17 +56,17 @@ u8 PGF::type(void) const
 
 u32 PGF::rawDate(void) const
 {
-    return Endian::convertTo<u32>(data + 0xAC);
+    return LittleEndian::convertTo<u32>(data + 0xAC);
 }
 
 void PGF::rawDate(u32 value)
 {
-    Endian::convertFrom<u32>(data + 0xAC, value);
+    LittleEndian::convertFrom<u32>(data + 0xAC, value);
 }
 
 u32 PGF::year(void) const
 {
-    return Endian::convertTo<u16>(data + 0xAE);
+    return LittleEndian::convertTo<u16>(data + 0xAE);
 }
 
 u32 PGF::month(void) const
@@ -81,7 +81,7 @@ u32 PGF::day(void) const
 
 void PGF::year(u32 v)
 {
-    Endian::convertFrom<u16>(data + 0xAE, v < 2000 ? (u16)v + 2000 : v);
+    LittleEndian::convertFrom<u16>(data + 0xAE, v < 2000 ? (u16)v + 2000 : v);
 }
 
 void PGF::month(u32 v)
@@ -101,7 +101,7 @@ bool PGF::item(void) const
 
 u16 PGF::object(void) const
 {
-    return Endian::convertTo<u16>(data);
+    return LittleEndian::convertTo<u16>(data);
 }
 
 bool PGF::pokemon(void) const
@@ -151,7 +151,7 @@ u8 PGF::ball(void) const
 
 u16 PGF::heldItem(void) const
 {
-    return Endian::convertTo<u16>(data + 0x10);
+    return LittleEndian::convertTo<u16>(data + 0x10);
 }
 
 bool PGF::shiny(void) const
@@ -166,22 +166,22 @@ u8 PGF::PIDType(void) const
 
 u16 PGF::TID(void) const
 {
-    return Endian::convertTo<u16>(data);
+    return LittleEndian::convertTo<u16>(data);
 }
 
 u16 PGF::SID(void) const
 {
-    return Endian::convertTo<u16>(data + 0x02);
+    return LittleEndian::convertTo<u16>(data + 0x02);
 }
 
 u16 PGF::move(u8 index) const
 {
-    return Endian::convertTo<u16>(data + 0x12 + index * 2);
+    return LittleEndian::convertTo<u16>(data + 0x12 + index * 2);
 }
 
 u16 PGF::species(void) const
 {
-    return Endian::convertTo<u16>(data + 0x1A);
+    return LittleEndian::convertTo<u16>(data + 0x1A);
 }
 
 u8 PGF::gender(void) const
@@ -191,7 +191,7 @@ u8 PGF::gender(void) const
 
 std::string PGF::otName(void) const
 {
-    char16_t firstChar = Endian::convertTo<char16_t>(data + 0x4A);
+    char16_t firstChar = LittleEndian::convertTo<char16_t>(data + 0x4A);
     return firstChar != 0xFFFF ? StringUtils::getString(data, 0x4A, 8, u'\uFFFF') : "Your OT Name";
 }
 
@@ -202,7 +202,7 @@ u8 PGF::level(void) const
 
 u32 PGF::PID(void) const
 {
-    return Endian::convertTo<u32>(data + 0x08);
+    return LittleEndian::convertTo<u32>(data + 0x08);
 }
 
 bool PGF::ribbon(u8 category, u8 index) const
@@ -222,7 +222,7 @@ Language PGF::language(void) const
 
 std::string PGF::nickname(void) const
 {
-    char16_t firstChar = Endian::convertTo<char16_t>(data + 0x1E);
+    char16_t firstChar = LittleEndian::convertTo<char16_t>(data + 0x1E);
     return firstChar != 0xFFFF ? StringUtils::getString(data, 0x1E, 11, u'\uFFFF') : "Pokemon Name";
 }
 
@@ -252,12 +252,12 @@ u16 PGF::ability(void) const
 
 u16 PGF::eggLocation(void) const
 {
-    return Endian::convertTo<u16>(data + 0x38);
+    return LittleEndian::convertTo<u16>(data + 0x38);
 }
 
 u16 PGF::metLocation(void) const
 {
-    return Endian::convertTo<u16>(data + 0x3A);
+    return LittleEndian::convertTo<u16>(data + 0x3A);
 }
 
 u8 PGF::metLevel(void) const

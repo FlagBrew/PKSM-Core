@@ -137,7 +137,7 @@ SCBlock::SCBlock(std::shared_ptr<u8[]> data, size_t& offset) : data(data), myOff
             break;
         case SCBlockType::Object:
         {
-            dataLength = Endian::convertTo<u32>(data.get() + offset + 1) ^ xorShift.next32();
+            dataLength = LittleEndian::convertTo<u32>(data.get() + offset + 1) ^ xorShift.next32();
             for (size_t i = 0; i < dataLength; i++)
             {
                 data[offset + 5 + i] ^= xorShift.next();
@@ -147,7 +147,7 @@ SCBlock::SCBlock(std::shared_ptr<u8[]> data, size_t& offset) : data(data), myOff
         break;
         case SCBlockType::Array:
         {
-            dataLength = Endian::convertTo<u32>(data.get() + offset + 1) ^ xorShift.next32();
+            dataLength = LittleEndian::convertTo<u32>(data.get() + offset + 1) ^ xorShift.next32();
             subtype    = SCBlockType(data[offset + 5] ^ xorShift.next());
             switch (subtype)
             {
@@ -237,9 +237,9 @@ void SCBlock::decrypt()
 
 u32 SCBlock::key() const
 {
-    return Endian::convertTo<u32>(&data[myOffset]);
+    return LittleEndian::convertTo<u32>(&data[myOffset]);
 }
 void SCBlock::key(u32 v)
 {
-    Endian::convertFrom<u32>(&data[myOffset], v);
+    LittleEndian::convertFrom<u32>(&data[myOffset], v);
 }

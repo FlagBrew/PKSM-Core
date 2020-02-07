@@ -54,24 +54,24 @@ void PK7::crypt(void)
     u32 seed = encryptionConstant();
     for (size_t i = 0x08; i < BOX_LENGTH; i += 2)
     {
-        u16 temp = Endian::convertTo<u16>(data + i);
+        u16 temp = LittleEndian::convertTo<u16>(data + i);
         seed     = seedStep(seed);
         temp ^= (seed >> 16);
-        Endian::convertFrom<u16>(data + i, temp);
+        LittleEndian::convertFrom<u16>(data + i, temp);
     }
     seed = encryptionConstant();
     for (u32 i = BOX_LENGTH; i < length; i += 2)
     {
-        u16 temp = Endian::convertTo<u16>(data + i);
+        u16 temp = LittleEndian::convertTo<u16>(data + i);
         seed     = seedStep(seed);
         temp ^= (seed >> 16);
-        Endian::convertFrom<u16>(data + i, temp);
+        LittleEndian::convertFrom<u16>(data + i, temp);
     }
 }
 
 bool PK7::isEncrypted() const
 {
-    return Endian::convertTo<u16>(data + 0xC8) != 0 && Endian::convertTo<u16>(data + 0x58) != 0;
+    return LittleEndian::convertTo<u16>(data + 0xC8) != 0 && LittleEndian::convertTo<u16>(data + 0x58) != 0;
 }
 
 PK7::PK7(PrivateConstructor, u8* dt, bool party, bool direct) : PKX(dt, party ? PARTY_LENGTH : BOX_LENGTH, direct)
@@ -94,74 +94,74 @@ Generation PK7::generation(void) const
 
 u32 PK7::encryptionConstant(void) const
 {
-    return Endian::convertTo<u32>(data);
+    return LittleEndian::convertTo<u32>(data);
 }
 void PK7::encryptionConstant(u32 v)
 {
-    Endian::convertFrom<u32>(data, v);
+    LittleEndian::convertFrom<u32>(data, v);
 }
 
 u16 PK7::sanity(void) const
 {
-    return Endian::convertTo<u16>(data + 0x04);
+    return LittleEndian::convertTo<u16>(data + 0x04);
 }
 void PK7::sanity(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x04, v);
+    LittleEndian::convertFrom<u16>(data + 0x04, v);
 }
 
 u16 PK7::checksum(void) const
 {
-    return Endian::convertTo<u16>(data + 0x06);
+    return LittleEndian::convertTo<u16>(data + 0x06);
 }
 void PK7::checksum(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x06, v);
+    LittleEndian::convertFrom<u16>(data + 0x06, v);
 }
 
 u16 PK7::species(void) const
 {
-    return Endian::convertTo<u16>(data + 0x08);
+    return LittleEndian::convertTo<u16>(data + 0x08);
 }
 void PK7::species(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x08, v);
+    LittleEndian::convertFrom<u16>(data + 0x08, v);
 }
 
 u16 PK7::heldItem(void) const
 {
-    return Endian::convertTo<u16>(data + 0x0A);
+    return LittleEndian::convertTo<u16>(data + 0x0A);
 }
 void PK7::heldItem(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x0A, v);
+    LittleEndian::convertFrom<u16>(data + 0x0A, v);
 }
 
 u16 PK7::TID(void) const
 {
-    return Endian::convertTo<u16>(data + 0x0C);
+    return LittleEndian::convertTo<u16>(data + 0x0C);
 }
 void PK7::TID(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x0C, v);
+    LittleEndian::convertFrom<u16>(data + 0x0C, v);
 }
 
 u16 PK7::SID(void) const
 {
-    return Endian::convertTo<u16>(data + 0x0E);
+    return LittleEndian::convertTo<u16>(data + 0x0E);
 }
 void PK7::SID(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x0E, v);
+    LittleEndian::convertFrom<u16>(data + 0x0E, v);
 }
 
 u32 PK7::experience(void) const
 {
-    return Endian::convertTo<u32>(data + 0x10);
+    return LittleEndian::convertTo<u32>(data + 0x10);
 }
 void PK7::experience(u32 v)
 {
-    Endian::convertFrom<u32>(data + 0x10, v);
+    LittleEndian::convertFrom<u32>(data + 0x10, v);
 }
 
 u16 PK7::ability(void) const
@@ -199,20 +199,20 @@ void PK7::abilityNumber(u8 v)
 
 u16 PK7::markValue(void) const
 {
-    return Endian::convertTo<u16>(data + 0x16);
+    return LittleEndian::convertTo<u16>(data + 0x16);
 }
 void PK7::markValue(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x16, v);
+    LittleEndian::convertFrom<u16>(data + 0x16, v);
 }
 
 u32 PK7::PID(void) const
 {
-    return Endian::convertTo<u32>(data + 0x18);
+    return LittleEndian::convertTo<u32>(data + 0x18);
 }
 void PK7::PID(u32 v)
 {
-    Endian::convertFrom<u32>(data + 0x18, v);
+    LittleEndian::convertFrom<u32>(data + 0x18, v);
 }
 
 u8 PK7::nature(void) const
@@ -325,11 +325,11 @@ void PK7::nickname(const std::string& v)
 
 u16 PK7::move(u8 m) const
 {
-    return Endian::convertTo<u16>(data + 0x5A + m * 2);
+    return LittleEndian::convertTo<u16>(data + 0x5A + m * 2);
 }
 void PK7::move(u8 m, u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x5A + m * 2, v);
+    LittleEndian::convertFrom<u16>(data + 0x5A + m * 2, v);
 }
 
 u8 PK7::PP(u8 m) const
@@ -352,43 +352,43 @@ void PK7::PPUp(u8 m, u8 v)
 
 u16 PK7::relearnMove(u8 m) const
 {
-    return Endian::convertTo<u16>(data + 0x6A + m * 2);
+    return LittleEndian::convertTo<u16>(data + 0x6A + m * 2);
 }
 void PK7::relearnMove(u8 m, u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x6A + m * 2, v);
+    LittleEndian::convertFrom<u16>(data + 0x6A + m * 2, v);
 }
 
 u8 PK7::iv(Stat stat) const
 {
-    u32 buffer = Endian::convertTo<u32>(data + 0x74);
+    u32 buffer = LittleEndian::convertTo<u32>(data + 0x74);
     return (u8)((buffer >> 5 * u8(stat)) & 0x1F);
 }
 
 void PK7::iv(Stat stat, u8 v)
 {
-    u32 buffer = Endian::convertTo<u32>(data + 0x74);
+    u32 buffer = LittleEndian::convertTo<u32>(data + 0x74);
     buffer &= ~(0x1F << 5 * u8(stat));
     buffer |= v << (5 * u8(stat));
-    Endian::convertFrom<u32>(data + 0x74, buffer);
+    LittleEndian::convertFrom<u32>(data + 0x74, buffer);
 }
 
 bool PK7::egg(void) const
 {
-    return ((Endian::convertTo<u32>(data + 0x74) >> 30) & 0x1) == 1;
+    return ((LittleEndian::convertTo<u32>(data + 0x74) >> 30) & 0x1) == 1;
 }
 void PK7::egg(bool v)
 {
-    Endian::convertFrom<u32>(data + 0x74, (u32)((Endian::convertTo<u32>(data + 0x74) & ~0x40000000) | (u32)(v ? 0x40000000 : 0)));
+    LittleEndian::convertFrom<u32>(data + 0x74, (u32)((LittleEndian::convertTo<u32>(data + 0x74) & ~0x40000000) | (u32)(v ? 0x40000000 : 0)));
 }
 
 bool PK7::nicknamed(void) const
 {
-    return ((Endian::convertTo<u32>(data + 0x74) >> 31) & 0x1) == 1;
+    return ((LittleEndian::convertTo<u32>(data + 0x74) >> 31) & 0x1) == 1;
 }
 void PK7::nicknamed(bool v)
 {
-    Endian::convertFrom<u32>(data + 0x74, (Endian::convertTo<u32>(data + 0x74) & 0x7FFFFFFF) | (v ? 0x80000000 : 0));
+    LittleEndian::convertFrom<u32>(data + 0x74, (LittleEndian::convertTo<u32>(data + 0x74) & 0x7FFFFFFF) | (v ? 0x80000000 : 0));
 }
 
 std::string PK7::htName(void) const
@@ -483,11 +483,11 @@ void PK7::htFeeling(u8 v)
 
 u16 PK7::htTextVar(void) const
 {
-    return Endian::convertTo<u16>(data + 0xA8);
+    return LittleEndian::convertTo<u16>(data + 0xA8);
 }
 void PK7::htTextVar(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0xA8, v);
+    LittleEndian::convertFrom<u16>(data + 0xA8, v);
 }
 
 u8 PK7::fullness(void) const
@@ -555,11 +555,11 @@ void PK7::otMemory(u8 v)
 
 u16 PK7::otTextVar(void) const
 {
-    return Endian::convertTo<u16>(data + 0xCE);
+    return LittleEndian::convertTo<u16>(data + 0xCE);
 }
 void PK7::otTextVar(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0xCE, v);
+    LittleEndian::convertFrom<u16>(data + 0xCE, v);
 }
 
 u8 PK7::otFeeling(void) const
@@ -627,20 +627,20 @@ void PK7::metDay(u8 v)
 
 u16 PK7::eggLocation(void) const
 {
-    return Endian::convertTo<u16>(data + 0xD8);
+    return LittleEndian::convertTo<u16>(data + 0xD8);
 }
 void PK7::eggLocation(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0xD8, v);
+    LittleEndian::convertFrom<u16>(data + 0xD8, v);
 }
 
 u16 PK7::metLocation(void) const
 {
-    return Endian::convertTo<u16>(data + 0xDA);
+    return LittleEndian::convertTo<u16>(data + 0xDA);
 }
 void PK7::metLocation(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0xDA, v);
+    LittleEndian::convertFrom<u16>(data + 0xDA, v);
 }
 
 u8 PK7::ball(void) const
@@ -753,7 +753,7 @@ void PK7::refreshChecksum(void)
     u16 chk = 0;
     for (u8 i = 8; i < BOX_LENGTH; i += 2)
     {
-        chk += Endian::convertTo<u16>(data + i);
+        chk += LittleEndian::convertTo<u16>(data + i);
     }
     checksum(chk);
 }
@@ -939,7 +939,7 @@ std::unique_ptr<PK6> PK7::convertToG6(Sav& save) const
     auto pk6 = PKX::getPKM<Generation::SIX>(const_cast<u8*>(data));
 
     // markvalue field moved, clear old gen 7 data
-    Endian::convertFrom<u16>(pk6->rawData() + 0x16, 0);
+    LittleEndian::convertFrom<u16>(pk6->rawData() + 0x16, 0);
 
     pk6->markValue(markValue());
 
@@ -985,14 +985,14 @@ int PK7::partyCurrHP(void) const
     {
         return -1;
     }
-    return Endian::convertTo<u16>(data + 0xF0);
+    return LittleEndian::convertTo<u16>(data + 0xF0);
 }
 
 void PK7::partyCurrHP(u16 v)
 {
     if (isParty())
     {
-        Endian::convertFrom<u16>(data + 0xF0, v);
+        LittleEndian::convertFrom<u16>(data + 0xF0, v);
     }
 }
 
@@ -1002,14 +1002,14 @@ int PK7::partyStat(Stat stat) const
     {
         return -1;
     }
-    return Endian::convertTo<u16>(data + 0xF2 + u8(stat) * 2);
+    return LittleEndian::convertTo<u16>(data + 0xF2 + u8(stat) * 2);
 }
 
 void PK7::partyStat(Stat stat, u16 v)
 {
     if (isParty())
     {
-        Endian::convertFrom<u16>(data + 0xF2 + u8(stat) * 2, v);
+        LittleEndian::convertFrom<u16>(data + 0xF2 + u8(stat) * 2, v);
     }
 }
 
