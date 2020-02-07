@@ -58,12 +58,12 @@ public:
     void version(u8 v) override;
     u8 gender(void) const override;
     void gender(u8 v) override;
-    u8 subRegion(void) const override;
-    void subRegion(u8 v) override;
-    u8 country(void) const override;
-    void country(u8 v) override;
-    u8 consoleRegion(void) const override;
-    void consoleRegion(u8 v) override;
+    u8 subRegion(void) const override { return 0; }
+    void subRegion(u8) override {}
+    u8 country(void) const override { return 0; }
+    void country(u8) override {}
+    u8 consoleRegion(void) const override { return 0; }
+    void consoleRegion(u8) override {}
     Language language(void) const override;
     void language(Language v) override;
     std::string otName(void) const override;

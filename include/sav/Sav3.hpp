@@ -117,12 +117,12 @@ public:
     void version(u8 v) override;
     u8 gender(void) const override;
     void gender(u8 v) override;
-    u8 subRegion(void) const override;
-    void subRegion(u8 v) override;
-    u8 country(void) const override;
-    void country(u8 v) override;
-    u8 consoleRegion(void) const override;
-    void consoleRegion(u8 v) override;
+    u8 subRegion(void) const override { return 0; }
+    void subRegion(u8) override {}
+    u8 country(void) const override { return 0; }
+    void country(u8) override {}
+    u8 consoleRegion(void) const override { return 0; }
+    void consoleRegion(u8) override {}
     Language language(void) const override;
     void language(Language v) override;
     std::string otName(void) const override;
@@ -159,9 +159,9 @@ public:
     void dex(std::shared_ptr<PKX> pk) override;
     int dexSeen(void) const override;
     int dexCaught(void) const override;
-    int emptyGiftLocation(void) const override;
-    std::vector<Sav::giftData> currentGifts(void) const override;
-    void mysteryGift(WCX& wc, int& pos) override;
+    int emptyGiftLocation(void) const override { return 0; }
+    std::vector<Sav::giftData> currentGifts(void) const override { return {}; }
+    void mysteryGift(WCX&, int&) override {}
     std::unique_ptr<WCX> mysteryGift(int pos) const override;
     void cryptBoxData(bool crypted) override;
     std::string boxName(u8 box) const override;

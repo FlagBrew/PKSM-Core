@@ -69,8 +69,8 @@ public:
     void encryptionConstant(u32 v) override;
     u8 currentFriendship(void) const override;
     void currentFriendship(u8 v) override;
-    u8 currentHandler(void) const override;
-    void currentHandler(u8 v) override;
+    u8 currentHandler(void) const override { return 0; }
+    void currentHandler(u8) override {}
     u8 abilityNumber(void) const override;
     void abilityNumber(u8 v) override;
     void setAbility(u8 abilityNumber) override;
@@ -126,8 +126,8 @@ public:
 
     u16 move(u8 move) const override;
     void move(u8 move, u16 v) override;
-    u16 relearnMove(u8 move) const override;
-    void relearnMove(u8 move, u16 v) override;
+    u16 relearnMove(u8) const override { return 0; }
+    void relearnMove(u8, u16) override {}
     u8 PP(u8 move) const override;
     void PP(u8 move, u8 v) override;
     u8 PPUp(u8 move) const override;
@@ -156,20 +156,20 @@ public:
     u8 version(void) const override;
     void version(u8 v) override;
 
-    u8 eggYear(void) const override;
-    void eggYear(u8 v) override;
-    u8 eggMonth(void) const override;
-    void eggMonth(u8 v) override;
-    u8 eggDay(void) const override;
-    void eggDay(u8 v) override;
-    u8 metYear(void) const override;
-    void metYear(u8 v) override;
-    u8 metMonth(void) const override;
-    void metMonth(u8 v) override;
-    u8 metDay(void) const override;
-    void metDay(u8 v) override;
-    u16 eggLocation(void) const override;
-    void eggLocation(u16 v) override;
+    u8 eggYear(void) const override { return 0; }
+    void eggYear(u8) override {}
+    u8 eggMonth(void) const override { return 0; }
+    void eggMonth(u8) override {}
+    u8 eggDay(void) const override { return 0; }
+    void eggDay(u8) override {}
+    u8 metYear(void) const override { return 0; }
+    void metYear(u8) override {}
+    u8 metMonth(void) const override { return 0; }
+    void metMonth(u8) override {}
+    u8 metDay(void) const override { return 0; }
+    void metDay(u8) override {}
+    u16 eggLocation(void) const override { return 0; }
+    void eggLocation(u16) override {}
     u16 metLocation(void) const override;
     void metLocation(u16 v) override;
     u8 pkrs(void) const override;

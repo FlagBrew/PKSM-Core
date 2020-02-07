@@ -105,7 +105,7 @@ public:
     u16 species(void) const override;
     u16 eggLocation(void) const override;
     u16 metLocation(void) const override;
-    u8 contest(u8 index) const override { return (void)index, 0; }
+    u8 contest(u8) const override { return 0; }
     u8 awakened(Stat index) const;
     u8 iv(Stat index) const override;
     u8 ev(Stat index) const;

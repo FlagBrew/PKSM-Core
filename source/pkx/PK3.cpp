@@ -146,11 +146,7 @@ u32 PK3::encryptionConstant(void) const
 {
     return PID();
 }
-
-void PK3::encryptionConstant(u32 v)
-{
-    (void)v;
-}
+void PK3::encryptionConstant(u32) {}
 
 u8 PK3::currentFriendship(void) const
 {
@@ -159,15 +155,6 @@ u8 PK3::currentFriendship(void) const
 void PK3::currentFriendship(u8 v)
 {
     otFriendship(v);
-}
-
-u8 PK3::currentHandler(void) const
-{
-    return 0;
-}
-void PK3::currentHandler(u8 v)
-{
-    (void)v;
 }
 
 u8 PK3::abilityNumber(void) const
@@ -580,7 +567,7 @@ void PK3::partyStat(Stat stat, u16 v)
     }
 }
 
-std::unique_ptr<PK4> PK3::convertToG4(Sav& save) const
+std::unique_ptr<PK4> PK3::convertToG4(Sav&) const
 {
     static constexpr std::array<std::array<u8, 18>, 7> trashBytes = {{
         {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
@@ -804,60 +791,12 @@ void PK3::alternativeForm(u16 v)
     }
 }
 
-u16 PK3::relearnMove(u8 move) const
-{
-    return 0;
-}
-void PK3::relearnMove(u8 move, u16 v) {}
-
 bool PK3::nicknamed() const
 {
     std::string target = i18n::species(language(), species());
     return nickname() != StringUtils::toUpper(target);
 }
-void PK3::nicknamed(bool v) {}
-
-u8 PK3::metYear(void) const
-{
-    return 0;
-}
-void PK3::metYear(u8 v) {}
-
-u8 PK3::metMonth(void) const
-{
-    return 0;
-}
-void PK3::metMonth(u8 v) {}
-
-u8 PK3::metDay(void) const
-{
-    return 0;
-}
-void PK3::metDay(u8 v) {}
-
-u8 PK3::eggYear(void) const
-{
-    return 0;
-}
-void PK3::eggYear(u8 v) {}
-
-u8 PK3::eggMonth(void) const
-{
-    return 0;
-}
-void PK3::eggMonth(u8 v) {}
-
-u8 PK3::eggDay(void) const
-{
-    return 0;
-}
-void PK3::eggDay(u8 v) {}
-
-u16 PK3::eggLocation() const
-{
-    return 0;
-}
-void PK3::eggLocation(u16 v) {}
+void PK3::nicknamed(bool) {}
 
 u8 PK3::hpType(void) const
 {

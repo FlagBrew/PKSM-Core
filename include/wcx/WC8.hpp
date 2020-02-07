@@ -55,9 +55,9 @@ public:
     u32 year(void) const override { return 0; }
     u32 month(void) const override { return 0; }
     u32 day(void) const override { return 0; }
-    void year(u32 v) override {}
-    void month(u32 v) override {}
-    void day(u32 v) override {}
+    void year(u32) override {}
+    void month(u32) override {}
+    void day(u32) override {}
     u16 ID(void) const override;
     u16 object(void) const override;
     u16 objectQuantity(void) const;
@@ -67,7 +67,7 @@ public:
     int items(void) const;
     bool multiObtainable(void) const override;
     u32 rawDate(void) const override { return 0; }
-    void rawDate(u32 value) override {}
+    void rawDate(u32) override {}
     u8 flags(void) const override;
     u8 cardLocation(void) const override { return 0; }
     bool used(void) const override;
@@ -111,7 +111,7 @@ public:
     u32 PID(void) const override;
     u16 eggLocation(void) const override;
     u16 metLocation(void) const override;
-    u8 contest(u8 index) const override { return (void)index, 0; }
+    u8 contest(u8) const override { return 0; }
     bool ribbon(u8 category, u8 index) const override;
 
     u16 formSpecies(void) const override;

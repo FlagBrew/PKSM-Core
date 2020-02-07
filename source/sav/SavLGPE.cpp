@@ -108,11 +108,7 @@ u8 SavLGPE::partyCount() const
     }
     return ret;
 }
-
-void SavLGPE::partyCount(u8 v)
-{
-    (void)v;
-}
+void SavLGPE::partyCount(u8) {}
 
 void SavLGPE::fixParty()
 {
@@ -164,7 +160,7 @@ void SavLGPE::compressBox()
     }
 }
 
-u16 SavLGPE::check16(u8* buf, u32 blockID, u32 len) const
+u16 SavLGPE::check16(u8* buf, u32 len)
 {
     u16 chk = 0;
     for (u32 i = 0; i < len; i++)
@@ -183,7 +179,7 @@ void SavLGPE::resign()
     for (u8 i = 0; i < blockCount; i++)
     {
         std::copy(&data[chkofs[i]], &data[chkofs[i] + chklen[i]], tmp);
-        LittleEndian::convertFrom<u16>(&data[csoff + i * 8], check16(tmp, LittleEndian::convertTo<u16>(&data[csoff + i * 8 - 2]), chklen[i]));
+        LittleEndian::convertFrom<u16>(&data[csoff + i * 8], check16(tmp, chklen[i]));
     }
 
     delete[] tmp;
@@ -409,21 +405,7 @@ std::string SavLGPE::boxName(u8 box) const
 {
     return i18n::localize(Language(language()), "BOX") + " " + std::to_string((int)box + 1);
 }
-
-void SavLGPE::boxName(u8 box, const std::string& name)
-{
-    (void)box, (void)name;
-}
-
-u8 SavLGPE::boxWallpaper(u8 box) const
-{
-    return 0;
-}
-
-void SavLGPE::boxWallpaper(u8 box, u8 v)
-{
-    (void)v;
-}
+void SavLGPE::boxName(u8, const std::string&) {}
 
 int SavLGPE::dexFormCount(int species) const
 {
@@ -507,6 +489,31 @@ void SavLGPE::setDexFlags(int index, int gender, int shiny, int baseSpecies)
     data[off + (4 + shift) * brSize + bd] |= (u8)(1 << bm);
 }
 
+int SavLGPE::getDexFlags(int index, int baseSpecies) const
+{
+    int ret          = 0;
+    const int brSize = 0x8C;
+    int ofs          = PokeDex + 0x08 + 0x80 + 0x68;
+    int bd           = index >> 3;
+    int bm           = index & 7;
+    int bd1          = baseSpecies >> 3;
+    int bm1          = baseSpecies & 7;
+
+    for (u8 i = 0; i < 4; i++)
+    {
+        if (data[ofs + i * brSize + bd] & (u8)(1 << bm))
+        {
+            ret++;
+        }
+        if (data[ofs + i * brSize + bd1] & (u8)(1 << bm1))
+        {
+            ret++;
+        }
+    }
+
+    return ret;
+}
+
 void SavLGPE::dex(std::shared_ptr<PKX> pk)
 {
     int n                    = pk->species();
@@ -585,13 +592,21 @@ void SavLGPE::dex(std::shared_ptr<PKX> pk)
 
 int SavLGPE::dexSeen(void) const
 {
-    int ret                     = 0;
-    static constexpr int brSize = 0x8C;
-    for (int i = 0; i < maxSpecies(); i++)
+    int ret = 0;
+    for (int species : availableSpecies())
     {
-        for (int j = 0; j < 4; j++)
+        int forms = formCount(species);
+        for (int form = 0; form < forms; form++)
         {
-            if (data[PokeDex + 0x88 + 0x68 + brSize * j + i / 8] & (1 << (i % 8)))
+            int dexForms = form == 0 ? -1 : dexFormIndex(species, forms, maxSpecies() - 1);
+
+            int index = species - 1;
+            if (dexForms >= 0)
+            {
+                index = dexForms + form;
+            }
+
+            if (getDexFlags(index, species) > 0)
             {
                 ret++;
                 break;
@@ -604,9 +619,9 @@ int SavLGPE::dexSeen(void) const
 int SavLGPE::dexCaught(void) const
 {
     int ret = 0;
-    for (int i = 0; i < maxSpecies(); i++)
+    for (int species : availableSpecies())
     {
-        if (data[PokeDex + 0x88 + i / 8] & (1 << (i % 8)))
+        if (data[PokeDex + 0x88 + (species - 1) / 8] & (1 << ((species - 1) % 8)))
         {
             ret++;
         }
@@ -633,7 +648,7 @@ void SavLGPE::cryptBoxData(bool crypted)
     }
 }
 
-void SavLGPE::mysteryGift(WCX& wc, int& pos)
+void SavLGPE::mysteryGift(WCX& wc, int&)
 {
     if (wc.generation() == Generation::LGPE)
     {
@@ -1067,7 +1082,7 @@ std::unique_ptr<Item> SavLGPE::item(Pouch pouch, u16 slot) const
     }
 }
 
-std::unique_ptr<WCX> SavLGPE::mysteryGift(int pos) const
+std::unique_ptr<WCX> SavLGPE::mysteryGift(int) const
 {
     return nullptr;
 }

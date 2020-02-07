@@ -644,7 +644,7 @@ std::string StringUtils::getString3(const u8* data, int ofs, int len, bool jp)
     return StringUtils::UTF16toUTF8(outString);
 }
 
-void StringUtils::setString3(u8* data, const std::string& v, int ofs, int len, bool jp, int padTo, u16 padWith)
+void StringUtils::setString3(u8* data, const std::string& v, int ofs, int len, bool jp, int padTo, u8 padWith)
 {
     auto& characters   = jp ? G3_JP : G3_EN;
     std::u16string str = StringUtils::UTF8toUTF16(v);
@@ -665,14 +665,14 @@ void StringUtils::setString3(u8* data, const std::string& v, int ofs, int len, b
         }
     }
 
-    if (outPos < len)
+    if (outPos < (size_t)len)
     {
         data[ofs + outPos] = 0xFF;
     }
 
     while (outPos < (size_t)padTo)
     {
-        data[ofs + outPos] = 0xFF;
+        data[ofs + outPos] = padWith;
         outPos++;
     }
 }

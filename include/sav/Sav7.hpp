@@ -44,6 +44,8 @@ protected:
     int maxAbility(void) const override { return game == Game::SM ? 232 : 233; }
     int maxBall(void) const override { return 0x1A; }
 
+    static u16 check16(u8* buf, u32 blockID, u32 len);
+
 private:
     void setDexFlags(int index, int gender, int shiny, int baseSpecies);
     int getDexFlags(int index, int baseSpecies) const;
@@ -52,7 +54,6 @@ private:
 public:
     Sav7(std::shared_ptr<u8[]> data, u32 length) : Sav(data, length) {}
     virtual ~Sav7() {}
-    u16 check16(u8* buf, u32 blockID, u32 len) const;
     virtual void resign(void) = 0;
     void finishEditing(void) override { resign(); }
     void beginEditing(void) override {}

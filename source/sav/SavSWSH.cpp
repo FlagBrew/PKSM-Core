@@ -456,11 +456,15 @@ void SavSWSH::boxName(u8 box, const std::string& name)
 
 u8 SavSWSH::boxWallpaper(u8 box) const
 {
-    return 0; // TODO: Make this actually get the wallpaper
+    // TODO: Make this actually get the wallpaper
+    (void)box;
+    return 0;
 }
 void SavSWSH::boxWallpaper(u8 box, u8 v)
 {
-    (void)v; // TODO: Make this actually set the wallpaper
+    // TODO: Make this actually set the wallpaper
+    (void)box;
+    (void)v;
 }
 
 u32 SavSWSH::boxOffset(u8 box, u8 slot) const
@@ -530,7 +534,11 @@ void SavSWSH::cryptBoxData(bool crypted)
     }
 }
 
-std::unique_ptr<WCX> SavSWSH::mysteryGift(int pos) const
+void SavSWSH::mysteryGift(WCX&, int&)
+{
+    // TODO
+}
+std::unique_ptr<WCX> SavSWSH::mysteryGift(int) const
 {
     return nullptr;
 }

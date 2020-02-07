@@ -60,8 +60,8 @@ public:
     void encryptionConstant(u32 v) override;
     u8 currentFriendship(void) const override;
     void currentFriendship(u8 v) override;
-    u8 currentHandler(void) const override;
-    void currentHandler(u8 v) override;
+    u8 currentHandler(void) const override {return 0;}
+    void currentHandler(u8) override {}
     u8 abilityNumber(void) const override;
     void abilityNumber(u8 v) override;
     void setAbility(u8 abilityNumber) override;
@@ -99,8 +99,8 @@ public:
 
     u16 move(u8 move) const override;
     void move(u8 move, u16 v) override;
-    u16 relearnMove(u8 move) const override;
-    void relearnMove(u8 move, u16 v) override;
+    u16 relearnMove(u8) const override { return 0; }
+    void relearnMove(u8, u16) override {}
     u8 PP(u8 move) const override;
     void PP(u8 move, u8 v) override;
     u8 PPUp(u8 move) const override;

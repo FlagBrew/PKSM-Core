@@ -79,7 +79,8 @@ std::string WC8::title() const
 
 std::string WC8::title(Language lang) const
 {
-    // TODO: use titleIndex
+    // TODO: use titleIndex to get offset, then get string from offset
+    (void)lang;
     return "Wonder Card";
 }
 

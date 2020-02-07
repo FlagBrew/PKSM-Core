@@ -72,11 +72,11 @@ public:
     std::string pouchName(Language lang, Pouch pouch) const override;
 
     u8 subRegion(void) const override { return 0; }     // Not applicable
-    void subRegion(u8 v) override {}                    // Not applicable
+    void subRegion(u8) override {}                      // Not applicable
     u8 country(void) const override { return 0; }       // Not applicable
-    void country(u8 v) override {}                      // Not applicable
+    void country(u8) override {}                        // Not applicable
     u8 consoleRegion(void) const override { return 0; } // Not applicable
-    void consoleRegion(u8 v) override {}                // Not applicable
+    void consoleRegion(u8) override {}                  // Not applicable
 
     std::string boxName(u8 box) const override;
     void boxName(u8 box, const std::string& name) override;
@@ -84,7 +84,7 @@ public:
     void boxWallpaper(u8 box, u8 v) override;
 
     u8 currentBox(void) const override { return 0; } // TODO: confirm that this is not stored
-    void currentBox(u8 v) override {}
+    void currentBox(u8) override {}
     u32 boxOffset(u8 box, u8 slot) const override;
     u32 partyOffset(u8 slot) const override;
     u8 partyCount(void) const override;
@@ -108,7 +108,7 @@ public:
 
     // TODO
     // Check whether gifts are stored, or whether some disgusting record system is used
-    void mysteryGift(WCX& wc, int& pos) override {}
+    void mysteryGift(WCX& wc, int& pos) override;
     std::unique_ptr<WCX> mysteryGift(int pos) const override;
 
     u8 formCount(u16 species) const override { return PersonalSWSH::formCount(species); }

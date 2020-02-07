@@ -184,10 +184,7 @@ u32 PK5::encryptionConstant(void) const
 {
     return PID();
 }
-void PK5::encryptionConstant(u32 v)
-{
-    (void)v;
-}
+void PK5::encryptionConstant(u32) {}
 
 u8 PK5::currentFriendship(void) const
 {
@@ -196,15 +193,6 @@ u8 PK5::currentFriendship(void) const
 void PK5::currentFriendship(u8 v)
 {
     otFriendship(v);
-}
-
-u8 PK5::currentHandler(void) const
-{
-    return 0;
-}
-void PK5::currentHandler(u8 v)
-{
-    (void)v;
 }
 
 u8 PK5::abilityNumber(void) const
@@ -397,15 +385,6 @@ u16 PK5::move(u8 m) const
 void PK5::move(u8 m, u16 v)
 {
     LittleEndian::convertFrom<u16>(data + 0x28 + m * 2, v);
-}
-
-u16 PK5::relearnMove(u8 m) const
-{
-    return 0;
-}
-void PK5::relearnMove(u8 m, u16 v)
-{
-    // stubbed
 }
 
 u8 PK5::PP(u8 m) const

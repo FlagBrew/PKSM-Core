@@ -31,7 +31,7 @@
 #include "utils/utils.hpp"
 #include "wcx/WC7.hpp"
 
-u16 Sav7::check16(u8* buf, u32 blockID, u32 len) const
+u16 Sav7::check16(u8* buf, u32 blockID, u32 len)
 {
     if (blockID == 36)
     {

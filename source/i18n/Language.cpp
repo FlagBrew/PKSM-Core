@@ -67,6 +67,8 @@ Language getSafeLanguage(Generation gen, Language orig)
                 return orig;
             }
             return Language::ENG;
+        case Generation::UNUSED:
+            break;
     }
     return Language::ENG;
 }

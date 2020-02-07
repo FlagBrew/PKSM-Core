@@ -97,10 +97,7 @@ u32 PK4::encryptionConstant(void) const
 {
     return PID();
 }
-void PK4::encryptionConstant(u32 v)
-{
-    (void)v;
-}
+void PK4::encryptionConstant(u32) {}
 
 u8 PK4::currentFriendship(void) const
 {
@@ -109,15 +106,6 @@ u8 PK4::currentFriendship(void) const
 void PK4::currentFriendship(u8 v)
 {
     otFriendship(v);
-}
-
-u8 PK4::currentHandler(void) const
-{
-    return 0;
-}
-void PK4::currentHandler(u8 v)
-{
-    (void)v;
 }
 
 u8 PK4::abilityNumber(void) const
@@ -302,15 +290,6 @@ u16 PK4::move(u8 m) const
 void PK4::move(u8 m, u16 v)
 {
     LittleEndian::convertFrom<u16>(data + 0x28 + m * 2, v);
-}
-
-u16 PK4::relearnMove(u8 m) const
-{
-    return 0;
-}
-void PK4::relearnMove(u8 m, u16 v)
-{
-    // stubbed
 }
 
 u8 PK4::PP(u8 m) const
@@ -854,7 +833,7 @@ void PK4::partyLevel(u8 v)
     }
 }
 
-std::unique_ptr<PK3> PK4::convertToG3(Sav& save) const
+std::unique_ptr<PK3> PK4::convertToG3(Sav&) const
 {
     time_t t              = time(NULL);
     struct tm* timeStruct = gmtime((const time_t*)&t);
@@ -963,7 +942,7 @@ std::unique_ptr<PK3> PK4::convertToG3(Sav& save) const
     return pk3;
 }
 
-std::unique_ptr<PK5> PK4::convertToG5(Sav& save) const
+std::unique_ptr<PK5> PK4::convertToG5(Sav&) const
 {
     auto pk5 = PKX::getPKM<Generation::FIVE>(const_cast<u8*>(data));
 

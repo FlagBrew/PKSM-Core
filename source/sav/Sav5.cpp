@@ -67,33 +67,6 @@ void Sav5::gender(u8 v)
     data[Trainer1 + 0x21] = v;
 }
 
-u8 Sav5::subRegion(void) const
-{
-    return 0;
-} // Unused
-void Sav5::subRegion(u8 v)
-{
-    (void)v;
-}
-
-u8 Sav5::country(void) const
-{
-    return 0;
-} // Unused
-void Sav5::country(u8 v)
-{
-    (void)v;
-}
-
-u8 Sav5::consoleRegion(void) const
-{
-    return 0;
-} // Unused
-void Sav5::consoleRegion(u8 v)
-{
-    (void)v;
-}
-
 Language Sav5::language(void) const
 {
     return Language(data[Trainer1 + 0x1E]);

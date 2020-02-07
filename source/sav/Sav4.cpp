@@ -124,10 +124,7 @@ u8 Sav4::version(void) const
 {
     return game == Game::DP ? 10 : game == Game::Pt ? 12 : 7;
 }
-void Sav4::version(u8 v)
-{
-    (void)v;
-}
+void Sav4::version(u8) {}
 
 u8 Sav4::gender(void) const
 {
@@ -136,33 +133,6 @@ u8 Sav4::gender(void) const
 void Sav4::gender(u8 v)
 {
     data[Trainer1 + 0x18] = v;
-}
-
-u8 Sav4::subRegion(void) const
-{
-    return 0;
-} // Unused
-void Sav4::subRegion(u8 v)
-{
-    (void)v;
-}
-
-u8 Sav4::country(void) const
-{
-    return 0;
-} // Unused
-void Sav4::country(u8 v)
-{
-    (void)v;
-}
-
-u8 Sav4::consoleRegion(void) const
-{
-    return 0;
-} // Unused
-void Sav4::consoleRegion(u8 v)
-{
-    (void)v;
 }
 
 Language Sav4::language(void) const
@@ -707,7 +677,7 @@ void Sav4::setForms(std::vector<u8> forms, u16 species)
         case 479: // Rotom
         {
             auto values = LittleEndian::convertFrom(setDexFormValues(forms, 3, 6));
-            for (int i = 0; i < values.size(); i++)
+            for (size_t i = 0; i < values.size(); i++)
             {
                 data[formOffset2 + i] = values[i];
             }

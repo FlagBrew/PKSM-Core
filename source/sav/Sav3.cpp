@@ -224,10 +224,7 @@ u8 Sav3::version(void) const
 {
     return game == Game::RS ? 1 : game == Game::E ? 3 : 4;
 }
-void Sav3::version(u8 v)
-{
-    (void)v;
-}
+void Sav3::version(u8) {}
 
 u8 Sav3::gender(void) const
 {
@@ -238,39 +235,12 @@ void Sav3::gender(u8 v)
     data[blockOfs[0] + 8] = v;
 }
 
-u8 Sav3::subRegion(void) const
-{
-    return 0;
-}
-void Sav3::subRegion(u8 v)
-{
-    (void)v;
-}
-
-u8 Sav3::country(void) const
-{
-    return 0;
-}
-void Sav3::country(u8 v)
-{
-    (void)v;
-}
-
-u8 Sav3::consoleRegion(void) const
-{
-    return 0;
-}
-void Sav3::consoleRegion(u8 v)
-{
-    (void)v;
-}
-
 Language Sav3::language(void) const
 {
     // TODO: Other languages? Is this unused?
     return japanese ? Language::JPN : Language::ENG;
 }
-void Sav3::language(Language v)
+void Sav3::language(Language)
 {
     // TODO: Unused?
 }
@@ -467,10 +437,7 @@ void Sav3::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
     }
 }
 
-void Sav3::trade(std::shared_ptr<PKX> pk)
-{
-    (void)pk;
-}
+void Sav3::trade(std::shared_ptr<PKX>) {}
 
 std::shared_ptr<PKX> Sav3::emptyPkm() const
 {
@@ -585,22 +552,7 @@ int Sav3::dexCaught(void) const
 }
 
 // Unused
-int Sav3::emptyGiftLocation(void) const
-{
-    return 0;
-}
-
-// Unused
-std::vector<Sav::giftData> Sav3::currentGifts(void) const
-{
-    return std::vector<giftData>();
-}
-
-// Unused
-void Sav3::mysteryGift(WCX& wc, int& pos) {}
-
-// Unused
-std::unique_ptr<WCX> Sav3::mysteryGift(int pos) const
+std::unique_ptr<WCX> Sav3::mysteryGift(int) const
 {
     return nullptr;
 }

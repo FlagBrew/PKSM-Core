@@ -44,6 +44,7 @@ protected:
 
     int dexFormIndex(int species, int formct, int start) const;
     int dexFormCount(int species) const;
+    int getDexFlags(int index, int baseSpecies) const;
     void setDexFlags(int index, int gender, int shiny, int baseSpecies);
     bool sanitizeFormsToIterate(int species, int& fs, int& fe, int formIn) const;
     int maxSpecies(void) const override { return 809; } // This is going to be FUN: only numbers 1-151, 808, & 809
@@ -52,10 +53,10 @@ protected:
     int maxAbility(void) const override { return 233; } // Same as G7
     int maxBall(void) const override { return 0x1A; }   // Same as G7
 
+    static u16 check16(u8* buf, u32 len);
+
 public:
     SavLGPE(std::shared_ptr<u8[]> dt);
-
-    u16 check16(u8* buf, u32 blockID, u32 len) const;
     void resign(void);
     void finishEditing(void) override { resign(); }
     void beginEditing(void) override {}
@@ -77,20 +78,20 @@ public:
     void version(u8 v) override;
     u8 gender(void) const override;
     void gender(u8 v) override;
-    u8 subRegion(void) const override { return 0; }     // TODO
-    void subRegion(u8 v) override { (void)v; }          // TODO
-    u8 country(void) const override { return 0; }       // TODO
-    void country(u8 v) override { (void)v; }            // TODO
-    u8 consoleRegion(void) const override { return 0; } // TODO
-    void consoleRegion(u8 v) override { (void)v; }      // TODO
+    u8 subRegion(void) const override { return 0; }
+    void subRegion(u8) override {}
+    u8 country(void) const override { return 0; }
+    void country(u8) override {}
+    u8 consoleRegion(void) const override { return 0; }
+    void consoleRegion(u8) override {}
     Language language(void) const override;
     void language(Language v) override;
     std::string otName(void) const override;
     void otName(const std::string& v) override;
     u32 money(void) const override;
     void money(u32 v) override;
-    u32 BP(void) const override { return 0; } // TODO
-    void BP(u32 v) override { (void)v; }      // TODO
+    u32 BP(void) const override { return 0; }
+    void BP(u32) override {}
     u8 badges(void) const override;
     u16 playedHours(void) const override;
     void playedHours(u16 v) override;
@@ -99,8 +100,8 @@ public:
     u8 playedSeconds(void) const override;
     void playedSeconds(u8 v) override;
 
-    u8 currentBox(void) const override { return 0; } // TODO
-    void currentBox(u8 v) override { (void)v; }      // TODO
+    u8 currentBox(void) const override { return 0; }
+    void currentBox(u8) override {}
     u32 boxOffset(u8 box, u8 slot) const override;
     u32 partyOffset(u8 slot) const override;
 
@@ -123,7 +124,7 @@ public:
     int emptyGiftLocation(void) const override { return 0; }                    // Data not stored
     std::vector<Sav::giftData> currentGifts(void) const override { return {}; } // Data not stored
     void mysteryGift(WCX& wc, int& pos) override;
-    std::unique_ptr<WCX> mysteryGift(int pos) const override;
+    std::unique_ptr<WCX> mysteryGift(int pos) const override; // Always returns null: Data not stored
     void cryptBoxData(bool crypted) override;
     std::string boxName(u8 box) const override;
     void boxName(u8 box, const std::string& name) override;
