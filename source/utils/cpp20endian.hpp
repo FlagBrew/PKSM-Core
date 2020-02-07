@@ -35,7 +35,7 @@ namespace BigEndian
 {
     // Only works with integral types
     template <typename T>
-    constexpr void convertFrom(u8* dest, T orig)
+    constexpr void convertFrom(u8* dest, const T& orig)
     {
         static_assert(std::is_integral_v<T>);
         if (!std::is_constant_evaluated() && std::endian::big == std::endian::native)
@@ -44,10 +44,11 @@ namespace BigEndian
         }
         else
         {
+            std::make_unsigned_t<T> origVal = orig;
             for (size_t i = 0; i < sizeof(T); i++)
             {
-                dest[sizeof(T) - i - 1] = u8(orig);
-                orig >>= 8;
+                dest[sizeof(T) - i - 1] = u8(origVal);
+                origVal >>= 8;
             }
         }
     }
@@ -130,7 +131,7 @@ namespace BigEndian
     constexpr T convertTo(const u8* from)
     {
         static_assert(std::is_integral_v<T>);
-        T dest = 0;
+        std::make_unsigned_t<T> dest = 0;
         if (!std::is_constant_evaluated() && std::endian::native == std::endian::big)
         {
             memcpy(&dest, from, sizeof(T));
@@ -139,7 +140,7 @@ namespace BigEndian
         {
             for (size_t i = 0; i < sizeof(T); i++)
             {
-                dest |= T(from[i]) << ((sizeof(T) - i - 1) * 8);
+                dest |= std::make_unsigned_t<T>(from[i]) << ((sizeof(T) - i - 1) * 8);
             }
         }
         return dest;
@@ -161,7 +162,7 @@ namespace LittleEndian
 {
     // Only works with integral types
     template <typename T>
-    constexpr void convertFrom(u8* dest, T orig)
+    constexpr void convertFrom(u8* dest, const T& orig)
     {
         static_assert(std::is_integral_v<T>);
         if (!std::is_constant_evaluated() && std::endian::little == std::endian::native)
@@ -170,10 +171,11 @@ namespace LittleEndian
         }
         else
         {
+            std::make_unsigned_t<T> origVal = orig;
             for (size_t i = 0; i < sizeof(T); i++)
             {
-                dest[i] = u8(orig);
-                orig >>= 8;
+                dest[i] = u8(origVal);
+                origVal >>= 8;
             }
         }
     }
@@ -256,7 +258,7 @@ namespace LittleEndian
     constexpr T convertTo(const u8* from)
     {
         static_assert(std::is_integral_v<T>);
-        T dest = 0;
+        std::make_unsigned_t<T> dest = 0;
         if (!std::is_constant_evaluated() && std::endian::native == std::endian::little)
         {
             memcpy(&dest, from, sizeof(T));
@@ -265,7 +267,7 @@ namespace LittleEndian
         {
             for (size_t i = 0; i < sizeof(T); i++)
             {
-                dest |= T(from[i]) << (i * 8);
+                dest |= std::make_unsigned_t<T>(from[i]) << (i * 8);
             }
         }
         return dest;

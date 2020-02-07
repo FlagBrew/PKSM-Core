@@ -135,7 +135,7 @@ namespace BigEndian
     T convertTo(const u8* from)
     {
         static_assert(std::is_integral_v<T>);
-        T dest = 0;
+        std::make_unsigned_t<T> dest = 0;
 #if defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN || defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__ ||                    \
     defined(__BIG_ENDIAN__) || defined(__ARMEB__) || defined(__THUMBEB__) || defined(__AARCH64EB__) || defined(_MIBSEB) || defined(__MIBSEB) ||      \
     defined(__MIBSEB__)
@@ -147,7 +147,7 @@ namespace BigEndian
         {
             for (size_t i = 0; i < sizeof(T); i++)
             {
-                dest |= T(from[i]) << ((sizeof(T) - i - 1) * 8);
+                dest |= std::make_unsigned_t<T>(from[i]) << ((sizeof(T) - i - 1) * 8);
             }
         }
 #else
@@ -266,14 +266,14 @@ namespace LittleEndian
     T convertTo(const u8* from)
     {
         static_assert(std::is_integral_v<T>);
-        T dest = 0;
+        std::make_unsigned_t<T> dest = 0;
 #if defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN || defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__ ||                    \
     defined(__BIG_ENDIAN__) || defined(__ARMEB__) || defined(__THUMBEB__) || defined(__AARCH64EB__) || defined(_MIBSEB) || defined(__MIBSEB) ||      \
     defined(__MIBSEB__)
         {
             for (size_t i = 0; i < sizeof(T); i++)
             {
-                dest |= T(from[i]) << (i * 8);
+                dest |= std::make_unsigned_t<T>(from[i]) << (i * 8);
             }
         }
 #elif defined(__BYTE_ORDER) && __BYTE_ORDER == __LITTLE_ENDIAN || defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ ||            \
