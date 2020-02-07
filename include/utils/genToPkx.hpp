@@ -24,17 +24,64 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef SAVHGSS_HPP
-#define SAVHGSS_HPP
+#ifndef GENTOPKX_HPP
+#define GENTOPKX_HPP
 
-#include "sav/Sav4.hpp"
+#include "utils/generation.hpp"
 
-class SavHGSS : public Sav4
+class PK3;
+class PK4;
+class PK5;
+class PK6;
+class PK7;
+class PK8;
+class PB7;
+
+template <Generation g>
+struct GenToPkx
 {
-public:
-    SavHGSS(std::shared_ptr<u8[]> dt);
+};
 
-    std::map<Pouch, std::vector<int>> validItems(void) const override;
+template <>
+struct GenToPkx<Generation::THREE>
+{
+    using PKX = PK3;
+};
+
+template <>
+struct GenToPkx<Generation::FOUR>
+{
+    using PKX = PK4;
+};
+
+template <>
+struct GenToPkx<Generation::FIVE>
+{
+    using PKX = PK5;
+};
+
+template <>
+struct GenToPkx<Generation::SIX>
+{
+    using PKX = PK6;
+};
+
+template <>
+struct GenToPkx<Generation::SEVEN>
+{
+    using PKX = PK7;
+};
+
+template <>
+struct GenToPkx<Generation::EIGHT>
+{
+    using PKX = PK8;
+};
+
+template <>
+struct GenToPkx<Generation::LGPE>
+{
+    using PKX = PB7;
 };
 
 #endif

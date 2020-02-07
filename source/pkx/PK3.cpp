@@ -27,6 +27,9 @@
 #include "pkx/PK3.hpp"
 #include "i18n/i18n.hpp"
 #include "pkx/PK4.hpp"
+#include "pkx/PK5.hpp"
+#include "pkx/PK6.hpp"
+#include "pkx/PK7.hpp"
 #include "utils/ValueConverter.hpp"
 #include "utils/endian.hpp"
 #include "utils/random.hpp"
@@ -80,7 +83,7 @@ void PK3::crypt(void)
     u32 seed    = Endian::convertTo<u32>(data) ^ Endian::convertTo<u32>(data + 4);
     auto xorkey = Endian::convertFrom<u32>(seed);
 
-    for (int i = 32; i < 80; i++)
+    for (size_t i = 32; i < BOX_LENGTH; i++)
     {
         data[i] ^= xorkey[i % xorkey.size()];
     }
@@ -103,7 +106,7 @@ bool PK3::japanese(void) const
 u16 PK3::calcChecksum() const
 {
     u16 chk = 0;
-    for (int i = 0x20; i < 80; i += 2)
+    for (size_t i = 0x20; i < BOX_LENGTH; i += 2)
         chk += Endian::convertTo<u16>(data + i);
     return chk;
 }
@@ -118,7 +121,7 @@ bool PK3::isEncrypted() const
     return calcChecksum() != checksum();
 }
 
-PK3::PK3(u8* dt, bool party, bool directAccess) : PKX(dt, party ? 100 : 80, directAccess)
+PK3::PK3(PrivateConstructor, u8* dt, bool party, bool directAccess) : PKX(dt, party ? PARTY_LENGTH : BOX_LENGTH, directAccess)
 {
     if (isEncrypted())
     {
@@ -126,11 +129,11 @@ PK3::PK3(u8* dt, bool party, bool directAccess) : PKX(dt, party ? 100 : 80, dire
     }
 }
 
-std::shared_ptr<PKX> PK3::clone(void) const
+std::unique_ptr<PKX> PK3::clone(void) const
 {
     // Can't use normal data constructor because of checksum encryption checks
-    std::shared_ptr<PK3> ret = std::make_shared<PK3>(nullptr, length == 100);
-    std::copy(data, data + length, ret->rawData());
+    std::unique_ptr<PK3> ret = PKX::getPKM<Generation::THREE>(nullptr, isParty());
+    std::copy(data, data + getLength(), ret->rawData());
     return ret;
 }
 
@@ -531,7 +534,7 @@ void PK3::fatefulEncounter(bool v)
 
 int PK3::partyLevel() const
 {
-    if (length == 80)
+    if (!isParty())
     {
         return -1;
     }
@@ -539,7 +542,7 @@ int PK3::partyLevel() const
 }
 void PK3::partyLevel(u8 v)
 {
-    if (length == 100)
+    if (isParty())
     {
         data[0x54] = v;
     }
@@ -547,7 +550,7 @@ void PK3::partyLevel(u8 v)
 
 int PK3::partyCurrHP(void) const
 {
-    if (length == 80)
+    if (!isParty())
     {
         return -1;
     }
@@ -555,7 +558,7 @@ int PK3::partyCurrHP(void) const
 }
 void PK3::partyCurrHP(u16 v)
 {
-    if (length == 100)
+    if (isParty())
     {
         Endian::convertFrom<u16>(data + 0x56, v);
     }
@@ -563,7 +566,7 @@ void PK3::partyCurrHP(u16 v)
 
 int PK3::partyStat(Stat stat) const
 {
-    if (length == 80)
+    if (!isParty())
     {
         return -1;
     }
@@ -571,13 +574,13 @@ int PK3::partyStat(Stat stat) const
 }
 void PK3::partyStat(Stat stat, u16 v)
 {
-    if (length == 100)
+    if (isParty())
     {
         Endian::convertFrom<u16>(data + 0x58 + u8(stat) * 2, v);
     }
 }
 
-std::shared_ptr<PKX> PK3::convertToG4(Sav& save) const
+std::unique_ptr<PK4> PK3::convertToG4(Sav& save) const
 {
     static constexpr std::array<std::array<u8, 18>, 7> trashBytes = {{
         {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
@@ -592,7 +595,7 @@ std::shared_ptr<PKX> PK3::convertToG4(Sav& save) const
     time_t t              = time(NULL);
     struct tm* timeStruct = gmtime((const time_t*)&t);
 
-    std::shared_ptr<PKX> pk4 = std::make_shared<PK4>();
+    auto pk4 = PKX::getPKM<Generation::FOUR>(nullptr);
 
     pk4->PID(PID());
     pk4->species(species());
@@ -672,7 +675,7 @@ std::shared_ptr<PKX> PK3::convertToG4(Sav& save) const
     }
 
     // Yay trash bytes
-    if (u8(language()) - 1 < trashBytes.size())
+    if ((size_t)(u8(language()) - 1) < trashBytes.size())
     {
         auto& trash = trashBytes[u8(language()) - 1];
         std::copy(trash.begin(), trash.end(), pk4->rawData() + 0x48 + 4);
@@ -708,15 +711,15 @@ std::shared_ptr<PKX> PK3::convertToG4(Sav& save) const
     return pk4;
 }
 
-std::shared_ptr<PKX> PK3::convertToG5(Sav& save) const
+std::unique_ptr<PK5> PK3::convertToG5(Sav& save) const
 {
     return convertToG4(save)->convertToG5(save);
 }
-std::shared_ptr<PKX> PK3::convertToG6(Sav& save) const
+std::unique_ptr<PK6> PK3::convertToG6(Sav& save) const
 {
     return convertToG4(save)->convertToG5(save)->convertToG6(save);
 }
-std::shared_ptr<PKX> PK3::convertToG7(Sav& save) const
+std::unique_ptr<PK7> PK3::convertToG7(Sav& save) const
 {
     return convertToG4(save)->convertToG5(save)->convertToG6(save)->convertToG7(save);
 }
@@ -964,4 +967,15 @@ u16 PK3::stat(Stat stat) const
     if (nature() % 5 + 1 == u8(stat))
         mult--;
     return calc * mult / 10;
+}
+
+void PK3::updatePartyData()
+{
+    constexpr Stat stats[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
+    for (size_t i = 0; i < 6; i++)
+    {
+        partyStat(stats[i], stat(stats[i]));
+    }
+    partyLevel(level());
+    partyCurrHP(stat(Stat::HP));
 }

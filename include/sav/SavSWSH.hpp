@@ -27,7 +27,7 @@
 #ifndef SAVSWSH_HPP
 #define SAVSWSH_HPP
 
-#include "Sav8.hpp"
+#include "sav/Sav8.hpp"
 
 class SavSWSH : public Sav8
 {

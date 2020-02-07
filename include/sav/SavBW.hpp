@@ -27,7 +27,7 @@
 #ifndef SAVBW_HPP
 #define SAVBW_HPP
 
-#include "Sav5.hpp"
+#include "sav/Sav5.hpp"
 
 class SavBW : public Sav5
 {

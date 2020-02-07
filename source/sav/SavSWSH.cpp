@@ -465,31 +465,31 @@ void SavSWSH::boxWallpaper(u8 box, u8 v)
 
 u32 SavSWSH::boxOffset(u8 box, u8 slot) const
 {
-    return 0x158 * slot + 0x158 * 30 * box;
+    return PK8::PARTY_LENGTH * slot + PK8::PARTY_LENGTH * 30 * box;
 }
 u32 SavSWSH::partyOffset(u8 slot) const
 {
-    return 0x158 * slot;
+    return PK8::PARTY_LENGTH * slot;
 }
 
 u8 SavSWSH::partyCount(void) const
 {
-    return getBlock(Party)->decryptedData()[0x158 * 6];
+    return getBlock(Party)->decryptedData()[PK8::PARTY_LENGTH * 6];
 }
 void SavSWSH::partyCount(u8 count)
 {
-    getBlock(Party)->decryptedData()[0x158 * 6] = count;
+    getBlock(Party)->decryptedData()[PK8::PARTY_LENGTH * 6] = count;
 }
 
 std::shared_ptr<PKX> SavSWSH::pkm(u8 slot) const
 {
     u32 offset = partyOffset(slot);
-    return std::make_shared<PK8>(getBlock(Party)->decryptedData() + offset, true);
+    return PKX::getPKM<Generation::EIGHT>(getBlock(Party)->decryptedData() + offset, true);
 }
 std::shared_ptr<PKX> SavSWSH::pkm(u8 box, u8 slot) const
 {
     u32 offset = boxOffset(box, slot);
-    return std::make_shared<PK8>(getBlock(Box)->decryptedData() + offset, true);
+    return PKX::getPKM<Generation::EIGHT>(getBlock(Box)->decryptedData() + offset, true);
 }
 
 void SavSWSH::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
@@ -501,20 +501,7 @@ void SavSWSH::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
             trade(pk);
         }
 
-        u8 buf[0x158] = {0};
-        std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
-        std::unique_ptr<PK8> pk8 = std::make_unique<PK8>(buf, true, true);
-
-        if (pk->getLength() != 0x158)
-        {
-            for (int i = 0; i < 6; i++)
-            {
-                pk8->partyStat(Stat(i), pk8->stat(Stat(i)));
-            }
-            pk8->partyLevel(pk8->level());
-            pk8->partyCurrHP(pk8->stat(Stat::HP));
-        }
-
+        auto pk8 = pk->partyClone();
         std::copy(pk8->rawData(), pk8->rawData() + pk8->getLength(), getBlock(Box)->decryptedData() + boxOffset(box, slot));
     }
 }
@@ -522,20 +509,7 @@ void SavSWSH::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
     if (pk->generation() == Generation::EIGHT)
     {
-        u8 buf[0x158] = {0};
-        std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
-        std::unique_ptr<PK8> pk8 = std::make_unique<PK8>(buf, true, true);
-
-        if (pk->getLength() != 0x158)
-        {
-            for (int i = 0; i < 6; i++)
-            {
-                pk8->partyStat(Stat(i), pk8->stat(Stat(i)));
-            }
-            pk8->partyLevel(pk8->level());
-            pk8->partyCurrHP(pk8->stat(Stat::HP));
-        }
-
+        auto pk8 = pk->partyClone();
         pk8->encrypt();
         std::copy(pk8->rawData(), pk8->rawData() + pk8->getLength(), getBlock(Party)->decryptedData() + partyOffset(slot));
     }
@@ -547,7 +521,7 @@ void SavSWSH::cryptBoxData(bool crypted)
     {
         for (u8 slot = 0; slot < 30; slot++)
         {
-            std::unique_ptr<PKX> pk8 = std::make_unique<PK8>(getBlock(Box)->decryptedData() + boxOffset(box, slot), true, true);
+            std::unique_ptr<PKX> pk8 = PKX::getPKM<Generation::EIGHT>(getBlock(Box)->decryptedData() + boxOffset(box, slot), true, true);
             if (!crypted)
             {
                 pk8->encrypt();

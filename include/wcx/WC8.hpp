@@ -27,7 +27,7 @@
 #ifndef WC8_HPP
 #define WC8_HPP
 
-#include "WCX.hpp"
+#include "wcx/WCX.hpp"
 
 class WC8 : public WCX
 {

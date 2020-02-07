@@ -180,37 +180,24 @@ void Sav6::currentBox(u8 v)
 
 u32 Sav6::boxOffset(u8 box, u8 slot) const
 {
-    return Box + 232 * 30 * box + 232 * slot;
+    return Box + PK6::BOX_LENGTH * 30 * box + PK6::BOX_LENGTH * slot;
 }
 
 u32 Sav6::partyOffset(u8 slot) const
 {
-    return Party + 260 * slot;
+    return Party + PK6::PARTY_LENGTH * slot;
 }
 
 std::shared_ptr<PKX> Sav6::pkm(u8 slot) const
 {
-    return std::make_shared<PK6>(&data[partyOffset(slot)], true);
+    return PKX::getPKM<Generation::SIX>(&data[partyOffset(slot)], true);
 }
 
 void Sav6::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
     if (pk->generation() == Generation::SIX)
     {
-        u8 buf[260] = {0};
-        std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
-        std::unique_ptr<PK6> pk6 = std::make_unique<PK6>(buf, true, true);
-
-        if (pk->getLength() != 260)
-        {
-            for (int i = 0; i < 6; i++)
-            {
-                pk6->partyStat(Stat(i), pk6->stat(Stat(i)));
-            }
-            pk6->partyLevel(pk6->level());
-            pk6->partyCurrHP(pk6->stat(Stat::HP));
-        }
-
+        auto pk6 = pk->partyClone();
         pk6->encrypt();
         std::copy(pk6->rawData(), pk6->rawData() + pk6->getLength(), &data[partyOffset(slot)]);
     }
@@ -218,7 +205,7 @@ void Sav6::pkm(std::shared_ptr<PKX> pk, u8 slot)
 
 std::shared_ptr<PKX> Sav6::pkm(u8 box, u8 slot) const
 {
-    return std::make_shared<PK6>(&data[boxOffset(box, slot)]);
+    return PKX::getPKM<Generation::SIX>(&data[boxOffset(box, slot)]);
 }
 
 void Sav6::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
@@ -230,7 +217,7 @@ void Sav6::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
             trade(pk);
         }
 
-        std::copy(pk->rawData(), pk->rawData() + 232, &data[boxOffset(box, slot)]);
+        std::copy(pk->rawData(), pk->rawData() + PK6::BOX_LENGTH, &data[boxOffset(box, slot)]);
     }
 }
 
@@ -318,7 +305,7 @@ void Sav6::cryptBoxData(bool crypted)
     {
         for (u8 slot = 0; slot < 30; slot++)
         {
-            std::unique_ptr<PKX> pk6 = std::make_unique<PK6>(&data[boxOffset(box, slot)], false, true);
+            std::unique_ptr<PKX> pk6 = PKX::getPKM<Generation::SIX>(&data[boxOffset(box, slot)], false, true);
             if (!crypted)
             {
                 pk6->encrypt();
@@ -656,16 +643,16 @@ void Sav6::boxWallpaper(u8 box, u8 v)
 
 u8 Sav6::partyCount(void) const
 {
-    return data[Party + 6 * 260];
+    return data[Party + 6 * PK6::PARTY_LENGTH];
 }
 void Sav6::partyCount(u8 v)
 {
-    data[Party + 6 * 260] = v;
+    data[Party + 6 * PK6::PARTY_LENGTH] = v;
 }
 
 std::shared_ptr<PKX> Sav6::emptyPkm() const
 {
-    return std::make_shared<PK6>();
+    return PKX::getPKM<Generation::SIX>(nullptr);
 }
 
 int Sav6::emptyGiftLocation(void) const

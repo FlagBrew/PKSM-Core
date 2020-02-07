@@ -27,7 +27,7 @@
 #ifndef SAVUSUM_HPP
 #define SAVUSUM_HPP
 
-#include "Sav7.hpp"
+#include "sav/Sav7.hpp"
 
 class SavUSUM : public Sav7
 {

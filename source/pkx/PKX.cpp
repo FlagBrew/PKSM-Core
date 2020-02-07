@@ -238,50 +238,50 @@ void PKX::encrypt(void)
     }
 }
 
-bool PKX::gen7(void) const
+bool PKX::originGen7(void) const
 {
     return version() >= 30 && version() <= 33;
 }
 
-bool PKX::gen6(void) const
+bool PKX::originGen6(void) const
 {
     return version() >= 24 && version() <= 29;
 }
 
-bool PKX::gen5(void) const
+bool PKX::originGen5(void) const
 {
     return version() >= 20 && version() <= 23;
 }
 
-bool PKX::gen4(void) const
+bool PKX::originGen4(void) const
 {
     return version() >= 7 && version() <= 12 && version() != 9;
 }
 
-bool PKX::gen3(void) const
+bool PKX::originGen3(void) const
 {
     return (version() >= 1 && version() <= 5) || (version() == 15);
 }
 
-int PKX::genNumber(void) const
+int PKX::originGenNumber(void) const
 {
-    if (gen7())
+    if (originGen7())
     {
         return 7;
     }
-    else if (gen6())
+    else if (originGen6())
     {
         return 6;
     }
-    else if (gen5())
+    else if (originGen5())
     {
         return 5;
     }
-    else if (gen4())
+    else if (originGen4())
     {
         return 4;
     }
-    else if (gen3())
+    else if (originGen3())
     {
         return 3;
     }
@@ -316,14 +316,14 @@ void PKX::fixMoves(void)
 
 u8 PKX::genFromBytes(u8* data, size_t length)
 {
-    if (length == 80 || length == 100)
+    if (length == PK3::BOX_LENGTH || length == PK3::PARTY_LENGTH)
     {
         return 3;
     }
-    else if (length == 136)
+    else if (length == PK4::BOX_LENGTH)
     {
         // decrypt data if necessary
-        PK4 test(data);
+        PK4 test(PrivateConstructor{}, data);
         if (Endian::convertTo<u16>(test.rawData() + 4) == 0 &&
             (Endian::convertTo<u16>(test.rawData() + 0x80) >= 0x3333 || test.rawData()[0x5F] >= 0x10) &&
             Endian::convertTo<u16>(test.rawData() + 0x46) == 0)
@@ -332,17 +332,17 @@ u8 PKX::genFromBytes(u8* data, size_t length)
         }
         return 4;
     }
-    else if (length == 236)
+    else if (length == PK4::PARTY_LENGTH)
     {
         return 4;
     }
-    else if (length == 220)
+    else if (length == PK5::PARTY_LENGTH)
     {
         return 5;
     }
-    else if (length == 232)
+    else if (length == PK6::BOX_LENGTH || length == PK6::PARTY_LENGTH)
     {
-        PK6 test(data);
+        PK6 test(PrivateConstructor{}, data);
         if (test.species() > 721 || test.version() > 27 || test.move(0) > 621 || test.move(1) > 621 || test.move(2) > 621 || test.move(3) > 621 ||
             test.relearnMove(0) > 621 || test.relearnMove(1) > 621 || test.relearnMove(2) > 621 || test.relearnMove(3) > 621 ||
             test.ability() > 191 || test.heldItem() > 775) // Invalid values for gen 6
@@ -376,7 +376,7 @@ u8 PKX::genFromBytes(u8* data, size_t length)
         }
         return 6;
     }
-    else if (length == 0x148 || length == 0x158)
+    else if (length == PK8::BOX_LENGTH || length == PK8::PARTY_LENGTH)
     {
         return 8;
     }
@@ -535,19 +535,19 @@ std::unique_ptr<PKX> PKX::getPKM(Generation gen, u8* data, bool party, bool dire
     switch (gen)
     {
         case Generation::THREE:
-            return std::make_unique<PK3>(data, party, directAccess);
+            return getPKM<Generation::THREE>(data, party, directAccess);
         case Generation::FOUR:
-            return std::make_unique<PK4>(data, party, directAccess);
+            return getPKM<Generation::FOUR>(data, party, directAccess);
         case Generation::FIVE:
-            return std::make_unique<PK5>(data, party, directAccess);
+            return getPKM<Generation::FIVE>(data, party, directAccess);
         case Generation::SIX:
-            return std::make_unique<PK6>(data, party, directAccess);
+            return getPKM<Generation::SIX>(data, party, directAccess);
         case Generation::SEVEN:
-            return std::make_unique<PK7>(data, party, directAccess);
+            return getPKM<Generation::SEVEN>(data, party, directAccess);
         case Generation::LGPE:
-            return std::make_unique<PB7>(data, directAccess);
+            return getPKM<Generation::LGPE>(data, party, directAccess);
         case Generation::EIGHT:
-            return std::make_unique<PK8>(data, party, directAccess);
+            return getPKM<Generation::EIGHT>(data, party, directAccess);
         case Generation::UNUSED:
             return nullptr;
     }
@@ -559,47 +559,19 @@ std::unique_ptr<PKX> PKX::getPKM(Generation gen, u8* data, size_t length, bool d
     switch (gen)
     {
         case Generation::THREE:
-            if (length == 80 || length == 100)
-            {
-                return getPKM(gen, data, length == 100, directAccess);
-            }
-            break;
+            return getPKM<Generation::THREE>(data, length, directAccess);
         case Generation::FOUR:
-            if (length == 136 || length == 236)
-            {
-                return getPKM(gen, data, length == 236, directAccess);
-            }
-            break;
+            return getPKM<Generation::FOUR>(data, length, directAccess);
         case Generation::FIVE:
-            if (length == 136 || length == 220)
-            {
-                return getPKM(gen, data, length == 220, directAccess);
-            }
-            break;
+            return getPKM<Generation::FIVE>(data, length, directAccess);
         case Generation::SIX:
-            if (length == 232 || length == 260)
-            {
-                return getPKM(gen, data, length == 260, directAccess);
-            }
-            break;
+            return getPKM<Generation::SIX>(data, length, directAccess);
         case Generation::SEVEN:
-            if (length == 232 || length == 260)
-            {
-                return getPKM(gen, data, length == 260, directAccess);
-            }
-            break;
+            return getPKM<Generation::SEVEN>(data, length, directAccess);
         case Generation::LGPE:
-            if (length == 260)
-            {
-                return getPKM(gen, data, length == 260, directAccess);
-            }
-            break;
+            return getPKM<Generation::LGPE>(data, length, directAccess);
         case Generation::EIGHT:
-            if (length == 0x148 || length == 0x158)
-            {
-                return getPKM(gen, data, length == 0x158, directAccess);
-            }
-            break;
+            return getPKM<Generation::EIGHT>(data, length, directAccess);
         case Generation::UNUSED:
             return nullptr;
     }
@@ -686,4 +658,50 @@ bool PKX::operator==(const PKFilter& filter) const
         return false;
     }
     return true;
+}
+
+std::unique_ptr<PK3> PKX::convertToG3(Sav& save) const
+{
+    return generation() == Generation::THREE ? std::unique_ptr<PK3>((PK3*)clone().release()) : nullptr;
+}
+std::unique_ptr<PK4> PKX::convertToG4(Sav& save) const
+{
+    return generation() == Generation::FOUR ? std::unique_ptr<PK4>((PK4*)clone().release()) : nullptr;
+}
+std::unique_ptr<PK5> PKX::convertToG5(Sav& save) const
+{
+    return generation() == Generation::FIVE ? std::unique_ptr<PK5>((PK5*)clone().release()) : nullptr;
+}
+std::unique_ptr<PK6> PKX::convertToG6(Sav& save) const
+{
+    return generation() == Generation::SIX ? std::unique_ptr<PK6>((PK6*)clone().release()) : nullptr;
+}
+std::unique_ptr<PK7> PKX::convertToG7(Sav& save) const
+{
+    return generation() == Generation::SEVEN ? std::unique_ptr<PK7>((PK7*)clone().release()) : nullptr;
+}
+std::unique_ptr<PB7> PKX::convertToLGPE(Sav& save) const
+{
+    return generation() == Generation::LGPE ? std::unique_ptr<PB7>((PB7*)clone().release()) : nullptr;
+}
+std::unique_ptr<PK8> PKX::convertToG8(Sav& save) const
+{
+    return generation() == Generation::EIGHT ? std::unique_ptr<PK8>((PK8*)clone().release()) : nullptr;
+}
+
+std::unique_ptr<PKX> PKX::partyClone() const
+{
+    if (isParty())
+    {
+        auto ret = clone();
+        ret->updatePartyData();
+        return ret;
+    }
+    else
+    {
+        auto ret = PKX::getPKM(generation(), nullptr, true);
+        std::copy(data, data + getLength(), ret->rawData());
+        ret->updatePartyData();
+        return ret;
+    }
 }

@@ -28,6 +28,8 @@
 #include "i18n/i18n.hpp"
 #include "pkx/PK3.hpp"
 #include "pkx/PK5.hpp"
+#include "pkx/PK6.hpp"
+#include "pkx/PK7.hpp"
 #include "sav/Sav.hpp"
 #include "utils/endian.hpp"
 #include "utils/utils.hpp"
@@ -52,7 +54,7 @@ void PK4::crypt(void)
 {
     u32 seed = checksum();
 
-    for (int i = 0x08; i < 136; i += 2)
+    for (size_t i = 0x08; i < BOX_LENGTH; i += 2)
     {
         seed = seedStep(seed);
         data[i] ^= (seed >> 16);
@@ -60,7 +62,7 @@ void PK4::crypt(void)
     }
 
     seed = PID();
-    for (u32 i = 136; i < length; i += 2)
+    for (u32 i = BOX_LENGTH; i < getLength(); i += 2)
     {
         seed = seedStep(seed);
         data[i] ^= (seed >> 16);
@@ -73,7 +75,7 @@ bool PK4::isEncrypted() const
     return Endian::convertTo<u32>(data + 0x64) != 0;
 }
 
-PK4::PK4(u8* dt, bool party, bool direct) : PKX(dt, party ? 236 : 136, direct)
+PK4::PK4(PrivateConstructor, u8* dt, bool party, bool direct) : PKX(dt, party ? PARTY_LENGTH : BOX_LENGTH, direct)
 {
     if (isEncrypted())
     {
@@ -81,9 +83,9 @@ PK4::PK4(u8* dt, bool party, bool direct) : PKX(dt, party ? 236 : 136, direct)
     }
 }
 
-std::shared_ptr<PKX> PK4::clone(void) const
+std::unique_ptr<PKX> PK4::clone(void) const
 {
-    return std::make_shared<PK4>(const_cast<u8*>(data), length == 236);
+    return PKX::getPKM<Generation::FOUR>(const_cast<u8*>(data), isParty());
 }
 
 Generation PK4::generation(void) const
@@ -653,7 +655,7 @@ u8 PK4::characteristic(void) const
 void PK4::refreshChecksum(void)
 {
     u16 chk = 0;
-    for (u8 i = 8; i < 136; i += 2)
+    for (u8 i = 8; i < BOX_LENGTH; i += 2)
     {
         chk += Endian::convertTo<u16>(data + i);
     }
@@ -803,7 +805,7 @@ u16 PK4::stat(Stat stat) const
 
 int PK4::partyCurrHP(void) const
 {
-    if (length == 136)
+    if (!isParty())
     {
         return -1;
     }
@@ -812,7 +814,7 @@ int PK4::partyCurrHP(void) const
 
 void PK4::partyCurrHP(u16 v)
 {
-    if (length != 136)
+    if (isParty())
     {
         Endian::convertFrom<u16>(data + 0x8E, v);
     }
@@ -820,7 +822,7 @@ void PK4::partyCurrHP(u16 v)
 
 int PK4::partyStat(Stat stat) const
 {
-    if (length == 136)
+    if (!isParty())
     {
         return -1;
     }
@@ -829,7 +831,7 @@ int PK4::partyStat(Stat stat) const
 
 void PK4::partyStat(Stat stat, u16 v)
 {
-    if (length != 136)
+    if (isParty())
     {
         Endian::convertFrom<u16>(data + 0x90 + u8(stat) * 2, v);
     }
@@ -837,7 +839,7 @@ void PK4::partyStat(Stat stat, u16 v)
 
 int PK4::partyLevel() const
 {
-    if (length == 136)
+    if (!isParty())
     {
         return -1;
     }
@@ -846,18 +848,18 @@ int PK4::partyLevel() const
 
 void PK4::partyLevel(u8 v)
 {
-    if (length != 136)
+    if (isParty())
     {
         *(data + 0x8C) = v;
     }
 }
 
-std::shared_ptr<PKX> PK4::convertToG3(Sav& save) const
+std::unique_ptr<PK3> PK4::convertToG3(Sav& save) const
 {
     time_t t              = time(NULL);
     struct tm* timeStruct = gmtime((const time_t*)&t);
 
-    std::shared_ptr<PKX> pk3 = std::make_shared<PK3>();
+    auto pk3 = PKX::getPKM<Generation::THREE>(nullptr);
 
     pk3->PID(PID());
     pk3->species(species());
@@ -961,10 +963,9 @@ std::shared_ptr<PKX> PK4::convertToG3(Sav& save) const
     return pk3;
 }
 
-std::shared_ptr<PKX> PK4::convertToG5(Sav& save) const
+std::unique_ptr<PK5> PK4::convertToG5(Sav& save) const
 {
-    std::shared_ptr<PK5> pk5 = std::make_shared<PK5>();
-    std::copy(data, data + 136, pk5->rawData());
+    auto pk5 = PKX::getPKM<Generation::FIVE>(const_cast<u8*>(data));
 
     // Clear HGSS data
     Endian::convertFrom<u16>(pk5->rawData() + 0x86, 0);
@@ -991,7 +992,7 @@ std::shared_ptr<PKX> PK4::convertToG5(Sav& save) const
     pk5->nature(nature());
 
     // Check met location
-    pk5->metLocation(pk5->gen4() && pk5->fatefulEncounter() && std::find(beasts, beasts + 4, pk5->species()) != beasts + 4
+    pk5->metLocation(pk5->originGen4() && pk5->fatefulEncounter() && std::find(beasts, beasts + 4, pk5->species()) != beasts + 4
                          ? (pk5->species() == 251 ? 30010 : 30012) // Celebi : Beast
                          : 30001);                                 // Pokétransfer (not Crown)
 
@@ -1020,7 +1021,7 @@ std::shared_ptr<PKX> PK4::convertToG5(Sav& save) const
     return pk5;
 }
 
-std::shared_ptr<PKX> PK4::convertToG6(Sav& save) const
+std::unique_ptr<PK6> PK4::convertToG6(Sav& save) const
 {
     if (auto pk5 = convertToG5(save))
     {
@@ -1029,7 +1030,7 @@ std::shared_ptr<PKX> PK4::convertToG6(Sav& save) const
     return nullptr;
 }
 
-std::shared_ptr<PKX> PK4::convertToG7(Sav& save) const
+std::unique_ptr<PK7> PK4::convertToG7(Sav& save) const
 {
     if (auto pk5 = convertToG5(save))
     {
@@ -1039,4 +1040,15 @@ std::shared_ptr<PKX> PK4::convertToG7(Sav& save) const
         }
     }
     return nullptr;
+}
+
+void PK4::updatePartyData()
+{
+    constexpr Stat stats[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
+    for (size_t i = 0; i < 6; i++)
+    {
+        partyStat(stats[i], stat(stats[i]));
+    }
+    partyLevel(level());
+    partyCurrHP(stat(Stat::HP));
 }

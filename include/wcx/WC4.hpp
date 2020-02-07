@@ -27,7 +27,7 @@
 #ifndef WC4_HPP
 #define WC4_HPP
 
-#include "PGT.hpp"
+#include "wcx/PGT.hpp"
 #include "utils/utils.hpp"
 
 class WC4 : public PGT

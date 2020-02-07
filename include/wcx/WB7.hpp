@@ -27,8 +27,8 @@
 #ifndef WB7_HPP
 #define WB7_HPP
 
-#include "WCX.hpp"
 #include "i18n/Language.hpp"
+#include "wcx/WCX.hpp"
 
 class WB7 : public WCX
 {

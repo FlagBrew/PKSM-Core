@@ -261,36 +261,23 @@ void Sav4::currentBox(u8 v)
 
 u32 Sav4::boxOffset(u8 box, u8 slot) const
 {
-    return Box + 136 * box * 30 + (game == Game::HGSS ? box * 0x10 : 0) + slot * 136;
+    return Box + PK4::BOX_LENGTH * box * 30 + (game == Game::HGSS ? box * 0x10 : 0) + slot * PK4::BOX_LENGTH;
 }
 u32 Sav4::partyOffset(u8 slot) const
 {
-    return Party + slot * 236;
+    return Party + slot * PK4::PARTY_LENGTH;
 }
 
 std::shared_ptr<PKX> Sav4::pkm(u8 slot) const
 {
-    return std::make_shared<PK4>(&data[partyOffset(slot)], true);
+    return PKX::getPKM<Generation::FOUR>(&data[partyOffset(slot)], true);
 }
 
 void Sav4::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
     if (pk->generation() == Generation::FOUR)
     {
-        u8 buf[236] = {0};
-        std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
-        std::unique_ptr<PK4> pk4 = std::make_unique<PK4>(buf, true, true);
-
-        if (pk->getLength() != 236)
-        {
-            for (int i = 0; i < 6; i++)
-            {
-                pk4->partyStat(Stat(i), pk4->stat(Stat(i)));
-            }
-            pk4->partyLevel(pk4->level());
-            pk4->partyCurrHP(pk4->stat(Stat::HP));
-        }
-
+        auto pk4 = pk->partyClone();
         pk4->encrypt();
         std::copy(pk4->rawData(), pk4->rawData() + pk4->getLength(), &data[partyOffset(slot)]);
     }
@@ -298,7 +285,7 @@ void Sav4::pkm(std::shared_ptr<PKX> pk, u8 slot)
 
 std::shared_ptr<PKX> Sav4::pkm(u8 box, u8 slot) const
 {
-    return std::make_shared<PK4>(&data[boxOffset(box, slot)]);
+    return PKX::getPKM<Generation::FOUR>(&data[boxOffset(box, slot)]);
 }
 
 void Sav4::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
@@ -310,7 +297,7 @@ void Sav4::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
             trade(pk);
         }
 
-        std::copy(pk->rawData(), pk->rawData() + 136, &data[boxOffset(box, slot)]);
+        std::copy(pk->rawData(), pk->rawData() + PK4::BOX_LENGTH, &data[boxOffset(box, slot)]);
     }
 }
 
@@ -328,7 +315,7 @@ void Sav4::cryptBoxData(bool crypted)
     {
         for (u8 slot = 0; slot < 30; slot++)
         {
-            std::unique_ptr<PKX> pk4 = std::make_unique<PK4>(&data[boxOffset(box, slot)], false, true);
+            std::unique_ptr<PKX> pk4 = PKX::getPKM<Generation::FOUR>(&data[boxOffset(box, slot)], false, true);
             if (!crypted)
             {
                 pk4->encrypt();
@@ -764,7 +751,7 @@ u32 Sav4::setDexFormValues(std::vector<u8> forms, u8 bitsPerForm, u8 readCt)
 
 std::shared_ptr<PKX> Sav4::emptyPkm() const
 {
-    return std::make_shared<PK4>();
+    return PKX::getPKM<Generation::FOUR>(nullptr);
 }
 
 int Sav4::emptyGiftLocation(void) const
@@ -799,8 +786,8 @@ std::vector<Sav::giftData> Sav4::currentGifts(void) const
     {
         if (*(wonderCards + i * PGT::length) == 1 || *(wonderCards + i * PGT::length) == 2)
         {
-            PK4 getData(wonderCards + i * PGT::length + 8);
-            ret.emplace_back("Wonder Card", "", getData.species(), getData.alternativeForm(), getData.gender());
+            auto getData = PKX::getPKM<Generation::FOUR>(wonderCards + i * PGT::length + 8);
+            ret.emplace_back("Wonder Card", "", getData->species(), getData->alternativeForm(), getData->gender());
         }
         else if (*(wonderCards + i * PGT::length) == 7)
         {

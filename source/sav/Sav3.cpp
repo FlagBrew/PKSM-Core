@@ -428,41 +428,28 @@ void Sav3::currentBox(u8 v)
 
 u32 Sav3::boxOffset(u8 box, u8 slot) const
 {
-    return 4 + (SIZE_STORED * box * 30) + (SIZE_STORED * slot);
+    return 4 + (PK3::BOX_LENGTH * box * 30) + (PK3::BOX_LENGTH * slot);
 }
 
 u32 Sav3::partyOffset(u8 slot) const
 {
-    return blockOfs[1] + (game == Game::FRLG ? 0x38 : 0x238) + (SIZE_PARTY * slot);
+    return blockOfs[1] + (game == Game::FRLG ? 0x38 : 0x238) + (PK3::PARTY_LENGTH * slot);
 }
 
 std::shared_ptr<PKX> Sav3::pkm(u8 slot) const
 {
-    return std::make_shared<PK3>(&data[partyOffset(slot)], true);
+    return PKX::getPKM<Generation::THREE>(&data[partyOffset(slot)], true);
 }
 std::shared_ptr<PKX> Sav3::pkm(u8 box, u8 slot) const
 {
-    return std::make_shared<PK3>(&Box[boxOffset(box, slot)]);
+    return PKX::getPKM<Generation::THREE>(&Box[boxOffset(box, slot)]);
 }
 
 void Sav3::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
     if (pk->generation() == Generation::THREE)
     {
-        u8 buf[SIZE_PARTY] = {0};
-        std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
-        std::unique_ptr<PK3> pk3 = std::make_unique<PK3>(buf, true, true);
-
-        if (pk->getLength() != SIZE_PARTY)
-        {
-            for (int i = 0; i < 6; i++)
-            {
-                pk3->partyStat(Stat(i), pk3->stat(Stat(i)));
-            }
-            pk3->partyLevel(pk3->level());
-            pk3->partyCurrHP(pk3->stat(Stat::HP));
-        }
-
+        auto pk3 = pk->partyClone();
         pk3->encrypt();
         std::copy(pk3->rawData(), pk3->rawData() + pk3->getLength(), &data[partyOffset(slot)]);
     }
@@ -476,7 +463,7 @@ void Sav3::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
             trade(pk);
         }
 
-        std::copy(pk->rawData(), pk->rawData() + SIZE_STORED, &Box[boxOffset(box, slot)]);
+        std::copy(pk->rawData(), pk->rawData() + PK3::BOX_LENGTH, &Box[boxOffset(box, slot)]);
     }
 }
 
@@ -487,7 +474,7 @@ void Sav3::trade(std::shared_ptr<PKX> pk)
 
 std::shared_ptr<PKX> Sav3::emptyPkm() const
 {
-    return std::make_shared<PK3>();
+    return PKX::getPKM<Generation::THREE>(nullptr);
 }
 
 bool Sav3::canSetDex(int species)
@@ -624,7 +611,7 @@ void Sav3::cryptBoxData(bool crypted)
     {
         for (u8 slot = 0; slot < 30; slot++)
         {
-            std::unique_ptr<PKX> pk3 = std::make_unique<PK3>(&Box[boxOffset(box, slot)], false, true);
+            std::unique_ptr<PKX> pk3 = PKX::getPKM<Generation::THREE>(&Box[boxOffset(box, slot)], false, true);
             if (!crypted)
             {
                 pk3->encrypt();

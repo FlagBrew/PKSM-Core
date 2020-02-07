@@ -42,25 +42,28 @@ private:
     static int swapBits(int value, int p1, int p2);
 
 public:
-    PK3() : PKX(nullptr, 80) {}
-    PK3(u8* dt, bool party = false, bool directAccess = false);
+    static constexpr size_t BOX_LENGTH   = 80;
+    static constexpr size_t PARTY_LENGTH = 100;
+
+    PK3(PrivateConstructor, u8* dt, bool party = false, bool directAccess = false);
     virtual ~PK3() {}
 
     static u8 getUnownForm(u32 pid);
 
-    std::shared_ptr<PKX> convertToG4(Sav& save) const override;
-    std::shared_ptr<PKX> convertToG5(Sav& save) const override;
-    std::shared_ptr<PKX> convertToG6(Sav& save) const override;
-    std::shared_ptr<PKX> convertToG7(Sav& save) const override;
-    // std::shared_ptr<PKX> convertToLGPE(Sav& save) const override;
-    // std::shared_ptr<PKX> convertToG8(Sav& save) const override;
+    std::unique_ptr<PK4> convertToG4(Sav& save) const override;
+    std::unique_ptr<PK5> convertToG5(Sav& save) const override;
+    std::unique_ptr<PK6> convertToG6(Sav& save) const override;
+    std::unique_ptr<PK7> convertToG7(Sav& save) const override;
+    // std::unique_ptr<PB7> convertToLGPE(Sav& save) const override;
+    // std::unique_ptr<PK8> convertToG8(Sav& save) const override;
 
-    std::shared_ptr<PKX> clone(void) const override;
-    void encrypt(void) override;
-    void decrypt(void) override;
+    std::unique_ptr<PKX> clone(void) const override;
 
     Generation generation(void) const;
     bool isEncrypted(void) const;
+    bool isParty(void) const override { return getLength() == PARTY_LENGTH; }
+    void encrypt(void) override;
+    void decrypt(void) override;
 
     u32 encryptionConstant(void) const override;
     void encryptionConstant(u32 v) override;
@@ -203,6 +206,7 @@ public:
     void partyStat(Stat stat, u16 v) override;
     int partyLevel() const override;
     void partyLevel(u8 v) override;
+    void updatePartyData(void) override;
 
     inline u8 baseHP(void) const override { return PersonalRSFRLGE::baseHP(formSpecies()); }
     inline u8 baseAtk(void) const override { return PersonalRSFRLGE::baseAtk(formSpecies()); }

@@ -53,7 +53,7 @@ SavLGPE::SavLGPE(std::shared_ptr<u8[]> dt) : Sav(dt, 0x100000)
 
 u32 SavLGPE::boxOffset(u8 box, u8 slot) const
 {
-    return 0x5C00 + box * 30 * 260 + slot * 260;
+    return 0x5C00 + box * 30 * PB7::BOX_LENGTH + slot * PB7::BOX_LENGTH;
 }
 
 u16 SavLGPE::partyBoxSlot(u8 slot) const
@@ -129,8 +129,8 @@ void SavLGPE::fixParty()
 
 void SavLGPE::compressBox()
 {
-    u16 emptyIndex    = 1001;
-    u8 emptyData[260] = {0};
+    u16 emptyIndex                = 1001;
+    u8 emptyData[PB7::BOX_LENGTH] = {0};
     for (u16 i = 0; i < 1000; i++)
     {
         u32 offset = boxOffset(i / 30, i % 30);
@@ -144,9 +144,9 @@ void SavLGPE::compressBox()
             {
                 u32 emptyOffset = boxOffset(emptyIndex / 30, emptyIndex % 30);
                 // Swap the two slots
-                std::copy(&data[emptyOffset], &data[emptyOffset + 260], emptyData);
-                std::copy(&data[offset], &data[offset + 260], &data[emptyOffset]);
-                std::copy(emptyData, emptyData + 260, &data[offset]);
+                std::copy(&data[emptyOffset], &data[emptyOffset + PB7::BOX_LENGTH], emptyData);
+                std::copy(&data[offset], &data[offset + PB7::BOX_LENGTH], &data[emptyOffset]);
+                std::copy(emptyData, emptyData + PB7::BOX_LENGTH, &data[offset]);
                 for (int j = 0; j < partyCount(); j++)
                 {
                     if (partyBoxSlot(j) == i)
@@ -313,7 +313,7 @@ std::shared_ptr<PKX> SavLGPE::pkm(u8 slot) const
     u32 off = partyOffset(slot);
     if (off != 0)
     {
-        return std::make_shared<PB7>(&data[off]);
+        return PKX::getPKM<Generation::LGPE>(&data[off], true);
     }
     else
     {
@@ -323,7 +323,7 @@ std::shared_ptr<PKX> SavLGPE::pkm(u8 slot) const
 
 std::shared_ptr<PKX> SavLGPE::pkm(u8 box, u8 slot) const
 {
-    return std::make_shared<PB7>(&data[boxOffset(box, slot)]);
+    return PKX::getPKM<Generation::LGPE>(&data[boxOffset(box, slot)], true);
 }
 
 void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
@@ -348,7 +348,7 @@ void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 slot)
         {
             if (off != 0)
             {
-                std::fill_n(&data[off], 260, 0);
+                std::fill_n(&data[off], PB7::PARTY_LENGTH, 0);
             }
             partyBoxSlot(slot, 1001);
             return;
@@ -357,7 +357,7 @@ void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 slot)
         {
             for (int i = 999; i >= 0; i--)
             {
-                if (!isPKM(&data[0x5C00 + i * 260]))
+                if (!isPKM(&data[0x5C00 + i * PB7::PARTY_LENGTH]))
                 {
                     off     = boxOffset(i / 30, i % 30);
                     newSlot = i;
@@ -402,7 +402,7 @@ void SavLGPE::trade(std::shared_ptr<PKX> pk)
 
 std::shared_ptr<PKX> SavLGPE::emptyPkm() const
 {
-    return std::make_shared<PB7>();
+    return PKX::getPKM<Generation::LGPE>(nullptr, true);
 }
 
 std::string SavLGPE::boxName(u8 box) const
@@ -624,7 +624,7 @@ void SavLGPE::cryptBoxData(bool crypted)
             {
                 return;
             }
-            std::unique_ptr<PKX> pb7 = std::make_unique<PB7>(&data[boxOffset(box, slot)], true);
+            std::unique_ptr<PKX> pb7 = PKX::getPKM<Generation::LGPE>(&data[boxOffset(box, slot)], true, true);
             if (!crypted)
             {
                 pb7->encrypt();
@@ -645,7 +645,8 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
                 // Gui::warn(i18n::localize("LGPE_TOO_MANY_PKM"), i18n::localize("BAD_INJECT"));
                 return;
             }
-            std::shared_ptr<PB7> pkm = std::make_shared<PB7>();
+            std::shared_ptr<PKX> pb7 = PKX::getPKM<Generation::LGPE>(nullptr, true);
+            PB7* pkm                 = (PB7*)pb7.get();
             pkm->species(wb7->species());
             pkm->alternativeForm(wb7->alternativeForm());
             if (wb7->level() > 0)
@@ -838,7 +839,7 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
             pkm->fatefulEncounter(true);
 
             pkm->refreshChecksum();
-            SavLGPE::pkm(pkm, boxedPkm()); // qualify so there are no stupid errors
+            SavLGPE::pkm(pb7, boxedPkm()); // qualify so there are no stupid errors
             boxedPkm(this->boxedPkm() + 1);
         }
         else if (wb7->item())

@@ -37,21 +37,24 @@ protected:
     void crypt(void) override;
 
 public:
-    PK6() : PKX(nullptr, 232) {}
-    PK6(u8* dt, bool party = false, bool directAccess = false);
+    static constexpr size_t BOX_LENGTH   = 232;
+    static constexpr size_t PARTY_LENGTH = 260;
+
+    PK6(PrivateConstructor, u8* dt, bool party = false, bool directAccess = false);
     virtual ~PK6() {}
 
-    std::shared_ptr<PKX> convertToG3(Sav& save) const override;
-    std::shared_ptr<PKX> convertToG4(Sav& save) const override;
-    std::shared_ptr<PKX> convertToG5(Sav& save) const override;
-    std::shared_ptr<PKX> convertToG7(Sav& save) const override;
-    // std::shared_ptr<PKX> convertToLGPE(Sav& save) const override;
-    // std::shared_ptr<PKX> convertToG8(Sav& save) const override;
+    std::unique_ptr<PK3> convertToG3(Sav& save) const override;
+    std::unique_ptr<PK4> convertToG4(Sav& save) const override;
+    std::unique_ptr<PK5> convertToG5(Sav& save) const override;
+    std::unique_ptr<PK7> convertToG7(Sav& save) const override;
+    // std::unique_ptr<PB7> convertToLGPE(Sav& save) const override;
+    // std::unique_ptr<PK8> convertToG8(Sav& save) const override;
 
-    std::shared_ptr<PKX> clone(void) const override;
+    std::unique_ptr<PKX> clone(void) const override;
 
     Generation generation(void) const override;
     bool isEncrypted(void) const override;
+    bool isParty(void) const override { return getLength() == PARTY_LENGTH; }
 
     bool untraded(void) const;
     bool untradedEvent(void) const;
@@ -235,6 +238,7 @@ public:
     void partyStat(Stat stat, u16 v) override;
     int partyLevel() const override;
     void partyLevel(u8 v) override;
+    void updatePartyData(void) override;
 
     inline u8 baseHP(void) const override { return PersonalXYORAS::baseHP(formSpecies()); }
     inline u8 baseAtk(void) const override { return PersonalXYORAS::baseAtk(formSpecies()); }

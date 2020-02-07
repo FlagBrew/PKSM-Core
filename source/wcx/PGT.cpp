@@ -32,9 +32,7 @@
 PGT::PGT(u8* pgt)
 {
     std::copy(pgt, pgt + length, data);
-    u8 pk4Data[236];
-    std::copy(pgt + 0x8, pgt + 0x8 + 236, pk4Data);
-    pokemonData = new PK4(pk4Data, true);
+    pokemonData = PKX::getPKM<Generation::FOUR>(pgt + 0x8, true);
     if (type() == 7)
     {
         // Set visible manaphy data
@@ -59,14 +57,11 @@ PGT::PGT(u8* pgt)
     }
     pokemonData->refreshChecksum();
     pokemonData->encrypt();
-    std::copy(pokemonData->rawData(), pokemonData->rawData() + 236, data + 0x8);
+    std::copy(pokemonData->rawData(), pokemonData->rawData() + PK4::PARTY_LENGTH, data + 0x8);
     pokemonData->decrypt(); // encrypt Pokemon data if it isn't already
 }
 
-PGT::~PGT()
-{
-    delete pokemonData;
-}
+PGT::~PGT() {}
 
 u16 PGT::ID(void) const
 {

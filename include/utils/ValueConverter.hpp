@@ -27,7 +27,7 @@
 #ifndef VALUECONVERTER_HPP
 #define VALUECONVERTER_HPP
 
-#include "coretypes.h"
+#include "utils/coretypes.h"
 
 namespace SpeciesConverter
 {

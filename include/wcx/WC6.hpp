@@ -27,7 +27,7 @@
 #ifndef WC6_HPP
 #define WC6_HPP
 
-#include "WCX.hpp"
+#include "wcx/WCX.hpp"
 
 class WC6 : public WCX
 {

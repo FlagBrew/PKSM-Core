@@ -79,9 +79,6 @@ protected:
         0x7d0  // D | PC Block 8
     };
 
-    static constexpr unsigned int SIZE_STORED = 80;
-    static constexpr unsigned int SIZE_PARTY  = 100;
-
     int ABO() { return activeSAV * SIZE_BLOCK * 0xE; };
 
     int activeSAV;

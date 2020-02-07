@@ -27,7 +27,7 @@
 #ifndef STAT_HPP
 #define STAT_HPP
 
-#include "coretypes.h"
+#include "utils/coretypes.h"
 
 enum class Stat : u8
 {

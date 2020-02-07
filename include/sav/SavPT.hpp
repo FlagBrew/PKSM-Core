@@ -27,7 +27,7 @@
 #ifndef SAVPT_HPP
 #define SAVPT_HPP
 
-#include "Sav4.hpp"
+#include "sav/Sav4.hpp"
 
 class SavPT : public Sav4
 {

@@ -27,8 +27,8 @@
 #ifndef SAVLGPE_HPP
 #define SAVLGPE_HPP
 
-#include "Sav.hpp"
 #include "personal/personal.hpp"
+#include "sav/Sav.hpp"
 
 class SavLGPE : public Sav
 {

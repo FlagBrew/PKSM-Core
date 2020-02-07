@@ -29,7 +29,7 @@
 
 #include "PKSMCORE_CONFIG.h"
 
-#include "Language.hpp"
+#include "i18n/Language.hpp"
 #include "nlohmann/json.hpp"
 #include "utils/coretypes.h"
 #include "utils/generation.hpp"

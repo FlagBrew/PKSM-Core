@@ -30,6 +30,7 @@
 #include "i18n/Language.hpp"
 #include "sav/Item.hpp"
 #include "utils/coretypes.h"
+#include "utils/genToPkx.hpp"
 #include "utils/generation.hpp"
 #include "utils/stat.hpp"
 #include <memory>
@@ -44,6 +45,12 @@ private:
     bool directAccess;
 
 protected:
+    struct PrivateConstructor
+    {
+    };
+
+    PKX(u8* data, size_t length, bool directAccess = false);
+
     u32 expTable(u8 row, u8 col) const;
     u8 blockPosition(u8 index) const;
     u8 blockPositionInvert(u8 index) const;
@@ -59,36 +66,56 @@ protected:
 public:
     static constexpr int PKSM_MAX_SPECIES = 890;
 
-    virtual u8* rawData(void) { return data; }
-    virtual void decrypt(void);
-    virtual void encrypt(void);
-    virtual std::shared_ptr<PKX> clone(void) const = 0;
-    virtual ~PKX();
-    PKX(u8* data, size_t length, bool directAccess = false);
-    PKX(const PKX& pk) = delete;
-    PKX& operator=(const PKX& pk) = delete;
     static std::unique_ptr<PKX> getPKM(Generation gen, u8* data, bool party = false, bool directAccess = false);
+    template <Generation g>
+    static std::unique_ptr<typename GenToPkx<g>::PKX> getPKM(u8* data, bool party = false, bool directAccess = false)
+    {
+        return std::make_unique<typename GenToPkx<g>::PKX>(PrivateConstructor{}, data, party, directAccess);
+    }
+
     // Returns null if length is not valid for that generation, and a party Pokemon depending on length
     static std::unique_ptr<PKX> getPKM(Generation gen, u8* data, size_t length, bool directAccess = false);
+    template <Generation g>
+    static std::unique_ptr<typename GenToPkx<g>::PKX> getPKM(u8* data, size_t length, bool directAccess = false)
+    {
+        if (GenToPkx<g>::PKX::PARTY_LENGTH == length || GenToPkx<g>::PKX::BOX_LENGTH == length)
+        {
+            return getPKM<g>(data, length == GenToPkx<g>::PKX::PARTY_LENGTH, directAccess);
+        }
+        return nullptr;
+    }
+    static u8 genFromBytes(u8* data, size_t length);
+
+    virtual ~PKX();
+    PKX(const PKX& pk) = delete;
+    PKX& operator=(const PKX& pk) = delete;
     bool operator==(const PKFilter& filter) const;
 
-    virtual std::shared_ptr<PKX> convertToG3(Sav& save) const { return generation() == Generation::THREE ? clone() : nullptr; }
-    virtual std::shared_ptr<PKX> convertToG4(Sav& save) const { return generation() == Generation::FOUR ? clone() : nullptr; }
-    virtual std::shared_ptr<PKX> convertToG5(Sav& save) const { return generation() == Generation::FIVE ? clone() : nullptr; }
-    virtual std::shared_ptr<PKX> convertToG6(Sav& save) const { return generation() == Generation::SIX ? clone() : nullptr; }
-    virtual std::shared_ptr<PKX> convertToG7(Sav& save) const { return generation() == Generation::SEVEN ? clone() : nullptr; }
-    virtual std::shared_ptr<PKX> convertToLGPE(Sav& save) const { return generation() == Generation::LGPE ? clone() : nullptr; }
-    virtual std::shared_ptr<PKX> convertToG8(Sav& save) const { return generation() == Generation::EIGHT ? clone() : nullptr; }
+    u8* rawData(void) { return data; }
+    u32 getLength(void) const { return length; }
+    virtual bool isParty(void) const = 0;
 
+    virtual void decrypt(void);
+    virtual void encrypt(void);
     virtual bool isEncrypted() const = 0;
 
+    virtual std::unique_ptr<PK3> convertToG3(Sav& save) const;
+    virtual std::unique_ptr<PK4> convertToG4(Sav& save) const;
+    virtual std::unique_ptr<PK5> convertToG5(Sav& save) const;
+    virtual std::unique_ptr<PK6> convertToG6(Sav& save) const;
+    virtual std::unique_ptr<PK7> convertToG7(Sav& save) const;
+    virtual std::unique_ptr<PB7> convertToLGPE(Sav& save) const;
+    virtual std::unique_ptr<PK8> convertToG8(Sav& save) const;
+    virtual std::unique_ptr<PKX> clone(void) const = 0;
+    std::unique_ptr<PKX> partyClone(void) const;
+
     virtual Generation generation(void) const = 0;
-    bool gen7(void) const;
-    bool gen6(void) const;
-    bool gen5(void) const;
-    bool gen4(void) const;
-    bool gen3(void) const;
-    int genNumber(void) const;
+    bool originGen7(void) const;
+    bool originGen6(void) const;
+    bool originGen5(void) const;
+    bool originGen4(void) const;
+    bool originGen3(void) const;
+    int originGenNumber(void) const;
     void fixMoves(void);
 
     static u32 getRandomPID(u16 species, u8 gender, u8 originGame, u8 nature, u8 form, u8 abilityNum, u32 oldPid, Generation gen);
@@ -234,9 +261,8 @@ public:
     virtual void partyStat(Stat stat, u16 v) = 0;
     virtual int partyLevel(void) const       = 0;
     virtual void partyLevel(u8 v)            = 0;
-
-    u32 getLength(void) const { return length; }
-    static u8 genFromBytes(u8* data, size_t length);
+    // Takes any calculated stats and writes them into the party offsets, provided they exist
+    virtual void updatePartyData(void) = 0;
 
     // Personal interface
     virtual u8 baseHP(void) const         = 0;

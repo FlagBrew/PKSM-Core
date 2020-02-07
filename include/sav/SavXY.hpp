@@ -27,7 +27,7 @@
 #ifndef SAVXY_HPP
 #define SAVXY_HPP
 
-#include "Sav6.hpp"
+#include "sav/Sav6.hpp"
 
 class SavXY : public Sav6
 {

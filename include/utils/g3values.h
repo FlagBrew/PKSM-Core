@@ -27,7 +27,7 @@
 #ifndef G3VALUES_H
 #define G3VALUES_H
 
-#include "coretypes.h"
+#include "utils/coretypes.h"
 #include <array>
 
 // Index = species, value = g3 species

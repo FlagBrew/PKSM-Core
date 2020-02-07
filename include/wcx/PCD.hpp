@@ -27,8 +27,8 @@
 #ifndef PCD_HPP
 #define PCD_HPP
 
-#include "PGT.hpp"
 #include "utils/utils.hpp"
+#include "wcx/PGT.hpp"
 
 class PCD : public PGT
 {

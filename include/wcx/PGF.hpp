@@ -27,7 +27,7 @@
 #ifndef PGF_HPP
 #define PGF_HPP
 
-#include "WCX.hpp"
+#include "wcx/WCX.hpp"
 
 class PGF : public WCX
 {

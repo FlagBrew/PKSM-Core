@@ -25,6 +25,9 @@
  */
 
 #include "pkx/PK7.hpp"
+#include "pkx/PK3.hpp"
+#include "pkx/PK4.hpp"
+#include "pkx/PK5.hpp"
 #include "pkx/PK6.hpp"
 #include "sav/Sav.hpp"
 #include "utils/endian.hpp"
@@ -49,7 +52,7 @@ void PK7::shuffleArray(u8 sv)
 void PK7::crypt(void)
 {
     u32 seed = encryptionConstant();
-    for (int i = 0x08; i < 232; i += 2)
+    for (size_t i = 0x08; i < BOX_LENGTH; i += 2)
     {
         u16 temp = Endian::convertTo<u16>(data + i);
         seed     = seedStep(seed);
@@ -57,7 +60,7 @@ void PK7::crypt(void)
         Endian::convertFrom<u16>(data + i, temp);
     }
     seed = encryptionConstant();
-    for (u32 i = 232; i < length; i += 2)
+    for (u32 i = BOX_LENGTH; i < length; i += 2)
     {
         u16 temp = Endian::convertTo<u16>(data + i);
         seed     = seedStep(seed);
@@ -71,7 +74,7 @@ bool PK7::isEncrypted() const
     return Endian::convertTo<u16>(data + 0xC8) != 0 && Endian::convertTo<u16>(data + 0x58) != 0;
 }
 
-PK7::PK7(u8* dt, bool party, bool direct) : PKX(dt, party ? 260 : 232, direct)
+PK7::PK7(PrivateConstructor, u8* dt, bool party, bool direct) : PKX(dt, party ? PARTY_LENGTH : BOX_LENGTH, direct)
 {
     if (isEncrypted())
     {
@@ -79,9 +82,9 @@ PK7::PK7(u8* dt, bool party, bool direct) : PKX(dt, party ? 260 : 232, direct)
     }
 }
 
-std::shared_ptr<PKX> PK7::clone(void) const
+std::unique_ptr<PKX> PK7::clone(void) const
 {
-    return std::make_shared<PK7>(const_cast<u8*>(data), length == 260);
+    return PKX::getPKM<Generation::SEVEN>(const_cast<u8*>(data), isParty());
 }
 
 Generation PK7::generation(void) const
@@ -748,7 +751,7 @@ void PK7::oppositeFriendship(u8 v)
 void PK7::refreshChecksum(void)
 {
     u16 chk = 0;
-    for (u8 i = 8; i < 232; i += 2)
+    for (u8 i = 8; i < BOX_LENGTH; i += 2)
     {
         chk += Endian::convertTo<u16>(data + i);
     }
@@ -895,7 +898,7 @@ u16 PK7::stat(Stat stat) const
     return calc * mult / 10;
 }
 
-std::shared_ptr<PKX> PK7::convertToG3(Sav& save) const
+std::unique_ptr<PK3> PK7::convertToG3(Sav& save) const
 {
     if (auto pk6 = convertToG6(save))
     {
@@ -910,7 +913,7 @@ std::shared_ptr<PKX> PK7::convertToG3(Sav& save) const
     return nullptr;
 }
 
-std::shared_ptr<PKX> PK7::convertToG4(Sav& save) const
+std::unique_ptr<PK4> PK7::convertToG4(Sav& save) const
 {
     if (auto pk6 = convertToG6(save))
     {
@@ -922,7 +925,7 @@ std::shared_ptr<PKX> PK7::convertToG4(Sav& save) const
     return nullptr;
 }
 
-std::shared_ptr<PKX> PK7::convertToG5(Sav& save) const
+std::unique_ptr<PK5> PK7::convertToG5(Sav& save) const
 {
     if (auto pk6 = convertToG6(save))
     {
@@ -931,10 +934,9 @@ std::shared_ptr<PKX> PK7::convertToG5(Sav& save) const
     return nullptr;
 }
 
-std::shared_ptr<PKX> PK7::convertToG6(Sav& save) const
+std::unique_ptr<PK6> PK7::convertToG6(Sav& save) const
 {
-    std::shared_ptr<PK6> pk6 = std::make_shared<PK6>();
-    std::copy(data, data + 232, pk6->rawData());
+    auto pk6 = PKX::getPKM<Generation::SIX>(const_cast<u8*>(data));
 
     // markvalue field moved, clear old gen 7 data
     Endian::convertFrom<u16>(pk6->rawData() + 0x16, 0);
@@ -979,7 +981,7 @@ std::shared_ptr<PKX> PK7::convertToG6(Sav& save) const
 
 int PK7::partyCurrHP(void) const
 {
-    if (length == 232)
+    if (!isParty())
     {
         return -1;
     }
@@ -988,7 +990,7 @@ int PK7::partyCurrHP(void) const
 
 void PK7::partyCurrHP(u16 v)
 {
-    if (length != 232)
+    if (isParty())
     {
         Endian::convertFrom<u16>(data + 0xF0, v);
     }
@@ -996,7 +998,7 @@ void PK7::partyCurrHP(u16 v)
 
 int PK7::partyStat(Stat stat) const
 {
-    if (length == 232)
+    if (!isParty())
     {
         return -1;
     }
@@ -1005,7 +1007,7 @@ int PK7::partyStat(Stat stat) const
 
 void PK7::partyStat(Stat stat, u16 v)
 {
-    if (length != 232)
+    if (isParty())
     {
         Endian::convertFrom<u16>(data + 0xF2 + u8(stat) * 2, v);
     }
@@ -1013,7 +1015,7 @@ void PK7::partyStat(Stat stat, u16 v)
 
 int PK7::partyLevel() const
 {
-    if (length == 232)
+    if (!isParty())
     {
         return -1;
     }
@@ -1022,8 +1024,19 @@ int PK7::partyLevel() const
 
 void PK7::partyLevel(u8 v)
 {
-    if (length != 232)
+    if (isParty())
     {
         *(data + 0xEC) = v;
     }
+}
+
+void PK7::updatePartyData()
+{
+    constexpr Stat stats[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
+    for (size_t i = 0; i < 6; i++)
+    {
+        partyStat(stats[i], stat(stats[i]));
+    }
+    partyLevel(level());
+    partyCurrHP(stat(Stat::HP));
 }

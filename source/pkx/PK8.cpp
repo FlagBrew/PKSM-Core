@@ -46,7 +46,7 @@ void PK8::shuffleArray(u8 sv)
 void PK8::crypt(void)
 {
     u32 seed = encryptionConstant();
-    for (int i = 0x08; i < 0x148; i += 2)
+    for (size_t i = 0x08; i < BOX_LENGTH; i += 2)
     {
         u16 temp = Endian::convertTo<u16>(data + i);
         seed     = seedStep(seed);
@@ -54,7 +54,7 @@ void PK8::crypt(void)
         Endian::convertFrom<u16>(data + i, temp);
     }
     seed = encryptionConstant();
-    for (u32 i = 0x148; i < length; i += 2)
+    for (u32 i = BOX_LENGTH; i < length; i += 2)
     {
         u16 temp = Endian::convertTo<u16>(data + i);
         seed     = seedStep(seed);
@@ -68,7 +68,7 @@ bool PK8::isEncrypted() const
     return Endian::convertTo<u16>(data + 0x70) != 0 && Endian::convertTo<u16>(data + 0xC0) != 0;
 }
 
-PK8::PK8(u8* dt, bool party, bool direct) : PKX(dt, party ? 0x158 : 0x148, direct)
+PK8::PK8(PrivateConstructor, u8* dt, bool party, bool direct) : PKX(dt, party ? PARTY_LENGTH : BOX_LENGTH, direct)
 {
     if (isEncrypted())
     {
@@ -76,9 +76,9 @@ PK8::PK8(u8* dt, bool party, bool direct) : PKX(dt, party ? 0x158 : 0x148, direc
     }
 }
 
-std::shared_ptr<PKX> PK8::clone(void) const
+std::unique_ptr<PKX> PK8::clone(void) const
 {
-    return std::make_shared<PK8>(const_cast<u8*>(data), length == 0x158);
+    return PKX::getPKM<Generation::EIGHT>(const_cast<u8*>(data), isParty());
 }
 
 Generation PK8::generation(void) const
@@ -839,7 +839,7 @@ void PK8::moveRecordFlag(u8 index, bool v)
 
 int PK8::partyStat(Stat stat) const
 {
-    if (length == 0x158)
+    if (!isParty())
     {
         return -1;
     }
@@ -848,7 +848,7 @@ int PK8::partyStat(Stat stat) const
 
 void PK8::partyStat(Stat stat, u16 v)
 {
-    if (length == 0x158)
+    if (isParty())
     {
         Endian::convertFrom<u16>(data + 0x14A + u8(stat) * 2, v);
     }
@@ -856,7 +856,7 @@ void PK8::partyStat(Stat stat, u16 v)
 
 int PK8::partyLevel() const
 {
-    if (length == 0x158)
+    if (!isParty())
     {
         return -1;
     }
@@ -865,7 +865,7 @@ int PK8::partyLevel() const
 
 void PK8::partyLevel(u8 v)
 {
-    if (length == 0x158)
+    if (isParty())
     {
         *(data + 0x148) = v;
     }
@@ -873,11 +873,18 @@ void PK8::partyLevel(u8 v)
 
 u16 PK8::dynamaxType(void) const
 {
+    if (!isParty())
+    {
+        return 0;
+    }
     return Endian::convertTo<u16>(data + 0x156);
 }
 void PK8::dynamaxType(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0x156, v);
+    if (isParty())
+    {
+        Endian::convertFrom<u16>(data + 0x156, v);
+    }
 }
 
 u8 PK8::currentFriendship(void) const
@@ -907,7 +914,7 @@ void PK8::oppositeFriendship(u8 v)
 void PK8::refreshChecksum(void)
 {
     u16 chk = 0;
-    for (int i = 8; i < 0x148; i += 2)
+    for (size_t i = 8; i < BOX_LENGTH; i += 2)
     {
         chk += Endian::convertTo<u16>(data + i);
     }
@@ -1052,4 +1059,15 @@ u16 PK8::stat(Stat stat) const
     if (nature() % 5 + 1 == u8(stat))
         mult--;
     return calc * mult / 10;
+}
+
+void PK8::updatePartyData()
+{
+    constexpr Stat stats[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
+    for (size_t i = 0; i < 6; i++)
+    {
+        partyStat(stats[i], stat(stats[i]));
+    }
+    partyLevel(level());
+    partyCurrHP(stat(Stat::HP));
 }

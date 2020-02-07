@@ -27,7 +27,8 @@
 #ifndef PGT_HPP
 #define PGT_HPP
 
-#include "WCX.hpp"
+#include "wcx/WCX.hpp"
+#include <memory>
 
 class PK4;
 
@@ -35,13 +36,13 @@ class PGT : public WCX
 {
 protected:
     u8 data[260];
-    PK4* pokemonData;
+    std::unique_ptr<PK4> pokemonData;
 
 public:
     static constexpr u16 length = 260;
 
     PGT(u8* pgt);
-    ~PGT();
+    virtual ~PGT();
 
     Generation generation() const override;
     bool bean(void) const override;

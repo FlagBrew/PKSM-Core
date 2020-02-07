@@ -68,7 +68,7 @@ bool PB7::isEncrypted() const
     return Endian::convertTo<u16>(data + 0xC8) != 0 && Endian::convertTo<u16>(data + 0x58) != 0;
 }
 
-PB7::PB7(u8* dt, bool direct) : PKX(dt, 260, direct)
+PB7::PB7(PrivateConstructor, u8* dt, bool party, bool direct) : PKX(dt, party ? PARTY_LENGTH : BOX_LENGTH, direct)
 {
     if (isEncrypted())
     {
@@ -76,9 +76,9 @@ PB7::PB7(u8* dt, bool direct) : PKX(dt, 260, direct)
     }
 }
 
-std::shared_ptr<PKX> PB7::clone(void) const
+std::unique_ptr<PKX> PB7::clone(void) const
 {
-    return std::make_shared<PB7>(const_cast<u8*>(data));
+    return PKX::getPKM<Generation::LGPE>(const_cast<u8*>(data), isParty());
 }
 
 Generation PB7::generation(void) const
@@ -894,7 +894,7 @@ u16 PB7::stat(Stat stat) const
 
 int PB7::partyCurrHP(void) const
 {
-    if (length == 232)
+    if (!isParty())
     {
         return -1;
     }
@@ -903,7 +903,7 @@ int PB7::partyCurrHP(void) const
 
 void PB7::partyCurrHP(u16 v)
 {
-    if (length != 232)
+    if (isParty())
     {
         Endian::convertFrom<u16>(data + 0xF0, v);
     }
@@ -911,7 +911,7 @@ void PB7::partyCurrHP(u16 v)
 
 int PB7::partyStat(Stat stat) const
 {
-    if (length == 232)
+    if (!isParty())
     {
         return -1;
     }
@@ -920,7 +920,7 @@ int PB7::partyStat(Stat stat) const
 
 void PB7::partyStat(Stat stat, u16 v)
 {
-    if (length != 232)
+    if (isParty())
     {
         Endian::convertFrom<u16>(data + 0xF2 + u8(stat) * 2, v);
     }
@@ -928,7 +928,7 @@ void PB7::partyStat(Stat stat, u16 v)
 
 int PB7::partyLevel() const
 {
-    if (length == 232)
+    if (!isParty())
     {
         return -1;
     }
@@ -937,7 +937,7 @@ int PB7::partyLevel() const
 
 void PB7::partyLevel(u8 v)
 {
-    if (length != 232)
+    if (isParty())
     {
         *(data + 0xEC) = v;
     }
@@ -945,12 +945,19 @@ void PB7::partyLevel(u8 v)
 
 u16 PB7::partyCP() const
 {
+    if (!isParty())
+    {
+        return 0;
+    }
     return Endian::convertTo<u16>(data + 0xFE);
 }
 
 void PB7::partyCP(u16 v)
 {
-    Endian::convertFrom<u16>(data + 0xFE, v);
+    if (isParty())
+    {
+        Endian::convertFrom<u16>(data + 0xFE, v);
+    }
 }
 
 u16 PB7::CP() const
@@ -990,4 +997,16 @@ u8 PB7::weight(void) const
 void PB7::weight(u8 v)
 {
     data[0x3B] = v;
+}
+
+void PB7::updatePartyData()
+{
+    constexpr Stat stats[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
+    for (size_t i = 0; i < 6; i++)
+    {
+        partyStat(stats[i], stat(stats[i]));
+    }
+    partyLevel(level());
+    partyCurrHP(stat(Stat::HP));
+    partyCP(CP());
 }

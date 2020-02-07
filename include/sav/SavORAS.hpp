@@ -27,7 +27,7 @@
 #ifndef SAVORAS_HPP
 #define SAVORAS_HPP
 
-#include "Sav6.hpp"
+#include "sav/Sav6.hpp"
 
 class SavORAS : public Sav6
 {

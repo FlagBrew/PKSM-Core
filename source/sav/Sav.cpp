@@ -25,6 +25,13 @@
  */
 
 #include "sav/Sav.hpp"
+#include "pkx/PB7.hpp"
+#include "pkx/PK3.hpp"
+#include "pkx/PK4.hpp"
+#include "pkx/PK5.hpp"
+#include "pkx/PK6.hpp"
+#include "pkx/PK7.hpp"
+#include "pkx/PK8.hpp"
 #include "pkx/PKX.hpp"
 #include "sav/SavB2W2.hpp"
 #include "sav/SavBW.hpp"

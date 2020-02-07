@@ -27,7 +27,7 @@
 #ifndef ENDIAN_HPP
 #define ENDIAN_HPP
 
-#include "coretypes.h"
+#include "utils/coretypes.h"
 #include <array>
 #include <string.h>
 #include <type_traits>

@@ -59,7 +59,7 @@ std::shared_ptr<SCBlock> Sav8::getBlock(u32 key) const
 
 std::shared_ptr<PKX> Sav8::emptyPkm() const
 {
-    return std::make_shared<PK8>();
+    return PKX::getPKM<Generation::EIGHT>(nullptr);
 }
 
 const std::set<int>& Sav8::availableItems(void) const
