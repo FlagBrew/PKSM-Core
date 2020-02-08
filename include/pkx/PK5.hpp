@@ -60,7 +60,7 @@ public:
     void encryptionConstant(u32 v) override;
     u8 currentFriendship(void) const override;
     void currentFriendship(u8 v) override;
-    u8 currentHandler(void) const override {return 0;}
+    u8 currentHandler(void) const override { return 0; }
     void currentHandler(u8) override {}
     u8 abilityNumber(void) const override;
     void abilityNumber(u8 v) override;
