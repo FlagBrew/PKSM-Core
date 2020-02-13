@@ -608,7 +608,7 @@ std::unique_ptr<PK4> PK3::convertToG4(Sav&) const
     pk4->iv(Stat::SPD, iv(Stat::SPD));
     pk4->iv(Stat::SPATK, iv(Stat::SPATK));
     pk4->iv(Stat::SPDEF, iv(Stat::SPDEF));
-    if (ability() == PersonalRSFRLGE::ability(species(), abilityNumber()))
+    if (ability() == PersonalRSFRLGE::ability(species(), abilityNumber() >> 1))
     {
         pk4->setAbility(abilityNumber());
     }
