@@ -610,7 +610,7 @@ std::unique_ptr<PK4> PK3::convertToG4(Sav&) const
     pk4->iv(Stat::SPDEF, iv(Stat::SPDEF));
     if (ability() == PersonalRSFRLGE::ability(species(), abilityNumber() >> 1))
     {
-        pk4->setAbility(abilityNumber());
+        pk4->setAbility(abilityNumber() >> 1);
     }
     else
     {
@@ -630,7 +630,7 @@ std::unique_ptr<PK4> PK3::convertToG4(Sav&) const
 
     for (u8 rib = 0; rib < 12; rib++)
     {
-        pk4->ribbon(6 + (rib + 4) / 8, rib + 4, ribbon(1 + (rib + 7) / 8, rib + 7) ? 1 : 0);
+        pk4->ribbon(6 + ((rib + 4) / 8), (rib + 4) % 8, ribbon(1 + ((rib + 7) / 8), (rib + 7) % 8) ? 1 : 0);
     }
 
     // Contest ribbons
@@ -738,7 +738,6 @@ void PK3::setAbility(u8 num)
     if (num < 2)
     {
         ability(abilities(num));
-        abilityNumber(num << 1);
     }
 }
 
