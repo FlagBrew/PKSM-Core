@@ -738,6 +738,7 @@ void PK3::setAbility(u8 num)
     if (num < 2)
     {
         ability(abilities(num));
+        abilityNumber(num << 1);
     }
 }
 

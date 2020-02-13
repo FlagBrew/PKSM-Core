@@ -110,7 +110,7 @@ void PK4::currentFriendship(u8 v)
 
 u8 PK4::abilityNumber(void) const
 {
-    return 1 << ((PID() >> 16) & 1);
+    return 1 << (PID() & 1);
 }
 void PK4::abilityNumber(u8 v)
 {
@@ -226,10 +226,8 @@ void PK4::setAbility(u8 v)
 
     if (v == 0)
         abilitynum = 1;
-    else if (v == 1)
-        abilitynum = 2;
     else
-        abilitynum = 4;
+        abilitynum = 2;
 
     abilityNumber(abilitynum);
     ability(abilities(v));
