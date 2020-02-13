@@ -159,24 +159,11 @@ void PK3::currentFriendship(u8 v)
 
 u8 PK3::abilityNumber(void) const
 {
-    return 1 << ((PID() >> 16) & 1);
+    return abilityBit() ? 2 : 1;
 }
 void PK3::abilityNumber(u8 v)
 {
-    if (shiny())
-    {
-        do
-        {
-            PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), v, PID(), generation()));
-        } while (!shiny());
-    }
-    else
-    {
-        do
-        {
-            PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), v, PID(), generation()));
-        } while (shiny());
-    }
+    abilityBit(v > 1);
 }
 
 u32 PK3::PID(void) const
@@ -621,7 +608,14 @@ std::unique_ptr<PK4> PK3::convertToG4(Sav&) const
     pk4->iv(Stat::SPD, iv(Stat::SPD));
     pk4->iv(Stat::SPATK, iv(Stat::SPATK));
     pk4->iv(Stat::SPDEF, iv(Stat::SPDEF));
-    pk4->ability(ability());
+    if (ability() == PersonalRSFRLGE::ability(species(), abilityNumber()))
+    {
+        pk4->setAbility(abilityNumber());
+    }
+    else
+    {
+        pk4->ability(ability());
+    }
     pk4->version(version());
     pk4->ball(ball());
     pk4->pkrsStrain(pkrsStrain());
