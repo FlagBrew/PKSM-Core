@@ -42,8 +42,9 @@ private:
     static int swapBits(int value, int p1, int p2);
 
 public:
-    static constexpr size_t BOX_LENGTH   = 80;
-    static constexpr size_t PARTY_LENGTH = 100;
+    static constexpr size_t BOX_LENGTH           = 80;
+    static constexpr size_t PARTY_LENGTH         = 100;
+    static constexpr size_t FORMAT_SPECIES_LIMIT = 386;
 
     PK3(PrivateConstructor, u8* dt, bool party = false, bool directAccess = false);
     virtual ~PK3() {}

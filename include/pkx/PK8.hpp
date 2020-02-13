@@ -39,8 +39,9 @@ protected:
     void crypt(void) override;
 
 public:
-    static constexpr size_t BOX_LENGTH   = 0x148;
-    static constexpr size_t PARTY_LENGTH = 0x158;
+    static constexpr size_t BOX_LENGTH           = 0x148;
+    static constexpr size_t PARTY_LENGTH         = 0x158;
+    static constexpr size_t FORMAT_SPECIES_LIMIT = 890;
 
     PK8(PrivateConstructor, u8* dt, bool party = false, bool directAccess = false);
     virtual ~PK8() {}

@@ -40,8 +40,9 @@ protected:
     void crypt(void) override;
 
 public:
-    static constexpr size_t BOX_LENGTH   = 136;
-    static constexpr size_t PARTY_LENGTH = 236;
+    static constexpr size_t BOX_LENGTH           = 136;
+    static constexpr size_t PARTY_LENGTH         = 236;
+    static constexpr size_t FORMAT_SPECIES_LIMIT = 493;
 
     PK4(PrivateConstructor, u8* dt, bool party = false, bool directAccess = false);
     virtual ~PK4() {}

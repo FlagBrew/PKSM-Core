@@ -39,8 +39,9 @@ protected:
     void crypt(void) override;
 
 public:
-    static constexpr size_t BOX_LENGTH   = 232;
-    static constexpr size_t PARTY_LENGTH = 260;
+    static constexpr size_t BOX_LENGTH           = 232;
+    static constexpr size_t PARTY_LENGTH         = 260;
+    static constexpr size_t FORMAT_SPECIES_LIMIT = 809;
 
     PB7(PrivateConstructor, u8* dt, bool party = true, bool directAccess = false);
     virtual ~PB7() {}
