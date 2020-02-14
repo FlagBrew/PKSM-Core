@@ -1001,3 +1001,69 @@ void PB7::updatePartyData()
     partyCurrHP(stat(Stat::HP));
     partyCP(CP());
 }
+
+std::unique_ptr<PK8> PK7::convertToG8(Sav& save) const
+{
+    auto pk8 = PKX::getPKM<Generation::EIGHT>(nullptr, false);
+
+    // Note: Locale stuff does not transfer
+    pk8->encryptionConstant(encryptionConstant());
+    pk8->species(species());
+    pk8->TID(TID());
+    pk8->SID(SID());
+    pk8->experience(experience());
+    pk8->PID(PID());
+    if (ability() == PersonalLGPE::ability(formSpecies(), abilityNumber() >> 1))
+    {
+        pk8->setAbility(abilityNumber() >> 1);
+    }
+    else
+    {
+        pk8->ability(ability());
+        pk8->abilityNumber(abilityNumber());
+    }
+    pk8->language(language());
+    for (Stat stat : {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPATK, Stat::SPDEF, Stat::SPD})
+    {
+        pk8->ev(stat, ev(stat));
+        pk8->iv(stat, iv(stat));
+        pk8->hyperTrain(stat, hyperTrain(stat));
+    }
+    for (size_t i = 0; i < 4; i++)
+    {
+        pk8->move(i, move(i));
+        pk8->PPUp(i, move(i));
+        pk8->relearnMove(i, move(i));
+    }
+    pk8->nicknamed(nicknamed());
+    pk8->fatefulEncounter(fatefulEncounter());
+    pk8->gender(gender());
+    pk8->alternativeForm(alternativeForm());
+    pk8->nature(nature());
+    pk8->nickname(nickname());
+    pk8->version(version());
+    pk8->otName(otName());
+    pk8->metDay(metDay());
+    pk8->metMonth(metMonth());
+    pk8->metYear(metYear());
+    pk8->otGender(otGender());
+    pk8->metLocation(metLocation());
+    pk8->ball(ball());
+    pk8->metLevel(metLevel());
+
+    pk8->pkrsStrain(pkrsStrain());
+    pk8->pkrsDays(pkrsDays());
+
+    pk8->ribbonContestCount(ribbonContestCount());
+    pk8->ribbonBattleCount(ribbonBattleCount());
+
+    pk8->otFriendship(otFriendship());
+    pk8->origNature(nature());
+
+    pk8->height(height());
+    pk8->weight(weight());
+
+    pk8->refreshChecksum();
+
+    return pk8;
+}

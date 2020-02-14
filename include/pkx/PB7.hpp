@@ -53,7 +53,7 @@ public:
     // std::unique_ptr<PK5> convertToG5(Sav& save) const override;
     // std::unique_ptr<PK6> convertToG6(Sav& save) const override;
     // std::unique_ptr<PK7> convertToG7(Sav& save) const override;
-    // std::unique_ptr<PK8> convertToG8(Sav& save) const override;
+    std::unique_ptr<PK8> convertToG8(Sav& save) const override;
 
     std::unique_ptr<PKX> clone(void) const override;
 
