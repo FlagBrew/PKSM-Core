@@ -25,6 +25,7 @@
  */
 
 #include "pkx/PK4.hpp"
+#include "PK8.hpp"
 #include "i18n/i18n.hpp"
 #include "pkx/PK3.hpp"
 #include "pkx/PK5.hpp"
@@ -1199,6 +1200,24 @@ std::unique_ptr<PK7> PK4::convertToG7(Sav& save) const
         if (auto pk6 = pk5->convertToG6(save))
         {
             return pk6->convertToG7(save);
+        }
+    }
+    return nullptr;
+}
+
+std::unique_ptr<PK8> PK4::convertToG8(Sav& save) const
+{
+    auto pk5 = convertToG5(save);
+    if (pk5)
+    {
+        auto pk6 = pk5->convertToG6(save);
+        if (pk6)
+        {
+            auto pk7 = pk6->convertToG7(save);
+            if (pk7)
+            {
+                return pk7->convertToG8(save);
+            }
         }
     }
     return nullptr;

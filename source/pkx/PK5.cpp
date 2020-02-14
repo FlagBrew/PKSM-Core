@@ -30,6 +30,7 @@
 #include "pkx/PK4.hpp"
 #include "pkx/PK6.hpp"
 #include "pkx/PK7.hpp"
+#include "pkx/PK8.hpp"
 #include "sav/Sav.hpp"
 #include "utils/endian.hpp"
 #include "utils/random.hpp"
@@ -1291,6 +1292,20 @@ std::unique_ptr<PK7> PK5::convertToG7(Sav& save) const
     if (auto pk6 = convertToG6(save))
     {
         return pk6->convertToG7(save);
+    }
+    return nullptr;
+}
+
+std::unique_ptr<PK8> PK5::convertToG8(Sav& save) const
+{
+    auto pk6 = convertToG6(save);
+    if (pk6)
+    {
+        auto pk7 = pk6->convertToG7(save);
+        if (pk7)
+        {
+            return pk7->convertToG8(save);
+        }
     }
     return nullptr;
 }

@@ -30,6 +30,7 @@
 #include "pkx/PK5.hpp"
 #include "pkx/PK6.hpp"
 #include "pkx/PK7.hpp"
+#include "pkx/PK8.hpp"
 #include "utils/ValueConverter.hpp"
 #include "utils/endian.hpp"
 #include "utils/random.hpp"
@@ -754,15 +755,63 @@ std::unique_ptr<PK4> PK3::convertToG4(Sav&) const
 
 std::unique_ptr<PK5> PK3::convertToG5(Sav& save) const
 {
-    return convertToG4(save)->convertToG5(save);
+    auto pk4 = convertToG4(save);
+    if (pk4)
+    {
+        return pk4->convertToG5(save);
+    }
+    return nullptr;
 }
 std::unique_ptr<PK6> PK3::convertToG6(Sav& save) const
 {
-    return convertToG4(save)->convertToG5(save)->convertToG6(save);
+    auto pk4 = convertToG4(save);
+    if (pk4)
+    {
+        auto pk5 = pk4->convertToG5(save);
+        if (pk5)
+        {
+            return pk5->convertToG6(save);
+        }
+    }
+    return nullptr;
 }
 std::unique_ptr<PK7> PK3::convertToG7(Sav& save) const
 {
-    return convertToG4(save)->convertToG5(save)->convertToG6(save)->convertToG7(save);
+    auto pk4 = convertToG4(save);
+    if (pk4)
+    {
+        auto pk5 = pk4->convertToG5(save);
+        if (pk5)
+        {
+            auto pk6 = pk5->convertToG6(save);
+            if (pk6)
+            {
+                return pk6->convertToG7(save);
+            }
+        }
+    }
+    return nullptr;
+}
+std::unique_ptr<PK8> PK3::convertToG8(Sav& save) const
+{
+    auto pk4 = convertToG4(save);
+    if (pk4)
+    {
+        auto pk5 = pk4->convertToG5(save);
+        if (pk5)
+        {
+            auto pk6 = pk5->convertToG6(save);
+            if (pk6)
+            {
+                auto pk7 = pk6->convertToG7(save);
+                if (pk7)
+                {
+                    return pk7->convertToG8(save);
+                }
+            }
+        }
+    }
+    return nullptr;
 }
 
 u8 PK3::level() const

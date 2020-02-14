@@ -112,10 +112,10 @@ public:
     bool hasRibbon(Ribbon rib) const override;
     bool ribbon(Ribbon rib) const override;
     void ribbon(Ribbon rib, bool v) override;
-    u8 ribbonCountContest(void) const;
-    void ribbonCountContest(u8 v);
-    u8 ribbonCountBattle(void) const;
-    void ribbonCountBattle(u8 v);
+    u8 ribbonContestCount(void) const;
+    void ribbonContestCount(u8 v);
+    u8 ribbonBattleCount(void) const;
+    void ribbonBattleCount(u8 v);
     u8 height(void) const;
     void height(u8 v);
     u8 weight(void) const;
@@ -220,8 +220,8 @@ public:
     u8 otGender(void) const override;
     void otGender(u8 v) override;
 
-    bool hyperTrain(u8 num) const;
-    void hyperTrain(u8 num, bool v);
+    bool hyperTrain(Stat stat) const;
+    void hyperTrain(Stat stat, bool v);
     bool moveRecordFlag(u8 index) const;
     void moveRecordFlag(u8 index, bool v);
 

@@ -29,6 +29,7 @@
 #include "pkx/PK4.hpp"
 #include "pkx/PK5.hpp"
 #include "pkx/PK7.hpp"
+#include "pkx/PK8.hpp"
 #include "sav/Sav.hpp"
 #include "utils/endian.hpp"
 #include "utils/random.hpp"
@@ -1303,6 +1304,16 @@ std::unique_ptr<PK7> PK6::convertToG7(Sav& save) const
 
     pk7->refreshChecksum();
     return pk7;
+}
+
+std::unique_ptr<PK8> PK6::convertToG8(Sav& save) const
+{
+    auto pk7 = convertToG7(save);
+    if (pk7)
+    {
+        return pk7->convertToG8(save);
+    }
+    return nullptr;
 }
 
 void PK6::updatePartyData()

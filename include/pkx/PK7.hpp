@@ -109,6 +109,10 @@ public:
     bool hasRibbon(Ribbon rib) const override;
     bool ribbon(Ribbon rib) const override;
     void ribbon(Ribbon rib, bool v) override;
+    u8 ribbonContestCount(void) const;
+    void ribbonContestCount(u8 v);
+    u8 ribbonBattleCount(void) const;
+    void ribbonBattleCount(u8 v);
 
     std::string nickname(void) const override;
     void nickname(const std::string& v) override;
@@ -195,8 +199,8 @@ public:
     u8 otGender(void) const override;
     void otGender(u8 v) override;
 
-    bool hyperTrain(u8 num) const;
-    void hyperTrain(u8 num, bool v);
+    bool hyperTrain(Stat stat) const;
+    void hyperTrain(Stat stat, bool v);
 
     u8 version(void) const override;
     void version(u8 v) override;

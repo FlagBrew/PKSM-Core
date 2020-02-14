@@ -561,11 +561,11 @@ void PK8::ribbon(Ribbon ribbon, bool v)
     }
 }
 
-u8 PK8::ribbonCountContest(void) const
+u8 PK8::ribbonContestCount(void) const
 {
     return data[0x3C];
 }
-void PK8::ribbonCountContest(u8 v)
+void PK8::ribbonContestCount(u8 v)
 {
     data[0x3C] = v;
     if (v)
@@ -580,11 +580,11 @@ void PK8::ribbonCountContest(u8 v)
     }
 }
 
-u8 PK8::ribbonCountBattle(void) const
+u8 PK8::ribbonBattleCount(void) const
 {
     return data[0x3D];
 }
-void PK8::ribbonCountBattle(u8 v)
+void PK8::ribbonBattleCount(u8 v)
 {
     data[0x3D] = v;
     if (v)
@@ -1035,13 +1035,13 @@ void PK8::otGender(u8 v)
     data[0x125] = (data[0x125] & ~0x80) | (v << 7);
 }
 
-bool PK8::hyperTrain(u8 num) const
+bool PK8::hyperTrain(Stat stat) const
 {
-    return (data[0x126] & (1 << num)) == 1 << num;
+    return (data[0x126] & (1 << hyperTrainLookup[size_t(stat)])) == 1 << hyperTrainLookup[size_t(stat)];
 }
-void PK8::hyperTrain(u8 num, bool v)
+void PK8::hyperTrain(Stat stat, bool v)
 {
-    data[0x126] = (u8)((data[0x126] & ~(1 << num)) | (v ? 1 << num : 0));
+    data[0x126] = (u8)((data[0x126] & ~(1 << hyperTrainLookup[size_t(stat)])) | (v ? 1 << hyperTrainLookup[size_t(stat)] : 0));
 }
 
 bool PK8::moveRecordFlag(u8 index) const
