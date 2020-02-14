@@ -27,7 +27,52 @@
 #include "wcx/WC7.hpp"
 #include "personal/personal.hpp"
 #include "utils/endian.hpp"
+#include "utils/flagUtil.hpp"
 #include "utils/utils.hpp"
+
+namespace
+{
+    std::pair<size_t, size_t> OFFSET_OF(Ribbon rib)
+    {
+        switch (rib)
+        {
+            case Ribbon::ChampionBattle:
+                return {0x74, 0};
+            case Ribbon::ChampionRegional:
+                return {0x74, 1};
+            case Ribbon::ChampionNational:
+                return {0x74, 2};
+            case Ribbon::Country:
+                return {0x74, 3};
+            case Ribbon::National:
+                return {0x74, 4};
+            case Ribbon::Earth:
+                return {0x74, 5};
+            case Ribbon::World:
+                return {0x74, 6};
+            case Ribbon::Event:
+                return {0x74, 7};
+            case Ribbon::ChampionWorld:
+                return {0x75, 0};
+            case Ribbon::Birthday:
+                return {0x75, 1};
+            case Ribbon::Special:
+                return {0x75, 2};
+            case Ribbon::Souvenir:
+                return {0x75, 3};
+            case Ribbon::Wishing:
+                return {0x75, 4};
+            case Ribbon::Classic:
+                return {0x75, 5};
+            case Ribbon::Premier:
+                return {0x75, 6};
+            default:
+                break;
+        }
+
+        return {0xFFFFFFFF, 0};
+    }
+}
 
 WC7::WC7(u8* dt, bool full)
 {
@@ -353,9 +398,15 @@ u8 WC7::ev(Stat index) const
     return data[0xE5 + u8(index)];
 }
 
-bool WC7::ribbon(u8 category, u8 index) const
+bool WC7::hasRibbon(Ribbon rib) const
 {
-    return (*(data + 0x74 + category) & (1 << index));
+    return OFFSET_OF(rib).first != 0xFFFFFFFF;
+}
+
+bool WC7::ribbon(Ribbon rib) const
+{
+    auto offset = OFFSET_OF(rib);
+    return offset.first != 0xFFFFFFFF ? FlagUtil::getFlag(data, offset.first, offset.second) : false;
 }
 
 u8 WC7::cardLocation(void) const

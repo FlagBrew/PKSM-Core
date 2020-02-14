@@ -27,7 +27,52 @@
 #include "wcx/PGF.hpp"
 #include "personal/personal.hpp"
 #include "utils/endian.hpp"
+#include "utils/flagUtil.hpp"
 #include "utils/utils.hpp"
+
+namespace
+{
+    std::pair<size_t, size_t> OFFSET_OF(Ribbon rib)
+    {
+        switch (rib)
+        {
+            case Ribbon::Country:
+                return {0xC, 0};
+            case Ribbon::National:
+                return {0xC, 1};
+            case Ribbon::Earth:
+                return {0xC, 2};
+            case Ribbon::World:
+                return {0xC, 3};
+            case Ribbon::Classic:
+                return {0xC, 4};
+            case Ribbon::Premier:
+                return {0xC, 5};
+            case Ribbon::Event:
+                return {0xC, 6};
+            case Ribbon::Birthday:
+                return {0xC, 7};
+            case Ribbon::Special:
+                return {0xD, 0};
+            case Ribbon::Souvenir:
+                return {0xD, 1};
+            case Ribbon::Wishing:
+                return {0xD, 2};
+            case Ribbon::ChampionBattle:
+                return {0xD, 3};
+            case Ribbon::ChampionRegional:
+                return {0xD, 4};
+            case Ribbon::ChampionNational:
+                return {0xD, 5};
+            case Ribbon::ChampionWorld:
+                return {0xD, 6};
+            default:
+                break;
+        }
+
+        return {0xFFFFFFFF, 0};
+    }
+}
 
 PGF::PGF(u8* dt)
 {
@@ -205,9 +250,15 @@ u32 PGF::PID(void) const
     return LittleEndian::convertTo<u32>(data + 0x08);
 }
 
-bool PGF::ribbon(u8 category, u8 index) const
+bool PGF::hasRibbon(Ribbon rib) const
 {
-    return *(data + 0x0C + category) & (1 << index);
+    return OFFSET_OF(rib).first != 0xFFFFFFFF;
+}
+
+bool PGF::ribbon(Ribbon rib) const
+{
+    auto offset = OFFSET_OF(rib);
+    return offset.first != 0xFFFFFFFF ? FlagUtil::getFlag(data, offset.first, offset.second) : false;
 }
 
 u8 PGF::alternativeForm(void) const

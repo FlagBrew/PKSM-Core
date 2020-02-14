@@ -28,6 +28,7 @@
 #define PKSM_WCX
 
 #include "i18n/Language.hpp"
+#include "utils/Ribbons.hpp"
 #include "utils/coretypes.h"
 #include "utils/generation.hpp"
 #include "utils/stat.hpp"
@@ -67,31 +68,32 @@ public:
     virtual bool used(void) const             = 0;
 
     // Pokemon properties
-    virtual bool shiny(void) const                   = 0;
-    virtual u16 ability(void) const                  = 0;
-    virtual u8 abilityType(void) const               = 0;
-    virtual u8 ball(void) const                      = 0;
-    virtual bool egg(void) const                     = 0;
-    virtual u8 alternativeForm(void) const           = 0;
-    virtual u8 gender(void) const                    = 0;
-    virtual u16 heldItem(void) const                 = 0;
-    virtual Language language(void) const            = 0;
-    virtual u8 level(void) const                     = 0;
-    virtual u8 metLevel(void) const                  = 0;
-    virtual u16 move(u8 index) const                 = 0;
-    virtual u8 nature(void) const                    = 0;
-    virtual std::string nickname(void) const         = 0;
-    virtual std::string otName(void) const           = 0;
-    virtual u8 PIDType(void) const                   = 0;
-    virtual u16 SID(void) const                      = 0;
-    virtual u16 species(void) const                  = 0;
-    virtual u16 TID(void) const                      = 0;
-    virtual u16 eggLocation(void) const              = 0;
-    virtual u16 metLocation(void) const              = 0;
-    virtual u8 contest(u8 index) const               = 0;
-    virtual u8 iv(Stat index) const                  = 0;
-    virtual u32 PID(void) const                      = 0;
-    virtual bool ribbon(u8 category, u8 index) const = 0;
+    virtual bool shiny(void) const           = 0;
+    virtual u16 ability(void) const          = 0;
+    virtual u8 abilityType(void) const       = 0;
+    virtual u8 ball(void) const              = 0;
+    virtual bool egg(void) const             = 0;
+    virtual u8 alternativeForm(void) const   = 0;
+    virtual u8 gender(void) const            = 0;
+    virtual u16 heldItem(void) const         = 0;
+    virtual Language language(void) const    = 0;
+    virtual u8 level(void) const             = 0;
+    virtual u8 metLevel(void) const          = 0;
+    virtual u16 move(u8 index) const         = 0;
+    virtual u8 nature(void) const            = 0;
+    virtual std::string nickname(void) const = 0;
+    virtual std::string otName(void) const   = 0;
+    virtual u8 PIDType(void) const           = 0;
+    virtual u16 SID(void) const              = 0;
+    virtual u16 species(void) const          = 0;
+    virtual u16 TID(void) const              = 0;
+    virtual u16 eggLocation(void) const      = 0;
+    virtual u16 metLocation(void) const      = 0;
+    virtual u8 contest(u8 index) const       = 0;
+    virtual u8 iv(Stat index) const          = 0;
+    virtual u32 PID(void) const              = 0;
+    virtual bool hasRibbon(Ribbon rib) const = 0;
+    virtual bool ribbon(Ribbon rib) const    = 0;
 
     virtual u16 formSpecies(void) const = 0;
 

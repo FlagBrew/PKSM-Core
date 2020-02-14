@@ -112,7 +112,8 @@ public:
     u16 eggLocation(void) const override;
     u16 metLocation(void) const override;
     u8 contest(u8) const override { return 0; }
-    bool ribbon(u8 category, u8 index) const override;
+    bool hasRibbon(Ribbon rib) const override;
+    bool ribbon(Ribbon rib) const override;
 
     u16 formSpecies(void) const override;
 

@@ -299,15 +299,6 @@ void PB7::pkrsStrain(u8 v)
     data[0x2B] = (u8)((data[0x2B] & 0xF) | v << 4);
 }
 
-bool PB7::ribbon(u8 ribcat, u8 ribnum) const
-{
-    return (data[0x30 + ribcat] & (1 << ribnum)) == 1 << ribnum;
-}
-void PB7::ribbon(u8 ribcat, u8 ribnum, u8 v)
-{
-    data[0x30 + ribcat] = (u8)((data[0x30 + ribcat] & ~(1 << ribnum)) | (v ? 1 << ribnum : 0));
-}
-
 std::string PB7::nickname(void) const
 {
     return StringUtils::getString(data, 0x40, 12);

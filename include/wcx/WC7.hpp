@@ -106,7 +106,8 @@ public:
     u8 iv(Stat index) const override;
     u8 ev(Stat index) const;
     u16 additionalItem(void) const;
-    bool ribbon(u8 category, u8 index) const override;
+    bool hasRibbon(Ribbon rib) const override;
+    bool ribbon(Ribbon rib) const override;
 
     u16 formSpecies(void) const override;
 

@@ -36,6 +36,57 @@
 #include "utils/utils.hpp"
 #include <algorithm>
 
+namespace
+{
+    constexpr std::array<std::pair<size_t, size_t>, numRibbons()> OFFSETS()
+    {
+        std::array<std::pair<size_t, size_t>, numRibbons()> ret{};
+
+        for (auto& pair : ret)
+        {
+            pair.first = 0xFFFFFFFF;
+        }
+
+        ret[size_t(Ribbon::ChampionG3Hoenn)].first  = 0x4D;
+        ret[size_t(Ribbon::ChampionG3Hoenn)].second = 7;
+
+        ret[size_t(Ribbon::Winning)].first  = 0x4E;
+        ret[size_t(Ribbon::Winning)].second = 0;
+
+        ret[size_t(Ribbon::Victory)].first  = 0x4E;
+        ret[size_t(Ribbon::Victory)].second = 1;
+
+        ret[size_t(Ribbon::Artist)].first  = 0x4E;
+        ret[size_t(Ribbon::Artist)].second = 2;
+
+        ret[size_t(Ribbon::Effort)].first  = 0x4E;
+        ret[size_t(Ribbon::Effort)].second = 3;
+
+        ret[size_t(Ribbon::ChampionBattle)].first  = 0x4E;
+        ret[size_t(Ribbon::ChampionBattle)].second = 4;
+
+        ret[size_t(Ribbon::ChampionRegional)].first  = 0x4E;
+        ret[size_t(Ribbon::ChampionRegional)].second = 5;
+
+        ret[size_t(Ribbon::ChampionNational)].first  = 0x4E;
+        ret[size_t(Ribbon::ChampionNational)].second = 6;
+
+        ret[size_t(Ribbon::Country)].first  = 0x4E;
+        ret[size_t(Ribbon::Country)].second = 7;
+
+        ret[size_t(Ribbon::National)].first  = 0x4F;
+        ret[size_t(Ribbon::National)].second = 0;
+
+        ret[size_t(Ribbon::Earth)].first  = 0x4F;
+        ret[size_t(Ribbon::Earth)].second = 1;
+
+        ret[size_t(Ribbon::World)].first  = 0x4F;
+        ret[size_t(Ribbon::World)].second = 2;
+
+        return ret;
+    }
+}
+
 u8 PK3::getUnownForm(u32 pid)
 {
     u32 val = (pid & 0x3000000) >> 18 | (pid & 0x30000) >> 12 | (pid & 0x300) >> 6 | (pid & 0x3);
@@ -483,13 +534,27 @@ void PK3::abilityBit(bool v)
     LittleEndian::convertFrom<u32>(data + 0x48, (LittleEndian::convertTo<u32>(data + 0x48) & 0x7FFFFFFF) | (v ? 1u << 31 : 0u));
 }
 
-bool PK3::ribbon(u8 cat, u8 rib) const
+bool PK3::hasRibbon(Ribbon ribbon) const
 {
-    return (data[0x4C + cat] & (1 << rib)) != 0;
+    constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
+    return offsets[size_t(ribbon)].first != 0xFFFFFFFF;
 }
-void PK3::ribbon(u8 cat, u8 rib, u8 v)
+bool PK3::ribbon(Ribbon ribbon) const
 {
-    data[0x4C + cat] = (u8)((data[0x4C + cat] & ~(1 << rib)) | (v ? 1 << rib : 0));
+    if (hasRibbon(ribbon))
+    {
+        constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
+        return FlagUtil::getFlag(data, offsets[size_t(ribbon)].first, offsets[size_t(ribbon)].second);
+    }
+    return false;
+}
+void PK3::ribbon(Ribbon ribbon, bool v)
+{
+    if (hasRibbon(ribbon))
+    {
+        constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
+        FlagUtil::setFlag(data, offsets[size_t(ribbon)].first, offsets[size_t(ribbon)].second, v);
+    }
 }
 u8 PK3::contestRibbonCount(u8 contest) const
 {
@@ -628,32 +693,40 @@ std::unique_ptr<PK4> PK3::convertToG4(Sav&) const
     pk4->metLocation(0x37); // Pal Park
     pk4->fatefulEncounter(fatefulEncounter());
 
-    for (u8 rib = 0; rib < 12; rib++)
-    {
-        pk4->ribbon(6 + ((rib + 4) / 8), (rib + 4) % 8, ribbon(1 + ((rib + 7) / 8), (rib + 7) % 8) ? 1 : 0);
-    }
+    pk4->ribbon(Ribbon::ChampionG3Hoenn, ribbon(Ribbon::ChampionG3Hoenn));
+    pk4->ribbon(Ribbon::Winning, ribbon(Ribbon::Winning));
+    pk4->ribbon(Ribbon::Victory, ribbon(Ribbon::Victory));
+    pk4->ribbon(Ribbon::Artist, ribbon(Ribbon::Artist));
+    pk4->ribbon(Ribbon::Effort, ribbon(Ribbon::Effort));
+    pk4->ribbon(Ribbon::ChampionBattle, ribbon(Ribbon::ChampionBattle));
+    pk4->ribbon(Ribbon::ChampionRegional, ribbon(Ribbon::ChampionRegional));
+    pk4->ribbon(Ribbon::ChampionNational, ribbon(Ribbon::ChampionNational));
+    pk4->ribbon(Ribbon::Country, ribbon(Ribbon::Country));
+    pk4->ribbon(Ribbon::National, ribbon(Ribbon::National));
+    pk4->ribbon(Ribbon::Earth, ribbon(Ribbon::Earth));
+    pk4->ribbon(Ribbon::World, ribbon(Ribbon::World));
 
     // Contest ribbons
-    for (u8 contest = 0; contest < 5; contest++)
-    {
-        u8 contestCount = contestRibbonCount(contest);
-        if (contestCount > 0)
-        {
-            pk4->ribbon(4 + contest / 2, (contest % 2) * 4, 1);
-        }
-        if (contestCount > 1)
-        {
-            pk4->ribbon(4 + contest / 2, (contest % 2) * 4 + 1, 1);
-        }
-        if (contestCount > 2)
-        {
-            pk4->ribbon(4 + contest / 2, (contest % 2) * 4 + 2, 1);
-        }
-        if (contestCount > 3)
-        {
-            pk4->ribbon(4 + contest / 2, (contest % 2) * 4 + 3, 1);
-        }
-    }
+    pk4->ribbon(Ribbon::G3Cool, contestRibbonCount(0) > 0);
+    pk4->ribbon(Ribbon::G3CoolSuper, contestRibbonCount(0) > 1);
+    pk4->ribbon(Ribbon::G3CoolHyper, contestRibbonCount(0) > 2);
+    pk4->ribbon(Ribbon::G3CoolMaster, contestRibbonCount(0) > 3);
+    pk4->ribbon(Ribbon::G3Beauty, contestRibbonCount(1) > 0);
+    pk4->ribbon(Ribbon::G3BeautySuper, contestRibbonCount(1) > 1);
+    pk4->ribbon(Ribbon::G3BeautyHyper, contestRibbonCount(1) > 2);
+    pk4->ribbon(Ribbon::G3BeautyMaster, contestRibbonCount(1) > 3);
+    pk4->ribbon(Ribbon::G3Cute, contestRibbonCount(2) > 0);
+    pk4->ribbon(Ribbon::G3CuteSuper, contestRibbonCount(2) > 1);
+    pk4->ribbon(Ribbon::G3CuteHyper, contestRibbonCount(2) > 2);
+    pk4->ribbon(Ribbon::G3CuteMaster, contestRibbonCount(2) > 3);
+    pk4->ribbon(Ribbon::G3Smart, contestRibbonCount(3) > 0);
+    pk4->ribbon(Ribbon::G3SmartSuper, contestRibbonCount(3) > 1);
+    pk4->ribbon(Ribbon::G3SmartHyper, contestRibbonCount(3) > 2);
+    pk4->ribbon(Ribbon::G3SmartMaster, contestRibbonCount(3) > 3);
+    pk4->ribbon(Ribbon::G3Tough, contestRibbonCount(4) > 0);
+    pk4->ribbon(Ribbon::G3ToughSuper, contestRibbonCount(4) > 1);
+    pk4->ribbon(Ribbon::G3ToughHyper, contestRibbonCount(4) > 2);
+    pk4->ribbon(Ribbon::G3ToughMaster, contestRibbonCount(4) > 3);
 
     // Yay trash bytes
     if ((size_t)(u8(language()) - 1) < trashBytes.size())

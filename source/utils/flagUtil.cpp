@@ -26,7 +26,7 @@
 
 #include "utils/flagUtil.hpp"
 
-bool FlagUtil::getFlag(u8* data, int offset, int bitIndex)
+bool FlagUtil::getFlag(const u8* data, int offset, int bitIndex)
 {
     bitIndex &= 7; // ensure bit access is 0-7
     return (data[offset] >> bitIndex & 1) != 0;

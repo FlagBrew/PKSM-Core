@@ -29,10 +29,176 @@
 #include "pkx/PK4.hpp"
 #include "pkx/PK5.hpp"
 #include "pkx/PK6.hpp"
+#include "pkx/PK8.hpp"
 #include "sav/Sav.hpp"
 #include "utils/endian.hpp"
 #include "utils/random.hpp"
 #include "utils/utils.hpp"
+
+namespace
+{
+    constexpr std::array<std::pair<size_t, size_t>, numRibbons()> OFFSETS()
+    {
+        std::array<std::pair<size_t, size_t>, numRibbons()> ret{};
+
+        for (auto& pair : ret)
+        {
+            pair.first = 0xFFFFFFFF;
+        }
+
+        ret[size_t(Ribbon::ChampionKalos)].first  = 0x30;
+        ret[size_t(Ribbon::ChampionKalos)].second = 0;
+
+        ret[size_t(Ribbon::ChampionG3Hoenn)].first  = 0x30;
+        ret[size_t(Ribbon::ChampionG3Hoenn)].second = 1;
+
+        ret[size_t(Ribbon::ChampionSinnoh)].first  = 0x30;
+        ret[size_t(Ribbon::ChampionSinnoh)].second = 2;
+
+        ret[size_t(Ribbon::BestFriends)].first  = 0x30;
+        ret[size_t(Ribbon::BestFriends)].second = 3;
+
+        ret[size_t(Ribbon::Training)].first  = 0x30;
+        ret[size_t(Ribbon::Training)].second = 4;
+
+        ret[size_t(Ribbon::BattlerSkillful)].first  = 0x30;
+        ret[size_t(Ribbon::BattlerSkillful)].second = 5;
+
+        ret[size_t(Ribbon::BattlerExpert)].first  = 0x30;
+        ret[size_t(Ribbon::BattlerExpert)].second = 6;
+
+        ret[size_t(Ribbon::Effort)].first  = 0x30;
+        ret[size_t(Ribbon::Effort)].second = 7;
+
+        ret[size_t(Ribbon::Alert)].first  = 0x31;
+        ret[size_t(Ribbon::Alert)].second = 0;
+
+        ret[size_t(Ribbon::Shock)].first  = 0x31;
+        ret[size_t(Ribbon::Shock)].second = 1;
+
+        ret[size_t(Ribbon::Downcast)].first  = 0x31;
+        ret[size_t(Ribbon::Downcast)].second = 2;
+
+        ret[size_t(Ribbon::Careless)].first  = 0x31;
+        ret[size_t(Ribbon::Careless)].second = 3;
+
+        ret[size_t(Ribbon::Relax)].first  = 0x31;
+        ret[size_t(Ribbon::Relax)].second = 4;
+
+        ret[size_t(Ribbon::Snooze)].first  = 0x31;
+        ret[size_t(Ribbon::Snooze)].second = 5;
+
+        ret[size_t(Ribbon::Smile)].first  = 0x31;
+        ret[size_t(Ribbon::Smile)].second = 6;
+
+        ret[size_t(Ribbon::Gorgeous)].first  = 0x31;
+        ret[size_t(Ribbon::Gorgeous)].second = 7;
+
+        ret[size_t(Ribbon::Royal)].first  = 0x32;
+        ret[size_t(Ribbon::Royal)].second = 0;
+
+        ret[size_t(Ribbon::GorgeousRoyal)].first  = 0x32;
+        ret[size_t(Ribbon::GorgeousRoyal)].second = 1;
+
+        ret[size_t(Ribbon::Artist)].first  = 0x32;
+        ret[size_t(Ribbon::Artist)].second = 2;
+
+        ret[size_t(Ribbon::Footprint)].first  = 0x32;
+        ret[size_t(Ribbon::Footprint)].second = 3;
+
+        ret[size_t(Ribbon::Record)].first  = 0x32;
+        ret[size_t(Ribbon::Record)].second = 4;
+
+        ret[size_t(Ribbon::Legend)].first  = 0x32;
+        ret[size_t(Ribbon::Legend)].second = 5;
+
+        ret[size_t(Ribbon::Country)].first  = 0x32;
+        ret[size_t(Ribbon::Country)].second = 6;
+
+        ret[size_t(Ribbon::National)].first  = 0x32;
+        ret[size_t(Ribbon::National)].second = 7;
+
+        ret[size_t(Ribbon::Earth)].first  = 0x33;
+        ret[size_t(Ribbon::Earth)].second = 0;
+
+        ret[size_t(Ribbon::World)].first  = 0x33;
+        ret[size_t(Ribbon::World)].second = 1;
+
+        ret[size_t(Ribbon::Classic)].first  = 0x33;
+        ret[size_t(Ribbon::Classic)].second = 2;
+
+        ret[size_t(Ribbon::Premier)].first  = 0x33;
+        ret[size_t(Ribbon::Premier)].second = 3;
+
+        ret[size_t(Ribbon::Event)].first  = 0x33;
+        ret[size_t(Ribbon::Event)].second = 4;
+
+        ret[size_t(Ribbon::Birthday)].first  = 0x33;
+        ret[size_t(Ribbon::Birthday)].second = 5;
+
+        ret[size_t(Ribbon::Special)].first  = 0x33;
+        ret[size_t(Ribbon::Special)].second = 6;
+
+        ret[size_t(Ribbon::Souvenir)].first  = 0x33;
+        ret[size_t(Ribbon::Souvenir)].second = 7;
+
+        ret[size_t(Ribbon::Wishing)].first  = 0x34;
+        ret[size_t(Ribbon::Wishing)].second = 0;
+
+        ret[size_t(Ribbon::ChampionBattle)].first  = 0x34;
+        ret[size_t(Ribbon::ChampionBattle)].second = 1;
+
+        ret[size_t(Ribbon::ChampionRegional)].first  = 0x34;
+        ret[size_t(Ribbon::ChampionRegional)].second = 2;
+
+        ret[size_t(Ribbon::ChampionNational)].first  = 0x34;
+        ret[size_t(Ribbon::ChampionNational)].second = 3;
+
+        ret[size_t(Ribbon::ChampionWorld)].first  = 0x34;
+        ret[size_t(Ribbon::ChampionWorld)].second = 4;
+
+        ret[size_t(Ribbon::MemoryContest)].first  = 0x34;
+        ret[size_t(Ribbon::MemoryContest)].second = 5;
+
+        ret[size_t(Ribbon::MemoryBattle)].first  = 0x34;
+        ret[size_t(Ribbon::MemoryBattle)].second = 6;
+
+        ret[size_t(Ribbon::ChampionG6Hoenn)].first  = 0x34;
+        ret[size_t(Ribbon::ChampionG6Hoenn)].second = 7;
+
+        ret[size_t(Ribbon::ContestStar)].first  = 0x35;
+        ret[size_t(Ribbon::ContestStar)].second = 0;
+
+        ret[size_t(Ribbon::MasterCoolness)].first  = 0x35;
+        ret[size_t(Ribbon::MasterCoolness)].second = 1;
+
+        ret[size_t(Ribbon::MasterBeauty)].first  = 0x35;
+        ret[size_t(Ribbon::MasterBeauty)].second = 2;
+
+        ret[size_t(Ribbon::MasterCuteness)].first  = 0x35;
+        ret[size_t(Ribbon::MasterCuteness)].second = 3;
+
+        ret[size_t(Ribbon::MasterCleverness)].first  = 0x35;
+        ret[size_t(Ribbon::MasterCleverness)].second = 4;
+
+        ret[size_t(Ribbon::MasterToughness)].first  = 0x35;
+        ret[size_t(Ribbon::MasterToughness)].second = 5;
+
+        ret[size_t(Ribbon::ChampionAlola)].first  = 0x35;
+        ret[size_t(Ribbon::ChampionAlola)].second = 6;
+
+        ret[size_t(Ribbon::BattleRoyale)].first  = 0x35;
+        ret[size_t(Ribbon::BattleRoyale)].second = 7;
+
+        ret[size_t(Ribbon::BattleTreeGreat)].first  = 0x36;
+        ret[size_t(Ribbon::BattleTreeGreat)].second = 0;
+
+        ret[size_t(Ribbon::BattleTreeMaster)].first  = 0x36;
+        ret[size_t(Ribbon::BattleTreeMaster)].second = 1;
+
+        return ret;
+    }
+}
 
 void PK7::shuffleArray(u8 sv)
 {
@@ -305,13 +471,27 @@ void PK7::pkrsStrain(u8 v)
     data[0x2B] = (u8)((data[0x2B] & 0xF) | v << 4);
 }
 
-bool PK7::ribbon(u8 ribcat, u8 ribnum) const
+bool PK7::hasRibbon(Ribbon ribbon) const
 {
-    return (data[0x30 + ribcat] & (1 << ribnum)) == 1 << ribnum;
+    constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
+    return offsets[size_t(ribbon)].first != 0xFFFFFFFF;
 }
-void PK7::ribbon(u8 ribcat, u8 ribnum, u8 v)
+bool PK7::ribbon(Ribbon ribbon) const
 {
-    data[0x30 + ribcat] = (u8)((data[0x30 + ribcat] & ~(1 << ribnum)) | (v ? 1 << ribnum : 0));
+    if (hasRibbon(ribbon))
+    {
+        constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
+        return FlagUtil::getFlag(data, offsets[size_t(ribbon)].first, offsets[size_t(ribbon)].second);
+    }
+    return false;
+}
+void PK7::ribbon(Ribbon ribbon, bool v)
+{
+    if (hasRibbon(ribbon))
+    {
+        constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
+        FlagUtil::setFlag(data, offsets[size_t(ribbon)].first, offsets[size_t(ribbon)].second, v);
+    }
 }
 
 std::string PK7::nickname(void) const
@@ -977,6 +1157,13 @@ std::unique_ptr<PK6> PK7::convertToG6(Sav& save) const
 
     pk6->refreshChecksum();
     return pk6;
+}
+
+std::unique_ptr<PK8> PK7::convertToG8(Sav& save) const
+{
+    auto pk8 = PKX::getPKM<Generation::EIGHT>(nullptr, false);
+
+    return pk8;
 }
 
 int PK7::partyCurrHP(void) const

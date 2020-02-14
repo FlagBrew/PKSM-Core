@@ -95,8 +95,9 @@ public:
     void ev(Stat ev, u8 v) override;
     u8 contest(u8 contest) const override;
     void contest(u8 contest, u8 v) override;
-    bool ribbon(u8 ribcat, u8 ribnum) const override;
-    void ribbon(u8 ribcat, u8 ribnum, u8 v) override;
+    bool hasRibbon(Ribbon rib) const override;
+    bool ribbon(Ribbon rib) const override;
+    void ribbon(Ribbon rib, bool v) override;
 
     u16 move(u8 move) const override;
     void move(u8 move, u16 v) override;

@@ -269,9 +269,14 @@ u32 PGT::PID(void) const
     return pokemonData->PID();
 }
 
-bool PGT::ribbon(u8 category, u8 index) const
+bool PGT::hasRibbon(Ribbon rib) const
 {
-    return pokemonData->ribbon(category, index);
+    return pokemonData->hasRibbon(rib);
+}
+
+bool PGT::ribbon(Ribbon rib) const
+{
+    return pokemonData->ribbon(rib);
 }
 
 u8 PGT::alternativeForm(void) const

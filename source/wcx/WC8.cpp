@@ -27,6 +27,7 @@
 #include "wcx/WC8.hpp"
 #include "personal/personal.hpp"
 #include "utils/endian.hpp"
+#include "utils/flagUtil.hpp"
 #include "utils/utils.hpp"
 
 namespace
@@ -45,6 +46,312 @@ namespace
         {
             return u8(lang) - 1;
         }
+    }
+
+    constexpr std::array<std::pair<size_t, size_t>, numRibbons()> OFFSETS()
+    {
+        std::array<std::pair<size_t, size_t>, numRibbons()> ret{};
+
+        for (auto& pair : ret)
+        {
+            pair.first = 0xFFFFFFFF;
+        }
+
+        ret[size_t(Ribbon::ChampionKalos)].first  = 0x24C;
+        ret[size_t(Ribbon::ChampionKalos)].second = 0;
+
+        ret[size_t(Ribbon::ChampionG3Hoenn)].first  = 0x24C;
+        ret[size_t(Ribbon::ChampionG3Hoenn)].second = 1;
+
+        ret[size_t(Ribbon::ChampionSinnoh)].first  = 0x24C;
+        ret[size_t(Ribbon::ChampionSinnoh)].second = 2;
+
+        ret[size_t(Ribbon::BestFriends)].first  = 0x24C;
+        ret[size_t(Ribbon::BestFriends)].second = 3;
+
+        ret[size_t(Ribbon::Training)].first  = 0x24C;
+        ret[size_t(Ribbon::Training)].second = 4;
+
+        ret[size_t(Ribbon::BattlerSkillful)].first  = 0x24C;
+        ret[size_t(Ribbon::BattlerSkillful)].second = 5;
+
+        ret[size_t(Ribbon::BattlerExpert)].first  = 0x24C;
+        ret[size_t(Ribbon::BattlerExpert)].second = 6;
+
+        ret[size_t(Ribbon::Effort)].first  = 0x24C;
+        ret[size_t(Ribbon::Effort)].second = 7;
+
+        ret[size_t(Ribbon::Alert)].first  = 0x24D;
+        ret[size_t(Ribbon::Alert)].second = 0;
+
+        ret[size_t(Ribbon::Shock)].first  = 0x24D;
+        ret[size_t(Ribbon::Shock)].second = 1;
+
+        ret[size_t(Ribbon::Downcast)].first  = 0x24D;
+        ret[size_t(Ribbon::Downcast)].second = 2;
+
+        ret[size_t(Ribbon::Careless)].first  = 0x24D;
+        ret[size_t(Ribbon::Careless)].second = 3;
+
+        ret[size_t(Ribbon::Relax)].first  = 0x24D;
+        ret[size_t(Ribbon::Relax)].second = 4;
+
+        ret[size_t(Ribbon::Snooze)].first  = 0x24D;
+        ret[size_t(Ribbon::Snooze)].second = 5;
+
+        ret[size_t(Ribbon::Smile)].first  = 0x24D;
+        ret[size_t(Ribbon::Smile)].second = 6;
+
+        ret[size_t(Ribbon::Gorgeous)].first  = 0x24D;
+        ret[size_t(Ribbon::Gorgeous)].second = 7;
+
+        ret[size_t(Ribbon::Royal)].first  = 0x24E;
+        ret[size_t(Ribbon::Royal)].second = 0;
+
+        ret[size_t(Ribbon::GorgeousRoyal)].first  = 0x24E;
+        ret[size_t(Ribbon::GorgeousRoyal)].second = 1;
+
+        ret[size_t(Ribbon::Artist)].first  = 0x24E;
+        ret[size_t(Ribbon::Artist)].second = 2;
+
+        ret[size_t(Ribbon::Footprint)].first  = 0x24E;
+        ret[size_t(Ribbon::Footprint)].second = 3;
+
+        ret[size_t(Ribbon::Record)].first  = 0x24E;
+        ret[size_t(Ribbon::Record)].second = 4;
+
+        ret[size_t(Ribbon::Legend)].first  = 0x24E;
+        ret[size_t(Ribbon::Legend)].second = 5;
+
+        ret[size_t(Ribbon::Country)].first  = 0x24E;
+        ret[size_t(Ribbon::Country)].second = 6;
+
+        ret[size_t(Ribbon::National)].first  = 0x24E;
+        ret[size_t(Ribbon::National)].second = 7;
+
+        ret[size_t(Ribbon::Earth)].first  = 0x24F;
+        ret[size_t(Ribbon::Earth)].second = 0;
+
+        ret[size_t(Ribbon::World)].first  = 0x24F;
+        ret[size_t(Ribbon::World)].second = 1;
+
+        ret[size_t(Ribbon::Classic)].first  = 0x24F;
+        ret[size_t(Ribbon::Classic)].second = 2;
+
+        ret[size_t(Ribbon::Premier)].first  = 0x24F;
+        ret[size_t(Ribbon::Premier)].second = 3;
+
+        ret[size_t(Ribbon::Event)].first  = 0x24F;
+        ret[size_t(Ribbon::Event)].second = 4;
+
+        ret[size_t(Ribbon::Birthday)].first  = 0x24F;
+        ret[size_t(Ribbon::Birthday)].second = 5;
+
+        ret[size_t(Ribbon::Special)].first  = 0x24F;
+        ret[size_t(Ribbon::Special)].second = 6;
+
+        ret[size_t(Ribbon::Souvenir)].first  = 0x24F;
+        ret[size_t(Ribbon::Souvenir)].second = 7;
+
+        ret[size_t(Ribbon::Wishing)].first  = 0x250;
+        ret[size_t(Ribbon::Wishing)].second = 0;
+
+        ret[size_t(Ribbon::ChampionBattle)].first  = 0x250;
+        ret[size_t(Ribbon::ChampionBattle)].second = 1;
+
+        ret[size_t(Ribbon::ChampionRegional)].first  = 0x250;
+        ret[size_t(Ribbon::ChampionRegional)].second = 2;
+
+        ret[size_t(Ribbon::ChampionNational)].first  = 0x250;
+        ret[size_t(Ribbon::ChampionNational)].second = 3;
+
+        ret[size_t(Ribbon::ChampionWorld)].first  = 0x250;
+        ret[size_t(Ribbon::ChampionWorld)].second = 4;
+
+        ret[size_t(Ribbon::MemoryContest)].first  = 0x250;
+        ret[size_t(Ribbon::MemoryContest)].second = 5;
+
+        ret[size_t(Ribbon::MemoryBattle)].first  = 0x250;
+        ret[size_t(Ribbon::MemoryBattle)].second = 6;
+
+        ret[size_t(Ribbon::ChampionG6Hoenn)].first  = 0x250;
+        ret[size_t(Ribbon::ChampionG6Hoenn)].second = 7;
+
+        ret[size_t(Ribbon::ContestStar)].first  = 0x251;
+        ret[size_t(Ribbon::ContestStar)].second = 0;
+
+        ret[size_t(Ribbon::MasterCoolness)].first  = 0x251;
+        ret[size_t(Ribbon::MasterCoolness)].second = 1;
+
+        ret[size_t(Ribbon::MasterBeauty)].first  = 0x251;
+        ret[size_t(Ribbon::MasterBeauty)].second = 2;
+
+        ret[size_t(Ribbon::MasterCuteness)].first  = 0x251;
+        ret[size_t(Ribbon::MasterCuteness)].second = 3;
+
+        ret[size_t(Ribbon::MasterCleverness)].first  = 0x251;
+        ret[size_t(Ribbon::MasterCleverness)].second = 4;
+
+        ret[size_t(Ribbon::MasterToughness)].first  = 0x251;
+        ret[size_t(Ribbon::MasterToughness)].second = 5;
+
+        ret[size_t(Ribbon::ChampionAlola)].first  = 0x251;
+        ret[size_t(Ribbon::ChampionAlola)].second = 6;
+
+        ret[size_t(Ribbon::BattleRoyale)].first  = 0x251;
+        ret[size_t(Ribbon::BattleRoyale)].second = 7;
+
+        ret[size_t(Ribbon::BattleTreeGreat)].first  = 0x252;
+        ret[size_t(Ribbon::BattleTreeGreat)].second = 0;
+
+        ret[size_t(Ribbon::BattleTreeMaster)].first  = 0x252;
+        ret[size_t(Ribbon::BattleTreeMaster)].second = 1;
+
+        ret[size_t(Ribbon::ChampionGalar)].first  = 0x252;
+        ret[size_t(Ribbon::ChampionGalar)].second = 2;
+
+        ret[size_t(Ribbon::TowerMaster)].first  = 0x252;
+        ret[size_t(Ribbon::TowerMaster)].second = 3;
+
+        ret[size_t(Ribbon::MasterRank)].first  = 0x252;
+        ret[size_t(Ribbon::MasterRank)].second = 4;
+
+        ret[size_t(Ribbon::MarkLunchtime)].first  = 0x252;
+        ret[size_t(Ribbon::MarkLunchtime)].second = 5;
+
+        ret[size_t(Ribbon::MarkSleepyTime)].first  = 0x252;
+        ret[size_t(Ribbon::MarkSleepyTime)].second = 6;
+
+        ret[size_t(Ribbon::MarkDusk)].first  = 0x252;
+        ret[size_t(Ribbon::MarkDusk)].second = 7;
+
+        ret[size_t(Ribbon::MarkDawn)].first  = 0x253;
+        ret[size_t(Ribbon::MarkDawn)].second = 0;
+
+        ret[size_t(Ribbon::MarkCloudy)].first  = 0x253;
+        ret[size_t(Ribbon::MarkCloudy)].second = 1;
+
+        ret[size_t(Ribbon::MarkRainy)].first  = 0x253;
+        ret[size_t(Ribbon::MarkRainy)].second = 2;
+
+        ret[size_t(Ribbon::MarkStormy)].first  = 0x253;
+        ret[size_t(Ribbon::MarkStormy)].second = 3;
+
+        ret[size_t(Ribbon::MarkSnowy)].first  = 0x253;
+        ret[size_t(Ribbon::MarkSnowy)].second = 4;
+
+        ret[size_t(Ribbon::MarkBlizzard)].first  = 0x253;
+        ret[size_t(Ribbon::MarkBlizzard)].second = 5;
+
+        ret[size_t(Ribbon::MarkDry)].first  = 0x253;
+        ret[size_t(Ribbon::MarkDry)].second = 6;
+
+        ret[size_t(Ribbon::MarkSandstorm)].first  = 0x253;
+        ret[size_t(Ribbon::MarkSandstorm)].second = 7;
+
+        ret[size_t(Ribbon::MarkMisty)].first  = 0x258;
+        ret[size_t(Ribbon::MarkMisty)].second = 0;
+
+        ret[size_t(Ribbon::MarkDestiny)].first  = 0x258;
+        ret[size_t(Ribbon::MarkDestiny)].second = 1;
+
+        ret[size_t(Ribbon::MarkFishing)].first  = 0x258;
+        ret[size_t(Ribbon::MarkFishing)].second = 2;
+
+        ret[size_t(Ribbon::MarkCurry)].first  = 0x258;
+        ret[size_t(Ribbon::MarkCurry)].second = 3;
+
+        ret[size_t(Ribbon::MarkUncommon)].first  = 0x258;
+        ret[size_t(Ribbon::MarkUncommon)].second = 4;
+
+        ret[size_t(Ribbon::MarkRare)].first  = 0x258;
+        ret[size_t(Ribbon::MarkRare)].second = 5;
+
+        ret[size_t(Ribbon::MarkRowdy)].first  = 0x258;
+        ret[size_t(Ribbon::MarkRowdy)].second = 6;
+
+        ret[size_t(Ribbon::MarkAbsentMinded)].first  = 0x258;
+        ret[size_t(Ribbon::MarkAbsentMinded)].second = 7;
+
+        ret[size_t(Ribbon::MarkJittery)].first  = 0x259;
+        ret[size_t(Ribbon::MarkJittery)].second = 0;
+
+        ret[size_t(Ribbon::MarkExcited)].first  = 0x259;
+        ret[size_t(Ribbon::MarkExcited)].second = 1;
+
+        ret[size_t(Ribbon::MarkCharismatic)].first  = 0x259;
+        ret[size_t(Ribbon::MarkCharismatic)].second = 2;
+
+        ret[size_t(Ribbon::MarkCalmness)].first  = 0x259;
+        ret[size_t(Ribbon::MarkCalmness)].second = 3;
+
+        ret[size_t(Ribbon::MarkIntense)].first  = 0x259;
+        ret[size_t(Ribbon::MarkIntense)].second = 4;
+
+        ret[size_t(Ribbon::MarkZonedOut)].first  = 0x259;
+        ret[size_t(Ribbon::MarkZonedOut)].second = 5;
+
+        ret[size_t(Ribbon::MarkJoyful)].first  = 0x259;
+        ret[size_t(Ribbon::MarkJoyful)].second = 6;
+
+        ret[size_t(Ribbon::MarkAngry)].first  = 0x259;
+        ret[size_t(Ribbon::MarkAngry)].second = 7;
+
+        ret[size_t(Ribbon::MarkSmiley)].first  = 0x25A;
+        ret[size_t(Ribbon::MarkSmiley)].second = 0;
+
+        ret[size_t(Ribbon::MarkTeary)].first  = 0x25A;
+        ret[size_t(Ribbon::MarkTeary)].second = 1;
+
+        ret[size_t(Ribbon::MarkUpbeat)].first  = 0x25A;
+        ret[size_t(Ribbon::MarkUpbeat)].second = 2;
+
+        ret[size_t(Ribbon::MarkPeeved)].first  = 0x25A;
+        ret[size_t(Ribbon::MarkPeeved)].second = 3;
+
+        ret[size_t(Ribbon::MarkIntellectual)].first  = 0x25A;
+        ret[size_t(Ribbon::MarkIntellectual)].second = 4;
+
+        ret[size_t(Ribbon::MarkFerocious)].first  = 0x25A;
+        ret[size_t(Ribbon::MarkFerocious)].second = 5;
+
+        ret[size_t(Ribbon::MarkCrafty)].first  = 0x25A;
+        ret[size_t(Ribbon::MarkCrafty)].second = 6;
+
+        ret[size_t(Ribbon::MarkScowling)].first  = 0x25A;
+        ret[size_t(Ribbon::MarkScowling)].second = 7;
+
+        ret[size_t(Ribbon::MarkKindly)].first  = 0x25B;
+        ret[size_t(Ribbon::MarkKindly)].second = 0;
+
+        ret[size_t(Ribbon::MarkFlustered)].first  = 0x25B;
+        ret[size_t(Ribbon::MarkFlustered)].second = 1;
+
+        ret[size_t(Ribbon::MarkPumpedUp)].first  = 0x25B;
+        ret[size_t(Ribbon::MarkPumpedUp)].second = 2;
+
+        ret[size_t(Ribbon::MarkZeroEnergy)].first  = 0x25B;
+        ret[size_t(Ribbon::MarkZeroEnergy)].second = 3;
+
+        ret[size_t(Ribbon::MarkPrideful)].first  = 0x25B;
+        ret[size_t(Ribbon::MarkPrideful)].second = 4;
+
+        ret[size_t(Ribbon::MarkUnsure)].first  = 0x25B;
+        ret[size_t(Ribbon::MarkUnsure)].second = 5;
+
+        ret[size_t(Ribbon::MarkHumble)].first  = 0x25B;
+        ret[size_t(Ribbon::MarkHumble)].second = 6;
+
+        ret[size_t(Ribbon::MarkThorny)].first  = 0x25B;
+        ret[size_t(Ribbon::MarkThorny)].second = 7;
+
+        ret[size_t(Ribbon::MarkVigor)].first  = 0x25C;
+        ret[size_t(Ribbon::MarkVigor)].second = 0;
+
+        ret[size_t(Ribbon::MarkSlump)].first  = 0x25C;
+        ret[size_t(Ribbon::MarkSlump)].second = 1;
+
+        return ret;
     }
 }
 
@@ -318,9 +625,20 @@ u16 WC8::metLocation(void) const
     return LittleEndian::convertTo<u16>(data + 0x22A);
 }
 
-bool WC8::ribbon(u8 category, u8 index) const
+bool WC8::hasRibbon(Ribbon ribbon) const
 {
-    return (*(data + 0x74 + category) & (1 << index));
+    constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
+    return offsets[size_t(ribbon)].first != 0xFFFFFFFF;
+}
+
+bool WC8::ribbon(Ribbon ribbon) const
+{
+    if (hasRibbon(ribbon))
+    {
+        constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
+        return FlagUtil::getFlag(data, offsets[size_t(ribbon)].first, offsets[size_t(ribbon)].second);
+    }
+    return false;
 }
 
 bool WC8::nicknamed(Language lang) const

@@ -109,8 +109,9 @@ public:
     void pkrsDays(u8 v) override;
     u8 pkrsStrain(void) const override;
     void pkrsStrain(u8 v) override;
-    bool ribbon(u8 ribcat, u8 ribnum) const override;
-    void ribbon(u8 ribcat, u8 ribnum, u8 v) override;
+    bool hasRibbon(Ribbon rib) const override;
+    bool ribbon(Ribbon rib) const override;
+    void ribbon(Ribbon rib, bool v) override;
     u8 ribbonCountContest(void) const;
     void ribbonCountContest(u8 v);
     u8 ribbonCountBattle(void) const;

@@ -35,6 +35,165 @@
 #include "utils/utils.hpp"
 #include <algorithm>
 
+namespace
+{
+    constexpr std::array<std::pair<size_t, size_t>, numRibbons()> OFFSETS()
+    {
+        std::array<std::pair<size_t, size_t>, numRibbons()> ret{};
+
+        for (auto& pair : ret)
+        {
+            pair.first = 0xFFFFFFFF;
+        }
+
+        ret[size_t(Ribbon::ChampionSinnoh)].first  = 0x24;
+        ret[size_t(Ribbon::ChampionSinnoh)].second = 0;
+
+        ret[size_t(Ribbon::Ability)].first  = 0x24;
+        ret[size_t(Ribbon::Ability)].second = 1;
+
+        ret[size_t(Ribbon::AbilityGreat)].first  = 0x24;
+        ret[size_t(Ribbon::AbilityGreat)].second = 2;
+
+        ret[size_t(Ribbon::AbilityDouble)].first  = 0x24;
+        ret[size_t(Ribbon::AbilityDouble)].second = 3;
+
+        ret[size_t(Ribbon::AbilityMulti)].first  = 0x24;
+        ret[size_t(Ribbon::AbilityMulti)].second = 4;
+
+        ret[size_t(Ribbon::AbilityPair)].first  = 0x24;
+        ret[size_t(Ribbon::AbilityPair)].second = 5;
+
+        ret[size_t(Ribbon::AbilityWorld)].first  = 0x24;
+        ret[size_t(Ribbon::AbilityWorld)].second = 6;
+
+        ret[size_t(Ribbon::Alert)].first  = 0x24;
+        ret[size_t(Ribbon::Alert)].second = 7;
+
+        ret[size_t(Ribbon::Shock)].first  = 0x25;
+        ret[size_t(Ribbon::Shock)].second = 0;
+
+        ret[size_t(Ribbon::Downcast)].first  = 0x25;
+        ret[size_t(Ribbon::Downcast)].second = 1;
+
+        ret[size_t(Ribbon::Careless)].first  = 0x25;
+        ret[size_t(Ribbon::Careless)].second = 2;
+
+        ret[size_t(Ribbon::Relax)].first  = 0x25;
+        ret[size_t(Ribbon::Relax)].second = 3;
+
+        ret[size_t(Ribbon::Snooze)].first  = 0x25;
+        ret[size_t(Ribbon::Snooze)].second = 4;
+
+        ret[size_t(Ribbon::Smile)].first  = 0x25;
+        ret[size_t(Ribbon::Smile)].second = 5;
+
+        ret[size_t(Ribbon::Gorgeous)].first  = 0x25;
+        ret[size_t(Ribbon::Gorgeous)].second = 6;
+
+        ret[size_t(Ribbon::Royal)].first  = 0x25;
+        ret[size_t(Ribbon::Royal)].second = 7;
+
+        ret[size_t(Ribbon::GorgeousRoyal)].first  = 0x26;
+        ret[size_t(Ribbon::GorgeousRoyal)].second = 0;
+
+        ret[size_t(Ribbon::Footprint)].first  = 0x26;
+        ret[size_t(Ribbon::Footprint)].second = 1;
+
+        ret[size_t(Ribbon::Record)].first  = 0x26;
+        ret[size_t(Ribbon::Record)].second = 2;
+
+        ret[size_t(Ribbon::Event)].first  = 0x26;
+        ret[size_t(Ribbon::Event)].second = 3;
+
+        ret[size_t(Ribbon::Legend)].first  = 0x26;
+        ret[size_t(Ribbon::Legend)].second = 4;
+
+        ret[size_t(Ribbon::ChampionWorld)].first  = 0x26;
+        ret[size_t(Ribbon::ChampionWorld)].second = 5;
+
+        ret[size_t(Ribbon::Birthday)].first  = 0x26;
+        ret[size_t(Ribbon::Birthday)].second = 6;
+
+        ret[size_t(Ribbon::Special)].first  = 0x26;
+        ret[size_t(Ribbon::Special)].second = 7;
+
+        ret[size_t(Ribbon::Souvenir)].first  = 0x27;
+        ret[size_t(Ribbon::Souvenir)].second = 0;
+
+        ret[size_t(Ribbon::Wishing)].first  = 0x27;
+        ret[size_t(Ribbon::Wishing)].second = 1;
+
+        ret[size_t(Ribbon::Classic)].first  = 0x27;
+        ret[size_t(Ribbon::Classic)].second = 2;
+
+        ret[size_t(Ribbon::Premier)].first  = 0x27;
+        ret[size_t(Ribbon::Premier)].second = 3;
+
+        ret[size_t(Ribbon::G4Cool)].first  = 0x60;
+        ret[size_t(Ribbon::G4Cool)].second = 0;
+
+        ret[size_t(Ribbon::G4CoolGreat)].first  = 0x60;
+        ret[size_t(Ribbon::G4CoolGreat)].second = 1;
+
+        ret[size_t(Ribbon::G4CoolUltra)].first  = 0x60;
+        ret[size_t(Ribbon::G4CoolUltra)].second = 2;
+
+        ret[size_t(Ribbon::G4CoolMaster)].first  = 0x60;
+        ret[size_t(Ribbon::G4CoolMaster)].second = 3;
+
+        ret[size_t(Ribbon::G4Beauty)].first  = 0x60;
+        ret[size_t(Ribbon::G4Beauty)].second = 4;
+
+        ret[size_t(Ribbon::G4BeautyGreat)].first  = 0x60;
+        ret[size_t(Ribbon::G4BeautyGreat)].second = 5;
+
+        ret[size_t(Ribbon::G4BeautyUltra)].first  = 0x60;
+        ret[size_t(Ribbon::G4BeautyUltra)].second = 6;
+
+        ret[size_t(Ribbon::G4BeautyMaster)].first  = 0x60;
+        ret[size_t(Ribbon::G4BeautyMaster)].second = 7;
+
+        ret[size_t(Ribbon::G4Cute)].first  = 0x61;
+        ret[size_t(Ribbon::G4Cute)].second = 0;
+
+        ret[size_t(Ribbon::G4CuteGreat)].first  = 0x61;
+        ret[size_t(Ribbon::G4CuteGreat)].second = 1;
+
+        ret[size_t(Ribbon::G4CuteUltra)].first  = 0x61;
+        ret[size_t(Ribbon::G4CuteUltra)].second = 2;
+
+        ret[size_t(Ribbon::G4CuteMaster)].first  = 0x61;
+        ret[size_t(Ribbon::G4CuteMaster)].second = 3;
+
+        ret[size_t(Ribbon::G4Smart)].first  = 0x61;
+        ret[size_t(Ribbon::G4Smart)].second = 4;
+
+        ret[size_t(Ribbon::G4SmartGreat)].first  = 0x61;
+        ret[size_t(Ribbon::G4SmartGreat)].second = 5;
+
+        ret[size_t(Ribbon::G4SmartUltra)].first  = 0x61;
+        ret[size_t(Ribbon::G4SmartUltra)].second = 6;
+
+        ret[size_t(Ribbon::G4SmartMaster)].first  = 0x61;
+        ret[size_t(Ribbon::G4SmartMaster)].second = 7;
+
+        ret[size_t(Ribbon::G4Tough)].first  = 0x62;
+        ret[size_t(Ribbon::G4Tough)].second = 0;
+
+        ret[size_t(Ribbon::G4ToughGreat)].first  = 0x62;
+        ret[size_t(Ribbon::G4ToughGreat)].second = 1;
+
+        ret[size_t(Ribbon::G4ToughUltra)].first  = 0x62;
+        ret[size_t(Ribbon::G4ToughUltra)].second = 2;
+
+        ret[size_t(Ribbon::G4ToughMaster)].first  = 0x62;
+        ret[size_t(Ribbon::G4ToughMaster)].second = 3;
+
+        return ret;
+    }
+}
+
 void PK4::shuffleArray(u8 sv)
 {
     static constexpr int blockLength = 32;
@@ -269,16 +428,27 @@ void PK4::contest(u8 contest, u8 v)
     data[0x1E + contest] = v;
 }
 
-bool PK4::ribbon(u8 ribcat, u8 ribnum) const
+bool PK4::hasRibbon(Ribbon ribbon) const
 {
-    static constexpr u8 ribIndex[12] = {0x24, 0x25, 0x26, 0x27, 0x3C, 0x3D, 0x3E, 0x3F, 0x60, 0x61, 0x62, 0x63};
-    return (data[ribIndex[ribcat]] & (1 << ribnum)) == 1 << ribnum;
+    constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
+    return offsets[size_t(ribbon)].first != 0xFFFFFFFF;
 }
-
-void PK4::ribbon(u8 ribcat, u8 ribnum, u8 v)
+bool PK4::ribbon(Ribbon ribbon) const
 {
-    static constexpr u8 ribIndex[12] = {0x24, 0x25, 0x26, 0x27, 0x3C, 0x3D, 0x3E, 0x3F, 0x60, 0x61, 0x62, 0x63};
-    data[ribIndex[ribcat]]           = (u8)((data[ribIndex[ribcat]] & ~(1 << ribnum)) | (v ? 1 << ribnum : 0));
+    if (hasRibbon(ribbon))
+    {
+        constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
+        return FlagUtil::getFlag(data, offsets[size_t(ribbon)].first, offsets[size_t(ribbon)].second);
+    }
+    return false;
+}
+void PK4::ribbon(Ribbon ribbon, bool v)
+{
+    if (hasRibbon(ribbon))
+    {
+        constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
+        FlagUtil::setFlag(data, offsets[size_t(ribbon)].first, offsets[size_t(ribbon)].second, v);
+    }
 }
 
 u16 PK4::move(u8 m) const

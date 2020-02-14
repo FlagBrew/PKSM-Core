@@ -112,8 +112,9 @@ public:
     void pkrsDays(u8 v) override;
     u8 pkrsStrain(void) const override;
     void pkrsStrain(u8 v) override;
-    bool ribbon(u8 ribcat, u8 ribnum) const override;
-    void ribbon(u8 ribcat, u8 ribnum, u8 v) override;
+    bool hasRibbon(Ribbon) const override { return false; }
+    bool ribbon(Ribbon) const override { return false; }
+    void ribbon(Ribbon, bool) override {}
 
     std::string nickname(void) const override;
     void nickname(const std::string& v) override;

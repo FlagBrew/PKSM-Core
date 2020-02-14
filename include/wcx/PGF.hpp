@@ -78,7 +78,8 @@ public:
     std::string otName(void) const override;
     u8 level(void) const override;
     u32 PID(void) const override;
-    bool ribbon(u8 category, u8 index) const override;
+    bool hasRibbon(Ribbon rib) const override;
+    bool ribbon(Ribbon rib) const override;
     u8 alternativeForm(void) const override;
     Language language(void) const override;
     std::string nickname(void) const override;

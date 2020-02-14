@@ -362,11 +362,6 @@ u8 WB7::ev(Stat index) const
     return data[0xE5 + u8(index)];
 }
 
-bool WB7::ribbon(u8 category, u8 index) const
-{
-    return (*(data + 0x74 + category) & (1 << index));
-}
-
 std::string WB7::nickname(Language lang) const
 {
     return StringUtils::getString(data, 0x4 + langIndex(lang) * 0x1A, 13);

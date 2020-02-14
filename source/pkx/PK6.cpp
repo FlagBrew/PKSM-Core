@@ -34,6 +34,159 @@
 #include "utils/random.hpp"
 #include "utils/utils.hpp"
 
+namespace
+{
+    constexpr std::array<std::pair<size_t, size_t>, numRibbons()> OFFSETS()
+    {
+        std::array<std::pair<size_t, size_t>, numRibbons()> ret{};
+
+        for (auto& pair : ret)
+        {
+            pair.first = 0xFFFFFFFF;
+        }
+
+        ret[size_t(Ribbon::ChampionKalos)].first  = 0x30;
+        ret[size_t(Ribbon::ChampionKalos)].second = 0;
+
+        ret[size_t(Ribbon::ChampionG3Hoenn)].first  = 0x30;
+        ret[size_t(Ribbon::ChampionG3Hoenn)].second = 1;
+
+        ret[size_t(Ribbon::ChampionSinnoh)].first  = 0x30;
+        ret[size_t(Ribbon::ChampionSinnoh)].second = 2;
+
+        ret[size_t(Ribbon::BestFriends)].first  = 0x30;
+        ret[size_t(Ribbon::BestFriends)].second = 3;
+
+        ret[size_t(Ribbon::Training)].first  = 0x30;
+        ret[size_t(Ribbon::Training)].second = 4;
+
+        ret[size_t(Ribbon::BattlerSkillful)].first  = 0x30;
+        ret[size_t(Ribbon::BattlerSkillful)].second = 5;
+
+        ret[size_t(Ribbon::BattlerExpert)].first  = 0x30;
+        ret[size_t(Ribbon::BattlerExpert)].second = 6;
+
+        ret[size_t(Ribbon::Effort)].first  = 0x30;
+        ret[size_t(Ribbon::Effort)].second = 7;
+
+        ret[size_t(Ribbon::Alert)].first  = 0x31;
+        ret[size_t(Ribbon::Alert)].second = 0;
+
+        ret[size_t(Ribbon::Shock)].first  = 0x31;
+        ret[size_t(Ribbon::Shock)].second = 1;
+
+        ret[size_t(Ribbon::Downcast)].first  = 0x31;
+        ret[size_t(Ribbon::Downcast)].second = 2;
+
+        ret[size_t(Ribbon::Careless)].first  = 0x31;
+        ret[size_t(Ribbon::Careless)].second = 3;
+
+        ret[size_t(Ribbon::Relax)].first  = 0x31;
+        ret[size_t(Ribbon::Relax)].second = 4;
+
+        ret[size_t(Ribbon::Snooze)].first  = 0x31;
+        ret[size_t(Ribbon::Snooze)].second = 5;
+
+        ret[size_t(Ribbon::Smile)].first  = 0x31;
+        ret[size_t(Ribbon::Smile)].second = 6;
+
+        ret[size_t(Ribbon::Gorgeous)].first  = 0x31;
+        ret[size_t(Ribbon::Gorgeous)].second = 7;
+
+        ret[size_t(Ribbon::Royal)].first  = 0x32;
+        ret[size_t(Ribbon::Royal)].second = 0;
+
+        ret[size_t(Ribbon::GorgeousRoyal)].first  = 0x32;
+        ret[size_t(Ribbon::GorgeousRoyal)].second = 1;
+
+        ret[size_t(Ribbon::Artist)].first  = 0x32;
+        ret[size_t(Ribbon::Artist)].second = 2;
+
+        ret[size_t(Ribbon::Footprint)].first  = 0x32;
+        ret[size_t(Ribbon::Footprint)].second = 3;
+
+        ret[size_t(Ribbon::Record)].first  = 0x32;
+        ret[size_t(Ribbon::Record)].second = 4;
+
+        ret[size_t(Ribbon::Legend)].first  = 0x32;
+        ret[size_t(Ribbon::Legend)].second = 5;
+
+        ret[size_t(Ribbon::Country)].first  = 0x32;
+        ret[size_t(Ribbon::Country)].second = 6;
+
+        ret[size_t(Ribbon::National)].first  = 0x32;
+        ret[size_t(Ribbon::National)].second = 7;
+
+        ret[size_t(Ribbon::Earth)].first  = 0x33;
+        ret[size_t(Ribbon::Earth)].second = 0;
+
+        ret[size_t(Ribbon::World)].first  = 0x33;
+        ret[size_t(Ribbon::World)].second = 1;
+
+        ret[size_t(Ribbon::Classic)].first  = 0x33;
+        ret[size_t(Ribbon::Classic)].second = 2;
+
+        ret[size_t(Ribbon::Premier)].first  = 0x33;
+        ret[size_t(Ribbon::Premier)].second = 3;
+
+        ret[size_t(Ribbon::Event)].first  = 0x33;
+        ret[size_t(Ribbon::Event)].second = 4;
+
+        ret[size_t(Ribbon::Birthday)].first  = 0x33;
+        ret[size_t(Ribbon::Birthday)].second = 5;
+
+        ret[size_t(Ribbon::Special)].first  = 0x33;
+        ret[size_t(Ribbon::Special)].second = 6;
+
+        ret[size_t(Ribbon::Souvenir)].first  = 0x33;
+        ret[size_t(Ribbon::Souvenir)].second = 7;
+
+        ret[size_t(Ribbon::Wishing)].first  = 0x34;
+        ret[size_t(Ribbon::Wishing)].second = 0;
+
+        ret[size_t(Ribbon::ChampionBattle)].first  = 0x34;
+        ret[size_t(Ribbon::ChampionBattle)].second = 1;
+
+        ret[size_t(Ribbon::ChampionRegional)].first  = 0x34;
+        ret[size_t(Ribbon::ChampionRegional)].second = 2;
+
+        ret[size_t(Ribbon::ChampionNational)].first  = 0x34;
+        ret[size_t(Ribbon::ChampionNational)].second = 3;
+
+        ret[size_t(Ribbon::ChampionWorld)].first  = 0x34;
+        ret[size_t(Ribbon::ChampionWorld)].second = 4;
+
+        ret[size_t(Ribbon::MemoryContest)].first  = 0x34;
+        ret[size_t(Ribbon::MemoryContest)].second = 5;
+
+        ret[size_t(Ribbon::MemoryBattle)].first  = 0x34;
+        ret[size_t(Ribbon::MemoryBattle)].second = 6;
+
+        ret[size_t(Ribbon::ChampionG6Hoenn)].first  = 0x34;
+        ret[size_t(Ribbon::ChampionG6Hoenn)].second = 7;
+
+        ret[size_t(Ribbon::ContestStar)].first  = 0x35;
+        ret[size_t(Ribbon::ContestStar)].second = 0;
+
+        ret[size_t(Ribbon::MasterCoolness)].first  = 0x35;
+        ret[size_t(Ribbon::MasterCoolness)].second = 1;
+
+        ret[size_t(Ribbon::MasterBeauty)].first  = 0x35;
+        ret[size_t(Ribbon::MasterBeauty)].second = 2;
+
+        ret[size_t(Ribbon::MasterCuteness)].first  = 0x35;
+        ret[size_t(Ribbon::MasterCuteness)].second = 3;
+
+        ret[size_t(Ribbon::MasterCleverness)].first  = 0x35;
+        ret[size_t(Ribbon::MasterCleverness)].second = 4;
+
+        ret[size_t(Ribbon::MasterToughness)].first  = 0x35;
+        ret[size_t(Ribbon::MasterToughness)].second = 5;
+
+        return ret;
+    }
+}
+
 void PK6::shuffleArray(u8 sv)
 {
     static constexpr int blockLength = 56;
@@ -324,13 +477,27 @@ void PK6::pkrsStrain(u8 v)
     data[0x2B] = (u8)((data[0x2B] & 0xF) | v << 4);
 }
 
-bool PK6::ribbon(u8 ribcat, u8 ribnum) const
+bool PK6::hasRibbon(Ribbon ribbon) const
 {
-    return (data[0x30 + ribcat] & (1 << ribnum)) == 1 << ribnum;
+    constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
+    return offsets[size_t(ribbon)].first != 0xFFFFFFFF;
 }
-void PK6::ribbon(u8 ribcat, u8 ribnum, u8 v)
+bool PK6::ribbon(Ribbon ribbon) const
 {
-    data[0x30 + ribcat] = (u8)((data[0x30 + ribcat] & ~(1 << ribnum)) | (v ? 1 << ribnum : 0));
+    if (hasRibbon(ribbon))
+    {
+        constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
+        return FlagUtil::getFlag(data, offsets[size_t(ribbon)].first, offsets[size_t(ribbon)].second);
+    }
+    return false;
+}
+void PK6::ribbon(Ribbon ribbon, bool v)
+{
+    if (hasRibbon(ribbon))
+    {
+        constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
+        FlagUtil::setFlag(data, offsets[size_t(ribbon)].first, offsets[size_t(ribbon)].second, v);
+    }
 }
 
 u8 PK6::ribbonContestCount(void) const
@@ -1085,42 +1252,42 @@ std::unique_ptr<PK5> PK6::convertToG5(Sav& save) const
     pk5->otGender(otGender());
     pk5->encounterType(encounterType());
 
-    pk5->ribbon(6, 4, ribbon(0, 1)); // Hoenn Champion
-    pk5->ribbon(0, 0, ribbon(0, 2)); // Sinnoh Champ
-    pk5->ribbon(7, 0, ribbon(0, 7)); // Effort Ribbon
+    pk5->ribbon(Ribbon::ChampionG6Hoenn, ribbon(Ribbon::ChampionG6Hoenn));
+    pk5->ribbon(Ribbon::ChampionSinnoh, ribbon(Ribbon::ChampionSinnoh));
+    pk5->ribbon(Ribbon::Effort, ribbon(Ribbon::Effort));
 
-    pk5->ribbon(0, 7, ribbon(1, 0)); // Alert
-    pk5->ribbon(1, 0, ribbon(1, 1)); // Shock
-    pk5->ribbon(1, 1, ribbon(1, 2)); // Downcast
-    pk5->ribbon(1, 2, ribbon(1, 3)); // Careless
-    pk5->ribbon(1, 3, ribbon(1, 4)); // Relax
-    pk5->ribbon(1, 4, ribbon(1, 5)); // Snooze
-    pk5->ribbon(1, 5, ribbon(1, 6)); // Smile
-    pk5->ribbon(1, 6, ribbon(1, 7)); // Gorgeous
+    pk5->ribbon(Ribbon::Alert, ribbon(Ribbon::Alert));
+    pk5->ribbon(Ribbon::Shock, ribbon(Ribbon::Shock));
+    pk5->ribbon(Ribbon::Downcast, ribbon(Ribbon::Downcast));
+    pk5->ribbon(Ribbon::Careless, ribbon(Ribbon::Careless));
+    pk5->ribbon(Ribbon::Relax, ribbon(Ribbon::Relax));
+    pk5->ribbon(Ribbon::Snooze, ribbon(Ribbon::Snooze));
+    pk5->ribbon(Ribbon::Smile, ribbon(Ribbon::Smile));
+    pk5->ribbon(Ribbon::Gorgeous, ribbon(Ribbon::Gorgeous));
 
-    pk5->ribbon(1, 7, ribbon(2, 0)); // Royal
-    pk5->ribbon(2, 0, ribbon(2, 1)); // Gorgeous Royal
-    pk5->ribbon(6, 7, ribbon(2, 2)); // Artist
-    pk5->ribbon(2, 1, ribbon(2, 3)); // Footprint
-    pk5->ribbon(2, 2, ribbon(2, 4)); // Record
-    pk5->ribbon(2, 4, ribbon(2, 5)); // Legend
-    pk5->ribbon(7, 4, ribbon(2, 6)); // Country
-    pk5->ribbon(7, 5, ribbon(2, 7)); // National
+    pk5->ribbon(Ribbon::Royal, ribbon(Ribbon::Royal));
+    pk5->ribbon(Ribbon::GorgeousRoyal, ribbon(Ribbon::GorgeousRoyal));
+    pk5->ribbon(Ribbon::Artist, ribbon(Ribbon::Artist));
+    pk5->ribbon(Ribbon::Footprint, ribbon(Ribbon::Footprint));
+    pk5->ribbon(Ribbon::Record, ribbon(Ribbon::Record));
+    pk5->ribbon(Ribbon::Legend, ribbon(Ribbon::Legend));
+    pk5->ribbon(Ribbon::Country, ribbon(Ribbon::Country));
+    pk5->ribbon(Ribbon::National, ribbon(Ribbon::National));
 
-    pk5->ribbon(7, 6, ribbon(3, 0)); // Earth
-    pk5->ribbon(7, 7, ribbon(3, 1)); // World
-    pk5->ribbon(3, 2, ribbon(3, 2)); // Classic
-    pk5->ribbon(3, 3, ribbon(3, 3)); // Premier
-    pk5->ribbon(2, 3, ribbon(3, 4)); // Event
-    pk5->ribbon(2, 6, ribbon(3, 5)); // Birthday
-    pk5->ribbon(2, 7, ribbon(3, 6)); // Special
-    pk5->ribbon(3, 0, ribbon(3, 7)); // Souvenir
+    pk5->ribbon(Ribbon::Earth, ribbon(Ribbon::Earth));
+    pk5->ribbon(Ribbon::World, ribbon(Ribbon::World));
+    pk5->ribbon(Ribbon::Classic, ribbon(Ribbon::Classic));
+    pk5->ribbon(Ribbon::Premier, ribbon(Ribbon::Premier));
+    pk5->ribbon(Ribbon::Event, ribbon(Ribbon::Event));
+    pk5->ribbon(Ribbon::Birthday, ribbon(Ribbon::Birthday));
+    pk5->ribbon(Ribbon::Special, ribbon(Ribbon::Special));
+    pk5->ribbon(Ribbon::Souvenir, ribbon(Ribbon::Souvenir));
 
-    pk5->ribbon(3, 1, ribbon(4, 0)); // Wishing Ribbon
-    pk5->ribbon(7, 1, ribbon(4, 1)); // Battle Champion
-    pk5->ribbon(7, 2, ribbon(4, 2)); // Regional Champion
-    pk5->ribbon(7, 3, ribbon(4, 3)); // National Champion
-    pk5->ribbon(2, 5, ribbon(4, 4)); // World Champion
+    pk5->ribbon(Ribbon::Wishing, ribbon(Ribbon::Wishing));
+    pk5->ribbon(Ribbon::ChampionBattle, ribbon(Ribbon::ChampionBattle));
+    pk5->ribbon(Ribbon::ChampionRegional, ribbon(Ribbon::ChampionRegional));
+    pk5->ribbon(Ribbon::ChampionNational, ribbon(Ribbon::ChampionNational));
+    pk5->ribbon(Ribbon::ChampionWorld, ribbon(Ribbon::ChampionWorld));
 
     pk5->otFriendship(pk5->baseFriendship());
 

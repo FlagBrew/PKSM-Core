@@ -51,7 +51,7 @@ public:
     std::unique_ptr<PK5> convertToG5(Sav& save) const override;
     std::unique_ptr<PK6> convertToG6(Sav& save) const override;
     // std::unique_ptr<PKX> convertToLGPE(Sav& save) const override;
-    // std::unique_ptr<PKX> convertToG8(Sav& save) const override;
+    std::unique_ptr<PK8> convertToG8(Sav& save) const override;
 
     std::unique_ptr<PKX> clone(void) const override;
 
@@ -106,8 +106,9 @@ public:
     void pkrsDays(u8 v) override;
     u8 pkrsStrain(void) const override;
     void pkrsStrain(u8 v) override;
-    bool ribbon(u8 ribcat, u8 ribnum) const override;
-    void ribbon(u8 ribcat, u8 ribnum, u8 v) override;
+    bool hasRibbon(Ribbon rib) const override;
+    bool ribbon(Ribbon rib) const override;
+    void ribbon(Ribbon rib, bool v) override;
 
     std::string nickname(void) const override;
     void nickname(const std::string& v) override;

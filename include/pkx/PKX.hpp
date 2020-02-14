@@ -29,6 +29,7 @@
 
 #include "i18n/Language.hpp"
 #include "sav/Item.hpp"
+#include "utils/Ribbons.hpp"
 #include "utils/coretypes.h"
 #include "utils/genToPkx.hpp"
 #include "utils/generation.hpp"
@@ -135,41 +136,42 @@ public:
     virtual u16 heldItem(void) const           = 0;
     virtual void heldItem(u16 v)               = 0;
     void heldItem(const Item& item) { heldItem(item.id()); }
-    virtual u16 TID(void) const                     = 0;
-    virtual void TID(u16 v)                         = 0;
-    virtual u16 SID(void) const                     = 0;
-    virtual void SID(u16 v)                         = 0;
-    virtual u32 experience(void) const              = 0;
-    virtual void experience(u32 v)                  = 0;
-    virtual u16 ability(void) const                 = 0;
-    virtual void ability(u16 v)                     = 0;
-    virtual u8 abilityNumber(void) const            = 0;
-    virtual void abilityNumber(u8 v)                = 0;
-    virtual void setAbility(u8 abilityNumber)       = 0;
-    virtual u16 markValue(void) const               = 0;
-    virtual void markValue(u16 v)                   = 0;
-    virtual u32 PID(void) const                     = 0;
-    virtual void PID(u32 v)                         = 0;
-    virtual u8 nature(void) const                   = 0;
-    virtual void nature(u8 v)                       = 0;
-    virtual bool fatefulEncounter(void) const       = 0;
-    virtual void fatefulEncounter(bool v)           = 0;
-    virtual u8 gender(void) const                   = 0;
-    virtual void gender(u8 g)                       = 0;
-    virtual u16 alternativeForm(void) const         = 0;
-    virtual void alternativeForm(u16 v)             = 0;
-    virtual u8 ev(Stat ev) const                    = 0;
-    virtual void ev(Stat ev, u8 v)                  = 0;
-    virtual u8 contest(u8 contest) const            = 0;
-    virtual void contest(u8 contest, u8 v)          = 0;
-    virtual u8 pkrs(void) const                     = 0;
-    virtual void pkrs(u8 v)                         = 0;
-    virtual u8 pkrsDays(void) const                 = 0;
-    virtual void pkrsDays(u8 v)                     = 0;
-    virtual u8 pkrsStrain(void) const               = 0;
-    virtual void pkrsStrain(u8 v)                   = 0;
-    virtual bool ribbon(u8 ribcat, u8 ribnum) const = 0;
-    virtual void ribbon(u8 ribcat, u8 ribnum, u8 v) = 0;
+    virtual u16 TID(void) const               = 0;
+    virtual void TID(u16 v)                   = 0;
+    virtual u16 SID(void) const               = 0;
+    virtual void SID(u16 v)                   = 0;
+    virtual u32 experience(void) const        = 0;
+    virtual void experience(u32 v)            = 0;
+    virtual u16 ability(void) const           = 0;
+    virtual void ability(u16 v)               = 0;
+    virtual u8 abilityNumber(void) const      = 0;
+    virtual void abilityNumber(u8 v)          = 0;
+    virtual void setAbility(u8 abilityNumber) = 0;
+    virtual u16 markValue(void) const         = 0;
+    virtual void markValue(u16 v)             = 0;
+    virtual u32 PID(void) const               = 0;
+    virtual void PID(u32 v)                   = 0;
+    virtual u8 nature(void) const             = 0;
+    virtual void nature(u8 v)                 = 0;
+    virtual bool fatefulEncounter(void) const = 0;
+    virtual void fatefulEncounter(bool v)     = 0;
+    virtual u8 gender(void) const             = 0;
+    virtual void gender(u8 g)                 = 0;
+    virtual u16 alternativeForm(void) const   = 0;
+    virtual void alternativeForm(u16 v)       = 0;
+    virtual u8 ev(Stat ev) const              = 0;
+    virtual void ev(Stat ev, u8 v)            = 0;
+    virtual u8 contest(u8 contest) const      = 0;
+    virtual void contest(u8 contest, u8 v)    = 0;
+    virtual u8 pkrs(void) const               = 0;
+    virtual void pkrs(u8 v)                   = 0;
+    virtual u8 pkrsDays(void) const           = 0;
+    virtual void pkrsDays(u8 v)               = 0;
+    virtual u8 pkrsStrain(void) const         = 0;
+    virtual void pkrsStrain(u8 v)             = 0;
+    virtual bool hasRibbon(Ribbon rib) const  = 0;
+    virtual bool ribbon(Ribbon rib) const     = 0;
+    virtual void ribbon(Ribbon rib, bool v)   = 0;
 
     // BLOCK B
     virtual std::string nickname(void) const    = 0;
