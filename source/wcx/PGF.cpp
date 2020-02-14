@@ -30,6 +30,8 @@
 #include "utils/flagUtil.hpp"
 #include "utils/utils.hpp"
 
+#define RIBBON_ABSENT 0xFFFFFFFF
+
 namespace
 {
     std::pair<size_t, size_t> OFFSET_OF(Ribbon rib)
@@ -70,7 +72,7 @@ namespace
                 break;
         }
 
-        return {0xFFFFFFFF, 0};
+        return {RIBBON_ABSENT, 0};
     }
 }
 
@@ -252,13 +254,13 @@ u32 PGF::PID(void) const
 
 bool PGF::hasRibbon(Ribbon rib) const
 {
-    return OFFSET_OF(rib).first != 0xFFFFFFFF;
+    return OFFSET_OF(rib).first != RIBBON_ABSENT;
 }
 
 bool PGF::ribbon(Ribbon rib) const
 {
     auto offset = OFFSET_OF(rib);
-    return offset.first != 0xFFFFFFFF ? FlagUtil::getFlag(data, offset.first, offset.second) : false;
+    return offset.first != RIBBON_ABSENT ? FlagUtil::getFlag(data, offset.first, offset.second) : false;
 }
 
 u8 PGF::alternativeForm(void) const

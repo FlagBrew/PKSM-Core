@@ -28,312 +28,214 @@
 #include "utils/endian.hpp"
 #include "utils/utils.hpp"
 
+#define RIBBON_ABSENT 0xFFFFFFFF
+
 namespace
 {
-    constexpr std::array<std::pair<size_t, size_t>, numRibbons()> OFFSETS()
+    std::pair<size_t, size_t> OFFSET_OF(Ribbon rib)
     {
-        std::array<std::pair<size_t, size_t>, numRibbons()> ret{};
-
-        for (auto& pair : ret)
+        switch (rib)
         {
-            pair.first = 0xFFFFFFFF;
+            case Ribbon::ChampionKalos:
+                return {0x34, 0};
+            case Ribbon::ChampionG3Hoenn:
+                return {0x34, 1};
+            case Ribbon::ChampionSinnoh:
+                return {0x34, 2};
+            case Ribbon::BestFriends:
+                return {0x34, 3};
+            case Ribbon::Training:
+                return {0x34, 4};
+            case Ribbon::BattlerSkillful:
+                return {0x34, 5};
+            case Ribbon::BattlerExpert:
+                return {0x34, 6};
+            case Ribbon::Effort:
+                return {0x34, 7};
+            case Ribbon::Alert:
+                return {0x35, 0};
+            case Ribbon::Shock:
+                return {0x35, 1};
+            case Ribbon::Downcast:
+                return {0x35, 2};
+            case Ribbon::Careless:
+                return {0x35, 3};
+            case Ribbon::Relax:
+                return {0x35, 4};
+            case Ribbon::Snooze:
+                return {0x35, 5};
+            case Ribbon::Smile:
+                return {0x35, 6};
+            case Ribbon::Gorgeous:
+                return {0x35, 7};
+            case Ribbon::Royal:
+                return {0x36, 0};
+            case Ribbon::GorgeousRoyal:
+                return {0x36, 1};
+            case Ribbon::Artist:
+                return {0x36, 2};
+            case Ribbon::Footprint:
+                return {0x36, 3};
+            case Ribbon::Record:
+                return {0x36, 4};
+            case Ribbon::Legend:
+                return {0x36, 5};
+            case Ribbon::Country:
+                return {0x36, 6};
+            case Ribbon::National:
+                return {0x36, 7};
+            case Ribbon::Earth:
+                return {0x37, 0};
+            case Ribbon::World:
+                return {0x37, 1};
+            case Ribbon::Classic:
+                return {0x37, 2};
+            case Ribbon::Premier:
+                return {0x37, 3};
+            case Ribbon::Event:
+                return {0x37, 4};
+            case Ribbon::Birthday:
+                return {0x37, 5};
+            case Ribbon::Special:
+                return {0x37, 6};
+            case Ribbon::Souvenir:
+                return {0x37, 7};
+            case Ribbon::Wishing:
+                return {0x38, 0};
+            case Ribbon::ChampionBattle:
+                return {0x38, 1};
+            case Ribbon::ChampionRegional:
+                return {0x38, 2};
+            case Ribbon::ChampionNational:
+                return {0x38, 3};
+            case Ribbon::ChampionWorld:
+                return {0x38, 4};
+            case Ribbon::MemoryContest:
+                return {0x38, 5};
+            case Ribbon::MemoryBattle:
+                return {0x38, 6};
+            case Ribbon::ChampionG6Hoenn:
+                return {0x38, 7};
+            case Ribbon::ContestStar:
+                return {0x39, 0};
+            case Ribbon::MasterCoolness:
+                return {0x39, 1};
+            case Ribbon::MasterBeauty:
+                return {0x39, 2};
+            case Ribbon::MasterCuteness:
+                return {0x39, 3};
+            case Ribbon::MasterCleverness:
+                return {0x39, 4};
+            case Ribbon::MasterToughness:
+                return {0x39, 5};
+            case Ribbon::ChampionAlola:
+                return {0x39, 6};
+            case Ribbon::BattleRoyale:
+                return {0x39, 7};
+            case Ribbon::BattleTreeGreat:
+                return {0x3A, 0};
+            case Ribbon::BattleTreeMaster:
+                return {0x3A, 1};
+            case Ribbon::ChampionGalar:
+                return {0x3A, 2};
+            case Ribbon::TowerMaster:
+                return {0x3A, 3};
+            case Ribbon::MasterRank:
+                return {0x3A, 4};
+            case Ribbon::MarkLunchtime:
+                return {0x3A, 5};
+            case Ribbon::MarkSleepyTime:
+                return {0x3A, 6};
+            case Ribbon::MarkDusk:
+                return {0x3A, 7};
+            case Ribbon::MarkDawn:
+                return {0x3B, 0};
+            case Ribbon::MarkCloudy:
+                return {0x3B, 1};
+            case Ribbon::MarkRainy:
+                return {0x3B, 2};
+            case Ribbon::MarkStormy:
+                return {0x3B, 3};
+            case Ribbon::MarkSnowy:
+                return {0x3B, 4};
+            case Ribbon::MarkBlizzard:
+                return {0x3B, 5};
+            case Ribbon::MarkDry:
+                return {0x3B, 6};
+            case Ribbon::MarkSandstorm:
+                return {0x3B, 7};
+            case Ribbon::MarkMisty:
+                return {0x40, 0};
+            case Ribbon::MarkDestiny:
+                return {0x40, 1};
+            case Ribbon::MarkFishing:
+                return {0x40, 2};
+            case Ribbon::MarkCurry:
+                return {0x40, 3};
+            case Ribbon::MarkUncommon:
+                return {0x40, 4};
+            case Ribbon::MarkRare:
+                return {0x40, 5};
+            case Ribbon::MarkRowdy:
+                return {0x40, 6};
+            case Ribbon::MarkAbsentMinded:
+                return {0x40, 7};
+            case Ribbon::MarkJittery:
+                return {0x41, 0};
+            case Ribbon::MarkExcited:
+                return {0x41, 1};
+            case Ribbon::MarkCharismatic:
+                return {0x41, 2};
+            case Ribbon::MarkCalmness:
+                return {0x41, 3};
+            case Ribbon::MarkIntense:
+                return {0x41, 4};
+            case Ribbon::MarkZonedOut:
+                return {0x41, 5};
+            case Ribbon::MarkJoyful:
+                return {0x41, 6};
+            case Ribbon::MarkAngry:
+                return {0x41, 7};
+            case Ribbon::MarkSmiley:
+                return {0x42, 0};
+            case Ribbon::MarkTeary:
+                return {0x42, 1};
+            case Ribbon::MarkUpbeat:
+                return {0x42, 2};
+            case Ribbon::MarkPeeved:
+                return {0x42, 3};
+            case Ribbon::MarkIntellectual:
+                return {0x42, 4};
+            case Ribbon::MarkFerocious:
+                return {0x42, 5};
+            case Ribbon::MarkCrafty:
+                return {0x42, 6};
+            case Ribbon::MarkScowling:
+                return {0x42, 7};
+            case Ribbon::MarkKindly:
+                return {0x43, 0};
+            case Ribbon::MarkFlustered:
+                return {0x43, 1};
+            case Ribbon::MarkPumpedUp:
+                return {0x43, 2};
+            case Ribbon::MarkZeroEnergy:
+                return {0x43, 3};
+            case Ribbon::MarkPrideful:
+                return {0x43, 4};
+            case Ribbon::MarkUnsure:
+                return {0x43, 5};
+            case Ribbon::MarkHumble:
+                return {0x43, 6};
+            case Ribbon::MarkThorny:
+                return {0x43, 7};
+            case Ribbon::MarkVigor:
+                return {0x44, 0};
+            case Ribbon::MarkSlump:
+                return {0x44, 1};
+
+            default:
+                return {RIBBON_ABSENT, 0};
         }
-
-        ret[size_t(Ribbon::ChampionKalos)].first  = 0x34;
-        ret[size_t(Ribbon::ChampionKalos)].second = 0;
-
-        ret[size_t(Ribbon::ChampionG3Hoenn)].first  = 0x34;
-        ret[size_t(Ribbon::ChampionG3Hoenn)].second = 1;
-
-        ret[size_t(Ribbon::ChampionSinnoh)].first  = 0x34;
-        ret[size_t(Ribbon::ChampionSinnoh)].second = 2;
-
-        ret[size_t(Ribbon::BestFriends)].first  = 0x34;
-        ret[size_t(Ribbon::BestFriends)].second = 3;
-
-        ret[size_t(Ribbon::Training)].first  = 0x34;
-        ret[size_t(Ribbon::Training)].second = 4;
-
-        ret[size_t(Ribbon::BattlerSkillful)].first  = 0x34;
-        ret[size_t(Ribbon::BattlerSkillful)].second = 5;
-
-        ret[size_t(Ribbon::BattlerExpert)].first  = 0x34;
-        ret[size_t(Ribbon::BattlerExpert)].second = 6;
-
-        ret[size_t(Ribbon::Effort)].first  = 0x34;
-        ret[size_t(Ribbon::Effort)].second = 7;
-
-        ret[size_t(Ribbon::Alert)].first  = 0x35;
-        ret[size_t(Ribbon::Alert)].second = 0;
-
-        ret[size_t(Ribbon::Shock)].first  = 0x35;
-        ret[size_t(Ribbon::Shock)].second = 1;
-
-        ret[size_t(Ribbon::Downcast)].first  = 0x35;
-        ret[size_t(Ribbon::Downcast)].second = 2;
-
-        ret[size_t(Ribbon::Careless)].first  = 0x35;
-        ret[size_t(Ribbon::Careless)].second = 3;
-
-        ret[size_t(Ribbon::Relax)].first  = 0x35;
-        ret[size_t(Ribbon::Relax)].second = 4;
-
-        ret[size_t(Ribbon::Snooze)].first  = 0x35;
-        ret[size_t(Ribbon::Snooze)].second = 5;
-
-        ret[size_t(Ribbon::Smile)].first  = 0x35;
-        ret[size_t(Ribbon::Smile)].second = 6;
-
-        ret[size_t(Ribbon::Gorgeous)].first  = 0x35;
-        ret[size_t(Ribbon::Gorgeous)].second = 7;
-
-        ret[size_t(Ribbon::Royal)].first  = 0x36;
-        ret[size_t(Ribbon::Royal)].second = 0;
-
-        ret[size_t(Ribbon::GorgeousRoyal)].first  = 0x36;
-        ret[size_t(Ribbon::GorgeousRoyal)].second = 1;
-
-        ret[size_t(Ribbon::Artist)].first  = 0x36;
-        ret[size_t(Ribbon::Artist)].second = 2;
-
-        ret[size_t(Ribbon::Footprint)].first  = 0x36;
-        ret[size_t(Ribbon::Footprint)].second = 3;
-
-        ret[size_t(Ribbon::Record)].first  = 0x36;
-        ret[size_t(Ribbon::Record)].second = 4;
-
-        ret[size_t(Ribbon::Legend)].first  = 0x36;
-        ret[size_t(Ribbon::Legend)].second = 5;
-
-        ret[size_t(Ribbon::Country)].first  = 0x36;
-        ret[size_t(Ribbon::Country)].second = 6;
-
-        ret[size_t(Ribbon::National)].first  = 0x36;
-        ret[size_t(Ribbon::National)].second = 7;
-
-        ret[size_t(Ribbon::Earth)].first  = 0x37;
-        ret[size_t(Ribbon::Earth)].second = 0;
-
-        ret[size_t(Ribbon::World)].first  = 0x37;
-        ret[size_t(Ribbon::World)].second = 1;
-
-        ret[size_t(Ribbon::Classic)].first  = 0x37;
-        ret[size_t(Ribbon::Classic)].second = 2;
-
-        ret[size_t(Ribbon::Premier)].first  = 0x37;
-        ret[size_t(Ribbon::Premier)].second = 3;
-
-        ret[size_t(Ribbon::Event)].first  = 0x37;
-        ret[size_t(Ribbon::Event)].second = 4;
-
-        ret[size_t(Ribbon::Birthday)].first  = 0x37;
-        ret[size_t(Ribbon::Birthday)].second = 5;
-
-        ret[size_t(Ribbon::Special)].first  = 0x37;
-        ret[size_t(Ribbon::Special)].second = 6;
-
-        ret[size_t(Ribbon::Souvenir)].first  = 0x37;
-        ret[size_t(Ribbon::Souvenir)].second = 7;
-
-        ret[size_t(Ribbon::Wishing)].first  = 0x38;
-        ret[size_t(Ribbon::Wishing)].second = 0;
-
-        ret[size_t(Ribbon::ChampionBattle)].first  = 0x38;
-        ret[size_t(Ribbon::ChampionBattle)].second = 1;
-
-        ret[size_t(Ribbon::ChampionRegional)].first  = 0x38;
-        ret[size_t(Ribbon::ChampionRegional)].second = 2;
-
-        ret[size_t(Ribbon::ChampionNational)].first  = 0x38;
-        ret[size_t(Ribbon::ChampionNational)].second = 3;
-
-        ret[size_t(Ribbon::ChampionWorld)].first  = 0x38;
-        ret[size_t(Ribbon::ChampionWorld)].second = 4;
-
-        ret[size_t(Ribbon::MemoryContest)].first  = 0x38;
-        ret[size_t(Ribbon::MemoryContest)].second = 5;
-
-        ret[size_t(Ribbon::MemoryBattle)].first  = 0x38;
-        ret[size_t(Ribbon::MemoryBattle)].second = 6;
-
-        ret[size_t(Ribbon::ChampionG6Hoenn)].first  = 0x38;
-        ret[size_t(Ribbon::ChampionG6Hoenn)].second = 7;
-
-        ret[size_t(Ribbon::ContestStar)].first  = 0x39;
-        ret[size_t(Ribbon::ContestStar)].second = 0;
-
-        ret[size_t(Ribbon::MasterCoolness)].first  = 0x39;
-        ret[size_t(Ribbon::MasterCoolness)].second = 1;
-
-        ret[size_t(Ribbon::MasterBeauty)].first  = 0x39;
-        ret[size_t(Ribbon::MasterBeauty)].second = 2;
-
-        ret[size_t(Ribbon::MasterCuteness)].first  = 0x39;
-        ret[size_t(Ribbon::MasterCuteness)].second = 3;
-
-        ret[size_t(Ribbon::MasterCleverness)].first  = 0x39;
-        ret[size_t(Ribbon::MasterCleverness)].second = 4;
-
-        ret[size_t(Ribbon::MasterToughness)].first  = 0x39;
-        ret[size_t(Ribbon::MasterToughness)].second = 5;
-
-        ret[size_t(Ribbon::ChampionAlola)].first  = 0x39;
-        ret[size_t(Ribbon::ChampionAlola)].second = 6;
-
-        ret[size_t(Ribbon::BattleRoyale)].first  = 0x39;
-        ret[size_t(Ribbon::BattleRoyale)].second = 7;
-
-        ret[size_t(Ribbon::BattleTreeGreat)].first  = 0x3A;
-        ret[size_t(Ribbon::BattleTreeGreat)].second = 0;
-
-        ret[size_t(Ribbon::BattleTreeMaster)].first  = 0x3A;
-        ret[size_t(Ribbon::BattleTreeMaster)].second = 1;
-
-        ret[size_t(Ribbon::ChampionGalar)].first  = 0x3A;
-        ret[size_t(Ribbon::ChampionGalar)].second = 2;
-
-        ret[size_t(Ribbon::TowerMaster)].first  = 0x3A;
-        ret[size_t(Ribbon::TowerMaster)].second = 3;
-
-        ret[size_t(Ribbon::MasterRank)].first  = 0x3A;
-        ret[size_t(Ribbon::MasterRank)].second = 4;
-
-        ret[size_t(Ribbon::MarkLunchtime)].first  = 0x3A;
-        ret[size_t(Ribbon::MarkLunchtime)].second = 5;
-
-        ret[size_t(Ribbon::MarkSleepyTime)].first  = 0x3A;
-        ret[size_t(Ribbon::MarkSleepyTime)].second = 6;
-
-        ret[size_t(Ribbon::MarkDusk)].first  = 0x3A;
-        ret[size_t(Ribbon::MarkDusk)].second = 7;
-
-        ret[size_t(Ribbon::MarkDawn)].first  = 0x3B;
-        ret[size_t(Ribbon::MarkDawn)].second = 0;
-
-        ret[size_t(Ribbon::MarkCloudy)].first  = 0x3B;
-        ret[size_t(Ribbon::MarkCloudy)].second = 1;
-
-        ret[size_t(Ribbon::MarkRainy)].first  = 0x3B;
-        ret[size_t(Ribbon::MarkRainy)].second = 2;
-
-        ret[size_t(Ribbon::MarkStormy)].first  = 0x3B;
-        ret[size_t(Ribbon::MarkStormy)].second = 3;
-
-        ret[size_t(Ribbon::MarkSnowy)].first  = 0x3B;
-        ret[size_t(Ribbon::MarkSnowy)].second = 4;
-
-        ret[size_t(Ribbon::MarkBlizzard)].first  = 0x3B;
-        ret[size_t(Ribbon::MarkBlizzard)].second = 5;
-
-        ret[size_t(Ribbon::MarkDry)].first  = 0x3B;
-        ret[size_t(Ribbon::MarkDry)].second = 6;
-
-        ret[size_t(Ribbon::MarkSandstorm)].first  = 0x3B;
-        ret[size_t(Ribbon::MarkSandstorm)].second = 7;
-
-        ret[size_t(Ribbon::MarkMisty)].first  = 0x40;
-        ret[size_t(Ribbon::MarkMisty)].second = 0;
-
-        ret[size_t(Ribbon::MarkDestiny)].first  = 0x40;
-        ret[size_t(Ribbon::MarkDestiny)].second = 1;
-
-        ret[size_t(Ribbon::MarkFishing)].first  = 0x40;
-        ret[size_t(Ribbon::MarkFishing)].second = 2;
-
-        ret[size_t(Ribbon::MarkCurry)].first  = 0x40;
-        ret[size_t(Ribbon::MarkCurry)].second = 3;
-
-        ret[size_t(Ribbon::MarkUncommon)].first  = 0x40;
-        ret[size_t(Ribbon::MarkUncommon)].second = 4;
-
-        ret[size_t(Ribbon::MarkRare)].first  = 0x40;
-        ret[size_t(Ribbon::MarkRare)].second = 5;
-
-        ret[size_t(Ribbon::MarkRowdy)].first  = 0x40;
-        ret[size_t(Ribbon::MarkRowdy)].second = 6;
-
-        ret[size_t(Ribbon::MarkAbsentMinded)].first  = 0x40;
-        ret[size_t(Ribbon::MarkAbsentMinded)].second = 7;
-
-        ret[size_t(Ribbon::MarkJittery)].first  = 0x41;
-        ret[size_t(Ribbon::MarkJittery)].second = 0;
-
-        ret[size_t(Ribbon::MarkExcited)].first  = 0x41;
-        ret[size_t(Ribbon::MarkExcited)].second = 1;
-
-        ret[size_t(Ribbon::MarkCharismatic)].first  = 0x41;
-        ret[size_t(Ribbon::MarkCharismatic)].second = 2;
-
-        ret[size_t(Ribbon::MarkCalmness)].first  = 0x41;
-        ret[size_t(Ribbon::MarkCalmness)].second = 3;
-
-        ret[size_t(Ribbon::MarkIntense)].first  = 0x41;
-        ret[size_t(Ribbon::MarkIntense)].second = 4;
-
-        ret[size_t(Ribbon::MarkZonedOut)].first  = 0x41;
-        ret[size_t(Ribbon::MarkZonedOut)].second = 5;
-
-        ret[size_t(Ribbon::MarkJoyful)].first  = 0x41;
-        ret[size_t(Ribbon::MarkJoyful)].second = 6;
-
-        ret[size_t(Ribbon::MarkAngry)].first  = 0x41;
-        ret[size_t(Ribbon::MarkAngry)].second = 7;
-
-        ret[size_t(Ribbon::MarkSmiley)].first  = 0x42;
-        ret[size_t(Ribbon::MarkSmiley)].second = 0;
-
-        ret[size_t(Ribbon::MarkTeary)].first  = 0x42;
-        ret[size_t(Ribbon::MarkTeary)].second = 1;
-
-        ret[size_t(Ribbon::MarkUpbeat)].first  = 0x42;
-        ret[size_t(Ribbon::MarkUpbeat)].second = 2;
-
-        ret[size_t(Ribbon::MarkPeeved)].first  = 0x42;
-        ret[size_t(Ribbon::MarkPeeved)].second = 3;
-
-        ret[size_t(Ribbon::MarkIntellectual)].first  = 0x42;
-        ret[size_t(Ribbon::MarkIntellectual)].second = 4;
-
-        ret[size_t(Ribbon::MarkFerocious)].first  = 0x42;
-        ret[size_t(Ribbon::MarkFerocious)].second = 5;
-
-        ret[size_t(Ribbon::MarkCrafty)].first  = 0x42;
-        ret[size_t(Ribbon::MarkCrafty)].second = 6;
-
-        ret[size_t(Ribbon::MarkScowling)].first  = 0x42;
-        ret[size_t(Ribbon::MarkScowling)].second = 7;
-
-        ret[size_t(Ribbon::MarkKindly)].first  = 0x43;
-        ret[size_t(Ribbon::MarkKindly)].second = 0;
-
-        ret[size_t(Ribbon::MarkFlustered)].first  = 0x43;
-        ret[size_t(Ribbon::MarkFlustered)].second = 1;
-
-        ret[size_t(Ribbon::MarkPumpedUp)].first  = 0x43;
-        ret[size_t(Ribbon::MarkPumpedUp)].second = 2;
-
-        ret[size_t(Ribbon::MarkZeroEnergy)].first  = 0x43;
-        ret[size_t(Ribbon::MarkZeroEnergy)].second = 3;
-
-        ret[size_t(Ribbon::MarkPrideful)].first  = 0x43;
-        ret[size_t(Ribbon::MarkPrideful)].second = 4;
-
-        ret[size_t(Ribbon::MarkUnsure)].first  = 0x43;
-        ret[size_t(Ribbon::MarkUnsure)].second = 5;
-
-        ret[size_t(Ribbon::MarkHumble)].first  = 0x43;
-        ret[size_t(Ribbon::MarkHumble)].second = 6;
-
-        ret[size_t(Ribbon::MarkThorny)].first  = 0x43;
-        ret[size_t(Ribbon::MarkThorny)].second = 7;
-
-        ret[size_t(Ribbon::MarkVigor)].first  = 0x44;
-        ret[size_t(Ribbon::MarkVigor)].second = 0;
-
-        ret[size_t(Ribbon::MarkSlump)].first  = 0x44;
-        ret[size_t(Ribbon::MarkSlump)].second = 1;
-
-        return ret;
     }
 }
 
@@ -639,24 +541,23 @@ void PK8::pkrsStrain(u8 v)
 
 bool PK8::hasRibbon(Ribbon ribbon) const
 {
-    constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
-    return offsets[size_t(ribbon)].first != 0xFFFFFFFF;
+    return OFFSET_OF(ribbon).first != RIBBON_ABSENT;
 }
 bool PK8::ribbon(Ribbon ribbon) const
 {
-    if (hasRibbon(ribbon))
+    auto offset = OFFSET_OF(ribbon);
+    if (offset.first != RIBBON_ABSENT)
     {
-        constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
-        return FlagUtil::getFlag(data, offsets[size_t(ribbon)].first, offsets[size_t(ribbon)].second);
+        return FlagUtil::getFlag(data, offset.first, offset.second);
     }
     return false;
 }
 void PK8::ribbon(Ribbon ribbon, bool v)
 {
-    if (hasRibbon(ribbon))
+    auto offset = OFFSET_OF(ribbon);
+    if (offset.first != RIBBON_ABSENT)
     {
-        constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
-        FlagUtil::setFlag(data, offsets[size_t(ribbon)].first, offsets[size_t(ribbon)].second, v);
+        FlagUtil::setFlag(data, offset.first, offset.second, v);
     }
 }
 

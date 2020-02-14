@@ -36,54 +36,42 @@
 #include "utils/utils.hpp"
 #include <algorithm>
 
+#define RIBBON_ABSENT 0xFFFFFFFF
+
 namespace
 {
-    constexpr std::array<std::pair<size_t, size_t>, numRibbons()> OFFSETS()
+    std::pair<size_t, size_t> OFFSET_OF(Ribbon rib)
     {
-        std::array<std::pair<size_t, size_t>, numRibbons()> ret{};
-
-        for (auto& pair : ret)
+        switch (rib)
         {
-            pair.first = 0xFFFFFFFF;
+            case Ribbon::ChampionG3Hoenn:
+                return {0x4D, 7};
+            case Ribbon::Winning:
+                return {0x4E, 0};
+            case Ribbon::Victory:
+                return {0x4E, 1};
+            case Ribbon::Artist:
+                return {0x4E, 2};
+            case Ribbon::Effort:
+                return {0x4E, 3};
+            case Ribbon::ChampionBattle:
+                return {0x4E, 4};
+            case Ribbon::ChampionRegional:
+                return {0x4E, 5};
+            case Ribbon::ChampionNational:
+                return {0x4E, 6};
+            case Ribbon::Country:
+                return {0x4E, 7};
+            case Ribbon::National:
+                return {0x4F, 0};
+            case Ribbon::Earth:
+                return {0x4F, 1};
+            case Ribbon::World:
+                return {0x4F, 2};
+
+            default:
+                return {RIBBON_ABSENT, 0};
         }
-
-        ret[size_t(Ribbon::ChampionG3Hoenn)].first  = 0x4D;
-        ret[size_t(Ribbon::ChampionG3Hoenn)].second = 7;
-
-        ret[size_t(Ribbon::Winning)].first  = 0x4E;
-        ret[size_t(Ribbon::Winning)].second = 0;
-
-        ret[size_t(Ribbon::Victory)].first  = 0x4E;
-        ret[size_t(Ribbon::Victory)].second = 1;
-
-        ret[size_t(Ribbon::Artist)].first  = 0x4E;
-        ret[size_t(Ribbon::Artist)].second = 2;
-
-        ret[size_t(Ribbon::Effort)].first  = 0x4E;
-        ret[size_t(Ribbon::Effort)].second = 3;
-
-        ret[size_t(Ribbon::ChampionBattle)].first  = 0x4E;
-        ret[size_t(Ribbon::ChampionBattle)].second = 4;
-
-        ret[size_t(Ribbon::ChampionRegional)].first  = 0x4E;
-        ret[size_t(Ribbon::ChampionRegional)].second = 5;
-
-        ret[size_t(Ribbon::ChampionNational)].first  = 0x4E;
-        ret[size_t(Ribbon::ChampionNational)].second = 6;
-
-        ret[size_t(Ribbon::Country)].first  = 0x4E;
-        ret[size_t(Ribbon::Country)].second = 7;
-
-        ret[size_t(Ribbon::National)].first  = 0x4F;
-        ret[size_t(Ribbon::National)].second = 0;
-
-        ret[size_t(Ribbon::Earth)].first  = 0x4F;
-        ret[size_t(Ribbon::Earth)].second = 1;
-
-        ret[size_t(Ribbon::World)].first  = 0x4F;
-        ret[size_t(Ribbon::World)].second = 2;
-
-        return ret;
     }
 }
 
@@ -536,24 +524,23 @@ void PK3::abilityBit(bool v)
 
 bool PK3::hasRibbon(Ribbon ribbon) const
 {
-    constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
-    return offsets[size_t(ribbon)].first != 0xFFFFFFFF;
+    return OFFSET_OF(ribbon).first != RIBBON_ABSENT;
 }
 bool PK3::ribbon(Ribbon ribbon) const
 {
-    if (hasRibbon(ribbon))
+    auto offset = OFFSET_OF(ribbon);
+    if (offset.first != RIBBON_ABSENT)
     {
-        constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
-        return FlagUtil::getFlag(data, offsets[size_t(ribbon)].first, offsets[size_t(ribbon)].second);
+        return FlagUtil::getFlag(data, offset.first, offset.second);
     }
     return false;
 }
 void PK3::ribbon(Ribbon ribbon, bool v)
 {
-    if (hasRibbon(ribbon))
+    auto offset = OFFSET_OF(ribbon);
+    if (offset.first != RIBBON_ABSENT)
     {
-        constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
-        FlagUtil::setFlag(data, offsets[size_t(ribbon)].first, offsets[size_t(ribbon)].second, v);
+        FlagUtil::setFlag(data, offset.first, offset.second, v);
     }
 }
 u8 PK3::contestRibbonCount(u8 contest) const

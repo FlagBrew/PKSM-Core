@@ -34,156 +34,110 @@
 #include "utils/random.hpp"
 #include "utils/utils.hpp"
 
+#define RIBBON_ABSENT 0xFFFFFFFF
+
 namespace
 {
-    constexpr std::array<std::pair<size_t, size_t>, numRibbons()> OFFSETS()
+    std::pair<size_t, size_t> OFFSET_OF(Ribbon rib)
     {
-        std::array<std::pair<size_t, size_t>, numRibbons()> ret{};
-
-        for (auto& pair : ret)
+        switch (rib)
         {
-            pair.first = 0xFFFFFFFF;
+            case Ribbon::ChampionKalos:
+                return {0x30, 0};
+            case Ribbon::ChampionG3Hoenn:
+                return {0x30, 1};
+            case Ribbon::ChampionSinnoh:
+                return {0x30, 2};
+            case Ribbon::BestFriends:
+                return {0x30, 3};
+            case Ribbon::Training:
+                return {0x30, 4};
+            case Ribbon::BattlerSkillful:
+                return {0x30, 5};
+            case Ribbon::BattlerExpert:
+                return {0x30, 6};
+            case Ribbon::Effort:
+                return {0x30, 7};
+            case Ribbon::Alert:
+                return {0x31, 0};
+            case Ribbon::Shock:
+                return {0x31, 1};
+            case Ribbon::Downcast:
+                return {0x31, 2};
+            case Ribbon::Careless:
+                return {0x31, 3};
+            case Ribbon::Relax:
+                return {0x31, 4};
+            case Ribbon::Snooze:
+                return {0x31, 5};
+            case Ribbon::Smile:
+                return {0x31, 6};
+            case Ribbon::Gorgeous:
+                return {0x31, 7};
+            case Ribbon::Royal:
+                return {0x32, 0};
+            case Ribbon::GorgeousRoyal:
+                return {0x32, 1};
+            case Ribbon::Artist:
+                return {0x32, 2};
+            case Ribbon::Footprint:
+                return {0x32, 3};
+            case Ribbon::Record:
+                return {0x32, 4};
+            case Ribbon::Legend:
+                return {0x32, 5};
+            case Ribbon::Country:
+                return {0x32, 6};
+            case Ribbon::National:
+                return {0x32, 7};
+            case Ribbon::Earth:
+                return {0x33, 0};
+            case Ribbon::World:
+                return {0x33, 1};
+            case Ribbon::Classic:
+                return {0x33, 2};
+            case Ribbon::Premier:
+                return {0x33, 3};
+            case Ribbon::Event:
+                return {0x33, 4};
+            case Ribbon::Birthday:
+                return {0x33, 5};
+            case Ribbon::Special:
+                return {0x33, 6};
+            case Ribbon::Souvenir:
+                return {0x33, 7};
+            case Ribbon::Wishing:
+                return {0x34, 0};
+            case Ribbon::ChampionBattle:
+                return {0x34, 1};
+            case Ribbon::ChampionRegional:
+                return {0x34, 2};
+            case Ribbon::ChampionNational:
+                return {0x34, 3};
+            case Ribbon::ChampionWorld:
+                return {0x34, 4};
+            case Ribbon::MemoryContest:
+                return {0x34, 5};
+            case Ribbon::MemoryBattle:
+                return {0x34, 6};
+            case Ribbon::ChampionG6Hoenn:
+                return {0x34, 7};
+            case Ribbon::ContestStar:
+                return {0x35, 0};
+            case Ribbon::MasterCoolness:
+                return {0x35, 1};
+            case Ribbon::MasterBeauty:
+                return {0x35, 2};
+            case Ribbon::MasterCuteness:
+                return {0x35, 3};
+            case Ribbon::MasterCleverness:
+                return {0x35, 4};
+            case Ribbon::MasterToughness:
+                return {0x35, 5};
+
+            default:
+                return {RIBBON_ABSENT, 0};
         }
-
-        ret[size_t(Ribbon::ChampionKalos)].first  = 0x30;
-        ret[size_t(Ribbon::ChampionKalos)].second = 0;
-
-        ret[size_t(Ribbon::ChampionG3Hoenn)].first  = 0x30;
-        ret[size_t(Ribbon::ChampionG3Hoenn)].second = 1;
-
-        ret[size_t(Ribbon::ChampionSinnoh)].first  = 0x30;
-        ret[size_t(Ribbon::ChampionSinnoh)].second = 2;
-
-        ret[size_t(Ribbon::BestFriends)].first  = 0x30;
-        ret[size_t(Ribbon::BestFriends)].second = 3;
-
-        ret[size_t(Ribbon::Training)].first  = 0x30;
-        ret[size_t(Ribbon::Training)].second = 4;
-
-        ret[size_t(Ribbon::BattlerSkillful)].first  = 0x30;
-        ret[size_t(Ribbon::BattlerSkillful)].second = 5;
-
-        ret[size_t(Ribbon::BattlerExpert)].first  = 0x30;
-        ret[size_t(Ribbon::BattlerExpert)].second = 6;
-
-        ret[size_t(Ribbon::Effort)].first  = 0x30;
-        ret[size_t(Ribbon::Effort)].second = 7;
-
-        ret[size_t(Ribbon::Alert)].first  = 0x31;
-        ret[size_t(Ribbon::Alert)].second = 0;
-
-        ret[size_t(Ribbon::Shock)].first  = 0x31;
-        ret[size_t(Ribbon::Shock)].second = 1;
-
-        ret[size_t(Ribbon::Downcast)].first  = 0x31;
-        ret[size_t(Ribbon::Downcast)].second = 2;
-
-        ret[size_t(Ribbon::Careless)].first  = 0x31;
-        ret[size_t(Ribbon::Careless)].second = 3;
-
-        ret[size_t(Ribbon::Relax)].first  = 0x31;
-        ret[size_t(Ribbon::Relax)].second = 4;
-
-        ret[size_t(Ribbon::Snooze)].first  = 0x31;
-        ret[size_t(Ribbon::Snooze)].second = 5;
-
-        ret[size_t(Ribbon::Smile)].first  = 0x31;
-        ret[size_t(Ribbon::Smile)].second = 6;
-
-        ret[size_t(Ribbon::Gorgeous)].first  = 0x31;
-        ret[size_t(Ribbon::Gorgeous)].second = 7;
-
-        ret[size_t(Ribbon::Royal)].first  = 0x32;
-        ret[size_t(Ribbon::Royal)].second = 0;
-
-        ret[size_t(Ribbon::GorgeousRoyal)].first  = 0x32;
-        ret[size_t(Ribbon::GorgeousRoyal)].second = 1;
-
-        ret[size_t(Ribbon::Artist)].first  = 0x32;
-        ret[size_t(Ribbon::Artist)].second = 2;
-
-        ret[size_t(Ribbon::Footprint)].first  = 0x32;
-        ret[size_t(Ribbon::Footprint)].second = 3;
-
-        ret[size_t(Ribbon::Record)].first  = 0x32;
-        ret[size_t(Ribbon::Record)].second = 4;
-
-        ret[size_t(Ribbon::Legend)].first  = 0x32;
-        ret[size_t(Ribbon::Legend)].second = 5;
-
-        ret[size_t(Ribbon::Country)].first  = 0x32;
-        ret[size_t(Ribbon::Country)].second = 6;
-
-        ret[size_t(Ribbon::National)].first  = 0x32;
-        ret[size_t(Ribbon::National)].second = 7;
-
-        ret[size_t(Ribbon::Earth)].first  = 0x33;
-        ret[size_t(Ribbon::Earth)].second = 0;
-
-        ret[size_t(Ribbon::World)].first  = 0x33;
-        ret[size_t(Ribbon::World)].second = 1;
-
-        ret[size_t(Ribbon::Classic)].first  = 0x33;
-        ret[size_t(Ribbon::Classic)].second = 2;
-
-        ret[size_t(Ribbon::Premier)].first  = 0x33;
-        ret[size_t(Ribbon::Premier)].second = 3;
-
-        ret[size_t(Ribbon::Event)].first  = 0x33;
-        ret[size_t(Ribbon::Event)].second = 4;
-
-        ret[size_t(Ribbon::Birthday)].first  = 0x33;
-        ret[size_t(Ribbon::Birthday)].second = 5;
-
-        ret[size_t(Ribbon::Special)].first  = 0x33;
-        ret[size_t(Ribbon::Special)].second = 6;
-
-        ret[size_t(Ribbon::Souvenir)].first  = 0x33;
-        ret[size_t(Ribbon::Souvenir)].second = 7;
-
-        ret[size_t(Ribbon::Wishing)].first  = 0x34;
-        ret[size_t(Ribbon::Wishing)].second = 0;
-
-        ret[size_t(Ribbon::ChampionBattle)].first  = 0x34;
-        ret[size_t(Ribbon::ChampionBattle)].second = 1;
-
-        ret[size_t(Ribbon::ChampionRegional)].first  = 0x34;
-        ret[size_t(Ribbon::ChampionRegional)].second = 2;
-
-        ret[size_t(Ribbon::ChampionNational)].first  = 0x34;
-        ret[size_t(Ribbon::ChampionNational)].second = 3;
-
-        ret[size_t(Ribbon::ChampionWorld)].first  = 0x34;
-        ret[size_t(Ribbon::ChampionWorld)].second = 4;
-
-        ret[size_t(Ribbon::MemoryContest)].first  = 0x34;
-        ret[size_t(Ribbon::MemoryContest)].second = 5;
-
-        ret[size_t(Ribbon::MemoryBattle)].first  = 0x34;
-        ret[size_t(Ribbon::MemoryBattle)].second = 6;
-
-        ret[size_t(Ribbon::ChampionG6Hoenn)].first  = 0x34;
-        ret[size_t(Ribbon::ChampionG6Hoenn)].second = 7;
-
-        ret[size_t(Ribbon::ContestStar)].first  = 0x35;
-        ret[size_t(Ribbon::ContestStar)].second = 0;
-
-        ret[size_t(Ribbon::MasterCoolness)].first  = 0x35;
-        ret[size_t(Ribbon::MasterCoolness)].second = 1;
-
-        ret[size_t(Ribbon::MasterBeauty)].first  = 0x35;
-        ret[size_t(Ribbon::MasterBeauty)].second = 2;
-
-        ret[size_t(Ribbon::MasterCuteness)].first  = 0x35;
-        ret[size_t(Ribbon::MasterCuteness)].second = 3;
-
-        ret[size_t(Ribbon::MasterCleverness)].first  = 0x35;
-        ret[size_t(Ribbon::MasterCleverness)].second = 4;
-
-        ret[size_t(Ribbon::MasterToughness)].first  = 0x35;
-        ret[size_t(Ribbon::MasterToughness)].second = 5;
-
-        return ret;
     }
 }
 
@@ -479,24 +433,23 @@ void PK6::pkrsStrain(u8 v)
 
 bool PK6::hasRibbon(Ribbon ribbon) const
 {
-    constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
-    return offsets[size_t(ribbon)].first != 0xFFFFFFFF;
+    return OFFSET_OF(ribbon).first != RIBBON_ABSENT;
 }
 bool PK6::ribbon(Ribbon ribbon) const
 {
-    if (hasRibbon(ribbon))
+    auto offset = OFFSET_OF(ribbon);
+    if (offset.first != RIBBON_ABSENT)
     {
-        constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
-        return FlagUtil::getFlag(data, offsets[size_t(ribbon)].first, offsets[size_t(ribbon)].second);
+        return FlagUtil::getFlag(data, offset.first, offset.second);
     }
     return false;
 }
 void PK6::ribbon(Ribbon ribbon, bool v)
 {
-    if (hasRibbon(ribbon))
+    auto offset = OFFSET_OF(ribbon);
+    if (offset.first != RIBBON_ABSENT)
     {
-        constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
-        FlagUtil::setFlag(data, offsets[size_t(ribbon)].first, offsets[size_t(ribbon)].second, v);
+        FlagUtil::setFlag(data, offset.first, offset.second, v);
     }
 }
 

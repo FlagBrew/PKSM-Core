@@ -35,162 +35,178 @@
 #include "utils/utils.hpp"
 #include <algorithm>
 
+#define RIBBON_ABSENT 0xFFFFFFFF
+
 namespace
 {
-    constexpr std::array<std::pair<size_t, size_t>, numRibbons()> OFFSETS()
+    std::pair<size_t, size_t> OFFSET_OF(Ribbon rib)
     {
-        std::array<std::pair<size_t, size_t>, numRibbons()> ret{};
-
-        for (auto& pair : ret)
+        switch (rib)
         {
-            pair.first = 0xFFFFFFFF;
+            case Ribbon::ChampionSinnoh:
+                return {0x24, 0};
+            case Ribbon::Ability:
+                return {0x24, 1};
+            case Ribbon::AbilityGreat:
+                return {0x24, 2};
+            case Ribbon::AbilityDouble:
+                return {0x24, 3};
+            case Ribbon::AbilityMulti:
+                return {0x24, 4};
+            case Ribbon::AbilityPair:
+                return {0x24, 5};
+            case Ribbon::AbilityWorld:
+                return {0x24, 6};
+            case Ribbon::Alert:
+                return {0x24, 7};
+            case Ribbon::Shock:
+                return {0x25, 0};
+            case Ribbon::Downcast:
+                return {0x25, 1};
+            case Ribbon::Careless:
+                return {0x25, 2};
+            case Ribbon::Relax:
+                return {0x25, 3};
+            case Ribbon::Snooze:
+                return {0x25, 4};
+            case Ribbon::Smile:
+                return {0x25, 5};
+            case Ribbon::Gorgeous:
+                return {0x25, 6};
+            case Ribbon::Royal:
+                return {0x25, 7};
+            case Ribbon::GorgeousRoyal:
+                return {0x26, 0};
+            case Ribbon::Footprint:
+                return {0x26, 1};
+            case Ribbon::Record:
+                return {0x26, 2};
+            case Ribbon::Event:
+                return {0x26, 3};
+            case Ribbon::Legend:
+                return {0x26, 4};
+            case Ribbon::ChampionWorld:
+                return {0x26, 5};
+            case Ribbon::Birthday:
+                return {0x26, 6};
+            case Ribbon::Special:
+                return {0x26, 7};
+            case Ribbon::Souvenir:
+                return {0x27, 0};
+            case Ribbon::Wishing:
+                return {0x27, 1};
+            case Ribbon::Classic:
+                return {0x27, 2};
+            case Ribbon::Premier:
+                return {0x27, 3};
+            case Ribbon::G3Cool:
+                return {0x3C, 0};
+            case Ribbon::G3CoolSuper:
+                return {0x3C, 1};
+            case Ribbon::G3CoolHyper:
+                return {0x3C, 2};
+            case Ribbon::G3CoolMaster:
+                return {0x3C, 3};
+            case Ribbon::G3Beauty:
+                return {0x3C, 4};
+            case Ribbon::G3BeautySuper:
+                return {0x3C, 5};
+            case Ribbon::G3BeautyHyper:
+                return {0x3C, 6};
+            case Ribbon::G3BeautyMaster:
+                return {0x3C, 7};
+            case Ribbon::G3Cute:
+                return {0x3D, 0};
+            case Ribbon::G3CuteSuper:
+                return {0x3D, 1};
+            case Ribbon::G3CuteHyper:
+                return {0x3D, 2};
+            case Ribbon::G3CuteMaster:
+                return {0x3D, 3};
+            case Ribbon::G3Smart:
+                return {0x3D, 4};
+            case Ribbon::G3SmartSuper:
+                return {0x3D, 5};
+            case Ribbon::G3SmartHyper:
+                return {0x3D, 6};
+            case Ribbon::G3SmartMaster:
+                return {0x3D, 7};
+            case Ribbon::G3Tough:
+                return {0x3E, 0};
+            case Ribbon::G3ToughSuper:
+                return {0x3E, 1};
+            case Ribbon::G3ToughHyper:
+                return {0x3E, 2};
+            case Ribbon::G3ToughMaster:
+                return {0x3E, 3};
+            case Ribbon::ChampionG3Hoenn:
+                return {0x3E, 4};
+            case Ribbon::Winning:
+                return {0x3E, 5};
+            case Ribbon::Victory:
+                return {0x3E, 6};
+            case Ribbon::Artist:
+                return {0x3E, 7};
+            case Ribbon::Effort:
+                return {0x3F, 0};
+            case Ribbon::ChampionBattle:
+                return {0x3F, 1};
+            case Ribbon::ChampionRegional:
+                return {0x3F, 2};
+            case Ribbon::ChampionNational:
+                return {0x3F, 3};
+            case Ribbon::Country:
+                return {0x3F, 4};
+            case Ribbon::National:
+                return {0x3F, 5};
+            case Ribbon::Earth:
+                return {0x3F, 6};
+            case Ribbon::World:
+                return {0x3F, 7};
+            case Ribbon::G4Cool:
+                return {0x60, 0};
+            case Ribbon::G4CoolGreat:
+                return {0x60, 1};
+            case Ribbon::G4CoolUltra:
+                return {0x60, 2};
+            case Ribbon::G4CoolMaster:
+                return {0x60, 3};
+            case Ribbon::G4Beauty:
+                return {0x60, 4};
+            case Ribbon::G4BeautyGreat:
+                return {0x60, 5};
+            case Ribbon::G4BeautyUltra:
+                return {0x60, 6};
+            case Ribbon::G4BeautyMaster:
+                return {0x60, 7};
+            case Ribbon::G4Cute:
+                return {0x61, 0};
+            case Ribbon::G4CuteGreat:
+                return {0x61, 1};
+            case Ribbon::G4CuteUltra:
+                return {0x61, 2};
+            case Ribbon::G4CuteMaster:
+                return {0x61, 3};
+            case Ribbon::G4Smart:
+                return {0x61, 4};
+            case Ribbon::G4SmartGreat:
+                return {0x61, 5};
+            case Ribbon::G4SmartUltra:
+                return {0x61, 6};
+            case Ribbon::G4SmartMaster:
+                return {0x61, 7};
+            case Ribbon::G4Tough:
+                return {0x62, 0};
+            case Ribbon::G4ToughGreat:
+                return {0x62, 1};
+            case Ribbon::G4ToughUltra:
+                return {0x62, 2};
+            case Ribbon::G4ToughMaster:
+                return {0x62, 3};
+
+            default:
+                return {RIBBON_ABSENT, 0};
         }
-
-        ret[size_t(Ribbon::ChampionSinnoh)].first  = 0x24;
-        ret[size_t(Ribbon::ChampionSinnoh)].second = 0;
-
-        ret[size_t(Ribbon::Ability)].first  = 0x24;
-        ret[size_t(Ribbon::Ability)].second = 1;
-
-        ret[size_t(Ribbon::AbilityGreat)].first  = 0x24;
-        ret[size_t(Ribbon::AbilityGreat)].second = 2;
-
-        ret[size_t(Ribbon::AbilityDouble)].first  = 0x24;
-        ret[size_t(Ribbon::AbilityDouble)].second = 3;
-
-        ret[size_t(Ribbon::AbilityMulti)].first  = 0x24;
-        ret[size_t(Ribbon::AbilityMulti)].second = 4;
-
-        ret[size_t(Ribbon::AbilityPair)].first  = 0x24;
-        ret[size_t(Ribbon::AbilityPair)].second = 5;
-
-        ret[size_t(Ribbon::AbilityWorld)].first  = 0x24;
-        ret[size_t(Ribbon::AbilityWorld)].second = 6;
-
-        ret[size_t(Ribbon::Alert)].first  = 0x24;
-        ret[size_t(Ribbon::Alert)].second = 7;
-
-        ret[size_t(Ribbon::Shock)].first  = 0x25;
-        ret[size_t(Ribbon::Shock)].second = 0;
-
-        ret[size_t(Ribbon::Downcast)].first  = 0x25;
-        ret[size_t(Ribbon::Downcast)].second = 1;
-
-        ret[size_t(Ribbon::Careless)].first  = 0x25;
-        ret[size_t(Ribbon::Careless)].second = 2;
-
-        ret[size_t(Ribbon::Relax)].first  = 0x25;
-        ret[size_t(Ribbon::Relax)].second = 3;
-
-        ret[size_t(Ribbon::Snooze)].first  = 0x25;
-        ret[size_t(Ribbon::Snooze)].second = 4;
-
-        ret[size_t(Ribbon::Smile)].first  = 0x25;
-        ret[size_t(Ribbon::Smile)].second = 5;
-
-        ret[size_t(Ribbon::Gorgeous)].first  = 0x25;
-        ret[size_t(Ribbon::Gorgeous)].second = 6;
-
-        ret[size_t(Ribbon::Royal)].first  = 0x25;
-        ret[size_t(Ribbon::Royal)].second = 7;
-
-        ret[size_t(Ribbon::GorgeousRoyal)].first  = 0x26;
-        ret[size_t(Ribbon::GorgeousRoyal)].second = 0;
-
-        ret[size_t(Ribbon::Footprint)].first  = 0x26;
-        ret[size_t(Ribbon::Footprint)].second = 1;
-
-        ret[size_t(Ribbon::Record)].first  = 0x26;
-        ret[size_t(Ribbon::Record)].second = 2;
-
-        ret[size_t(Ribbon::Event)].first  = 0x26;
-        ret[size_t(Ribbon::Event)].second = 3;
-
-        ret[size_t(Ribbon::Legend)].first  = 0x26;
-        ret[size_t(Ribbon::Legend)].second = 4;
-
-        ret[size_t(Ribbon::ChampionWorld)].first  = 0x26;
-        ret[size_t(Ribbon::ChampionWorld)].second = 5;
-
-        ret[size_t(Ribbon::Birthday)].first  = 0x26;
-        ret[size_t(Ribbon::Birthday)].second = 6;
-
-        ret[size_t(Ribbon::Special)].first  = 0x26;
-        ret[size_t(Ribbon::Special)].second = 7;
-
-        ret[size_t(Ribbon::Souvenir)].first  = 0x27;
-        ret[size_t(Ribbon::Souvenir)].second = 0;
-
-        ret[size_t(Ribbon::Wishing)].first  = 0x27;
-        ret[size_t(Ribbon::Wishing)].second = 1;
-
-        ret[size_t(Ribbon::Classic)].first  = 0x27;
-        ret[size_t(Ribbon::Classic)].second = 2;
-
-        ret[size_t(Ribbon::Premier)].first  = 0x27;
-        ret[size_t(Ribbon::Premier)].second = 3;
-
-        ret[size_t(Ribbon::G4Cool)].first  = 0x60;
-        ret[size_t(Ribbon::G4Cool)].second = 0;
-
-        ret[size_t(Ribbon::G4CoolGreat)].first  = 0x60;
-        ret[size_t(Ribbon::G4CoolGreat)].second = 1;
-
-        ret[size_t(Ribbon::G4CoolUltra)].first  = 0x60;
-        ret[size_t(Ribbon::G4CoolUltra)].second = 2;
-
-        ret[size_t(Ribbon::G4CoolMaster)].first  = 0x60;
-        ret[size_t(Ribbon::G4CoolMaster)].second = 3;
-
-        ret[size_t(Ribbon::G4Beauty)].first  = 0x60;
-        ret[size_t(Ribbon::G4Beauty)].second = 4;
-
-        ret[size_t(Ribbon::G4BeautyGreat)].first  = 0x60;
-        ret[size_t(Ribbon::G4BeautyGreat)].second = 5;
-
-        ret[size_t(Ribbon::G4BeautyUltra)].first  = 0x60;
-        ret[size_t(Ribbon::G4BeautyUltra)].second = 6;
-
-        ret[size_t(Ribbon::G4BeautyMaster)].first  = 0x60;
-        ret[size_t(Ribbon::G4BeautyMaster)].second = 7;
-
-        ret[size_t(Ribbon::G4Cute)].first  = 0x61;
-        ret[size_t(Ribbon::G4Cute)].second = 0;
-
-        ret[size_t(Ribbon::G4CuteGreat)].first  = 0x61;
-        ret[size_t(Ribbon::G4CuteGreat)].second = 1;
-
-        ret[size_t(Ribbon::G4CuteUltra)].first  = 0x61;
-        ret[size_t(Ribbon::G4CuteUltra)].second = 2;
-
-        ret[size_t(Ribbon::G4CuteMaster)].first  = 0x61;
-        ret[size_t(Ribbon::G4CuteMaster)].second = 3;
-
-        ret[size_t(Ribbon::G4Smart)].first  = 0x61;
-        ret[size_t(Ribbon::G4Smart)].second = 4;
-
-        ret[size_t(Ribbon::G4SmartGreat)].first  = 0x61;
-        ret[size_t(Ribbon::G4SmartGreat)].second = 5;
-
-        ret[size_t(Ribbon::G4SmartUltra)].first  = 0x61;
-        ret[size_t(Ribbon::G4SmartUltra)].second = 6;
-
-        ret[size_t(Ribbon::G4SmartMaster)].first  = 0x61;
-        ret[size_t(Ribbon::G4SmartMaster)].second = 7;
-
-        ret[size_t(Ribbon::G4Tough)].first  = 0x62;
-        ret[size_t(Ribbon::G4Tough)].second = 0;
-
-        ret[size_t(Ribbon::G4ToughGreat)].first  = 0x62;
-        ret[size_t(Ribbon::G4ToughGreat)].second = 1;
-
-        ret[size_t(Ribbon::G4ToughUltra)].first  = 0x62;
-        ret[size_t(Ribbon::G4ToughUltra)].second = 2;
-
-        ret[size_t(Ribbon::G4ToughMaster)].first  = 0x62;
-        ret[size_t(Ribbon::G4ToughMaster)].second = 3;
-
-        return ret;
     }
 }
 
@@ -430,24 +446,23 @@ void PK4::contest(u8 contest, u8 v)
 
 bool PK4::hasRibbon(Ribbon ribbon) const
 {
-    constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
-    return offsets[size_t(ribbon)].first != 0xFFFFFFFF;
+    return OFFSET_OF(ribbon).first != RIBBON_ABSENT;
 }
 bool PK4::ribbon(Ribbon ribbon) const
 {
-    if (hasRibbon(ribbon))
+    auto offset = OFFSET_OF(ribbon);
+    if (offset.first != RIBBON_ABSENT)
     {
-        constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
-        return FlagUtil::getFlag(data, offsets[size_t(ribbon)].first, offsets[size_t(ribbon)].second);
+        return FlagUtil::getFlag(data, offset.first, offset.second);
     }
     return false;
 }
 void PK4::ribbon(Ribbon ribbon, bool v)
 {
-    if (hasRibbon(ribbon))
+    auto offset = OFFSET_OF(ribbon);
+    if (offset.first != RIBBON_ABSENT)
     {
-        constexpr std::array<std::pair<size_t, size_t>, numRibbons()> offsets = OFFSETS();
-        FlagUtil::setFlag(data, offsets[size_t(ribbon)].first, offsets[size_t(ribbon)].second, v);
+        FlagUtil::setFlag(data, offset.first, offset.second, v);
     }
 }
 
