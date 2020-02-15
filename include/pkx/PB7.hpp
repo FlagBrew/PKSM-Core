@@ -198,8 +198,8 @@ public:
     u8 otGender(void) const override;
     void otGender(u8 v) override;
 
-    bool hyperTrain(u8 num) const;
-    void hyperTrain(u8 num, bool v);
+    bool hyperTrain(Stat stat) const;
+    void hyperTrain(Stat stat, bool v);
 
     u8 version(void) const override;
     void version(u8 v) override;

@@ -25,6 +25,7 @@
  */
 
 #include "pkx/PB7.hpp"
+#include "pkx/PK8.hpp"
 #include "utils/endian.hpp"
 #include "utils/utils.hpp"
 
@@ -655,13 +656,13 @@ void PB7::otGender(u8 v)
     data[0xDD] = (data[0xDD] & ~0x80) | (v << 7);
 }
 
-bool PB7::hyperTrain(u8 num) const
+bool PB7::hyperTrain(Stat stat) const
 {
-    return (data[0xDE] & (1 << num)) == 1 << num;
+    return (data[0xDE] & (1 << hyperTrainLookup[size_t(stat)])) == 1 << hyperTrainLookup[size_t(stat)];
 }
-void PB7::hyperTrain(u8 num, bool v)
+void PB7::hyperTrain(Stat stat, bool v)
 {
-    data[0xDE] = (u8)((data[0xDE] & ~(1 << num)) | (v ? 1 << num : 0));
+    data[0xDE] = (u8)((data[0xDE] & ~(1 << hyperTrainLookup[size_t(stat)])) | (v ? 1 << hyperTrainLookup[size_t(stat)] : 0));
 }
 
 u8 PB7::version(void) const
@@ -1002,7 +1003,7 @@ void PB7::updatePartyData()
     partyCP(CP());
 }
 
-std::unique_ptr<PK8> PK7::convertToG8(Sav& save) const
+std::unique_ptr<PK8> PB7::convertToG8(Sav& save) const
 {
     auto pk8 = PKX::getPKM<Generation::EIGHT>(nullptr, false);
 
@@ -1053,9 +1054,6 @@ std::unique_ptr<PK8> PK7::convertToG8(Sav& save) const
 
     pk8->pkrsStrain(pkrsStrain());
     pk8->pkrsDays(pkrsDays());
-
-    pk8->ribbonContestCount(ribbonContestCount());
-    pk8->ribbonBattleCount(ribbonBattleCount());
 
     pk8->otFriendship(otFriendship());
     pk8->origNature(nature());
