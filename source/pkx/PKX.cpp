@@ -694,7 +694,6 @@ std::unique_ptr<PKX> PKX::partyClone() const
     if (isParty())
     {
         auto ret = clone();
-        ret->updatePartyData();
         return ret;
     }
     else
