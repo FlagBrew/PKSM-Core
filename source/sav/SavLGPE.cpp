@@ -859,147 +859,39 @@ void SavLGPE::mysteryGift(WCX& wc, int&)
         }
         else if (wb7->item())
         {
-            static constexpr int tms[] = {328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348,
-                349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375,
-                376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387};
+            auto valid  = validItems();
+            auto limits = pouches();
             for (int itemNum = 0; itemNum < wb7->items(); itemNum++)
             {
-                Pouch place                     = NormalItem;
-                int slot                        = -1;
-                static constexpr Pouch search[] = {NormalItem, TM, Medicine, Candy, ZCrystals, Ball, Battle};
-                static constexpr int limits[]   = {150, 108, 60, 200, 150, 50, 150};
-                for (int i = 0; i < 7; i++)
+                bool currentSet = false;
+                for (size_t pouch = 0; pouch < limits.size(); pouch++)
                 {
-                    for (int j = 0; j < limits[i]; j++)
+                    // Check this is the correct pouch
+                    if (!currentSet && std::binary_search(valid[limits[pouch].first].begin(), valid[limits[pouch].first].end(), wb7->object(itemNum)))
                     {
-                        auto find = item(search[i], j);
-                        if (!find)
+                        for (int slot = 0; slot < limits[pouch].second; slot++)
                         {
-                            break; // End of item list
-                        }
-                        if (find->id() == wb7->object(itemNum))
-                        {
-                            if (std::find(tms, tms + 60, find->id()) == tms + 60)
+                            auto occupying = item(limits[pouch].first, slot);
+                            if (occupying->id() == 0)
                             {
-                                slot  = j;
-                                place = search[i];
+                                occupying->id(wb7->object(itemNum));
+                                occupying->count(wb7->objectQuantity(itemNum));
+                                ((Item7b*)occupying.get())->newFlag(true);
+                                item(*occupying, limits[pouch].first, slot);
+                                currentSet = true;
+                                break;
                             }
-                            else
-                                slot = -2;
-                            break;
-                        }
-                    }
-                    if (slot != -1)
-                    {
-                        break;
-                    }
-                }
-
-                if (slot == -2)
-                {
-                    // Gui::warn(i18n::localize("LGPE_HAS_TM"));
-                    return;
-                }
-                else if (slot != -1)
-                {
-                    auto inject = item(place, slot);
-                    inject->count(inject->count() + wb7->objectQuantity(itemNum));
-                    item(*inject, place, slot);
-                }
-                else
-                {
-                    static constexpr int medicines[] = {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 38, 39, 40, 41, 709, 903};
-                    static constexpr int zCrystals[] = {51, 53, 81, 82, 83, 84, 85, 849};
-                    static constexpr int balls[]     = {1, 2, 3, 4, 12, 164, 166, 168, 861, 862, 863, 864, 865, 866};
-                    static constexpr int battle[]    = {
-                        55, 56, 57, 58, 59, 60, 61, 62, 656, 659, 660, 661, 662, 663, 671, 672, 675, 676, 678, 679, 760, 762, 770, 773};
-                    Item7b inject;
-                    inject.id(wb7->object(itemNum));
-                    inject.count(wb7->objectQuantity(itemNum));
-                    inject.newFlag(true);
-                    if (inject.id() >= 960) // Start of candies
-                    {
-                        for (int i = 0; i < 200; i++)
-                        {
-                            if (!item(Candy, i)) // If slot is empty
+                            else if (occupying->id() == wb7->object(itemNum) && limits[pouch].first != Pouch::TM)
                             {
-                                item(inject, Candy, i);
-                                return;
-                            }
-                        }
-                    }
-                    else if (std::find(medicines, medicines + 22, inject.id()) != medicines + 22)
-                    {
-                        for (int i = 0; i < 60; i++)
-                        {
-                            if (!item(Medicine, i))
-                            {
-                                item(inject, Medicine, i);
-                                return;
-                            }
-                        }
-                    }
-                    else if (std::find(tms, tms + 60, inject.id()) != tms + 60)
-                    {
-                        for (int i = 0; i < 108; i++)
-                        {
-                            if (!item(TM, i))
-                            {
-                                item(inject, TM, i);
-                                return;
-                            }
-                        }
-                    }
-                    else if (std::find(zCrystals, zCrystals + 8, inject.id()) != zCrystals + 8)
-                    {
-                        for (int i = 0; i < 150; i++)
-                        {
-                            if (!item(ZCrystals, i))
-                            {
-                                item(inject, TM, i);
-                                return;
-                            }
-                        }
-                    }
-                    else if (std::find(balls, balls + 14, inject.id()) != balls + 14)
-                    {
-                        for (int i = 0; i < 50; i++)
-                        {
-                            if (!item(Ball, i))
-                            {
-                                item(inject, Ball, i);
-                                return;
-                            }
-                        }
-                    }
-                    else if (std::find(battle, battle + 24, inject.id()) != battle + 24)
-                    {
-                        for (int i = 0; i < 150; i++)
-                        {
-                            if (!item(Battle, i))
-                            {
-                                item(inject, Battle, i);
-                                return;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        for (int i = 0; i < 150; i++)
-                        {
-                            if (!item(NormalItem, i))
-                            {
-                                item(inject, NormalItem, i);
-                                return;
+                                occupying->count(occupying->count() + 1);
+                                item(*occupying, limits[pouch].first, slot);
+                                currentSet = true;
+                                break;
                             }
                         }
                     }
                 }
             }
-        }
-        else
-        {
-            // Gui::warn("This is icky and currently unimplemented.", "Requires dumb stuff to happen");
         }
     }
 }

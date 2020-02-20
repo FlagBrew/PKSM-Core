@@ -548,6 +548,11 @@ std::string WC8::nickname(Language lang) const
     return StringUtils::getString(data, 0x30 + langIndex(lang) * 0x1C, 13);
 }
 
+Language WC8::nicknameLanguage(Language orig) const
+{
+    return Language(data[0x30 + langIndex(orig) * 0x1C + 0x1A]);
+}
+
 std::string WC8::otName(Language lang) const
 {
     return StringUtils::getString(data, 0x12C + langIndex(lang) * 0x1C, 13);

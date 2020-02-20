@@ -98,6 +98,7 @@ public:
     Language language(void) const override { return Language::UNUSED; } // Apparently all WCs are now multi-language?
     std::string nickname(void) const override;
     std::string nickname(Language lang) const;
+    Language nicknameLanguage(Language orig) const;
     bool nicknamed(Language lang) const;
     u8 version(void) const;
     std::string otName(void) const override;

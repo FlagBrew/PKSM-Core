@@ -36,21 +36,18 @@
 #include "utils/endian.hpp"
 #include "utils/random.hpp"
 
-namespace
+u8 PKX::genderFromRatio(u32 pid, u8 gt)
 {
-    inline u8 genderFromRatio(u32 pid, u8 gt)
+    switch (gt)
     {
-        switch (gt)
-        {
-            case 0xFF:
-                return 2;
-            case 0xFE:
-                return 1;
-            case 0:
-                return 0;
-            default:
-                return (pid & 0xFF) < gt ? 1 : 0;
-        }
+        case 0xFF:
+            return 2;
+        case 0xFE:
+            return 1;
+        case 0:
+            return 0;
+        default:
+            return (pid & 0xFF) < gt ? 1 : 0;
     }
 }
 

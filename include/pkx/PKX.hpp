@@ -122,7 +122,7 @@ public:
     void fixMoves(void);
 
     static u32 getRandomPID(u16 species, u8 gender, u8 originGame, u8 nature, u8 form, u8 abilityNum, u32 oldPid, Generation gen);
-    static u8 genderFromPID(u32 pid);
+    static u8 genderFromRatio(u32 pid, u8 gt);
 
     // BLOCK A
     virtual u32 encryptionConstant(void) const = 0;
