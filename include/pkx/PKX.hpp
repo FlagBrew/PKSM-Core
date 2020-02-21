@@ -88,8 +88,10 @@ public:
     static u8 genFromBytes(u8* data, size_t length);
 
     virtual ~PKX();
-    PKX(const PKX& pk) = delete;
-    PKX& operator=(const PKX& pk) = delete;
+    PKX(const PKX& pk);
+    PKX(PKX&& pk);
+    PKX& operator=(const PKX& pk);
+    PKX& operator=(PKX&& pk);
     bool operator==(const PKFilter& filter) const;
 
     virtual std::string extension(void) const { return ".pk" + genToString(generation()); }

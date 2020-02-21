@@ -73,6 +73,40 @@ PKX::PKX(u8* data, size_t length, bool directAccess) : directAccess(directAccess
     }
 }
 
+PKX::PKX(const PKX& pk)
+{
+    directAccess = false;
+    data         = new u8[length = pk.getLength()];
+    std::copy(pk.data, pk.data + length, data);
+}
+
+PKX::PKX(PKX&& pk)
+{
+    data         = pk.data;
+    length       = pk.length;
+    directAccess = pk.directAccess;
+    pk.data      = nullptr;
+}
+
+PKX& PKX::operator=(const PKX& pk)
+{
+    delete[] data;
+    directAccess = false;
+    data         = new u8[length = pk.getLength()];
+    std::copy(pk.data, pk.data + length, data);
+    return *this;
+}
+
+PKX& PKX::operator=(PKX&& pk)
+{
+    delete[] data;
+    data         = pk.data;
+    length       = pk.length;
+    directAccess = pk.directAccess;
+    pk.data      = nullptr;
+    return *this;
+}
+
 PKX::~PKX()
 {
     if (!directAccess && data)
