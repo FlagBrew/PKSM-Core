@@ -90,26 +90,25 @@ public:
     u8 partyCount(void) const override;
     void partyCount(u8 count) override;
 
-    std::shared_ptr<PKX> pkm(u8 slot) const override;
-    std::shared_ptr<PKX> pkm(u8 box, u8 slot) const override;
+    std::unique_ptr<PKX> pkm(u8 slot) const override;
+    std::unique_ptr<PKX> pkm(u8 box, u8 slot) const override;
 
     // NOTICE: this sets a pkx into the savefile, not a ekx
     // that's because PKSM works with decrypted boxes and
     // crypts them back during resigning
-    void pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade) override;
-    void pkm(std::shared_ptr<PKX> pk, u8 slot) override;
+    void pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade) override;
+    void pkm(const PKX& pk, u8 slot) override;
 
     void cryptBoxData(bool crypted) override;
 
-    void dex(std::shared_ptr<PKX> pk) override;
+    void dex(const PKX& pk) override;
     int dexSeen(void) const override;
     int dexCaught(void) const override;
     const std::set<int>& availableSpecies(void) const override;
 
-    // TODO
     // Check whether gifts are stored, or whether some disgusting record system is used
     void mysteryGift(WCX& wc, int& pos) override;
-    std::unique_ptr<WCX> mysteryGift(int pos) const override;
+    std::unique_ptr<WCX> mysteryGift(int) const override;
 
     u8 formCount(u16 species) const override { return PersonalSWSH::formCount(species); }
 };

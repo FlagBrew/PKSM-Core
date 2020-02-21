@@ -159,44 +159,45 @@ u32 Sav5::partyOffset(u8 slot) const
     return Party + 8 + PK5::PARTY_LENGTH * slot;
 }
 
-std::shared_ptr<PKX> Sav5::pkm(u8 slot) const
+std::unique_ptr<PKX> Sav5::pkm(u8 slot) const
 {
     return PKX::getPKM<Generation::FIVE>(&data[partyOffset(slot)], true);
 }
 
-void Sav5::pkm(std::shared_ptr<PKX> pk, u8 slot)
+void Sav5::pkm(const PKX& pk, u8 slot)
 {
-    if (pk->generation() == Generation::FIVE)
+    if (pk.generation() == Generation::FIVE)
     {
-        auto pk5 = pk->partyClone();
+        auto pk5 = pk.partyClone();
         pk5->encrypt();
         std::copy(pk5->rawData(), pk5->rawData() + pk5->getLength(), &data[partyOffset(slot)]);
     }
 }
 
-std::shared_ptr<PKX> Sav5::pkm(u8 box, u8 slot) const
+std::unique_ptr<PKX> Sav5::pkm(u8 box, u8 slot) const
 {
     return PKX::getPKM<Generation::FIVE>(&data[boxOffset(box, slot)]);
 }
 
-void Sav5::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
+void Sav5::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)
 {
-    if (pk->generation() == Generation::FIVE)
+    if (pk.generation() == Generation::FIVE)
     {
+        auto pk5 = pk.clone();
         if (applyTrade)
         {
-            trade(pk);
+            trade(*pk5);
         }
 
-        std::copy(pk->rawData(), pk->rawData() + PK5::BOX_LENGTH, &data[boxOffset(box, slot)]);
+        std::copy(pk5->rawData(), pk5->rawData() + PK5::BOX_LENGTH, &data[boxOffset(box, slot)]);
     }
 }
 
-void Sav5::trade(std::shared_ptr<PKX> pk)
+void Sav5::trade(PKX& pk)
 {
-    if (pk->egg() && (otName() != pk->otName() || TID() != pk->TID() || SID() != pk->SID() || gender() != pk->otGender()))
+    if (pk.egg() && (otName() != pk.otName() || TID() != pk.TID() || SID() != pk.SID() || gender() != pk.otGender()))
     {
-        pk->metLocation(30003);
+        pk.metLocation(30003);
     }
 }
 
@@ -276,17 +277,17 @@ int Sav5::dexFormIndex(int species, int formct) const
     }
 }
 
-void Sav5::dex(std::shared_ptr<PKX> pk)
+void Sav5::dex(const PKX& pk)
 {
-    if (pk->species() == 0)
+    if (pk.species() == 0)
         return;
-    if (pk->species() > 649)
+    if (pk.species() > 649)
         return;
 
     const int brSize = 0x54;
-    int bit          = pk->species() - 1;
-    int gender       = pk->gender() % 2; // genderless -> male
-    int shiny        = pk->shiny() ? 1 : 0;
+    int bit          = pk.species() - 1;
+    int gender       = pk.gender() % 2; // genderless -> male
+    int shiny        = pk.shiny() ? 1 : 0;
     int shift        = shiny * 2 + gender + 1;
     int shiftoff     = shiny * brSize * 2 + gender * brSize + brSize;
     int ofs          = PokeDex + 0x8 + (bit >> 3);
@@ -309,7 +310,7 @@ void Sav5::dex(std::shared_ptr<PKX> pk)
     // Set the Language
     if (bit < 493) // shifted by 1, Gen5 species do not have international language bits
     {
-        int lang = u8(pk->language()) - 1;
+        int lang = u8(pk.language()) - 1;
         if (lang > 5)
             lang--; // 0-6 language vals
         if (lang < 0)
@@ -318,14 +319,14 @@ void Sav5::dex(std::shared_ptr<PKX> pk)
     }
 
     // Formes
-    int fc = PersonalBWB2W2::formCount(pk->species());
-    int f  = dexFormIndex(pk->species(), fc);
+    int fc = PersonalBWB2W2::formCount(pk.species());
+    int f  = dexFormIndex(pk.species(), fc);
     if (f < 0)
         return;
 
     int formLen = game == Game::BW ? 0x9 : 0xB;
     int formDex = PokeDex + 0x8 + brSize * 9;
-    bit         = f + pk->alternativeForm();
+    bit         = f + pk.alternativeForm();
 
     // Set Form Seen Flag
     data[formDex + formLen * shiny + (bit >> 3)] |= (u8)(1 << (bit & 7));
@@ -339,7 +340,7 @@ void Sav5::dex(std::shared_ptr<PKX> pk)
         if ((data[formDex + formLen * 3 + (bit >> 3)] & (u8)(1 << (bit & 7))) != 0) // Shiny
             return;                                                                 // already set
     }
-    bit = f + pk->alternativeForm();
+    bit = f + pk.alternativeForm();
     data[formDex + formLen * (2 + shiny) + (bit >> 3)] |= (u8)(1 << (bit & 7));
 }
 
@@ -417,7 +418,7 @@ void Sav5::partyCount(u8 v)
     data[Party + 4] = v;
 }
 
-std::shared_ptr<PKX> Sav5::emptyPkm() const
+std::unique_ptr<PKX> Sav5::emptyPkm() const
 {
     return PKX::getPKM<Generation::FIVE>(nullptr);
 }

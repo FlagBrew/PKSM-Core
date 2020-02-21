@@ -193,29 +193,26 @@ bool Sav::validSequence(std::shared_ptr<u8[]> dt, size_t offset)
     return LittleEndian::convertTo<u32>(&dt[offset - 0x8]) == DATE_INTERNATIONAL || LittleEndian::convertTo<u32>(&dt[offset - 0x8]) == DATE_KOREAN;
 }
 
-std::shared_ptr<PKX> Sav::transfer(std::shared_ptr<PKX> pk)
+std::unique_ptr<PKX> Sav::transfer(const PKX& pk)
 {
-    if (pk)
+    switch (generation())
     {
-        switch (generation())
-        {
-            case Generation::THREE:
-                return pk->convertToG3(*this);
-            case Generation::FOUR:
-                return pk->convertToG4(*this);
-            case Generation::FIVE:
-                return pk->convertToG5(*this);
-            case Generation::SIX:
-                return pk->convertToG6(*this);
-            case Generation::SEVEN:
-                return pk->convertToG7(*this);
-            case Generation::LGPE:
-                return pk->convertToLGPE(*this);
-            case Generation::EIGHT:
-                return pk->convertToG8(*this);
-            case Generation::UNUSED:
-                return nullptr;
-        }
+        case Generation::THREE:
+            return pk.convertToG3(*this);
+        case Generation::FOUR:
+            return pk.convertToG4(*this);
+        case Generation::FIVE:
+            return pk.convertToG5(*this);
+        case Generation::SIX:
+            return pk.convertToG6(*this);
+        case Generation::SEVEN:
+            return pk.convertToG7(*this);
+        case Generation::LGPE:
+            return pk.convertToLGPE(*this);
+        case Generation::EIGHT:
+            return pk.convertToG8(*this);
+        case Generation::UNUSED:
+            return nullptr;
     }
     return nullptr;
 }
@@ -235,8 +232,8 @@ void Sav::fixParty()
         auto prevPKM = pkm(i - 1);
         if (checkPKM->species() != 0 && prevPKM->species() == 0)
         {
-            pkm(checkPKM, i - 1);
-            pkm(prevPKM, i);
+            pkm(*checkPKM, i - 1);
+            pkm(*prevPKM, i);
             numPkm = 6;
             i      = 6; // reset loop
         }
@@ -282,21 +279,17 @@ u32 Sav::displaySID() const
     return 0;
 }
 
-std::string Sav::invalidTransferReason(std::shared_ptr<PKX> pk) const
+std::string Sav::invalidTransferReason(const PKX& pk) const
 {
-    if (!pk)
-    {
-        return "";
-    }
     bool moveBad = false;
     for (int i = 0; i < 4; i++)
     {
-        if (availableMoves().count((int)pk->move(i)) == 0)
+        if (availableMoves().count((int)pk.move(i)) == 0)
         {
             moveBad = true;
             break;
         }
-        if (availableMoves().count((int)pk->relearnMove(i)) == 0)
+        if (availableMoves().count((int)pk.relearnMove(i)) == 0)
         {
             moveBad = true;
             break;
@@ -306,24 +299,24 @@ std::string Sav::invalidTransferReason(std::shared_ptr<PKX> pk) const
     {
         return "STORAGE_BAD_MOVE";
     }
-    else if (availableSpecies().count((int)pk->species()) == 0)
+    else if (availableSpecies().count((int)pk.species()) == 0)
     {
         return "STORAGE_BAD_SPECIES";
     }
-    else if (pk->alternativeForm() >= formCount(pk->species()) &&
-             !((pk->species() == 664 || pk->species() == 665) && pk->alternativeForm() <= formCount(666)))
+    else if (pk.alternativeForm() >= formCount(pk.species()) &&
+             !((pk.species() == 664 || pk.species() == 665) && pk.alternativeForm() <= formCount(666)))
     {
         return "STORAGE_BAD_FORM";
     }
-    else if (availableAbilities().count((int)pk->ability()) == 0)
+    else if (availableAbilities().count((int)pk.ability()) == 0)
     {
         return "STORAGE_BAD_ABILITY";
     }
-    else if (availableItems().count((int)pk->heldItem()) == 0)
+    else if (availableItems().count((int)pk.heldItem()) == 0)
     {
         return "STORAGE_BAD_ITEM";
     }
-    else if (availableBalls().count((int)pk->ball()) == 0)
+    else if (availableBalls().count((int)pk.ball()) == 0)
     {
         return "STORAGE_BAD_BALL";
     }

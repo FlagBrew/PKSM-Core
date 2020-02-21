@@ -95,6 +95,7 @@ public:
     virtual std::string extension(void) const { return ".pk" + genToString(generation()); }
 
     u8* rawData(void) { return data; }
+    const u8* rawData(void) const { return data; }
     u32 getLength(void) const { return length; }
     virtual bool isParty(void) const = 0;
 

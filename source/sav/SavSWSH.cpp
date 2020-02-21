@@ -57,6 +57,7 @@ namespace
         u32 unk1 : 32;
         u32 unk2 : 32;
     };
+    static_assert(sizeof(DexEntry) == 0x30);
 
     void setProperLocation(DexEntry& entry, u16 form, bool shiny, u8 gender)
     {
@@ -494,35 +495,35 @@ void SavSWSH::partyCount(u8 count)
     getBlock(Party)->decryptedData()[PK8::PARTY_LENGTH * 6] = count;
 }
 
-std::shared_ptr<PKX> SavSWSH::pkm(u8 slot) const
+std::unique_ptr<PKX> SavSWSH::pkm(u8 slot) const
 {
     u32 offset = partyOffset(slot);
     return PKX::getPKM<Generation::EIGHT>(getBlock(Party)->decryptedData() + offset, true);
 }
-std::shared_ptr<PKX> SavSWSH::pkm(u8 box, u8 slot) const
+std::unique_ptr<PKX> SavSWSH::pkm(u8 box, u8 slot) const
 {
     u32 offset = boxOffset(box, slot);
     return PKX::getPKM<Generation::EIGHT>(getBlock(Box)->decryptedData() + offset, true);
 }
 
-void SavSWSH::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
+void SavSWSH::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)
 {
-    if (pk->generation() == Generation::EIGHT)
+    if (pk.generation() == Generation::EIGHT)
     {
+        auto pk8 = pk.partyClone();
         if (applyTrade)
         {
-            trade(pk);
+            trade(*pk8);
         }
 
-        auto pk8 = pk->partyClone();
         std::copy(pk8->rawData(), pk8->rawData() + pk8->getLength(), getBlock(Box)->decryptedData() + boxOffset(box, slot));
     }
 }
-void SavSWSH::pkm(std::shared_ptr<PKX> pk, u8 slot)
+void SavSWSH::pkm(const PKX& pk, u8 slot)
 {
-    if (pk->generation() == Generation::EIGHT)
+    if (pk.generation() == Generation::EIGHT)
     {
-        auto pk8 = pk->partyClone();
+        auto pk8 = pk.partyClone();
         pk8->encrypt();
         std::copy(pk8->rawData(), pk8->rawData() + pk8->getLength(), getBlock(Party)->decryptedData() + partyOffset(slot));
     }
@@ -776,7 +777,7 @@ void SavSWSH::mysteryGift(WCX& wc, int&)
                     break;
                 case 3:
                 case 4:
-                    pk8->setAbility(((randomNumbers() % wc8->abilityType()) + 1) >> 1);
+                    pk8->setAbility(randomNumbers() % (wc8->abilityType() - 1));
                     break;
             }
 
@@ -793,30 +794,27 @@ void SavSWSH::mysteryGift(WCX& wc, int&)
                     pk8->PID(randomNumbers());
                     pk8->PID(((pk8->TID() ^ pk8->SID() ^ (pk8->PID() & 0xFFFF) ^ 1) << 16) | (pk8->PID() & 0xFFFF));
                     break;
-                case 6: // ALways square shiny
+                case 6: // Always square shiny
                     pk8->PID(randomNumbers());
                     pk8->PID(((pk8->TID() ^ pk8->SID() ^ (pk8->PID() & 0xFFFF) ^ 0) << 16) | (pk8->PID() & 0xFFFF));
                     break;
                 case 3: // Never shiny
                     pk8->PID(randomNumbers());
-                    if (pk8->shiny())
-                    {
-                        pk8->PID(pk8->PID() ^ 0x10000000);
-                    }
+                    pk8->shiny(false);
                     break;
             }
 
             // IVs
-            int perfectIVFlag = 0;
+            int numPerfectIVs = 0;
             for (Stat stat : {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF})
             {
                 if (wc8->iv(stat) - 0xFC < 3)
                 {
-                    perfectIVFlag = wc8->iv(stat);
+                    numPerfectIVs = wc8->iv(stat) - 0xFB;
                     break;
                 }
             }
-            for (int iv = 0; iv < perfectIVFlag - 0xFB; iv++)
+            for (int iv = 0; iv < numPerfectIVs; iv++)
             {
                 Stat setMeTo31 = Stat(randomNumbers() % 6);
                 while (pk8->iv(setMeTo31) == 31)
@@ -835,7 +833,7 @@ void SavSWSH::mysteryGift(WCX& wc, int&)
 
             pk8->refreshChecksum();
 
-            pkm(std::move(pk8), injectPosition / 30, injectPosition % 30, false);
+            pkm(*pk8, injectPosition / 30, injectPosition % 30, false);
         }
         else if (wc8->item())
         {
@@ -888,30 +886,30 @@ std::unique_ptr<WCX> SavSWSH::mysteryGift(int) const
     return nullptr;
 }
 
-void SavSWSH::dex(std::shared_ptr<PKX> pk)
+void SavSWSH::dex(const PKX& pk)
 {
-    if (u16 index = ((PK8*)pk.get())->pokedexIndex())
+    if (u16 index = ((PK8&)pk).pokedexIndex())
     {
-        u8* entryAddr  = getBlock(PokeDex)->decryptedData() + sizeof(DexEntry) * index;
+        u8* entryAddr  = getBlock(PokeDex)->decryptedData() + sizeof(DexEntry) * (index - 1);
         DexEntry entry = LittleEndian::convertTo<DexEntry>(entryAddr);
 
-        u16 form = pk->alternativeForm();
-        if (pk->species() == 869) // Alcremie
+        u16 form = pk.alternativeForm();
+        if (pk.species() == 869) // Alcremie
         {
             form *= 7;
-            form += ((PK8*)pk.get())->formDuration();
+            form += ((PK8&)pk).formDuration();
         }
-        else if (pk->species() == 890) // Eternatus
+        else if (pk.species() == 890) // Eternatus
         {
             form = 0;
-            setProperGiga(entry, true, pk->shiny(), pk->gender());
+            setProperGiga(entry, true, pk.shiny(), pk.gender());
         }
 
-        setProperLocation(entry, form, pk->shiny(), pk->gender());
+        setProperLocation(entry, form, pk.shiny(), pk.gender());
         entry.owned = 1;
-        entry.languages |= 1 << u8(pk->language());
+        entry.languages |= 1 << u8(pk.language());
         entry.displayFormID = form;
-        entry.displayShiny  = pk->shiny() ? 1 : 0;
+        entry.displayShiny  = pk.shiny() ? 1 : 0;
 
         if (entry.battled == 0)
         {

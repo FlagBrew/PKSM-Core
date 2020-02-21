@@ -188,42 +188,43 @@ u32 Sav6::partyOffset(u8 slot) const
     return Party + PK6::PARTY_LENGTH * slot;
 }
 
-std::shared_ptr<PKX> Sav6::pkm(u8 slot) const
+std::unique_ptr<PKX> Sav6::pkm(u8 slot) const
 {
     return PKX::getPKM<Generation::SIX>(&data[partyOffset(slot)], true);
 }
 
-void Sav6::pkm(std::shared_ptr<PKX> pk, u8 slot)
+void Sav6::pkm(const PKX& pk, u8 slot)
 {
-    if (pk->generation() == Generation::SIX)
+    if (pk.generation() == Generation::SIX)
     {
-        auto pk6 = pk->partyClone();
+        auto pk6 = pk.partyClone();
         pk6->encrypt();
         std::copy(pk6->rawData(), pk6->rawData() + pk6->getLength(), &data[partyOffset(slot)]);
     }
 }
 
-std::shared_ptr<PKX> Sav6::pkm(u8 box, u8 slot) const
+std::unique_ptr<PKX> Sav6::pkm(u8 box, u8 slot) const
 {
     return PKX::getPKM<Generation::SIX>(&data[boxOffset(box, slot)]);
 }
 
-void Sav6::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
+void Sav6::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)
 {
-    if (pk->generation() == Generation::SIX)
+    if (pk.generation() == Generation::SIX)
     {
+        auto pkm = pk.clone();
         if (applyTrade)
         {
-            trade(pk);
+            trade(*pkm);
         }
 
-        std::copy(pk->rawData(), pk->rawData() + PK6::BOX_LENGTH, &data[boxOffset(box, slot)]);
+        std::copy(pkm->rawData(), pkm->rawData() + PK6::BOX_LENGTH, &data[boxOffset(box, slot)]);
     }
 }
 
-void Sav6::trade(std::shared_ptr<PKX> pk)
+void Sav6::trade(PKX& pk)
 {
-    PK6* pk6 = (PK6*)pk.get();
+    PK6* pk6 = (PK6*)&pk;
     if (pk6->egg())
     {
         if (otName() != pk6->otName() || TID() != pk6->TID() || SID() != pk6->SID() || gender() != pk6->otGender())
@@ -497,21 +498,21 @@ int Sav6::dexFormIndex(int species, int formct) const
     }
 }
 
-void Sav6::dex(std::shared_ptr<PKX> pk)
+void Sav6::dex(const PKX& pk)
 {
-    if (pk->species() == 0)
+    if (pk.species() == 0)
         return;
-    if (pk->species() > 721)
+    if (pk.species() > 721)
         return;
 
     const int brSize = 0x60;
-    int bit          = pk->species() - 1;
-    int lang         = u8(pk->language()) - 1;
+    int bit          = pk.species() - 1;
+    int lang         = u8(pk.language()) - 1;
     if (lang > 5)
         lang--; // 0-6 language vals
-    int origin   = pk->version();
-    int gender   = pk->gender() % 2; // genderless -> male
-    int shiny    = pk->shiny() ? 1 : 0;
+    int origin   = pk.version();
+    int gender   = pk.gender() % 2; // genderless -> male
+    int shiny    = pk.shiny() ? 1 : 0;
     int shiftoff = brSize * (1 + gender + 2 * shiny); // after the Owned region
     int bd       = bit >> 3;                          // div8
     int bm       = bit & 7;                           // mod8
@@ -542,18 +543,18 @@ void Sav6::dex(std::shared_ptr<PKX> pk)
     data[PokeDexLanguageFlags + (bit * 7 + lang) / 8] |= (u8)(1 << ((bit * 7 + lang) % 8));
 
     // Set DexNav count (only if not encountered previously)
-    if (game == Game::ORAS && LittleEndian::convertTo<u16>(&data[EncounterCount + (pk->species() - 1) * 2]) == 0)
-        LittleEndian::convertFrom<u16>(&data[EncounterCount + (pk->species() - 1) * 2], 1);
+    if (game == Game::ORAS && LittleEndian::convertTo<u16>(&data[EncounterCount + (pk.species() - 1) * 2]) == 0)
+        LittleEndian::convertFrom<u16>(&data[EncounterCount + (pk.species() - 1) * 2], 1);
 
     // Set Form flags
-    int fc = PersonalXYORAS::formCount(pk->species());
-    int f  = dexFormIndex(pk->species(), fc);
+    int fc = PersonalXYORAS::formCount(pk.species());
+    int f  = dexFormIndex(pk.species(), fc);
     if (f < 0)
         return;
 
     int formLen = game == Game::XY ? 0x18 : 0x26;
     int formDex = PokeDex + 0x8 + brSize * 9;
-    bit         = f + pk->alternativeForm();
+    bit         = f + pk.alternativeForm();
 
     // Set Form Seen Flag
     data[formDex + formLen * shiny + bit / 8] |= (u8)(1 << (bit % 8));
@@ -567,7 +568,7 @@ void Sav6::dex(std::shared_ptr<PKX> pk)
         if ((data[formDex + formLen * 3 + bit / 8] & (u8)(1 << (bit % 8))) != 0) // Shiny
             return;                                                              // already set
     }
-    bit = f + pk->alternativeForm();
+    bit = f + pk.alternativeForm();
     data[formDex + formLen * (2 + shiny) + bit / 8] |= (u8)(1 << (bit % 8));
 }
 
@@ -650,7 +651,7 @@ void Sav6::partyCount(u8 v)
     data[Party + 6 * PK6::PARTY_LENGTH] = v;
 }
 
-std::shared_ptr<PKX> Sav6::emptyPkm() const
+std::unique_ptr<PKX> Sav6::emptyPkm() const
 {
     return PKX::getPKM<Generation::SIX>(nullptr);
 }

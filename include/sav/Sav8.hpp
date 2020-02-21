@@ -55,8 +55,8 @@ public:
     void finishEditing(void) override;
     void beginEditing(void) override;
 
-    void trade(std::shared_ptr<PKX> pk) override;
-    std::shared_ptr<PKX> emptyPkm() const override;
+    void trade(PKX& pk) override;
+    std::unique_ptr<PKX> emptyPkm() const override;
 
     const std::set<int>& availableItems(void) const override;
     const std::set<int>& availableMoves(void) const override;

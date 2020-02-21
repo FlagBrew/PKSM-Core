@@ -238,44 +238,45 @@ u32 Sav4::partyOffset(u8 slot) const
     return Party + slot * PK4::PARTY_LENGTH;
 }
 
-std::shared_ptr<PKX> Sav4::pkm(u8 slot) const
+std::unique_ptr<PKX> Sav4::pkm(u8 slot) const
 {
     return PKX::getPKM<Generation::FOUR>(&data[partyOffset(slot)], true);
 }
 
-void Sav4::pkm(std::shared_ptr<PKX> pk, u8 slot)
+void Sav4::pkm(const PKX& pk, u8 slot)
 {
-    if (pk->generation() == Generation::FOUR)
+    if (pk.generation() == Generation::FOUR)
     {
-        auto pk4 = pk->partyClone();
+        auto pk4 = pk.partyClone();
         pk4->encrypt();
         std::copy(pk4->rawData(), pk4->rawData() + pk4->getLength(), &data[partyOffset(slot)]);
     }
 }
 
-std::shared_ptr<PKX> Sav4::pkm(u8 box, u8 slot) const
+std::unique_ptr<PKX> Sav4::pkm(u8 box, u8 slot) const
 {
     return PKX::getPKM<Generation::FOUR>(&data[boxOffset(box, slot)]);
 }
 
-void Sav4::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
+void Sav4::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)
 {
-    if (pk->generation() == Generation::FOUR)
+    if (pk.generation() == Generation::FOUR)
     {
+        auto pkm = pk.clone();
         if (applyTrade)
         {
-            trade(pk);
+            trade(*pkm);
         }
 
-        std::copy(pk->rawData(), pk->rawData() + PK4::BOX_LENGTH, &data[boxOffset(box, slot)]);
+        std::copy(pkm->rawData(), pkm->rawData() + PK4::BOX_LENGTH, &data[boxOffset(box, slot)]);
     }
 }
 
-void Sav4::trade(std::shared_ptr<PKX> pk)
+void Sav4::trade(PKX& pk)
 {
-    if (pk->egg() && (otName() != pk->otName() || TID() != pk->TID() || SID() != pk->SID() || gender() != pk->otGender()))
+    if (pk.egg() && (otName() != pk.otName() || TID() != pk.TID() || SID() != pk.SID() || gender() != pk.otGender()))
     {
-        pk->metLocation(2002);
+        pk.metLocation(2002);
     }
 }
 
@@ -367,15 +368,15 @@ void Sav4::partyCount(u8 v)
     data[Party - 4] = v;
 }
 
-void Sav4::dex(std::shared_ptr<PKX> pk)
+void Sav4::dex(const PKX& pk)
 {
-    if (pk->species() == 0 || pk->species() > 493)
+    if (pk.species() == 0 || pk.species() > 493)
     {
         return;
     }
 
     static constexpr int brSize = 0x40;
-    int bit                     = pk->species() - 1;
+    int bit                     = pk.species() - 1;
     u8 mask                     = (u8)(1 << (bit & 7));
     int ofs                     = PokeDex + (bit >> 3) + 0x4;
 
@@ -398,7 +399,7 @@ void Sav4::dex(std::shared_ptr<PKX> pk)
     if ((data[ofs + brSize * 1] & mask) == 0) // Not seen
     {
         data[ofs + brSize * 1] |= mask; // Set seen
-        u8 gr = pk->genderType();
+        u8 gr = pk.genderType();
         switch (gr)
         {
             case 255: // Genderless
@@ -415,7 +416,7 @@ void Sav4::dex(std::shared_ptr<PKX> pk)
                 bool f = (data[ofs + brSize * 3] & mask) != 0;
                 if (m || f) // bit already set?
                     break;
-                u8 gender = pk->gender() & 1;
+                u8 gender = pk.gender() & 1;
                 data[ofs + brSize * 2] &= ~mask; // unset
                 data[ofs + brSize * 3] &= ~mask; // unset
                 gender ^= 1;                     // Set OTHER gender seen bit so it appears second
@@ -425,33 +426,33 @@ void Sav4::dex(std::shared_ptr<PKX> pk)
     }
 
     int formOffset        = PokeDex + 4 + (brSize * 4) + 4;
-    std::vector<u8> forms = getForms(pk->species());
+    std::vector<u8> forms = getForms(pk.species());
     if (forms.size() > 0)
     {
-        if (pk->species() == 201) // Unown
+        if (pk.species() == 201) // Unown
         {
             for (u8 i = 0; i < 0x1C; i++)
             {
                 u8 val = data[formOffset + 4 + i];
-                if (val == pk->alternativeForm())
+                if (val == pk.alternativeForm())
                     break; // already set
                 if (val != 0xFF)
                     continue; // keep searching
 
-                data[formOffset + 4 + i] = (u8)pk->alternativeForm();
+                data[formOffset + 4 + i] = (u8)pk.alternativeForm();
                 break; // form now set
             }
         }
-        else if (pk->species() == 172 && game == Game::HGSS) // Pichu
+        else if (pk.species() == 172 && game == Game::HGSS) // Pichu
         {
-            u8 form = pk->alternativeForm() == 1 ? 2 : pk->gender();
+            u8 form = pk.alternativeForm() == 1 ? 2 : pk.gender();
             checkInsertForm(forms, form);
-            setForms(forms, pk->species());
+            setForms(forms, pk.species());
         }
         else
         {
-            checkInsertForm(forms, pk->alternativeForm());
-            setForms(forms, pk->species());
+            checkInsertForm(forms, pk.alternativeForm());
+            setForms(forms, pk.species());
         }
     }
 
@@ -461,7 +462,7 @@ void Sav4::dex(std::shared_ptr<PKX> pk)
         int DPLangSpecies[] = {23, 25, 54, 77, 120, 129, 202, 214, 215, 216, 228, 278, 287, 315};
         for (int i = 0; i < 14; i++)
         {
-            if (pk->species() == DPLangSpecies[i])
+            if (pk.species() == DPLangSpecies[i])
             {
                 dpl = i + 1;
                 break;
@@ -473,7 +474,7 @@ void Sav4::dex(std::shared_ptr<PKX> pk)
 
     // Set the Language
     int languageFlags = formOffset + (game == Game::HGSS ? 0x3C : 0x20);
-    int lang          = u8(pk->language()) - 1;
+    int lang          = u8(pk.language()) - 1;
     switch (lang) // invert ITA/GER
     {
         case 3:
@@ -486,7 +487,7 @@ void Sav4::dex(std::shared_ptr<PKX> pk)
     if (lang > 5)
         lang = 0;                 // no KOR+
     lang = (lang < 0) ? 1 : lang; // default English
-    data[languageFlags + (game == Game::DP ? dpl : pk->species())] |= (u8)(1 << lang);
+    data[languageFlags + (game == Game::DP ? dpl : pk.species())] |= (u8)(1 << lang);
 }
 
 int Sav4::dexSeen(void) const
@@ -719,7 +720,7 @@ u32 Sav4::setDexFormValues(std::vector<u8> forms, u8 bitsPerForm, u8 readCt)
     return v;
 }
 
-std::shared_ptr<PKX> Sav4::emptyPkm() const
+std::unique_ptr<PKX> Sav4::emptyPkm() const
 {
     return PKX::getPKM<Generation::FOUR>(nullptr);
 }

@@ -106,19 +106,19 @@ public:
     u32 partyOffset(u8 slot) const override;
 
     // Will never be encrypted: part of normal box stuff
-    std::shared_ptr<PKX> pkm(u8 slot) const override;
-    std::shared_ptr<PKX> pkm(u8 box, u8 slot) const override;
+    std::unique_ptr<PKX> pkm(u8 slot) const override;
+    std::unique_ptr<PKX> pkm(u8 box, u8 slot) const override;
 
     // NOTICE: this sets a pkx into the savefile, not a pkx
     // that's because PKSM works with decrypted boxes and
     // crypts them back during resigning
-    void pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade) override;
-    void pkm(std::shared_ptr<PKX> pk, u8 slot) override;
+    void pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade) override;
+    void pkm(const PKX& pk, u8 slot) override;
 
-    void trade(std::shared_ptr<PKX> pk) override;
-    std::shared_ptr<PKX> emptyPkm() const override;
+    void trade(PKX& pk) override;
+    std::unique_ptr<PKX> emptyPkm() const override;
 
-    void dex(std::shared_ptr<PKX> pk) override;
+    void dex(const PKX& pk) override;
     int dexSeen(void) const override;
     int dexCaught(void) const override;
     int emptyGiftLocation(void) const override { return 0; }                    // Data not stored

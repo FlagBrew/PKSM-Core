@@ -125,8 +125,8 @@ void SavLGPE::fixParty()
 
 void SavLGPE::compressBox()
 {
-    u16 emptyIndex                = 1001;
-    u8 emptyData[PB7::BOX_LENGTH] = {0};
+    u16 emptyIndex                  = 1001;
+    u8 emptyData[PB7::PARTY_LENGTH] = {0};
     for (u16 i = 0; i < 1000; i++)
     {
         u32 offset = boxOffset(i / 30, i % 30);
@@ -140,9 +140,9 @@ void SavLGPE::compressBox()
             {
                 u32 emptyOffset = boxOffset(emptyIndex / 30, emptyIndex % 30);
                 // Swap the two slots
-                std::copy(&data[emptyOffset], &data[emptyOffset + PB7::BOX_LENGTH], emptyData);
-                std::copy(&data[offset], &data[offset + PB7::BOX_LENGTH], &data[emptyOffset]);
-                std::copy(emptyData, emptyData + PB7::BOX_LENGTH, &data[offset]);
+                std::copy(&data[emptyOffset], &data[emptyOffset + PB7::PARTY_LENGTH], emptyData);
+                std::copy(&data[offset], &data[offset + PB7::PARTY_LENGTH], &data[emptyOffset]);
+                std::copy(emptyData, emptyData + PB7::PARTY_LENGTH, &data[offset]);
                 for (int j = 0; j < partyCount(); j++)
                 {
                     if (partyBoxSlot(j) == i)
@@ -304,7 +304,7 @@ void SavLGPE::playedSeconds(u8 v)
     data[0x45403] = v;
 }
 
-std::shared_ptr<PKX> SavLGPE::pkm(u8 slot) const
+std::unique_ptr<PKX> SavLGPE::pkm(u8 slot) const
 {
     u32 off = partyOffset(slot);
     if (off != 0)
@@ -317,30 +317,32 @@ std::shared_ptr<PKX> SavLGPE::pkm(u8 slot) const
     }
 }
 
-std::shared_ptr<PKX> SavLGPE::pkm(u8 box, u8 slot) const
+std::unique_ptr<PKX> SavLGPE::pkm(u8 box, u8 slot) const
 {
     return PKX::getPKM<Generation::LGPE>(&data[boxOffset(box, slot)], true);
 }
 
-void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
+void SavLGPE::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)
 {
-    if (pk->generation() == Generation::LGPE)
+    if (pk.generation() == Generation::LGPE)
     {
+        auto pb7 = pk.partyClone();
         if (applyTrade)
         {
-            trade(pk);
+            trade(*pb7);
         }
-        std::copy(pk->rawData(), pk->rawData() + pk->getLength(), &data[boxOffset(box, slot)]);
+
+        std::copy(pb7->rawData(), pb7->rawData() + PB7::PARTY_LENGTH, &data[boxOffset(box, slot)]);
     }
 }
 
-void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 slot)
+void SavLGPE::pkm(const PKX& pk, u8 slot)
 {
-    if (pk->generation() == Generation::LGPE)
+    if (pk.generation() == Generation::LGPE)
     {
         u32 off     = partyOffset(slot);
         u16 newSlot = partyBoxSlot(slot);
-        if (pk->species() == 0)
+        if (pk.species() == 0)
         {
             if (off != 0)
             {
@@ -367,14 +369,15 @@ void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 slot)
             }
         }
 
-        std::copy(pk->rawData(), pk->rawData() + pk->getLength(), &data[off]);
+        auto pb7 = pk.partyClone();
+        std::copy(pb7->rawData(), pb7->rawData() + PB7::PARTY_LENGTH, &data[off]);
         partyBoxSlot(slot, newSlot);
     }
 }
 
-void SavLGPE::trade(std::shared_ptr<PKX> pk)
+void SavLGPE::trade(PKX& pk)
 {
-    PB7* pb7 = (PB7*)pk.get();
+    PB7* pb7 = (PB7*)&pk;
     if (pb7->egg() && !(otName() == pb7->otName() && TID() == pb7->TID() && SID() == pb7->SID() && gender() == pb7->otGender()))
     {
         pb7->metLocation(30002);
@@ -396,7 +399,7 @@ void SavLGPE::trade(std::shared_ptr<PKX> pk)
     }
 }
 
-std::shared_ptr<PKX> SavLGPE::emptyPkm() const
+std::unique_ptr<PKX> SavLGPE::emptyPkm() const
 {
     return PKX::getPKM<Generation::LGPE>(nullptr, true);
 }
@@ -514,21 +517,21 @@ int SavLGPE::getDexFlags(int index, int baseSpecies) const
     return ret;
 }
 
-void SavLGPE::dex(std::shared_ptr<PKX> pk)
+void SavLGPE::dex(const PKX& pk)
 {
-    int n                    = pk->species();
+    int n                    = pk.species();
     int MaxSpeciesID         = 809;
     int PokeDex              = 0x2A00;
     int PokeDexLanguageFlags = PokeDex + 0x550;
 
-    if (n == 0 || n > MaxSpeciesID || pk->egg())
+    if (n == 0 || n > MaxSpeciesID || pk.egg())
         return;
 
     int bit    = n - 1;
     int bd     = bit >> 3;
     int bm     = bit & 7;
-    int gender = pk->gender() % 2;
-    int shiny  = pk->shiny() ? 1 : 0;
+    int gender = pk.gender() % 2;
+    int shiny  = pk.shiny() ? 1 : 0;
     if (n == 351)
         shiny = 0;
     int shift = gender | (shiny << 1);
@@ -537,7 +540,7 @@ void SavLGPE::dex(std::shared_ptr<PKX> pk)
     {
         if ((data[PokeDex + 0x84] & (1 << (shift + 4))) != 0)
         { // Already 2
-            LittleEndian::convertFrom<u32>(&data[PokeDex + 0x8E8 + shift * 4], pk->encryptionConstant());
+            LittleEndian::convertFrom<u32>(&data[PokeDex + 0x8E8 + shift * 4], pk.encryptionConstant());
             data[PokeDex + 0x84] |= (u8)(1 << shift);
         }
         else if ((data[PokeDex + 0x84] & (1 << shift)) == 0)
@@ -549,7 +552,7 @@ void SavLGPE::dex(std::shared_ptr<PKX> pk)
     int off = PokeDex + 0x08 + 0x80;
     data[off + bd] |= (u8)(1 << bm);
 
-    int formstart = pk->alternativeForm();
+    int formstart = pk.alternativeForm();
     int formend   = formstart;
 
     int fs = 0, fe = 0;
@@ -564,7 +567,7 @@ void SavLGPE::dex(std::shared_ptr<PKX> pk)
         int bitIndex = bit;
         if (form > 0)
         {
-            u8 fc = dexFormCount(n); // TODO: PersonalLGPE::formCount(n);
+            u8 fc = dexFormCount(n);
             if (fc > 1)
             { // actually has forms
                 int f = dexFormIndex(n, fc, MaxSpeciesID - 1);
@@ -575,7 +578,7 @@ void SavLGPE::dex(std::shared_ptr<PKX> pk)
         setDexFlags(bitIndex, gender, shiny, n - 1);
     }
 
-    int lang            = u8(pk->language());
+    int lang            = u8(pk.language());
     const int langCount = 9;
     if (lang <= 10 && lang != 6 && lang != 0)
     {
@@ -660,139 +663,125 @@ void SavLGPE::mysteryGift(WCX& wc, int&)
                 // Gui::warn(i18n::localize("LGPE_TOO_MANY_PKM"), i18n::localize("BAD_INJECT"));
                 return;
             }
-            std::shared_ptr<PKX> pb7 = PKX::getPKM<Generation::LGPE>(nullptr, true);
-            PB7* pkm                 = (PB7*)pb7.get();
-            pkm->species(wb7->species());
-            pkm->alternativeForm(wb7->alternativeForm());
+            auto pb7 = PKX::getPKM<Generation::LGPE>(nullptr, false);
+            pb7->species(wb7->species());
+            pb7->alternativeForm(wb7->alternativeForm());
             if (wb7->level() > 0)
             {
-                pkm->level(wb7->level());
-                pkm->partyLevel(wb7->level());
+                pb7->level(wb7->level());
             }
             else
             {
-                pkm->level(randomNumbers() % 100 + 1);
-                pkm->partyLevel(pkm->level());
+                pb7->level(randomNumbers() % 100 + 1);
             }
             if (wb7->metLevel() > 0)
             {
-                pkm->metLevel(wb7->metLevel());
+                pb7->metLevel(wb7->metLevel());
             }
             else
             {
-                pkm->metLevel(pkm->level());
+                pb7->metLevel(pb7->level());
             }
-            pkm->TID(wb7->TID());
-            pkm->SID(wb7->SID());
+            pb7->TID(wb7->TID());
+            pb7->SID(wb7->SID());
             for (int i = 0; i < 4; i++)
             {
-                pkm->move(i, wb7->move(i));
-                pkm->relearnMove(i, wb7->move(i));
+                pb7->move(i, wb7->move(i));
+                pb7->relearnMove(i, wb7->move(i));
             }
             if (wb7->nature() == 255)
             {
-                pkm->nature(randomNumbers() % 25);
+                pb7->nature(randomNumbers() % 25);
             }
             else
             {
-                pkm->nature(wb7->nature());
+                pb7->nature(wb7->nature());
             }
             if (wb7->gender() == 3)
             {
-                pkm->gender(randomNumbers() % 3);
+                pb7->gender(randomNumbers() % 3);
             }
             else
             {
-                pkm->gender(wb7->gender());
+                pb7->gender(wb7->gender());
             }
-            pkm->heldItem(wb7->heldItem());
-            pkm->encryptionConstant(wb7->encryptionConstant());
+            pb7->heldItem(wb7->heldItem());
+            pb7->encryptionConstant(wb7->encryptionConstant());
             if (wb7->version() == 0)
             {
-                pkm->version(wb7->version());
+                pb7->version(wb7->version());
             }
             else
             {
-                pkm->version(version());
+                pb7->version(version());
             }
-            pkm->language(language());
-            pkm->ball(wb7->ball());
-            pkm->country(country());
-            pkm->region(subRegion());
-            pkm->consoleRegion(consoleRegion());
-            pkm->metLocation(wb7->metLocation());
-            pkm->eggLocation(wb7->eggLocation());
+            pb7->language(language());
+            pb7->ball(wb7->ball());
+            pb7->country(country());
+            pb7->region(subRegion());
+            pb7->consoleRegion(consoleRegion());
+            pb7->metLocation(wb7->metLocation());
+            pb7->eggLocation(wb7->eggLocation());
             for (int i = 0; i < 6; i++)
             {
-                pkm->awakened(Stat(i), wb7->awakened(Stat(i)));
-                pkm->ev(Stat(i), wb7->ev(Stat(i)));
+                pb7->awakened(Stat(i), wb7->awakened(Stat(i)));
+                pb7->ev(Stat(i), wb7->ev(Stat(i)));
             }
             if (wb7->nickname((Language)language()).length() == 0)
             {
-                pkm->nickname(i18n::species(language(), pkm->species()));
+                pb7->nickname(i18n::species(language(), pb7->species()));
             }
             else
             {
-                pkm->nickname(wb7->nickname((Language)language()));
-                pkm->nicknamed(pkm->nickname() != i18n::species(language(), pkm->species()));
+                pb7->nickname(wb7->nickname((Language)language()));
+                pb7->nicknamed(pb7->nickname() != i18n::species(language(), pb7->species()));
             }
             if (wb7->otName((Language)language()).length() == 0)
             {
-                pkm->otName(otName());
-                pkm->otGender(gender());
-                pkm->currentHandler(0);
+                pb7->otName(otName());
+                pb7->otGender(gender());
+                pb7->currentHandler(0);
             }
             else
             {
-                pkm->otName(wb7->otName((Language)language()));
-                pkm->htName(otName());
-                pkm->otGender(wb7->otGender());
-                pkm->htGender(gender());
-                pkm->otFriendship(PersonalLGPE::baseFriendship(pkm->formSpecies()));
-                pkm->currentHandler(1);
+                pb7->otName(wb7->otName((Language)language()));
+                pb7->htName(otName());
+                pb7->otGender(wb7->otGender());
+                pb7->htGender(gender());
+                pb7->otFriendship(PersonalLGPE::baseFriendship(pb7->formSpecies()));
+                pb7->currentHandler(1);
             }
 
-            int perfectIVs = 0;
-            for (int i = 0; i < 6; i++)
+            int numPerfectIVs = 0;
+            for (Stat stat : {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF})
             {
-                pkm->iv(Stat(i), randomNumbers() % 30 + 1); // Initialize IVs so that none are perfect (though they can be close)
-                if (wb7->iv(Stat(i)) - 0xFC < 3)
+                if (wb7->iv(stat) - 0xFC < 3)
                 {
-                    perfectIVs = wb7->iv(Stat(i)) - 0xFB; // How many perfects should there be?
+                    numPerfectIVs = wb7->iv(stat) - 0xFB;
                     break;
                 }
             }
-            if (perfectIVs > 0)
+            for (int iv = 0; iv < numPerfectIVs; iv++)
             {
-                for (int i = 0; i < perfectIVs; i++)
+                Stat setMeTo31 = Stat(randomNumbers() % 6);
+                while (pb7->iv(setMeTo31) == 31)
                 {
-                    Stat chosenIV;
-                    do
-                    {
-                        chosenIV = Stat(randomNumbers() % 6);
-                    } while (pkm->iv(chosenIV) == 31);
-                    pkm->iv(chosenIV, 31);
+                    setMeTo31 = Stat(randomNumbers() % 6);
                 }
-                for (int i = 0; i < 6; i++)
-                {
-                    if (pkm->iv(Stat(i)) != 31)
-                    {
-                        pkm->iv(Stat(i), randomNumbers() % 32);
-                    }
-                }
+                pb7->iv(setMeTo31, 31);
             }
-            else
+            for (Stat stat : {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF})
             {
-                for (int i = 0; i < 6; i++)
+                if (pb7->iv(stat) != 31)
                 {
-                    pkm->iv(Stat(i), randomNumbers() % 32);
+                    pb7->iv(stat, randomNumbers() % 32);
                 }
             }
 
             if (wb7->otGender() == 3)
             {
-                pkm->TID(TID());
-                pkm->SID(SID());
+                pb7->TID(TID());
+                pb7->SID(SID());
             }
 
             // Sets the ability to the one specific to the formSpecies and sets abilitynumber (Why? Don't quite understand that)
@@ -801,60 +790,53 @@ void SavLGPE::mysteryGift(WCX& wc, int&)
                 case 0:
                 case 1:
                 case 2:
-                    pkm->ability(wb7->abilityType());
+                    pb7->setAbility(wb7->abilityType());
                     break;
                 case 3:
                 case 4:
-                    pkm->ability(randomNumbers() % (wb7->abilityType() - 1));
+                    pb7->setAbility(randomNumbers() % (wb7->abilityType() - 1));
                     break;
             }
 
             switch (wb7->PIDType())
             {
                 case 0: // Fixed value
-                    pkm->PID(wb7->PID());
+                    pb7->PID(wb7->PID());
                     break;
                 case 1: // Random
-                    pkm->PID((u32)randomNumbers());
+                    pb7->PID((u32)randomNumbers());
                     break;
                 case 2: // Always shiny
-                    pkm->PID((u32)randomNumbers());
-                    pkm->shiny(true);
+                    pb7->PID((u32)randomNumbers());
+                    pb7->shiny(true);
                     break;
                 case 3: // Never shiny
-                    pkm->PID((u32)randomNumbers());
-                    pkm->shiny(false);
+                    pb7->PID((u32)randomNumbers());
+                    pb7->shiny(false);
                     break;
             }
 
             if (wb7->egg())
             {
-                pkm->egg(true);
-                pkm->eggYear(wb7->year());
-                pkm->eggMonth(wb7->month());
-                pkm->eggDay(wb7->day());
-                pkm->nickname(i18n::species(language(), pkm->species()));
-                pkm->nicknamed(true);
+                pb7->egg(true);
+                pb7->eggYear(wb7->year());
+                pb7->eggMonth(wb7->month());
+                pb7->eggDay(wb7->day());
+                pb7->nickname(i18n::species(language(), pb7->species()));
+                pb7->nicknamed(true);
             }
 
-            pkm->metDay(wb7->day());
-            pkm->metMonth(wb7->month());
-            pkm->metYear(wb7->year());
-            pkm->currentFriendship(PersonalLGPE::baseFriendship(pkm->formSpecies()));
+            pb7->metDay(wb7->day());
+            pb7->metMonth(wb7->month());
+            pb7->metYear(wb7->year());
+            pb7->currentFriendship(PersonalLGPE::baseFriendship(pb7->formSpecies()));
 
-            pkm->partyCP(pkm->CP());
-            pkm->partyCurrHP(pkm->stat(Stat::HP));
-            for (int i = 0; i < 6; i++)
-            {
-                pkm->partyStat(Stat(i), pkm->stat(Stat(i)));
-            }
+            pb7->height(randomNumbers() % 256);
+            pb7->weight(randomNumbers() % 256);
+            pb7->fatefulEncounter(true);
 
-            pkm->height(randomNumbers() % 256);
-            pkm->weight(randomNumbers() % 256);
-            pkm->fatefulEncounter(true);
-
-            pkm->refreshChecksum();
-            SavLGPE::pkm(pb7, boxedPkm()); // qualify so there are no stupid errors
+            pb7->refreshChecksum();
+            pkm(*pb7, boxedPkm());
             boxedPkm(this->boxedPkm() + 1);
         }
         else if (wb7->item())

@@ -138,11 +138,11 @@ public:
     // Not necessary directly after construction
     virtual void beginEditing(void) = 0;
 
-    std::shared_ptr<PKX> transfer(std::shared_ptr<PKX> pk);
+    // If not empty, run through i18n::localize
+    std::string invalidTransferReason(const PKX& pk) const;
+    std::unique_ptr<PKX> transfer(const PKX& pk);
     static bool isValidDSSave(std::shared_ptr<u8[]> dt);
     static std::unique_ptr<Sav> getSave(std::shared_ptr<u8[]> dt, size_t length);
-    // If not empty, run through i18n::localize
-    std::string invalidTransferReason(std::shared_ptr<PKX> pk) const;
 
     virtual u16 TID(void) const               = 0;
     virtual void TID(u16 v)                   = 0;
@@ -182,14 +182,14 @@ public:
     virtual u32 boxOffset(u8 box, u8 slot) const = 0;
     virtual u32 partyOffset(u8 slot) const       = 0;
 
-    virtual std::shared_ptr<PKX> pkm(u8 slot) const                             = 0;
-    virtual void pkm(std::shared_ptr<PKX> pk, u8 slot)                          = 0;
-    virtual std::shared_ptr<PKX> pkm(u8 box, u8 slot) const                     = 0;
-    virtual void pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade) = 0;
-    virtual void trade(std::shared_ptr<PKX> pk)                                 = 0; // Look into bank boolean parameter
-    virtual std::shared_ptr<PKX> emptyPkm() const                               = 0;
+    virtual std::unique_ptr<PKX> pkm(u8 slot) const                   = 0;
+    virtual void pkm(const PKX& pk, u8 slot)                          = 0;
+    virtual std::unique_ptr<PKX> pkm(u8 box, u8 slot) const           = 0;
+    virtual void pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade) = 0;
+    virtual void trade(PKX& pk)                                       = 0; // Look into bank boolean parameter
+    virtual std::unique_ptr<PKX> emptyPkm() const                     = 0;
 
-    virtual void dex(std::shared_ptr<PKX> pk)                   = 0;
+    virtual void dex(const PKX& pk)                             = 0;
     virtual int dexSeen(void) const                             = 0;
     virtual int dexCaught(void) const                           = 0;
     virtual int emptyGiftLocation(void) const                   = 0;

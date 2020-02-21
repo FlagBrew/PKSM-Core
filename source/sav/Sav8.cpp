@@ -57,7 +57,7 @@ std::shared_ptr<SCBlock> Sav8::getBlock(u32 key) const
     return nullptr;
 }
 
-std::shared_ptr<PKX> Sav8::emptyPkm() const
+std::unique_ptr<PKX> Sav8::emptyPkm() const
 {
     return PKX::getPKM<Generation::EIGHT>(nullptr);
 }
@@ -107,28 +107,28 @@ const std::set<int>& Sav8::availableBalls(void) const
     return balls;
 }
 
-void Sav8::trade(std::shared_ptr<PKX> pk)
+void Sav8::trade(PKX& pk)
 {
-    if (pk->egg())
+    if (pk.egg())
     {
-        if (pk->otName() != otName() || pk->TID() != TID() || pk->SID() != SID() || pk->gender() != gender())
+        if (pk.otName() != otName() || pk.TID() != TID() || pk.SID() != SID() || pk.gender() != gender())
         {
-            pk->metLocation(30002);
+            pk.metLocation(30002);
         }
     }
     else
     {
-        if (pk->otName() != otName() || pk->TID() != TID() || pk->SID() != SID() || pk->gender() != gender())
+        if (pk.otName() != otName() || pk.TID() != TID() || pk.SID() != SID() || pk.gender() != gender())
         {
-            pk->currentHandler(0);
+            pk.currentHandler(0);
         }
         else
         {
-            pk->currentHandler(1);
-            ((PK8*)pk.get())->htName(otName());
-            ((PK8*)pk.get())->currentFriendship(pk->baseFriendship());
-            ((PK8*)pk.get())->htGender(gender());
-            ((PK8*)pk.get())->htLanguage(language());
+            pk.currentHandler(1);
+            ((PK8&)pk).htName(otName());
+            ((PK8&)pk).currentFriendship(pk.baseFriendship());
+            ((PK8&)pk).htGender(gender());
+            ((PK8&)pk).htLanguage(language());
         }
     }
 }

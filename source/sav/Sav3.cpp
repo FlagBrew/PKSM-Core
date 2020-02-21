@@ -406,40 +406,41 @@ u32 Sav3::partyOffset(u8 slot) const
     return blockOfs[1] + (game == Game::FRLG ? 0x38 : 0x238) + (PK3::PARTY_LENGTH * slot);
 }
 
-std::shared_ptr<PKX> Sav3::pkm(u8 slot) const
+std::unique_ptr<PKX> Sav3::pkm(u8 slot) const
 {
     return PKX::getPKM<Generation::THREE>(&data[partyOffset(slot)], true);
 }
-std::shared_ptr<PKX> Sav3::pkm(u8 box, u8 slot) const
+std::unique_ptr<PKX> Sav3::pkm(u8 box, u8 slot) const
 {
     return PKX::getPKM<Generation::THREE>(&Box[boxOffset(box, slot)]);
 }
 
-void Sav3::pkm(std::shared_ptr<PKX> pk, u8 slot)
+void Sav3::pkm(const PKX& pk, u8 slot)
 {
-    if (pk->generation() == Generation::THREE)
+    if (pk.generation() == Generation::THREE)
     {
-        auto pk3 = pk->partyClone();
+        auto pk3 = pk.partyClone();
         pk3->encrypt();
-        std::copy(pk3->rawData(), pk3->rawData() + pk3->getLength(), &data[partyOffset(slot)]);
+        std::copy(pk3->rawData(), pk3->rawData() + PK3::PARTY_LENGTH, &data[partyOffset(slot)]);
     }
 }
-void Sav3::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
+void Sav3::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)
 {
-    if (pk->generation() == Generation::THREE)
+    if (pk.generation() == Generation::THREE)
     {
+        auto pk3 = pk.clone();
         if (applyTrade)
         {
-            trade(pk);
+            trade(*pk3);
         }
 
-        std::copy(pk->rawData(), pk->rawData() + PK3::BOX_LENGTH, &Box[boxOffset(box, slot)]);
+        std::copy(pk3->rawData(), pk3->rawData() + PK3::BOX_LENGTH, &Box[boxOffset(box, slot)]);
     }
 }
 
-void Sav3::trade(std::shared_ptr<PKX>) {}
+void Sav3::trade(PKX&) {}
 
-std::shared_ptr<PKX> Sav3::emptyPkm() const
+std::unique_ptr<PKX> Sav3::emptyPkm() const
 {
     return PKX::getPKM<Generation::THREE>(nullptr);
 }
@@ -473,9 +474,9 @@ void Sav3::dexPIDSpinda(u32 v)
     LittleEndian::convertFrom<u32>(&data[PokeDex + 0x8], v);
 }
 
-void Sav3::dex(std::shared_ptr<PKX> pk)
+void Sav3::dex(const PKX& pk)
 {
-    int species = pk->species();
+    int species = pk.species();
     if (!canSetDex(species))
         return;
 
@@ -483,11 +484,11 @@ void Sav3::dex(std::shared_ptr<PKX> pk)
     {
         case 201: // Unown
             if (!getSeen(species))
-                dexPIDUnown(pk->PID());
+                dexPIDUnown(pk.PID());
             break;
         case 327: // Spinda
             if (!getSeen(species))
-                dexPIDSpinda(pk->PID());
+                dexPIDSpinda(pk.PID());
             break;
     }
     setCaught(species, true);
