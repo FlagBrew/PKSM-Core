@@ -31,6 +31,7 @@
 #include "utils/random.hpp"
 #include "utils/utils.hpp"
 #include "wcx/WC8.hpp"
+#include <algorithm>
 
 namespace
 {

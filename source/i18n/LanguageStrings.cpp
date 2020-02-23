@@ -77,7 +77,12 @@ namespace
         return ret;
     }
 #endif
+
+#if __cplusplus > 201703L
     constexpr std::string_view toLower(std::string_view str)
+#else
+    std::string_view toLower(std::string_view str)
+#endif
     {
         char ret[str.size() + 1] = {'\0'};
         char upper[]             = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";

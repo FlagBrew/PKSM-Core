@@ -25,12 +25,12 @@
  */
 
 #include "pkx/PK4.hpp"
-#include "PK8.hpp"
 #include "i18n/i18n.hpp"
 #include "pkx/PK3.hpp"
 #include "pkx/PK5.hpp"
 #include "pkx/PK6.hpp"
 #include "pkx/PK7.hpp"
+#include "pkx/PK8.hpp"
 #include "sav/Sav.hpp"
 #include "utils/endian.hpp"
 #include "utils/utils.hpp"
