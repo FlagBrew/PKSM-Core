@@ -249,8 +249,6 @@ public:
     u16 formSpecies(void) const override;
     u16 stat(Stat stat) const override;
 
-    // std::shared_ptr<PKX> previous(Sav& save) const override;
-
     inline u8 baseHP(void) const override { return PersonalSWSH::baseHP(formSpecies()); }
     inline u8 baseAtk(void) const override { return PersonalSWSH::baseAtk(formSpecies()); }
     inline u8 baseDef(void) const override { return PersonalSWSH::baseDef(formSpecies()); }
