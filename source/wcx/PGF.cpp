@@ -188,7 +188,7 @@ bool PGF::used(void) const
 
 bool PGF::multiObtainable(void) const
 {
-    return flags() == 0;
+    return flags() == 1;
 }
 
 u8 PGF::ball(void) const
