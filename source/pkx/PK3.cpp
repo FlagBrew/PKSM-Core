@@ -549,6 +549,13 @@ u8 PK3::contestRibbonCount(u8 contest) const
     u16 rawVal = LittleEndian::convertTo<u16>(data + 0x4C);
     return (rawVal >> (contest * 3)) & 7;
 }
+void PK3::contestRibbonCount(u8 contest, u8 count)
+{
+    u16 rawVal = LittleEndian::convertTo<u16>(data + 0x4C);
+    rawVal &= 0xFFFF ^ (0x7 << (contest * 3));
+    rawVal |= (count & 0x7) << (contest * 3);
+    LittleEndian::convertFrom<u16>(data + 0x4C, rawVal);
+}
 
 bool PK3::fatefulEncounter(void) const
 {

@@ -1089,9 +1089,9 @@ std::unique_ptr<PK3> PK4::convertToG3(Sav&) const
         Ribbon::G3Tough, Ribbon::G3ToughSuper, Ribbon::G3ToughHyper, Ribbon::G3ToughMaster};
     for (size_t i = 0; i < contestRibbons.size(); i++)
     {
-        if (contestRibbonCount(i / 4) > i % 4)
+        if (ribbon(contestRibbons[i]))
         {
-            pk3->ribbon(contestRibbons[i], true);
+            pk3->contestRibbonCount(i / 4, pk3->contestRibbonCount(i / 4) + 1);
         }
     }
 

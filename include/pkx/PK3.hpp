@@ -137,6 +137,7 @@ public:
     bool ribbon(Ribbon rib) const override;
     void ribbon(Ribbon rib, bool v) override;
     u8 contestRibbonCount(u8 contest) const;
+    void contestRibbonCount(u8 contest, u8 count);
 
     u16 move(u8 move) const override;
     void move(u8 move, u16 v) override;
