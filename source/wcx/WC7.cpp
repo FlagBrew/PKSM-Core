@@ -115,30 +115,30 @@ void WC7::rawDate(u32 v)
     LittleEndian::convertFrom<u32>(data + 0x4C, v);
 }
 
-u32 WC7::year(void) const
+int WC7::year(void) const
 {
     return rawDate() / 10000 + 2000;
 }
 
-u32 WC7::month(void) const
+int WC7::month(void) const
 {
     return rawDate() % 10000 / 100;
 }
 
-u32 WC7::day(void) const
+int WC7::day(void) const
 {
     return rawDate() % 100;
 }
 
-void WC7::year(u32 v)
+void WC7::year(int v)
 {
-    u32 newVal = v < 2000 ? v : v - 2000;
+    u32 newVal = std::max(0, v - 2000);
     newVal *= 10000;
     newVal += rawDate() % 10000;
     rawDate(newVal);
 }
 
-void WC7::month(u32 v)
+void WC7::month(int v)
 {
     u32 newVal = rawDate() / 10000;
     newVal *= 100;
@@ -148,7 +148,7 @@ void WC7::month(u32 v)
     rawDate(newVal);
 }
 
-void WC7::day(u32 v)
+void WC7::day(int v)
 {
     u32 newVal = rawDate() / 100;
     newVal *= 100;

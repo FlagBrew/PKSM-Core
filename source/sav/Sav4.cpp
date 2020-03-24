@@ -272,11 +272,12 @@ void Sav4::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)
     }
 }
 
-void Sav4::trade(PKX& pk)
+void Sav4::trade(PKX& pk, const Date& date) const
 {
     if (pk.egg() && (otName() != pk.otName() || TID() != pk.TID() || SID() != pk.SID() || gender() != pk.otGender()))
     {
         pk.metLocation(2002);
+        pk.metDate(date);
     }
 }
 

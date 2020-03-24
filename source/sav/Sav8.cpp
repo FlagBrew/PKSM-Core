@@ -107,13 +107,14 @@ const std::set<int>& Sav8::availableBalls(void) const
     return balls;
 }
 
-void Sav8::trade(PKX& pk)
+void Sav8::trade(PKX& pk, const Date& date) const
 {
     if (pk.egg())
     {
         if (pk.otName() != otName() || pk.TID() != TID() || pk.SID() != SID() || pk.gender() != gender())
         {
             pk.metLocation(30002);
+            pk.metDate(date);
         }
     }
     else

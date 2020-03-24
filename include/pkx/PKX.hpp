@@ -29,6 +29,7 @@
 
 #include "i18n/Language.hpp"
 #include "sav/Item.hpp"
+#include "utils/DateTime.hpp"
 #include "utils/Ribbons.hpp"
 #include "utils/coretypes.h"
 #include "utils/genToPkx.hpp"
@@ -44,6 +45,18 @@ class PKX
 {
 private:
     bool directAccess;
+    virtual int eggYear(void) const  = 0;
+    virtual void eggYear(int v)      = 0;
+    virtual int eggMonth(void) const = 0;
+    virtual void eggMonth(int v)     = 0;
+    virtual int eggDay(void) const   = 0;
+    virtual void eggDay(int v)       = 0;
+    virtual int metYear(void) const  = 0;
+    virtual void metYear(int v)      = 0;
+    virtual int metMonth(void) const = 0;
+    virtual void metMonth(int v)     = 0;
+    virtual int metDay(void) const   = 0;
+    virtual void metDay(int v)       = 0;
 
 protected:
     struct PrivateConstructor
@@ -203,32 +216,35 @@ public:
     virtual void otName(const std::string& v) = 0;
     virtual u8 otFriendship(void) const       = 0;
     virtual void otFriendship(u8 v)           = 0;
-    virtual u8 eggYear(void) const            = 0;
-    virtual void eggYear(u8 v)                = 0;
-    virtual u8 eggMonth(void) const           = 0;
-    virtual void eggMonth(u8 v)               = 0;
-    virtual u8 eggDay(void) const             = 0;
-    virtual void eggDay(u8 v)                 = 0;
-    virtual u8 metYear(void) const            = 0;
-    virtual void metYear(u8 v)                = 0;
-    virtual u8 metMonth(void) const           = 0;
-    virtual void metMonth(u8 v)               = 0;
-    virtual u8 metDay(void) const             = 0;
-    virtual void metDay(u8 v)                 = 0;
-    virtual u16 eggLocation(void) const       = 0;
-    virtual void eggLocation(u16 v)           = 0;
-    virtual u16 metLocation(void) const       = 0;
-    virtual void metLocation(u16 v)           = 0;
-    virtual u8 ball(void) const               = 0;
-    virtual void ball(u8 v)                   = 0;
-    virtual u8 metLevel(void) const           = 0;
-    virtual void metLevel(u8 v)               = 0;
-    virtual u8 otGender(void) const           = 0;
-    virtual void otGender(u8 v)               = 0;
-    virtual u8 version(void) const            = 0;
-    virtual void version(u8 v)                = 0;
-    virtual Language language(void) const     = 0;
-    virtual void language(Language v)         = 0;
+    // Raw information handled in private functions
+    virtual Date eggDate(void) const { return Date{(u8)eggDay(), (u8)eggMonth(), (u32)eggYear()}; }
+    virtual void eggDate(const Date& v)
+    {
+        eggDay(v.day());
+        eggMonth(v.month());
+        eggYear(v.year());
+    }
+    virtual Date metDate(void) const { return Date{(u8)metDay(), (u8)metMonth(), (u32)metYear()}; }
+    virtual void metDate(const Date& v)
+    {
+        metDay(v.day());
+        metMonth(v.month());
+        metYear(v.year());
+    }
+    virtual u16 eggLocation(void) const   = 0;
+    virtual void eggLocation(u16 v)       = 0;
+    virtual u16 metLocation(void) const   = 0;
+    virtual void metLocation(u16 v)       = 0;
+    virtual u8 ball(void) const           = 0;
+    virtual void ball(u8 v)               = 0;
+    virtual u8 metLevel(void) const       = 0;
+    virtual void metLevel(u8 v)           = 0;
+    virtual u8 otGender(void) const       = 0;
+    virtual void otGender(u8 v)           = 0;
+    virtual u8 version(void) const        = 0;
+    virtual void version(u8 v)            = 0;
+    virtual Language language(void) const = 0;
+    virtual void language(Language v)     = 0;
 
     virtual u8 currentFriendship(void) const = 0;
     virtual void currentFriendship(u8 v)     = 0;

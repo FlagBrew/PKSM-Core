@@ -619,9 +619,6 @@ std::unique_ptr<PK4> PK3::convertToG4(Sav&) const
         {0x74, 0x20, 0x0D, 0x02, 0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xA4, 0xA1, 0x0C, 0x02, 0xE0, 0xFF},
     }};
 
-    time_t t              = time(NULL);
-    struct tm* timeStruct = gmtime((const time_t*)&t);
-
     auto pk4 = PKX::getPKM<Generation::FOUR>(nullptr);
 
     pk4->PID(PID());
@@ -674,9 +671,7 @@ std::unique_ptr<PK4> PK3::convertToG4(Sav&) const
     pk4->pkrsStrain(pkrsStrain());
     pk4->pkrsDays(pkrsDays());
     pk4->otGender(otGender());
-    pk4->metYear(timeStruct->tm_year - 100);
-    pk4->metMonth(timeStruct->tm_mon + 1);
-    pk4->metDay(timeStruct->tm_mday);
+    pk4->metDate(Date::today());
     pk4->metLevel(level());
     pk4->metLocation(0x37); // Pal Park
     pk4->fatefulEncounter(fatefulEncounter());

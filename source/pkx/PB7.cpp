@@ -557,56 +557,56 @@ void PB7::otFeeling(u8 v)
     data[0xD0] = v;
 }
 
-u8 PB7::eggYear(void) const
+int PB7::eggYear(void) const
 {
-    return data[0xD1];
+    return 2000 + data[0xD1];
 }
-void PB7::eggYear(u8 v)
+void PB7::eggYear(int v)
 {
-    data[0xD1] = v;
+    data[0xD1] = v - 2000;
 }
 
-u8 PB7::eggMonth(void) const
+int PB7::eggMonth(void) const
 {
     return data[0xD2];
 }
-void PB7::eggMonth(u8 v)
+void PB7::eggMonth(int v)
 {
     data[0xD2] = v;
 }
 
-u8 PB7::eggDay(void) const
+int PB7::eggDay(void) const
 {
     return data[0xD3];
 }
-void PB7::eggDay(u8 v)
+void PB7::eggDay(int v)
 {
     data[0xD3] = v;
 }
 
-u8 PB7::metYear(void) const
+int PB7::metYear(void) const
 {
-    return data[0xD4];
+    return 2000 + data[0xD4];
 }
-void PB7::metYear(u8 v)
+void PB7::metYear(int v)
 {
-    data[0xD4] = v;
+    data[0xD4] = v - 2000;
 }
 
-u8 PB7::metMonth(void) const
+int PB7::metMonth(void) const
 {
     return data[0xD5];
 }
-void PB7::metMonth(u8 v)
+void PB7::metMonth(int v)
 {
     data[0xD5] = v;
 }
 
-u8 PB7::metDay(void) const
+int PB7::metDay(void) const
 {
     return data[0xD6];
 }
-void PB7::metDay(u8 v)
+void PB7::metDay(int v)
 {
     data[0xD6] = v;
 }
@@ -1044,9 +1044,7 @@ std::unique_ptr<PK8> PB7::convertToG8(Sav& save) const
     pk8->nickname(nickname());
     pk8->version(version());
     pk8->otName(otName());
-    pk8->metDay(metDay());
-    pk8->metMonth(metMonth());
-    pk8->metYear(metYear());
+    pk8->metDate(metDate());
     pk8->otGender(otGender());
     pk8->metLocation(metLocation());
     pk8->ball(ball());

@@ -40,6 +40,18 @@ protected:
 private:
     bool japanese(void) const;
     static int swapBits(int value, int p1, int p2);
+    int eggYear(void) const override { return 1900; }
+    void eggYear(int) override {}
+    int eggMonth(void) const override { return 1; }
+    void eggMonth(int) override {}
+    int eggDay(void) const override { return 1; }
+    void eggDay(int) override {}
+    int metYear(void) const override { return 1900; }
+    void metYear(int) override {}
+    int metMonth(void) const override { return 1; }
+    void metMonth(int) override {}
+    int metDay(void) const override { return 1; }
+    void metDay(int) override {}
 
 public:
     static constexpr size_t BOX_LENGTH           = 80;
@@ -158,18 +170,6 @@ public:
     u8 version(void) const override;
     void version(u8 v) override;
 
-    u8 eggYear(void) const override { return 0; }
-    void eggYear(u8) override {}
-    u8 eggMonth(void) const override { return 0; }
-    void eggMonth(u8) override {}
-    u8 eggDay(void) const override { return 0; }
-    void eggDay(u8) override {}
-    u8 metYear(void) const override { return 0; }
-    void metYear(u8) override {}
-    u8 metMonth(void) const override { return 0; }
-    void metMonth(u8) override {}
-    u8 metDay(void) const override { return 0; }
-    void metDay(u8) override {}
     u16 eggLocation(void) const override { return 0; }
     void eggLocation(u16) override {}
     u16 metLocation(void) const override;

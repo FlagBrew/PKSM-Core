@@ -632,11 +632,7 @@ void SavSWSH::mysteryGift(WCX& wc, int&)
                 pk8->alternativeForm(pk8->gender());
             }
 
-            time_t t = time(nullptr);
-            tm* now  = gmtime(&t);
-            pk8->metDay(now->tm_mday);
-            pk8->metMonth(now->tm_mon);
-            pk8->metYear(now->tm_year);
+            pk8->metDate(Date::today());
 
             Language nickLang = wc8->nicknameLanguage(language());
             if (nickLang != Language(0))
@@ -752,9 +748,7 @@ void SavSWSH::mysteryGift(WCX& wc, int&)
 
             if (wc8->egg())
             {
-                pk8->eggDay(now->tm_mday);
-                pk8->eggMonth(now->tm_mon);
-                pk8->eggYear(now->tm_year);
+                pk8->eggDate(Date::today());
                 pk8->nickname(i18n::species(pk8->language(), 0));
                 pk8->nicknamed(true);
             }

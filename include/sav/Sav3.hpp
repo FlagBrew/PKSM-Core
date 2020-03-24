@@ -153,7 +153,7 @@ public:
     void pkm(const PKX& pk, u8 slot) override;
     void pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade) override;
 
-    void trade(PKX& pk) override;
+    void trade(PKX& pk, const Date& date = Date::today()) const override;
     std::unique_ptr<PKX> emptyPkm() const override;
 
     void dex(const PKX& pk) override;

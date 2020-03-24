@@ -375,12 +375,13 @@ void SavLGPE::pkm(const PKX& pk, u8 slot)
     }
 }
 
-void SavLGPE::trade(PKX& pk)
+void SavLGPE::trade(PKX& pk, const Date& date) const
 {
     PB7* pb7 = (PB7*)&pk;
     if (pb7->egg() && !(otName() == pb7->otName() && TID() == pb7->TID() && SID() == pb7->SID() && gender() == pb7->otGender()))
     {
         pb7->metLocation(30002);
+        pb7->metDate(date);
     }
     else if (!(otName() == pb7->otName() && TID() == pb7->TID() && SID() == pb7->SID() && gender() == pb7->otGender()))
     {
@@ -819,16 +820,12 @@ void SavLGPE::mysteryGift(WCX& wc, int&)
             if (wb7->egg())
             {
                 pb7->egg(true);
-                pb7->eggYear(wb7->year());
-                pb7->eggMonth(wb7->month());
-                pb7->eggDay(wb7->day());
+                pb7->eggDate(wb7->date());
                 pb7->nickname(i18n::species(language(), pb7->species()));
                 pb7->nicknamed(true);
             }
 
-            pb7->metDay(wb7->day());
-            pb7->metMonth(wb7->month());
-            pb7->metYear(wb7->year());
+            pb7->metDate(wb7->date());
             pb7->currentFriendship(PersonalLGPE::baseFriendship(pb7->formSpecies()));
 
             pb7->height(randomNumbers() % 256);

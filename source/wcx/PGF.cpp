@@ -101,42 +101,32 @@ u8 PGF::type(void) const
     return data[0xB3];
 }
 
-u32 PGF::rawDate(void) const
-{
-    return LittleEndian::convertTo<u32>(data + 0xAC);
-}
-
-void PGF::rawDate(u32 value)
-{
-    LittleEndian::convertFrom<u32>(data + 0xAC, value);
-}
-
-u32 PGF::year(void) const
+int PGF::year(void) const
 {
     return LittleEndian::convertTo<u16>(data + 0xAE);
 }
 
-u32 PGF::month(void) const
+int PGF::month(void) const
 {
     return data[0xAD];
 }
 
-u32 PGF::day(void) const
+int PGF::day(void) const
 {
     return data[0xAC];
 }
 
-void PGF::year(u32 v)
+void PGF::year(int v)
 {
-    LittleEndian::convertFrom<u16>(data + 0xAE, v < 2000 ? (u16)v + 2000 : v);
+    LittleEndian::convertFrom<u16>(data + 0xAE, v);
 }
 
-void PGF::month(u32 v)
+void PGF::month(int v)
 {
     data[0xAD] = (u8)v;
 }
 
-void PGF::day(u32 v)
+void PGF::day(int v)
 {
     data[0xAC] = (u8)v;
 }

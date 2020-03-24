@@ -438,7 +438,7 @@ void Sav3::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)
     }
 }
 
-void Sav3::trade(PKX&) {}
+void Sav3::trade(PKX&, const Date&) const {}
 
 std::unique_ptr<PKX> Sav3::emptyPkm() const
 {

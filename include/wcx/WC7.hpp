@@ -31,6 +31,16 @@
 
 class WC7 : public WCX
 {
+private:
+    int year(void) const override;
+    int month(void) const override;
+    int day(void) const override;
+    void year(int v) override;
+    void month(int v) override;
+    void day(int v) override;
+    u32 rawDate() const;
+    void rawDate(u32 v);
+
 protected:
     u8 data[264];
     int numItems = 0;
@@ -50,12 +60,6 @@ public:
     bool power(void) const override;
     std::string title(void) const override;
     u8 type(void) const override;
-    u32 year(void) const override;
-    u32 month(void) const override;
-    u32 day(void) const override;
-    void year(u32 v) override;
-    void month(u32 v) override;
-    void day(u32 v) override;
     u16 ID(void) const override;
     u16 object(void) const override;
     u16 objectQuantity(void) const;
@@ -64,8 +68,6 @@ public:
     u16 objectQuantity(int index) const;
     int items(void) const;
     bool multiObtainable(void) const override;
-    u32 rawDate(void) const override;
-    void rawDate(u32 value) override;
     u8 flags(void) const override;
     u8 cardLocation(void) const override;
     bool used(void) const override;

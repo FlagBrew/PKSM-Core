@@ -715,56 +715,56 @@ void PK5::otName(const std::string& v)
     StringUtils::setString(data, StringUtils::transString45(v), 0x68, 8, u'\uFFFF', 0);
 }
 
-u8 PK5::eggYear(void) const
+int PK5::eggYear(void) const
 {
-    return data[0x78];
+    return 2000 + data[0x78];
 }
-void PK5::eggYear(u8 v)
+void PK5::eggYear(int v)
 {
-    data[0x78] = v;
+    data[0x78] = v - 2000;
 }
 
-u8 PK5::eggMonth(void) const
+int PK5::eggMonth(void) const
 {
     return data[0x79];
 }
-void PK5::eggMonth(u8 v)
+void PK5::eggMonth(int v)
 {
     data[0x79] = v;
 }
 
-u8 PK5::eggDay(void) const
+int PK5::eggDay(void) const
 {
     return data[0x7A];
 }
-void PK5::eggDay(u8 v)
+void PK5::eggDay(int v)
 {
     data[0x7A] = v;
 }
 
-u8 PK5::metYear(void) const
+int PK5::metYear(void) const
 {
-    return data[0x7B];
+    return 2000 + data[0x7B];
 }
-void PK5::metYear(u8 v)
+void PK5::metYear(int v)
 {
-    data[0x7B] = v;
+    data[0x7B] = v - 2000;
 }
 
-u8 PK5::metMonth(void) const
+int PK5::metMonth(void) const
 {
     return data[0x7C];
 }
-void PK5::metMonth(u8 v)
+void PK5::metMonth(int v)
 {
     data[0x7C] = v;
 }
 
-u8 PK5::metDay(void) const
+int PK5::metDay(void) const
 {
     return data[0x7D];
 }
-void PK5::metDay(u8 v)
+void PK5::metDay(int v)
 {
     data[0x7D] = v;
 }
@@ -1153,12 +1153,8 @@ std::unique_ptr<PK6> PK5::convertToG6(Sav& save) const
 
     pk6->otName(otName());
 
-    pk6->metYear(metYear());
-    pk6->metMonth(metMonth());
-    pk6->metDay(metDay());
-    pk6->eggYear(eggYear());
-    pk6->eggMonth(eggMonth());
-    pk6->eggDay(eggDay());
+    pk6->metDate(metDate());
+    pk6->eggDate(eggDate());
 
     pk6->metLocation(metLocation());
     pk6->eggLocation(eggLocation());

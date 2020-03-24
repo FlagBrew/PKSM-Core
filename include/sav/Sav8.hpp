@@ -55,7 +55,7 @@ public:
     void finishEditing(void) override;
     void beginEditing(void) override;
 
-    void trade(PKX& pk) override;
+    void trade(PKX& pk, const Date& date = Date::today()) const override;
     std::unique_ptr<PKX> emptyPkm() const override;
 
     const std::set<int>& availableItems(void) const override;

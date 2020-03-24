@@ -747,56 +747,56 @@ void PK6::otFeeling(u8 v)
     data[0xD0] = v;
 }
 
-u8 PK6::eggYear(void) const
+int PK6::eggYear(void) const
 {
-    return data[0xD1];
+    return 2000 + data[0xD1];
 }
-void PK6::eggYear(u8 v)
+void PK6::eggYear(int v)
 {
-    data[0xD1] = v;
+    data[0xD1] = v - 2000;
 }
 
-u8 PK6::eggMonth(void) const
+int PK6::eggMonth(void) const
 {
     return data[0xD2];
 }
-void PK6::eggMonth(u8 v)
+void PK6::eggMonth(int v)
 {
     data[0xD2] = v;
 }
 
-u8 PK6::eggDay(void) const
+int PK6::eggDay(void) const
 {
     return data[0xD3];
 }
-void PK6::eggDay(u8 v)
+void PK6::eggDay(int v)
 {
     data[0xD3] = v;
 }
 
-u8 PK6::metYear(void) const
+int PK6::metYear(void) const
 {
-    return data[0xD4];
+    return 2000 + data[0xD4];
 }
-void PK6::metYear(u8 v)
+void PK6::metYear(int v)
 {
-    data[0xD4] = v;
+    data[0xD4] = v - 2000;
 }
 
-u8 PK6::metMonth(void) const
+int PK6::metMonth(void) const
 {
     return data[0xD5];
 }
-void PK6::metMonth(u8 v)
+void PK6::metMonth(int v)
 {
     data[0xD5] = v;
 }
 
-u8 PK6::metDay(void) const
+int PK6::metDay(void) const
 {
     return data[0xD6];
 }
-void PK6::metDay(u8 v)
+void PK6::metDay(int v)
 {
     data[0xD6] = v;
 }
@@ -1188,12 +1188,8 @@ std::unique_ptr<PK5> PK6::convertToG5(Sav& save) const
     pk5->nickname(nickname());
     pk5->otName(otName());
 
-    pk5->metYear(metYear());
-    pk5->metMonth(metMonth());
-    pk5->metDay(metDay());
-    pk5->eggYear(eggYear());
-    pk5->eggMonth(eggMonth());
-    pk5->eggDay(eggDay());
+    pk5->metDate(metDate());
+    pk5->eggDate(eggDate());
 
     pk5->metLocation(metLocation());
     pk5->eggLocation(eggLocation());

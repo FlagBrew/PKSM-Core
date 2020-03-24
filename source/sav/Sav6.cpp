@@ -222,7 +222,7 @@ void Sav6::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)
     }
 }
 
-void Sav6::trade(PKX& pk)
+void Sav6::trade(PKX& pk, const Date& date) const
 {
     PK6* pk6 = (PK6*)&pk;
     if (pk6->egg())
@@ -230,8 +230,8 @@ void Sav6::trade(PKX& pk)
         if (otName() != pk6->otName() || TID() != pk6->TID() || SID() != pk6->SID() || gender() != pk6->otGender())
         {
             pk6->metLocation(30002);
+            pk6->metDate(date);
         }
-        return;
     }
     else if (otName() == pk6->otName() && TID() == pk6->TID() && SID() == pk6->SID() && gender() == pk6->otGender())
     {

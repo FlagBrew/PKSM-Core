@@ -28,6 +28,7 @@
 #define PKSM_WCX
 
 #include "i18n/Language.hpp"
+#include "utils/DateTime.hpp"
 #include "utils/Ribbons.hpp"
 #include "utils/coretypes.h"
 #include "utils/generation.hpp"
@@ -36,6 +37,14 @@
 
 class WCX
 {
+private:
+    virtual int year(void) const  = 0;
+    virtual int month(void) const = 0;
+    virtual int day(void) const   = 0;
+    virtual void year(int v)      = 0;
+    virtual void month(int v)     = 0;
+    virtual void day(int v)       = 0;
+
 public:
     WCX() {}
     WCX(const WCX&) = delete;
@@ -52,20 +61,19 @@ public:
     virtual bool power(void) const            = 0;
     virtual std::string title(void) const     = 0;
     virtual u8 type(void) const               = 0;
-    virtual u32 year(void) const              = 0;
-    virtual u32 month(void) const             = 0;
-    virtual u32 day(void) const               = 0;
-    virtual void year(u32 v)                  = 0;
-    virtual void month(u32 v)                 = 0;
-    virtual void day(u32 v)                   = 0;
-    virtual u16 ID(void) const                = 0;
-    virtual u16 object(void) const            = 0;
-    virtual bool multiObtainable(void) const  = 0;
-    virtual u32 rawDate(void) const           = 0;
-    virtual void rawDate(u32 value)           = 0;
-    virtual u8 flags(void) const              = 0;
-    virtual u8 cardLocation(void) const       = 0;
-    virtual bool used(void) const             = 0;
+    Date date(void) const { return Date{(u8)day(), (u8)month(), (u32)year()}; }
+    void date(const Date& v)
+    {
+        day(v.day());
+        month(v.month());
+        year(v.year());
+    }
+    virtual u16 ID(void) const               = 0;
+    virtual u16 object(void) const           = 0;
+    virtual bool multiObtainable(void) const = 0;
+    virtual u8 flags(void) const             = 0;
+    virtual u8 cardLocation(void) const      = 0;
+    virtual bool used(void) const            = 0;
 
     // Pokemon properties
     virtual bool shiny(void) const           = 0;

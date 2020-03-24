@@ -936,56 +936,56 @@ void PK8::otFeeling(u8 v)
     data[0x118] = v;
 }
 
-u8 PK8::eggYear(void) const
+int PK8::eggYear(void) const
 {
-    return data[0x119];
+    return 2000 + data[0x119];
 }
-void PK8::eggYear(u8 v)
+void PK8::eggYear(int v)
 {
-    data[0x119] = v;
+    data[0x119] = v - 2000;
 }
 
-u8 PK8::eggMonth(void) const
+int PK8::eggMonth(void) const
 {
     return data[0x11A];
 }
-void PK8::eggMonth(u8 v)
+void PK8::eggMonth(int v)
 {
     data[0x11A] = v;
 }
 
-u8 PK8::eggDay(void) const
+int PK8::eggDay(void) const
 {
     return data[0x11B];
 }
-void PK8::eggDay(u8 v)
+void PK8::eggDay(int v)
 {
     data[0x11B] = v;
 }
 
-u8 PK8::metYear(void) const
+int PK8::metYear(void) const
 {
-    return data[0x11C];
+    return 2000 + data[0x11C];
 }
-void PK8::metYear(u8 v)
+void PK8::metYear(int v)
 {
-    data[0x11C] = v;
+    data[0x11C] = v - 2000;
 }
 
-u8 PK8::metMonth(void) const
+int PK8::metMonth(void) const
 {
     return data[0x11D];
 }
-void PK8::metMonth(u8 v)
+void PK8::metMonth(int v)
 {
     data[0x11D] = v;
 }
 
-u8 PK8::metDay(void) const
+int PK8::metDay(void) const
 {
     return data[0x11E];
 }
-void PK8::metDay(u8 v)
+void PK8::metDay(int v)
 {
     data[0x11E] = v;
 }

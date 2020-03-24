@@ -34,6 +34,14 @@ class PK4;
 
 class PGT : public WCX
 {
+private:
+    int year(void) const override;
+    int month(void) const override;
+    int day(void) const override;
+    void year(int v) override;
+    void month(int v) override;
+    void day(int v) override;
+
 protected:
     u8 data[260];
     std::unique_ptr<PK4> pokemonData;
@@ -59,14 +67,6 @@ public:
     u8 flags(void) const override;
     bool multiObtainable(void) const override;
     // Stubbed functions
-    u32 year(void) const override;
-    u32 month(void) const override;
-    u32 day(void) const override;
-    void year(u32 v) override;
-    void month(u32 v) override;
-    void day(u32 v) override;
-    u32 rawDate(void) const override;
-    void rawDate(u32 value) override;
     u8 cardLocation(void) const override;
     bool used(void) const override;
 

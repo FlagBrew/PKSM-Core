@@ -140,59 +140,48 @@ bool PGT::multiObtainable(void) const
     return false;
 }
 
-u32 PGT::year(void) const
+int PGT::year(void) const
 {
-    return pokemonData->egg() ? pokemonData->eggYear() : pokemonData->metYear();
+    return (pokemonData->egg() ? pokemonData->eggDate() : pokemonData->metDate()).year();
 }
 
-u32 PGT::month(void) const
+int PGT::month(void) const
 {
-    return pokemonData->egg() ? pokemonData->eggMonth() : pokemonData->metMonth();
+    return (pokemonData->egg() ? pokemonData->eggDate() : pokemonData->metDate()).month();
 }
 
-u32 PGT::day(void) const
+int PGT::day(void) const
 {
-    return pokemonData->egg() ? pokemonData->eggDay() : pokemonData->metDay();
+    return (pokemonData->egg() ? pokemonData->eggDate() : pokemonData->metDate()).day();
 }
 
-void PGT::year(u32 v)
+void PGT::year(int v)
 {
-    v = v >= 2000 ? v - 2000 : v;
-    pokemonData->egg() ? pokemonData->eggYear((u8)v) : pokemonData->metYear((u8)v);
+    Date newDate = date();
+    newDate.year(v);
+    pokemonData->egg() ? pokemonData->eggDate(newDate) : pokemonData->metDate(newDate);
     pokemonData->refreshChecksum();
     pokemonData->encrypt();
     std::copy(pokemonData->rawData(), pokemonData->rawData() + 236, data + 0x8); // Actually set the data
     pokemonData->decrypt();
 }
 
-void PGT::month(u32 v)
+void PGT::month(int v)
 {
-    pokemonData->egg() ? pokemonData->eggMonth((u8)v) : pokemonData->metMonth((u8)v);
+    Date newDate = date();
+    newDate.month(v);
+    pokemonData->egg() ? pokemonData->eggDate(newDate) : pokemonData->metDate(newDate);
     pokemonData->refreshChecksum();
     pokemonData->encrypt();
     std::copy(pokemonData->rawData(), pokemonData->rawData() + 236, data + 0x8); // Actually set the data
     pokemonData->decrypt();
 }
 
-void PGT::day(u32 v)
+void PGT::day(int v)
 {
-    pokemonData->egg() ? pokemonData->eggDay((u8)v) : pokemonData->metDay((u8)v);
-    pokemonData->refreshChecksum();
-    pokemonData->encrypt();
-    std::copy(pokemonData->rawData(), pokemonData->rawData() + 236, data + 0x8); // Actually set the data
-    pokemonData->decrypt();
-}
-
-u32 PGT::rawDate(void) const
-{
-    return (year() << 16) | (month() << 8) | day();
-}
-
-void PGT::rawDate(u32 v)
-{
-    pokemonData->egg() ? pokemonData->eggYear((v >> 16) & 0xFF) : pokemonData->metYear((v >> 16) & 0xFF);
-    pokemonData->egg() ? pokemonData->eggMonth((v >> 8) & 0xFF) : pokemonData->metMonth((v >> 8) & 0xFF);
-    pokemonData->egg() ? pokemonData->eggDay(v & 0xFF) : pokemonData->metDay(v & 0xFF);
+    Date newDate = date();
+    newDate.day(v);
+    pokemonData->egg() ? pokemonData->eggDate(newDate) : pokemonData->metDate(newDate);
     pokemonData->refreshChecksum();
     pokemonData->encrypt();
     std::copy(pokemonData->rawData(), pokemonData->rawData() + 236, data + 0x8); // Actually set the data

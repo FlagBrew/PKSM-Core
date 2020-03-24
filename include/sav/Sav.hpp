@@ -28,6 +28,7 @@
 #define SAV_HPP
 
 #include "i18n/Language.hpp"
+#include "utils/DateTime.hpp"
 #include "utils/coretypes.h"
 #include "utils/game.hpp"
 #include "utils/generation.hpp"
@@ -182,12 +183,12 @@ public:
     virtual u32 boxOffset(u8 box, u8 slot) const = 0;
     virtual u32 partyOffset(u8 slot) const       = 0;
 
-    virtual std::unique_ptr<PKX> pkm(u8 slot) const                   = 0;
-    virtual void pkm(const PKX& pk, u8 slot)                          = 0;
-    virtual std::unique_ptr<PKX> pkm(u8 box, u8 slot) const           = 0;
-    virtual void pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade) = 0;
-    virtual void trade(PKX& pk)                                       = 0; // Look into bank boolean parameter
-    virtual std::unique_ptr<PKX> emptyPkm() const                     = 0;
+    virtual std::unique_ptr<PKX> pkm(u8 slot) const                     = 0;
+    virtual void pkm(const PKX& pk, u8 slot)                            = 0;
+    virtual std::unique_ptr<PKX> pkm(u8 box, u8 slot) const             = 0;
+    virtual void pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)   = 0;
+    virtual void trade(PKX& pk, const Date& date = Date::today()) const = 0; // Look into bank boolean parameter
+    virtual std::unique_ptr<PKX> emptyPkm() const                       = 0;
 
     virtual void dex(const PKX& pk)                             = 0;
     virtual int dexSeen(void) const                             = 0;

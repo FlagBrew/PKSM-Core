@@ -32,6 +32,20 @@
 
 class PK4 : public PKX
 {
+private:
+    int eggYear(void) const override;
+    void eggYear(int v) override;
+    int eggMonth(void) const override;
+    void eggMonth(int v) override;
+    int eggDay(void) const override;
+    void eggDay(int v) override;
+    int metYear(void) const override;
+    void metYear(int v) override;
+    int metMonth(void) const override;
+    void metMonth(int v) override;
+    int metDay(void) const override;
+    void metDay(int v) override;
+
 protected:
     static constexpr u8 beasts[4]  = {251, 243, 244, 245};
     static constexpr u16 banned[8] = {15, 19, 57, 70, 250, 249, 127, 431};
@@ -138,18 +152,6 @@ public:
 
     std::string otName(void) const override;
     void otName(const std::string& v) override;
-    u8 eggYear(void) const override;
-    void eggYear(u8 v) override;
-    u8 eggMonth(void) const override;
-    void eggMonth(u8 v) override;
-    u8 eggDay(void) const override;
-    void eggDay(u8 v) override;
-    u8 metYear(void) const override;
-    void metYear(u8 v) override;
-    u8 metMonth(void) const override;
-    void metMonth(u8 v) override;
-    u8 metDay(void) const override;
-    void metDay(u8 v) override;
     u16 eggLocation(void) const override;
     void eggLocation(u16 v) override;
     u16 metLocation(void) const override;

@@ -32,6 +32,20 @@
 
 class PK6 : public PKX
 {
+private:
+    int eggYear(void) const override;
+    void eggYear(int v) override;
+    int eggMonth(void) const override;
+    void eggMonth(int v) override;
+    int eggDay(void) const override;
+    void eggDay(int v) override;
+    int metYear(void) const override;
+    void metYear(int v) override;
+    int metMonth(void) const override;
+    void metMonth(int v) override;
+    int metDay(void) const override;
+    void metDay(int v) override;
+
 protected:
     void shuffleArray(u8 sv) override;
     void crypt(void) override;
@@ -182,18 +196,6 @@ public:
     void otTextVar(u16 v);
     u8 otFeeling(void) const;
     void otFeeling(u8 v);
-    u8 eggYear(void) const override;
-    void eggYear(u8 v) override;
-    u8 eggMonth(void) const override;
-    void eggMonth(u8 v) override;
-    u8 eggDay(void) const override;
-    void eggDay(u8 v) override;
-    u8 metYear(void) const override;
-    void metYear(u8 v) override;
-    u8 metMonth(void) const override;
-    void metMonth(u8 v) override;
-    u8 metDay(void) const override;
-    void metDay(u8 v) override;
     u16 eggLocation(void) const override;
     void eggLocation(u16 v) override;
     u16 metLocation(void) const override;

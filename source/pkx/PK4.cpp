@@ -625,56 +625,56 @@ void PK4::otName(const std::string& v)
     StringUtils::setString4(data, StringUtils::transString45(v), 0x68, 8);
 }
 
-u8 PK4::eggYear(void) const
+int PK4::eggYear(void) const
 {
-    return data[0x78];
+    return 2000 + data[0x78];
 }
-void PK4::eggYear(u8 v)
+void PK4::eggYear(int v)
 {
-    data[0x78] = v;
+    data[0x78] = v - 2000;
 }
 
-u8 PK4::eggMonth(void) const
+int PK4::eggMonth(void) const
 {
     return data[0x79];
 }
-void PK4::eggMonth(u8 v)
+void PK4::eggMonth(int v)
 {
     data[0x79] = v;
 }
 
-u8 PK4::eggDay(void) const
+int PK4::eggDay(void) const
 {
     return data[0x7A];
 }
-void PK4::eggDay(u8 v)
+void PK4::eggDay(int v)
 {
     data[0x7A] = v;
 }
 
-u8 PK4::metYear(void) const
+int PK4::metYear(void) const
 {
-    return data[0x7B];
+    return 2000 + data[0x7B];
 }
-void PK4::metYear(u8 v)
+void PK4::metYear(int v)
 {
-    data[0x7B] = v;
+    data[0x7B] = v - 2000;
 }
 
-u8 PK4::metMonth(void) const
+int PK4::metMonth(void) const
 {
     return data[0x7C];
 }
-void PK4::metMonth(u8 v)
+void PK4::metMonth(int v)
 {
     data[0x7C] = v;
 }
 
-u8 PK4::metDay(void) const
+int PK4::metDay(void) const
 {
     return data[0x7D];
 }
-void PK4::metDay(u8 v)
+void PK4::metDay(int v)
 {
     data[0x7D] = v;
 }
@@ -1019,9 +1019,6 @@ void PK4::partyLevel(u8 v)
 
 std::unique_ptr<PK3> PK4::convertToG3(Sav&) const
 {
-    time_t t              = time(NULL);
-    struct tm* timeStruct = gmtime((const time_t*)&t);
-
     auto pk3 = PKX::getPKM<Generation::THREE>(nullptr);
 
     pk3->PID(PID());
@@ -1067,9 +1064,7 @@ std::unique_ptr<PK3> PK4::convertToG3(Sav&) const
     pk3->pkrsStrain(pkrsStrain());
     pk3->pkrsDays(pkrsDays());
     pk3->otGender(otGender());
-    pk3->metYear(timeStruct->tm_year - 100);
-    pk3->metMonth(timeStruct->tm_mon + 1);
-    pk3->metDay(timeStruct->tm_mday);
+    // met date isn't a thing in PK3
     pk3->metLevel(level());
     pk3->metLocation(0xFD); // (gift egg) // Not sure if this is the best, it seemed the most generic
     pk3->fatefulEncounter(fatefulEncounter());
@@ -1136,13 +1131,8 @@ std::unique_ptr<PK5> PK4::convertToG5(Sav&) const
     // Clear PtHGSS met data
     LittleEndian::convertFrom<u32>(pk5->rawData() + 0x44, 0);
 
-    time_t t              = time(NULL);
-    struct tm* timeStruct = gmtime((const time_t*)&t);
-
     pk5->otFriendship(70);
-    pk5->metYear(timeStruct->tm_year - 100);
-    pk5->metMonth(timeStruct->tm_mon + 1);
-    pk5->metDay(timeStruct->tm_mday);
+    pk5->metDate(Date::today());
 
     // Force normal Arceus form
     if (pk5->species() == 493)

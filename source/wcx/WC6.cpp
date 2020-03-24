@@ -106,30 +106,30 @@ void WC6::rawDate(u32 v)
     LittleEndian::convertFrom<u32>(data + 0x4C, v);
 }
 
-u32 WC6::year(void) const
+int WC6::year(void) const
 {
-    return rawDate() / 10000;
+    return rawDate() / 10000 + 2000;
 }
 
-u32 WC6::month(void) const
+int WC6::month(void) const
 {
     return rawDate() % 10000 / 100;
 }
 
-u32 WC6::day(void) const
+int WC6::day(void) const
 {
     return rawDate() % 100;
 }
 
-void WC6::year(u32 v)
+void WC6::year(int v)
 {
-    u32 newVal = v < 2000 ? v + 2000 : v;
+    u32 newVal = std::max(0, v - 2000);
     newVal *= 10000;
     newVal += rawDate() % 10000;
     rawDate(newVal);
 }
 
-void WC6::month(u32 v)
+void WC6::month(int v)
 {
     u32 newVal = rawDate() / 10000;
     newVal *= 100;
@@ -139,7 +139,7 @@ void WC6::month(u32 v)
     rawDate(newVal);
 }
 
-void WC6::day(u32 v)
+void WC6::day(int v)
 {
     u32 newVal = rawDate() / 100;
     newVal *= 100;
