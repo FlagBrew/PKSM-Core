@@ -1069,33 +1069,31 @@ std::unique_ptr<PK3> PK4::convertToG3(Sav&) const
     pk3->metLocation(0xFD); // (gift egg) // Not sure if this is the best, it seemed the most generic
     pk3->fatefulEncounter(fatefulEncounter());
 
-    // TODO: Map ribbons to their gen 3 equivalents
-    // for (u8 rib = 0; rib < 12; rib++)
-    // {
-    //     pk4->ribbon(6 + (rib + 4) / 8, rib + 4, ribbon(1 + (rib + 7) / 8, rib + 7) ? 1 : 0);
-    // }
+    pk3->ribbon(Ribbon::ChampionG3Hoenn, ribbon(Ribbon::ChampionG3Hoenn));
+    pk3->ribbon(Ribbon::Winning, ribbon(Ribbon::Winning));
+    pk3->ribbon(Ribbon::Victory, ribbon(Ribbon::Victory));
+    pk3->ribbon(Ribbon::Artist, ribbon(Ribbon::Artist));
+    pk3->ribbon(Ribbon::Effort, ribbon(Ribbon::Effort));
+    pk3->ribbon(Ribbon::ChampionBattle, ribbon(Ribbon::ChampionBattle));
+    pk3->ribbon(Ribbon::ChampionRegional, ribbon(Ribbon::ChampionRegional));
+    pk3->ribbon(Ribbon::ChampionNational, ribbon(Ribbon::ChampionNational));
+    pk3->ribbon(Ribbon::Country, ribbon(Ribbon::Country));
+    pk3->ribbon(Ribbon::National, ribbon(Ribbon::National));
+    pk3->ribbon(Ribbon::Earth, ribbon(Ribbon::Earth));
+    pk3->ribbon(Ribbon::World, ribbon(Ribbon::World));
 
     // Contest ribbons
-    // for (u8 contest = 0; contest < 5; contest++)
-    // {
-    //     u8 contestCount = contestRibbonCount(contest);
-    //     if (contestCount > 0)
-    //     {
-    //         pk4->ribbon(4 + contest / 2, (contest % 2) * 4, 1);
-    //     }
-    //     if (contestCount > 1)
-    //     {
-    //         pk4->ribbon(4 + contest / 2, (contest % 2) * 4 + 1, 1);
-    //     }
-    //     if (contestCount > 2)
-    //     {
-    //         pk4->ribbon(4 + contest / 2, (contest % 2) * 4 + 2, 1);
-    //     }
-    //     if (contestCount > 3)
-    //     {
-    //         pk4->ribbon(4 + contest / 2, (contest % 2) * 4 + 3, 1);
-    //     }
-    // }
+    constexpr std::array<Ribbon, 20> contestRibbons = {Ribbon::G3Cool, Ribbon::G3CoolSuper, Ribbon::G3CoolHyper, Ribbon::G3CoolMaster,
+        Ribbon::G3Beauty, Ribbon::G3BeautySuper, Ribbon::G3BeautyHyper, Ribbon::G3BeautyMaster, Ribbon::G3Cute, Ribbon::G3CuteSuper,
+        Ribbon::G3CuteHyper, Ribbon::G3CuteMaster, Ribbon::G3Smart, Ribbon::G3SmartSuper, Ribbon::G3SmartHyper, Ribbon::G3SmartMaster,
+        Ribbon::G3Tough, Ribbon::G3ToughSuper, Ribbon::G3ToughHyper, Ribbon::G3ToughMaster};
+    for (size_t i = 0; i < contestRibbons.size(); i++)
+    {
+        if (contestRibbonCount(i / 4) > i % 4)
+        {
+            pk3->ribbon(contestRibbons[i], true);
+        }
+    }
 
     std::string name = i18n::species(language(), species());
     pk3->nickname((egg() || !nicknamed()) ? StringUtils::toUpper(name) : nickname());
