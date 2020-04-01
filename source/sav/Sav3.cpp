@@ -652,10 +652,7 @@ const std::set<int>& Sav3::availableBalls(void) const
 
 void Sav3::item(const Item& item, Pouch pouch, u16 slot)
 {
-    Item3 inject = (Item3)item;
-    if (pouch != Pouch::PCItem)
-        inject.count(inject.count() ^ (u16)securityKey());
-    auto write = inject.bytes();
+    auto write = item.bytes();
     switch (pouch)
     {
         case NormalItem:
