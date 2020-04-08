@@ -38,6 +38,25 @@
 #include <type_traits>
 #include <vector>
 
+namespace
+{
+#if (defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN) || (defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__) ||                \
+    defined(__BIG_ENDIAN__) || defined(__ARMEB__) || defined(__THUMBEB__) || defined(__AARCH64EB__) || defined(_MIBSEB) || defined(__MIBSEB) ||      \
+    defined(__MIBSEB__)
+    constexpr bool ENDIAN_bigEndian    = true;
+    constexpr bool ENDIAN_littleEndian = false;
+#elif (defined(__BYTE_ORDER) && __BYTE_ORDER == __LITTLE_ENDIAN) || (defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__) ||        \
+    defined(__LITTLE_ENDIAN__) || defined(__ARMEL__) || defined(__THUMBEL__) || defined(__AARCH64EL__) || defined(_MIPSEL) || defined(__MIPSEL) ||   \
+    defined(__MIPSEL__)
+    constexpr bool ENDIAN_bigEndian    = false;
+    constexpr bool ENDIAN_littleEndian = true;
+#else
+    constexpr bool ENDIAN_bigEndian    = false;
+    constexpr bool ENDIAN_littleEndian = false;
+#endif
+    constexpr bool ENDIAN_easyArch     = ENDIAN_bigEndian || ENDIAN_littleEndian;
+}
+
 namespace BigEndian
 {
     // Endianness checking found in https://stackoverflow.com/questions/4239993/determining-endianness-at-compile-time
@@ -48,12 +67,19 @@ namespace BigEndian
     {
         static_assert((std::is_same_v<T, float> && sizeof(float) == 4 && std::numeric_limits<T>::is_iec559) ||
                       (std::is_same_v<T, double> && sizeof(double) == 8 && std::numeric_limits<T>::is_iec559) || std::is_integral_v<T>);
-#if (defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN) || (defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__) ||                \
-    defined(__BIG_ENDIAN__) || defined(__ARMEB__) || defined(__THUMBEB__) || defined(__AARCH64EB__) || defined(_MIBSEB) || defined(__MIBSEB) ||      \
-    defined(__MIBSEB__)
-        memcpy(dest, &orig, sizeof(T));
-#else
-        if constexpr (std::is_integral_v<T>)
+
+        if constexpr (ENDIAN_easyArch)
+        {
+            memcpy(dest, &orig, sizeof(T));
+            if constexpr (ENDIAN_littleEndian)
+            {
+                for (size_t i = 0; i < sizeof(T) / 2; i++)
+                {
+                    std::swap(dest[i], dest[sizeof(T) - i - 1]);
+                }
+            }
+        }
+        else if constexpr (std::is_integral_v<T>)
         {
             std::make_unsigned_t<T> origVal = orig;
             for (size_t i = 0; i < sizeof(T); i++)
@@ -116,7 +142,6 @@ namespace BigEndian
                 convertFrom<u64>(dest, write);
             }
         }
-#endif
     }
 
     // Array-based implementation
@@ -193,14 +218,27 @@ namespace BigEndian
     {
         static_assert((std::is_same_v<T, float> && sizeof(float) == 4 && std::numeric_limits<T>::is_iec559) ||
                       (std::is_same_v<T, double> && sizeof(double) == 8 && std::numeric_limits<T>::is_iec559) || std::is_integral_v<T>);
-#if (defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN) || (defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__) ||                \
-    defined(__BIG_ENDIAN__) || defined(__ARMEB__) || defined(__THUMBEB__) || defined(__AARCH64EB__) || defined(_MIBSEB) || defined(__MIBSEB) ||      \
-    defined(__MIBSEB__)
-        T dest;
-        memcpy(&dest, from, sizeof(T));
-        return dest;
-#else
-        if constexpr (std::is_integral_v<T>)
+
+        if constexpr (ENDIAN_easyArch)
+        {
+            T dest;
+            if constexpr (ENDIAN_littleEndian)
+            {
+                u8 data[sizeof(T)];
+                memcpy(data, from, sizeof(T));
+                for (size_t i = 0; i < sizeof(T) / 2; i++)
+                {
+                    std::swap(data[i], data[sizeof(T) - i - 1]);
+                }
+                memcpy(&dest, data, sizeof(T));
+            }
+            else
+            {
+                memcpy(&dest, from, sizeof(T));
+            }
+            return dest;
+        }
+        else if constexpr (std::is_integral_v<T>)
         {
             std::make_unsigned_t<T> dest = 0;
             for (size_t i = 0; i < sizeof(T); i++)
@@ -291,7 +329,6 @@ namespace BigEndian
                 return std::copysign(ret, negative ? -1 : 1);
             }
         }
-#endif
     }
 
     template <typename T, size_t N>
@@ -316,12 +353,19 @@ namespace LittleEndian
     {
         static_assert((std::is_same_v<T, float> && sizeof(float) == 4 && std::numeric_limits<T>::is_iec559) ||
                       (std::is_same_v<T, double> && sizeof(double) == 8 && std::numeric_limits<T>::is_iec559) || std::is_integral_v<T>);
-#if (defined(__BYTE_ORDER) && __BYTE_ORDER == __LITTLE_ENDIAN) || (defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__) ||          \
-    defined(__LITTLE_ENDIAN__) || defined(__ARMEL__) || defined(__THUMBEL__) || defined(__AARCH64EL__) || defined(_MIPSEL) || defined(__MIPSEL) ||   \
-    defined(__MIPSEL__)
-        memcpy(dest, &orig, sizeof(T));
-#else
-        if constexpr (std::is_integral_v<T>)
+
+        if constexpr (ENDIAN_easyArch)
+        {
+            memcpy(dest, &orig, sizeof(T));
+            if constexpr (ENDIAN_bigEndian)
+            {
+                for (size_t i = 0; i < sizeof(T) / 2; i++)
+                {
+                    std::swap(dest[i], dest[sizeof(T) - i - 1]);
+                }
+            }
+        }
+        else if constexpr (std::is_integral_v<T>)
         {
             std::make_unsigned_t<T> origVal = orig;
             for (size_t i = 0; i < sizeof(T); i++)
@@ -384,7 +428,6 @@ namespace LittleEndian
                 convertFrom<u64>(dest, write);
             }
         }
-#endif
     }
 
     // Array-based implementation
@@ -461,15 +504,27 @@ namespace LittleEndian
     {
         static_assert((std::is_same_v<T, float> && sizeof(float) == 4 && std::numeric_limits<T>::is_iec559) ||
                       (std::is_same_v<T, double> && sizeof(double) == 8 && std::numeric_limits<T>::is_iec559) || std::is_integral_v<T>);
-#if (defined(__BYTE_ORDER) && __BYTE_ORDER == __LITTLE_ENDIAN) || (defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__) ||          \
-    defined(__LITTLE_ENDIAN__) || defined(__ARMEL__) || defined(__THUMBEL__) || defined(__AARCH64EL__) || defined(_MIPSEL) || defined(__MIPSEL) ||   \
-    defined(__MIPSEL__)
-        // Already in proper format
-        T dest;
-        memcpy(&dest, from, sizeof(T));
-        return dest;
-#else
-        if constexpr (std::is_integral_v<T>)
+
+        if constexpr (ENDIAN_easyArch)
+        {
+            T dest;
+            if constexpr (ENDIAN_bigEndian)
+            {
+                u8 data[sizeof(T)];
+                memcpy(data, from, sizeof(T));
+                for (size_t i = 0; i < sizeof(T) / 2; i++)
+                {
+                    std::swap(data[i], data[sizeof(T) - i - 1]);
+                }
+                memcpy(&dest, data, sizeof(T));
+            }
+            else
+            {
+                memcpy(&dest, from, sizeof(T));
+            }
+            return dest;
+        }
+        else if constexpr (std::is_integral_v<T>)
         {
             std::make_unsigned_t<T> dest = 0;
             for (size_t i = 0; i < sizeof(T); i++)
@@ -552,7 +607,6 @@ namespace LittleEndian
                 return std::copysign(ret, negative ? -1 : 1);
             }
         }
-#endif
     }
 
     template <typename T, size_t N>

@@ -39,11 +39,21 @@ namespace BigEndian
     template <typename T>
     constexpr void convertFrom(u8* dest, const T& orig)
     {
+        constexpr bool easyArch = (std::endian::big == std::endian::native) || (std::endian::little == std::endian::native);
+
         static_assert((std::is_same_v<T, float> && sizeof(float) == 4 && std::numeric_limits<T>::is_iec559) ||
                       (std::is_same_v<T, double> && sizeof(double) == 8 && std::numeric_limits<T>::is_iec559) || std::is_integral_v<T>);
-        if (!std::is_constant_evaluated() && std::endian::big == std::endian::native)
+
+        if (easyArch && !std::is_constant_evaluated())
         {
             memcpy(dest, &orig, sizeof(T));
+            if constexpr (std::endian::native == std::endian::little)
+            {
+                for (size_t i = 0; i < sizeof(T) / 2; i++)
+                {
+                    std::swap(dest[i], dest[sizeof(T) - i - 1]);
+                }
+            }
         }
         else if constexpr (std::is_integral_v<T>)
         {
@@ -189,12 +199,28 @@ namespace BigEndian
     template <typename T>
     constexpr T convertTo(const u8* from)
     {
+        constexpr bool easyArch = (std::endian::big == std::endian::native) || (std::endian::little == std::endian::native);
+
         static_assert((std::is_same_v<T, float> && sizeof(float) == 4 && std::numeric_limits<T>::is_iec559) ||
                       (std::is_same_v<T, double> && sizeof(double) == 8 && std::numeric_limits<T>::is_iec559) || std::is_integral_v<T>);
-        if (!std::is_constant_evaluated() && std::endian::native == std::endian::big)
+
+        if (easyArch && !std::is_constant_evaluated())
         {
             T dest;
-            memcpy(&dest, from, sizeof(T));
+            if constexpr (std::endian::native == std::endian::little)
+            {
+                u8 data[sizeof(T)];
+                memcpy(data, from, sizeof(T));
+                for (size_t i = 0; i < sizeof(T) / 2; i++)
+                {
+                    std::swap(data[i], data[sizeof(T) - i - 1]);
+                }
+                memcpy(&dest, data, sizeof(T));
+            }
+            else
+            {
+                memcpy(&dest, from, sizeof(T));
+            }
             return dest;
         }
         else if constexpr (std::is_integral_v<T>)
@@ -309,11 +335,21 @@ namespace LittleEndian
     template <typename T>
     constexpr void convertFrom(u8* dest, const T& orig)
     {
+        constexpr bool easyArch = (std::endian::big == std::endian::native) || (std::endian::little == std::endian::native);
+
         static_assert((std::is_same_v<T, float> && sizeof(float) == 4 && std::numeric_limits<T>::is_iec559) ||
                       (std::is_same_v<T, double> && sizeof(double) == 8 && std::numeric_limits<T>::is_iec559) || std::is_integral_v<T>);
-        if (!std::is_constant_evaluated() && std::endian::little == std::endian::native)
+
+        if (easyArch && !std::is_constant_evaluated())
         {
             memcpy(dest, &orig, sizeof(T));
+            if constexpr (std::endian::native == std::endian::big)
+            {
+                for (size_t i = 0; i < sizeof(T) / 2; i++)
+                {
+                    std::swap(dest[i], dest[sizeof(T) - i - 1]);
+                }
+            }
         }
         else if constexpr (std::is_integral_v<T>)
         {
@@ -458,12 +494,28 @@ namespace LittleEndian
     template <typename T>
     constexpr T convertTo(const u8* from)
     {
+        constexpr bool easyArch = (std::endian::big == std::endian::native) || (std::endian::little == std::endian::native);
+
         static_assert((std::is_same_v<T, float> && sizeof(float) == 4 && std::numeric_limits<T>::is_iec559) ||
                       (std::is_same_v<T, double> && sizeof(double) == 8 && std::numeric_limits<T>::is_iec559) || std::is_integral_v<T>);
-        if (!std::is_constant_evaluated() && std::endian::native == std::endian::little)
+
+        if (easyArch && !std::is_constant_evaluated())
         {
             T dest;
-            memcpy(&dest, from, sizeof(T));
+            if constexpr (std::endian::native == std::endian::big)
+            {
+                u8 data[sizeof(T)];
+                memcpy(data, from, sizeof(T));
+                for (size_t i = 0; i < sizeof(T) / 2; i++)
+                {
+                    std::swap(data[i], data[sizeof(T) - i - 1]);
+                }
+                memcpy(&dest, data, sizeof(T));
+            }
+            else
+            {
+                memcpy(&dest, from, sizeof(T));
+            }
             return dest;
         }
         else if constexpr (std::is_integral_v<T>)
