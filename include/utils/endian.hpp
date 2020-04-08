@@ -33,6 +33,7 @@
 
 #include "utils/coretypes.h"
 #include <array>
+#include <cmath>
 #include <string.h>
 #include <type_traits>
 #include <vector>
@@ -40,28 +41,81 @@
 namespace BigEndian
 {
     // Endianness checking found in https://stackoverflow.com/questions/4239993/determining-endianness-at-compile-time
-    // Only works with integral types
+    // Converts arithmetic types into big-endian byte representations. Integer types and IEEE 754 compliant single and double-precision floating-point
+    // types are supported.
     template <typename T>
     void convertFrom(u8* dest, const T& orig)
     {
-        static_assert(std::is_integral_v<T>);
-#if defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN || defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__ ||                    \
+        static_assert((std::is_same_v<T, float> && sizeof(float) == 4 && std::numeric_limits<T>::is_iec559) ||
+                      (std::is_same_v<T, double> && sizeof(double) == 8 && std::numeric_limits<T>::is_iec559) || std::is_integral_v<T>);
+#if (defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN) || (defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__) ||                \
     defined(__BIG_ENDIAN__) || defined(__ARMEB__) || defined(__THUMBEB__) || defined(__AARCH64EB__) || defined(_MIBSEB) || defined(__MIBSEB) ||      \
     defined(__MIBSEB__)
         memcpy(dest, &orig, sizeof(T));
-#elif defined(__BYTE_ORDER) && __BYTE_ORDER == __LITTLE_ENDIAN || defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ ||            \
-    defined(__LITTLE_ENDIAN__) || defined(__ARMEL__) || defined(__THUMBEL__) || defined(__AARCH64EL__) || defined(_MIPSEL) || defined(__MIPSEL) ||   \
-    defined(__MIPSEL__)
+#else
+        if constexpr (std::is_integral_v<T>)
         {
-            // Explicitly allowed by the C++ standard
-            u8* from = (u8*)&orig;
+            std::make_unsigned_t<T> origVal = orig;
             for (size_t i = 0; i < sizeof(T); i++)
             {
-                dest[i] = from[sizeof(T) - 1 - i];
+                dest[sizeof(T) - i - 1] = u8(origVal);
+                origVal >>= 8;
             }
         }
-#else
-#error "I don't know what architecture this is!"
+        else
+        {
+            bool negative = std::signbit(orig);
+            int exponent;
+            T normalized = std::frexp(orig, &exponent); // gets biased exponent, which isn't what I want
+            if constexpr (std::is_same_v<T, float>)
+            {
+                u32 write = negative ? (1 << 31) : 0;
+                switch (std::fpclassify(orig))
+                {
+                    case FP_INFINITE:
+                        write |= u32(0xFF) << 23; // should be written as 0x7F800000 or 0xFF800000
+                        break;
+                    case FP_NAN:
+                        write = 0xFFFFFFFF; // might as well just use a constant NaN number
+                        break;
+                    case FP_ZERO:
+                        // do nothing; it should be written as either 0x80000000 or 0x00000000
+                        break;
+                    case FP_NORMAL:
+                        write |= u32(exponent + 127) << 23;
+                        // falls through
+                    case FP_SUBNORMAL:
+                        normalized *= 1 << 23;
+                        write |= u32(normalized);
+                        break;
+                }
+                convertFrom<u32>(dest, write);
+            }
+            else if constexpr (std::is_same_v<T, double>)
+            {
+                u64 write = negative ? (u64(1) << 63) : 0;
+                switch (std::fpclassify(orig))
+                {
+                    case FP_INFINITE:
+                        write |= u64(0x7FF) << 52; // should be written as 0x7FF0000000000000 or 0xFFF0000000000000
+                        break;
+                    case FP_NAN:
+                        write = 0xFFFFFFFFFFFFFFFF; // might as well just use a constant NaN number
+                        break;
+                    case FP_ZERO:
+                        // do nothing; it should be written as either 0x8000000000000000 or 0x0000000000000000
+                        break;
+                    case FP_NORMAL:
+                        write |= u64(exponent + 1023) << 52;
+                        // falls through
+                    case FP_SUBNORMAL:
+                        normalized *= u64(1) << 52;
+                        write |= u64(normalized);
+                        break;
+                }
+                convertFrom<u64>(dest, write);
+            }
+        }
 #endif
     }
 
@@ -131,29 +185,113 @@ namespace BigEndian
         return ret;
     }
 
+    // Endianness checking found in https://stackoverflow.com/questions/4239993/determining-endianness-at-compile-time
+    // Converts big-endian byte representations into arithmetic types. Integer types and IEEE 754 compliant single and double-precision floating-point
+    // types are supported.
     template <typename T>
     T convertTo(const u8* from)
     {
-        static_assert(std::is_integral_v<T>);
-        std::make_unsigned_t<T> dest = 0;
-#if defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN || defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__ ||                    \
+        static_assert((std::is_same_v<T, float> && sizeof(float) == 4 && std::numeric_limits<T>::is_iec559) ||
+                      (std::is_same_v<T, double> && sizeof(double) == 8 && std::numeric_limits<T>::is_iec559) || std::is_integral_v<T>);
+#if (defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN) || (defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__) ||                \
     defined(__BIG_ENDIAN__) || defined(__ARMEB__) || defined(__THUMBEB__) || defined(__AARCH64EB__) || defined(_MIBSEB) || defined(__MIBSEB) ||      \
     defined(__MIBSEB__)
-        // Already in proper format
+        T dest;
         memcpy(&dest, from, sizeof(T));
-#elif defined(__BYTE_ORDER) && __BYTE_ORDER == __LITTLE_ENDIAN || defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ ||            \
-    defined(__LITTLE_ENDIAN__) || defined(__ARMEL__) || defined(__THUMBEL__) || defined(__AARCH64EL__) || defined(_MIPSEL) || defined(__MIPSEL) ||   \
-    defined(__MIPSEL__)
+        return dest;
+#else
+        if constexpr (std::is_integral_v<T>)
         {
+            std::make_unsigned_t<T> dest = 0;
             for (size_t i = 0; i < sizeof(T); i++)
             {
                 dest |= std::make_unsigned_t<T>(from[i]) << ((sizeof(T) - i - 1) * 8);
             }
+            return dest;
         }
-#else
-#error "I don't know what architecture this is!"
+        else if constexpr (std::is_same_v<T, float>)
+        {
+            u32 data      = convertTo<u32>(from);
+            bool negative = (data & 0x80000000) != 0;
+            int exponent  = (data & 0x7F800000) >> 23;
+            int fraction  = data & ~0xFF800000;
+            if (exponent == 0 && fraction == 0)
+            {
+                return std::copysign(T(0), negative ? -1 : 1);
+            }
+            else if (exponent == 0xFF)
+            {
+                if (fraction == 0)
+                {
+                    return negative ? -std::numeric_limits<T>::infinity() : std::numeric_limits<T>::infinity();
+                }
+                else
+                {
+                    return std::numeric_limits<T>::signaling_NaN(); // Going to ignore the difference between quiet and signaling NaN
+                }
+            }
+            else
+            {
+                // fraction is currently shifted 23 bits from where it should be, so fix that and set the proper exponent
+                T ret = std::ldexp(fraction, -23);
+                if (exponent == 0) // Denormal number
+                {
+                    ret = std::ldexp(ret, -126);
+                }
+                else
+                {
+                    // Unbias the exponent & add the one necessary because it's not a denormal number
+                    ret = std::ldexp(ret + 1, exponent - 127);
+                }
+                return std::copysign(ret, negative ? -1 : 1);
+            }
+        }
+        else if constexpr (std::is_same_v<T, double>)
+        {
+            u64 data      = convertTo<u64>(from);
+            bool negative = (data & 0x8000000000000000) != 0;
+            int exponent  = (data & 0x7FF0000000000000) >> 52;
+            int fraction  = data & ~0xFFF0000000000000;
+            if (exponent == 0)
+            {
+                if (fraction == 0)
+                {
+                    return std::copysign(T(0), negative ? -1 : 1);
+                }
+                else
+                {
+                    // Denormal number, figure out how to handle it later
+                    return 0;
+                }
+            }
+            else if (exponent == 0x7FF)
+            {
+                if (fraction == 0)
+                {
+                    return negative ? -std::numeric_limits<T>::infinity() : std::numeric_limits<T>::infinity();
+                }
+                else
+                {
+                    return std::numeric_limits<T>::signaling_NaN(); // Going to ignore the difference between quiet and signaling NaN
+                }
+            }
+            else
+            {
+                // fraction is currently shifted 52 bits from where it should be, so fix that and set the proper exponent
+                T ret = std::ldexp(fraction, -52);
+                if (exponent == 0) // Denormal number
+                {
+                    ret = std::ldexp(ret, -1022);
+                }
+                else
+                {
+                    // Unbias the exponent & add the one necessary because it's not a denormal number
+                    ret = std::ldexp(ret + 1, exponent - 1023);
+                }
+                return std::copysign(ret, negative ? -1 : 1);
+            }
+        }
 #endif
-        return dest;
     }
 
     template <typename T, size_t N>
@@ -171,28 +309,81 @@ namespace BigEndian
 namespace LittleEndian
 {
     // Endianness checking found in https://stackoverflow.com/questions/4239993/determining-endianness-at-compile-time
-    // Only works with integral types
+    // Converts arithmetic types into little-endian byte representations. Integer types and IEEE 754 compliant single and double-precision
+    // floating-point types are supported.
     template <typename T>
     void convertFrom(u8* dest, const T& orig)
     {
-        static_assert(std::is_integral_v<T>);
-#if defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN || defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__ ||                    \
-    defined(__BIG_ENDIAN__) || defined(__ARMEB__) || defined(__THUMBEB__) || defined(__AARCH64EB__) || defined(_MIBSEB) || defined(__MIBSEB) ||      \
-    defined(__MIBSEB__)
-        {
-            // Explicitly allowed by the C++ standard
-            u8* from = (u8*)&orig;
-            for (size_t i = 0; i < sizeof(T); i++)
-            {
-                dest[i] = from[sizeof(T) - 1 - i];
-            }
-        }
-#elif defined(__BYTE_ORDER) && __BYTE_ORDER == __LITTLE_ENDIAN || defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ ||            \
+        static_assert((std::is_same_v<T, float> && sizeof(float) == 4 && std::numeric_limits<T>::is_iec559) ||
+                      (std::is_same_v<T, double> && sizeof(double) == 8 && std::numeric_limits<T>::is_iec559) || std::is_integral_v<T>);
+#if (defined(__BYTE_ORDER) && __BYTE_ORDER == __LITTLE_ENDIAN) || (defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__) ||          \
     defined(__LITTLE_ENDIAN__) || defined(__ARMEL__) || defined(__THUMBEL__) || defined(__AARCH64EL__) || defined(_MIPSEL) || defined(__MIPSEL) ||   \
     defined(__MIPSEL__)
         memcpy(dest, &orig, sizeof(T));
 #else
-#error "I don't know what architecture this is!"
+        if constexpr (std::is_integral_v<T>)
+        {
+            std::make_unsigned_t<T> origVal = orig;
+            for (size_t i = 0; i < sizeof(T); i++)
+            {
+                dest[i] = u8(origVal);
+                origVal >>= 8;
+            }
+        }
+        else
+        {
+            bool negative = std::signbit(orig);
+            int exponent;
+            T normalized = std::frexp(orig, &exponent); // gets biased exponent
+            if constexpr (std::is_same_v<T, float>)
+            {
+                u32 write = negative ? (1 << 31) : 0;
+                switch (std::fpclassify(orig))
+                {
+                    case FP_INFINITE:
+                        write |= u32(0xFF) << 23; // should be written as 0x7F800000 or 0xFF800000
+                        break;
+                    case FP_NAN:
+                        write = 0xFFFFFFFF; // might as well just use a constant NaN number
+                        break;
+                    case FP_ZERO:
+                        // do nothing; it should be written as either 0x80000000 or 0x00000000
+                        break;
+                    case FP_NORMAL:
+                        write |= u32(exponent + 127) << 23; // Bias the exponent
+                        // falls through
+                    case FP_SUBNORMAL:
+                        normalized *= 1 << 23; // Get the fraction value as an integer
+                        write |= u32(normalized);
+                        break;
+                }
+                convertFrom<u32>(dest, write);
+            }
+            else if constexpr (std::is_same_v<T, double>)
+            {
+                u64 write = negative ? (u64(1) << 63) : 0;
+                switch (std::fpclassify(orig))
+                {
+                    case FP_INFINITE:
+                        write |= u64(0x7FF) << 52; // should be written as 0x7FF0000000000000 or 0xFFF0000000000000
+                        break;
+                    case FP_NAN:
+                        write = 0xFFFFFFFFFFFFFFFF; // might as well just use a constant NaN number
+                        break;
+                    case FP_ZERO:
+                        // do nothing; it should be written as either 0x8000000000000000 or 0x0000000000000000
+                        break;
+                    case FP_NORMAL:
+                        write |= u64(exponent + 1023) << 52; // Bias the exponent
+                        // falls through
+                    case FP_SUBNORMAL:
+                        normalized *= u64(1) << 52; // Get the fraction value as an integer
+                        write |= u64(normalized);
+                        break;
+                }
+                convertFrom<u64>(dest, write);
+            }
+        }
 #endif
     }
 
@@ -262,29 +453,106 @@ namespace LittleEndian
         return ret;
     }
 
+    // Endianness checking found in https://stackoverflow.com/questions/4239993/determining-endianness-at-compile-time
+    // Converts little-endian byte representations into arithmetic types. Integer types and IEEE 754 compliant single and double-precision
+    // floating-point types are supported.
     template <typename T>
     T convertTo(const u8* from)
     {
-        static_assert(std::is_integral_v<T>);
-        std::make_unsigned_t<T> dest = 0;
-#if defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN || defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__ ||                    \
-    defined(__BIG_ENDIAN__) || defined(__ARMEB__) || defined(__THUMBEB__) || defined(__AARCH64EB__) || defined(_MIBSEB) || defined(__MIBSEB) ||      \
-    defined(__MIBSEB__)
+        static_assert((std::is_same_v<T, float> && sizeof(float) == 4 && std::numeric_limits<T>::is_iec559) ||
+                      (std::is_same_v<T, double> && sizeof(double) == 8 && std::numeric_limits<T>::is_iec559) || std::is_integral_v<T>);
+#if (defined(__BYTE_ORDER) && __BYTE_ORDER == __LITTLE_ENDIAN) || (defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__) ||          \
+    defined(__LITTLE_ENDIAN__) || defined(__ARMEL__) || defined(__THUMBEL__) || defined(__AARCH64EL__) || defined(_MIPSEL) || defined(__MIPSEL) ||   \
+    defined(__MIPSEL__)
+        // Already in proper format
+        T dest;
+        memcpy(&dest, from, sizeof(T));
+        return dest;
+#else
+        if constexpr (std::is_integral_v<T>)
         {
+            std::make_unsigned_t<T> dest = 0;
             for (size_t i = 0; i < sizeof(T); i++)
             {
                 dest |= std::make_unsigned_t<T>(from[i]) << (i * 8);
             }
+            return dest;
         }
-#elif defined(__BYTE_ORDER) && __BYTE_ORDER == __LITTLE_ENDIAN || defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ ||            \
-    defined(__LITTLE_ENDIAN__) || defined(__ARMEL__) || defined(__THUMBEL__) || defined(__AARCH64EL__) || defined(_MIPSEL) || defined(__MIPSEL) ||   \
-    defined(__MIPSEL__)
-        // Already in proper format
-        memcpy(&dest, from, sizeof(T));
-#else
-#error "I don't know what architecture this is!"
+        else if constexpr (std::is_same_v<T, float>)
+        {
+            u32 data      = convertTo<u32>(from);
+            bool negative = (data & 0x80000000) != 0;
+            int exponent  = (data & 0x7F800000) >> 23;
+            int fraction  = data & ~0xFF800000;
+            if (exponent == 0 && fraction == 0)
+            {
+                return std::copysign(T(0), negative ? -1 : 1);
+            }
+            else if (exponent == 0xFF)
+            {
+                if (fraction == 0)
+                {
+                    return negative ? -std::numeric_limits<T>::infinity() : std::numeric_limits<T>::infinity();
+                }
+                else
+                {
+                    return std::numeric_limits<T>::signaling_NaN(); // Going to ignore the difference between quiet and signaling NaN
+                }
+            }
+            else
+            {
+                // fraction is currently shifted 23 bits from where it should be, so fix that and set the proper exponent
+                T ret = std::ldexp(fraction, -23);
+                if (exponent == 0) // Denormal number
+                {
+                    ret = std::ldexp(ret, -126);
+                }
+                else
+                {
+                    // Unbias the exponent & add the one necessary because it's not a denormal number
+                    ret = std::ldexp(ret + 1, exponent - 127);
+                }
+                return std::copysign(ret, negative ? -1 : 1);
+            }
+        }
+        else if constexpr (std::is_same_v<T, double>)
+        {
+            u64 data      = convertTo<u64>(from);
+            bool negative = (data & 0x8000000000000000) != 0;
+            int exponent  = (data & 0x7FF0000000000000) >> 52;
+            int fraction  = data & ~0xFFF0000000000000;
+            if (exponent == 0 && fraction == 0)
+            {
+                return std::copysign(T(0), negative ? -1 : 1);
+            }
+            else if (exponent == 0x7FF)
+            {
+                if (fraction == 0)
+                {
+                    return negative ? -std::numeric_limits<T>::infinity() : std::numeric_limits<T>::infinity();
+                }
+                else
+                {
+                    return std::numeric_limits<T>::signaling_NaN(); // Going to ignore the difference between quiet and signaling NaN
+                }
+            }
+            else
+            {
+                // fraction is currently shifted 52 bits from where it should be, so fix that and set the proper exponent
+                T ret = std::ldexp(fraction, -52);
+                if (exponent == 0) // Denormal number
+                {
+                    ret = std::ldexp(ret, -1022);
+                }
+                else
+                {
+                    // Unbias the exponent & add the one necessary because it's not a denormal number
+                    ret = std::ldexp(ret + 1, exponent - 1023);
+                }
+                return std::copysign(ret, negative ? -1 : 1);
+            }
+        }
 #endif
-        return dest;
     }
 
     template <typename T, size_t N>
