@@ -24,27 +24,10 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef PCD_HPP
-#define PCD_HPP
+#include "wcx/WC4.hpp"
+#include "utils/endian.hpp"
 
-#include "utils/utils.hpp"
-#include "wcx/PGT.hpp"
-
-class PCD : public PGT
+WC4::WC4(u8* data) : PGT(data), name(StringUtils::getString4(data, 0x104, 0x24))
 {
-public:
-    PCD(u8* pcd);
-
-    std::string extension() const override { return ".pcd"; }
-
-    static constexpr int length = 856;
-    std::string title(void) const override { return name; };
-
-    u16 ID(void) const override { return id; }
-
-private:
-    std::string name;
-    u16 id;
-};
-
-#endif
+    id = LittleEndian::convertTo<u16>(data + 0x150);
+}
