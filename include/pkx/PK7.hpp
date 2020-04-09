@@ -33,7 +33,6 @@
 class PK7 : public PKX
 {
 private:
-    
     int eggYear(void) const override;
     void eggYear(int v) override;
     int eggMonth(void) const override;
@@ -46,6 +45,7 @@ private:
     void metMonth(int v) override;
     int metDay(void) const override;
     void metDay(int v) override;
+
 protected:
     static constexpr u16 hyperTrainLookup[6] = {0, 1, 2, 5, 3, 4};
 
