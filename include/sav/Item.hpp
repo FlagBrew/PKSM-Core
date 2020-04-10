@@ -209,7 +209,7 @@ public:
     void reserved(bool v) { itemData = (itemData & ~(1 << 31)) | (v ? 1 << 31 : 0); }
     std::vector<u8> bytes(void) const override
     {
-        std::vector<u8> ret{4};
+        std::vector<u8> ret = {0, 0, 0, 0};
         LittleEndian::convertFrom<u32>(ret.data(), itemData);
         return ret;
     }
@@ -250,7 +250,7 @@ public:
     void reserved(bool v) { itemData = (itemData & ~(1 << 31)) | (v ? 1 << 31 : 0); }
     std::vector<u8> bytes(void) const override
     {
-        std::vector<u8> ret{4};
+        std::vector<u8> ret = {0, 0, 0, 0};
         LittleEndian::convertFrom<u32>(ret.data(), itemData);
         return ret;
     }
@@ -291,7 +291,7 @@ public:
     void reserved(bool v) { itemData = (itemData & ~(1 << 31)) | (v ? 1 << 31 : 0); }
     std::vector<u8> bytes(void) const override
     {
-        std::vector<u8> ret{4};
+        std::vector<u8> ret = {0, 0, 0, 0};
         LittleEndian::convertFrom<u32>(ret.data(), itemData);
         return ret;
     }
