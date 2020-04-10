@@ -202,7 +202,7 @@ Generation PK6::generation(void) const
 
 bool PK6::untraded(void) const
 {
-    return data[0x78] == 0 && data[0x79] == 0 && originGenNumber() == 6;
+    return data[0x78] == 0 && data[0x79] == 0 && originGen() == Generation::SIX;
 }
 
 bool PK6::untradedEvent(void) const
@@ -855,13 +855,13 @@ void PK6::encounterType(u8 v)
     data[0xDE] = v;
 }
 
-u8 PK6::version(void) const
+GameVersion PK6::version(void) const
 {
-    return data[0xDF];
+    return GameVersion(data[0xDF]);
 }
-void PK6::version(u8 v)
+void PK6::version(GameVersion v)
 {
-    data[0xDF] = v;
+    data[0xDF] = u8(v);
 }
 
 u8 PK6::country(void) const

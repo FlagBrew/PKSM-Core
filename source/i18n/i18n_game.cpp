@@ -24,33 +24,41 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef LANGUAGE_HPP
-#define LANGUAGE_HPP
+#include "i18n_internal.hpp"
 
-#ifndef _PKSMCORE_CONFIGURED
-#include "PKSMCORE_CONFIG.h"
-#endif
-
-#include "utils/coretypes.h"
-#include "utils/generation.hpp"
-
-enum class Language : u8
+namespace i18n
 {
-    JPN = 1,
-    ENG,
-    FRE,
-    ITA,
-    GER,
-    UNUSED,
-    SPA,
-    KOR,
-    CHS,
-    CHT,
-#ifdef _PKSMCORE_EXTRA_LANGUAGES
-    _PKSMCORE_EXTRA_LANGUAGES
-#endif
-};
+    std::unordered_map<Language, std::vector<std::string>> games;
 
-Language getSafeLanguage(Generation gen, Language originalLang);
+    void initGame(Language lang)
+    {
+        std::vector<std::string> vec;
+        load(lang, "/games.txt", vec);
+        games.insert_or_assign(lang, std::move(vec));
+    }
 
-#endif
+    void exitGame(Language lang) { games.erase(lang); }
+
+    const std::string& game(Language lang, GameVersion val)
+    {
+        checkInitialized(lang);
+        if (games.contains(lang))
+        {
+            if (u8(val) < games[lang].size())
+            {
+                return games[lang][u8(val)];
+            }
+        }
+        return emptyString;
+    }
+
+    const std::vector<std::string>& rawGames(Language lang)
+    {
+        checkInitialized(lang);
+        if (games.contains(lang))
+        {
+            return games[lang];
+        }
+        return emptyVector;
+    }
+}

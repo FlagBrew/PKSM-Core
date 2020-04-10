@@ -31,6 +31,7 @@
 #include "utils/DateTime.hpp"
 #include "utils/coretypes.h"
 #include "utils/game.hpp"
+#include "utils/gameversion.hpp"
 #include "utils/generation.hpp"
 #include <map>
 #include <memory>
@@ -149,8 +150,8 @@ public:
     virtual void TID(u16 v)                   = 0;
     virtual u16 SID(void) const               = 0;
     virtual void SID(u16 v)                   = 0;
-    virtual u8 version(void) const            = 0;
-    virtual void version(u8 v)                = 0;
+    virtual GameVersion version(void) const   = 0;
+    virtual void version(GameVersion v)       = 0;
     virtual u8 gender(void) const             = 0;
     virtual void gender(u8 v)                 = 0;
     virtual u8 subRegion(void) const          = 0;

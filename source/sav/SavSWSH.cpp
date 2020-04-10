@@ -217,13 +217,13 @@ void SavSWSH::SID(u16 v)
     LittleEndian::convertFrom<u32>(getBlock(TrainerCard)->decryptedData() + 0x1C, displayTID());
 }
 
-u8 SavSWSH::version(void) const
+GameVersion SavSWSH::version(void) const
 {
-    return getBlock(Status)->decryptedData()[0xA4];
+    return GameVersion(getBlock(Status)->decryptedData()[0xA4]);
 }
-void SavSWSH::version(u8 v)
+void SavSWSH::version(GameVersion v)
 {
-    getBlock(Status)->decryptedData()[0xA4] = v;
+    getBlock(Status)->decryptedData()[0xA4] = u8(v);
 }
 
 u8 SavSWSH::gender(void) const
@@ -585,7 +585,7 @@ void SavSWSH::mysteryGift(WCX& wc, int&)
                 pk8->relearnMove(wc8->relearnMove(move));
             }
 
-            pk8->version(wc8->version() ? wc8->version() : version());
+            pk8->version(wc8->version() != GameVersion::INVALID ? wc8->version() : version());
 
             std::string wcOT = wc8->otName(language());
             int wcOTgender   = wc8->otGender();

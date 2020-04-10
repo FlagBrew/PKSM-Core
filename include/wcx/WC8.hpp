@@ -27,6 +27,7 @@
 #ifndef WC8_HPP
 #define WC8_HPP
 
+#include "utils/gameversion.hpp"
 #include "wcx/WCX.hpp"
 
 class WC8 : public WCX
@@ -100,7 +101,7 @@ public:
     std::string nickname(Language lang) const;
     Language nicknameLanguage(Language orig) const;
     bool nicknamed(Language lang) const;
-    u8 version(void) const;
+    GameVersion version(void) const;
     std::string otName(void) const override;
     std::string otName(Language lang) const;
     u8 otIntensity(void) const;

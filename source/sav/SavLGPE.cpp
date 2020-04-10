@@ -205,14 +205,14 @@ void SavLGPE::SID(u16 v)
     LittleEndian::convertFrom<u16>(&data[0x1002], v);
 }
 
-u8 SavLGPE::version() const
+GameVersion SavLGPE::version() const
 {
-    return data[0x1004];
+    return GameVersion(data[0x1004]);
 }
 
-void SavLGPE::version(u8 v)
+void SavLGPE::version(GameVersion v)
 {
-    data[0x1004] = v;
+    data[0x1004] = u8(v);
 }
 
 u8 SavLGPE::gender() const
@@ -708,7 +708,7 @@ void SavLGPE::mysteryGift(WCX& wc, int&)
             }
             pb7->heldItem(wb7->heldItem());
             pb7->encryptionConstant(wb7->encryptionConstant());
-            if (wb7->version() == 0)
+            if (wb7->version() != GameVersion::INVALID)
             {
                 pb7->version(wb7->version());
             }

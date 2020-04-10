@@ -24,13 +24,12 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef I18N_HPP
 #define I18N_HPP
 
-#include "PKSMCORE_CONFIG.h"
-
 #include "i18n/Language.hpp"
+#include "nlohmann/json_fwd.hpp"
 #include "utils/coretypes.h"
+#include "utils/gameversion.hpp"
 #include "utils/generation.hpp"
 #include <map>
 #include <string>
@@ -38,70 +37,95 @@
 
 namespace i18n
 {
+    using initCallback = void (*)(Language);
+    using exitCallback = void (*)(Language);
+    void addInitCallback(initCallback callback);
+    void removeInitCallback(initCallback callback);
+    void addExitCallback(exitCallback callback);
+    void removeExitCallback(exitCallback callback);
+
+    inline void addCallbacks(initCallback init, exitCallback exit)
+    {
+        addInitCallback(init);
+        addExitCallback(exit);
+    }
+    inline void removeCallbacks(initCallback init, exitCallback exit)
+    {
+        removeInitCallback(init);
+        removeExitCallback(exit);
+    }
+
+    // Calls the callbacks that have been registered with addInitCallback in a thread-safe manner
+    // NOTE: default callbacks include all init functions in this file
     void init(Language lang);
+    // Calls the callbacks that have been registered with addExitCallback in a thread-safe manner for all languages that have been initialized
+    // NOTE: default callbacks include all exit functions in this file
     void exit(void);
 
     const std::string& langString(Language l);
     Language langFromString(const std::string& value);
 
-#ifndef _PKSMCORE_DISABLE_ABILITY_STRINGS
+    void initAbility(Language lang);
+    void exitAbility(Language lang);
     const std::string& ability(Language lang, u16 value);
     const std::vector<std::string>& rawAbilities(Language lang);
-#endif
 
-#ifndef _PKSMCORE_DISABLE_BALL_STRINGS
+    void initBall(Language lang);
+    void exitBall(Language lang);
     const std::string& ball(Language lang, u8 value);
-#endif
+    const std::vector<std::string>& rawBalls(Language lang);
 
-#ifndef _PKSMCORE_DISABLE_FORM_STRINGS
-    const std::string& form(Language lang, u16 species, u16 form, Generation generation);
-#endif
+    void initForm(Language lang);
+    void exitForm(Language lang);
+    const std::string& form(Language lang, GameVersion version, u16 species, u16 form);
+    std::vector<std::string> forms(Language lang, GameVersion version, u16 species);
+    // No good raw interface for this
 
-#ifndef _PKSMCORE_DISABLE_HIDDEN_POWER_STRINGS
+    void initGame(Language lang);
+    void exitGame(Language lang);
+    const std::string& game(Language lang, GameVersion value);
+    const std::vector<std::string>& rawGames(Language lang);
+
+    void initHP(Language lang);
+    void exitHP(Language lang);
     const std::string& hp(Language lang, u8 value);
-#endif
+    const std::vector<std::string>& rawHPs(Language lang);
 
-#ifndef _PKSMCORE_DISABLE_ITEM_STRINGS
+    void initItem(Language lang);
+    void exitItem(Language lang);
     const std::string& item(Language lang, u16 value);
     const std::vector<std::string>& rawItems(Language lang);
-#endif
 
-#ifndef _PKSMCORE_DISABLE_MOVE_STRINGS
+    void initMove(Language lang);
+    void exitMove(Language lang);
     const std::string& move(Language lang, u16 value);
     const std::vector<std::string>& rawMoves(Language lang);
-#endif
 
-#ifndef _PKSMCORE_DISABLE_NATURE_STRINGS
+    void initNature(Language lang);
+    void exitNature(Language lang);
     const std::string& nature(Language lang, u8 value);
-#endif
+    const std::vector<std::string>& rawNatures(Language lang);
 
-#ifndef _PKSMCORE_DISABLE_SPECIES_STRINGS
+    // Note: several functions require this to function properly.
+    // A nonexhaustive list includes PK3::nicknamed, PK4::convertToPK3, PK5::convertToPK6, SavLGPE::mysteryGift, and SavSWSH::mysteryGift
+    void initSpecies(Language lang);
+    void exitSpecies(Language lang);
     const std::string& species(Language lang, u16 value);
     const std::vector<std::string>& rawSpecies(Language lang);
-#endif
 
-#ifndef _PKSMCORE_DISABLE_GAME_STRINGS
-    const std::string& game(Language lang, u8 value);
-    size_t numGameStrings(Language lang);
-    const std::vector<std::string>& rawGames(Language lang);
-#endif
+    void initLocation(Language lang);
+    void exitLocation(Language lang);
+    const std::string& location(Language lang, Generation generation, u16 value);
+    const std::map<u16, std::string>& rawLocations(Language lang, Generation g);
 
-#ifndef _PKSMCORE_DISABLE_LOCATION_STRINGS
-    const std::map<u16, std::string>& locations(Language lang, Generation g);
-    const std::string& location(Language lang, u16 value, Generation generation);
-    const std::string& location(Language lang, u16 value, u8 originGame);
-#endif
-
-#ifndef _PKSMCORE_DISABLE_GEO_STRINGS
+    void initGeo(Language lang);
+    void exitGeo(Language lang);
     const std::string& subregion(Language lang, u8 country, u8 value);
     const std::map<u8, std::string>& rawSubregions(Language lang, u8 country);
     const std::string& country(Language lang, u8 value);
     const std::map<u8, std::string>& rawCountries(Language lang);
-#endif
 
-#ifndef _PKSMCORE_DISABLE_GUI_STRINGS
+    void initGui(Language lang);
+    void exitGui(Language lang);
     const std::string& localize(Language lang, const std::string& index);
-#endif
 };
-
-#endif

@@ -24,10 +24,8 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "i18n/i18n.hpp"
-#include "i18n/LanguageStrings.hpp"
-#include <atomic>
-#include <unistd.h>
+#include "i18n_internal.hpp"
+#include <list>
 
 #ifdef _PKSMCORE_EXTRA_LANGUAGES
 #define LANGUAGES_TO_USE JPN, ENG, FRE, ITA, GER, SPA, KOR, CHS, CHT, _PKSMCORE_EXTRA_LANGUAGES
@@ -36,7 +34,7 @@
 #endif
 
 #include "_map_macro.hpp"
-#define MAKE_MAP(lang) ret.emplace(Language::lang, std::make_unique<LangRecord>());
+#define MAKE_MAP(lang) ret.emplace(Language::lang, LangState::UNINITIALIZED);
 #define TO_STRING_CASE(lang)                                                                                                                         \
     case Language::lang:                                                                                                                             \
     {                                                                                                                                                \
@@ -46,261 +44,198 @@
 #define TO_IF_STRING(lang)                                                                                                                           \
     if (value == #lang)                                                                                                                              \
         return Language::lang;
+#define TO_FOLDER_CASE(lang)                                                                                                                         \
+    case Language::lang:                                                                                                                             \
+        return std::string(toLower(#lang));
 
 namespace
 {
-    struct LangRecord
+#if __cplusplus > 201703L
+    constexpr std::string_view toLower(std::string_view str)
+#else
+    std::string_view toLower(std::string_view str)
+#endif
     {
-        LangRecord() {}
-        LanguageStrings* strings      = nullptr;
-        std::atomic<bool> initialized = false;
-    };
-    std::map<Language, std::unique_ptr<LangRecord>> languages = []() {
-        std::map<Language, std::unique_ptr<LangRecord>> ret;
+        char ret[str.size() + 1] = {'\0'};
+        char upper[]             = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        char lower[]             = "abcdefghijklmnopqrstuvwxyz";
+        for (size_t i = 0; i < str.size(); i++)
+        {
+            auto found = std::find(std::begin(upper), std::end(upper), str[i]);
+            if (found != std::end(upper))
+            {
+                ret[i] = lower[std::distance(std::begin(upper), found)];
+            }
+        }
+        ret[str.size()] = '\0';
+        return std::string_view(ret);
+    }
+}
+namespace i18n
+{
+    std::unordered_map<Language, std::atomic<LangState>> languages = []() {
+        std::unordered_map<Language, std::atomic<LangState>> ret;
         MAP(MAKE_MAP, LANGUAGES_TO_USE)
         return ret;
     }();
 
-    LanguageStrings* stringsFor(Language lang)
+    std::list<initCallback> initCallbacks = {
+        initAbility, initBall, initForm, initGame, initGeo, initGui, initHP, initItem, initLocation, initMove, initNature, initSpecies};
+    std::list<exitCallback> exitCallbacks = {
+        exitAbility, exitBall, exitForm, exitGame, exitGeo, exitGui, exitHP, exitItem, exitLocation, exitMove, exitNature, exitSpecies};
+
+    void init(Language lang)
     {
         auto found = languages.find(lang);
+        // Should never happen, but might as well check
         if (found == languages.end())
         {
             found = languages.find(Language::ENG);
         }
-        if (!found->second->initialized)
+        if (found->second == LangState::UNINITIALIZED)
         {
-            i18n::init(found->first);
-        }
-        while (!found->second->strings)
-        {
-            usleep(100);
-        }
-        return found->second->strings;
-    }
-
-    const std::string emptyString                = "";
-    const std::vector<std::string> emptyVector   = {};
-    const std::map<u16, std::string> emptyU16Map = {};
-    const std::map<u8, std::string> emptyU8Map   = {};
-}
-
-void i18n::init(Language lang)
-{
-    auto found = languages.find(lang);
-    if (found == languages.end())
-    {
-        found = languages.find(Language::ENG);
-    }
-    if (!found->second->initialized)
-    {
-        found->second->strings     = new LanguageStrings(found->first);
-        found->second->initialized = true;
-    }
-}
-
-void i18n::exit(void)
-{
-    for (auto& lang : languages)
-    {
-        if (lang.second->initialized)
-        {
-            while (!lang.second->strings)
+            found->second = LangState::INITIALIZING;
+            for (auto& callback : initCallbacks)
             {
-                usleep(100);
+                callback(lang);
             }
-            delete lang.second->strings;
-            lang.second->strings     = nullptr;
-            lang.second->initialized = false;
+            found->second = LangState::INITIALIZED;
+        }
+    }
+
+    void exit(void)
+    {
+        for (auto& lang : languages)
+        {
+            if (lang.second != LangState::UNINITIALIZED)
+            {
+                while (lang.second != LangState::INITIALIZED)
+                {
+                    usleep(100);
+                }
+
+                for (auto& callback : exitCallbacks)
+                {
+                    callback(lang.first);
+                }
+
+                lang.second = LangState::UNINITIALIZED;
+            }
+        }
+    }
+
+    const std::string& langString(Language l)
+    {
+        static const std::string ENG = "ENG";
+        switch (l)
+        {
+            MAP(TO_STRING_CASE, LANGUAGES_TO_USE)
+            default:
+                return ENG;
+        }
+    }
+
+    Language langFromString(const std::string& value)
+    {
+        MAP(TO_IF_STRING, LANGUAGES_TO_USE)
+        return Language::ENG;
+    }
+
+    std::string folder(Language lang)
+    {
+        switch (lang)
+        {
+            MAP(TO_FOLDER_CASE, LANGUAGES_TO_USE)
+            default:
+                return "eng";
+        }
+
+        return "eng";
+    }
+
+    void load(Language lang, const std::string& name, std::vector<std::string>& array)
+    {
+        std::string path = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name) ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
+                                                                                   : _PKSMCORE_LANG_FOLDER + folder(Language::ENG) + name;
+
+        std::string tmp;
+        FILE* values = fopen(path.c_str(), "rt");
+        if (values)
+        {
+            if (ferror(values))
+            {
+                fclose(values);
+                return;
+            }
+            char* data  = (char*)malloc(128);
+            size_t size = 0;
+            while (!feof(values) && !ferror(values))
+            {
+                size = std::max(size, (size_t)128);
+                if (_PKSMCORE_GETLINE_FUNC(&data, &size, values) >= 0)
+                {
+                    tmp = std::string(data);
+                    tmp = tmp.substr(0, tmp.find('\n'));
+                    array.emplace_back(tmp.substr(0, tmp.find('\r')));
+                }
+                else
+                {
+                    break;
+                }
+            }
+            fclose(values);
+            free(data);
+        }
+    }
+
+    void load(Language lang, const std::string& name, nlohmann::json& json)
+    {
+        std::string path = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name) ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
+                                                                                   : _PKSMCORE_LANG_FOLDER + folder(Language::ENG) + name;
+
+        FILE* values = fopen(path.c_str(), "rt");
+        if (values)
+        {
+            json = nlohmann::json::parse(values, nullptr, false);
+            fclose(values);
+        }
+    }
+
+    void addInitCallback(initCallback callback)
+    {
+        auto i = std::find(initCallbacks.begin(), initCallbacks.end(), callback);
+        if (i == initCallbacks.end())
+        {
+            initCallbacks.emplace_back(callback);
+        }
+    }
+
+    void removeInitCallback(initCallback callback)
+    {
+        auto i = std::find(initCallbacks.begin(), initCallbacks.end(), callback);
+        while (i != initCallbacks.end())
+        {
+            initCallbacks.erase(i);
+            i = std::find(initCallbacks.begin(), initCallbacks.end(), callback);
+        }
+    }
+
+    void addExitCallback(exitCallback callback)
+    {
+        auto i = std::find(exitCallbacks.begin(), exitCallbacks.end(), callback);
+        if (i == exitCallbacks.end())
+        {
+            exitCallbacks.emplace_back(callback);
+        }
+    }
+
+    void removeExitCallback(exitCallback callback)
+    {
+        auto i = std::find(exitCallbacks.begin(), exitCallbacks.end(), callback);
+        while (i != exitCallbacks.end())
+        {
+            exitCallbacks.erase(i);
+            i = std::find(exitCallbacks.begin(), exitCallbacks.end(), callback);
         }
     }
 }
-
-const std::string& i18n::langString(Language l)
-{
-    static const std::string JPN = "JPN";
-    static const std::string ENG = "ENG";
-    static const std::string FRE = "FRE";
-    static const std::string ITA = "ITA";
-    static const std::string GER = "GER";
-    static const std::string SPA = "SPA";
-    static const std::string KOR = "KOR";
-    static const std::string CHS = "CHS";
-    static const std::string CHT = "CHT";
-    switch (l)
-    {
-        MAP(TO_STRING_CASE, LANGUAGES_TO_USE)
-        default:
-            return ENG;
-    }
-}
-
-Language i18n::langFromString(const std::string& value)
-{
-    MAP(TO_IF_STRING, LANGUAGES_TO_USE)
-    return Language::ENG;
-}
-
-#ifndef _PKSMCORE_DISABLE_ABILITY_STRINGS
-const std::string& i18n::ability(Language lang, u16 val)
-{
-    return stringsFor(lang)->ability(val);
-}
-const std::vector<std::string>& i18n::rawAbilities(Language lang)
-{
-    return stringsFor(lang)->rawAbilities();
-}
-#endif
-
-#ifndef _PKSMCORE_DISABLE_BALL_STRINGS
-const std::string& i18n::ball(Language lang, u8 val)
-{
-    return stringsFor(lang)->ball(val);
-}
-#endif
-
-#ifndef _PKSMCORE_DISABLE_FORM_STRINGS
-const std::string& i18n::form(Language lang, u16 species, u16 form, Generation generation)
-{
-    return stringsFor(lang)->form(species, form, generation);
-}
-#endif
-
-#ifndef _PKSMCORE_DISABLE_HIDDEN_POWER_STRINGS
-const std::string& i18n::hp(Language lang, u8 val)
-{
-    return stringsFor(lang)->hp(val);
-}
-#endif
-
-#ifndef _PKSMCORE_DISABLE_ITEM_STRINGS
-const std::string& i18n::item(Language lang, u16 val)
-{
-    return stringsFor(lang)->item(val);
-}
-const std::vector<std::string>& i18n::rawItems(Language lang)
-{
-    return stringsFor(lang)->rawItems();
-}
-#endif
-
-#ifndef _PKSMCORE_DISABLE_MOVE_STRINGS
-const std::string& i18n::move(Language lang, u16 val)
-{
-    return stringsFor(lang)->move(val);
-}
-const std::vector<std::string>& i18n::rawMoves(Language lang)
-{
-    return stringsFor(lang)->rawMoves();
-}
-#endif
-
-#ifndef _PKSMCORE_DISABLE_NATURE_STRINGS
-const std::string& i18n::nature(Language lang, u8 val)
-{
-    return stringsFor(lang)->nature(val);
-}
-#endif
-
-#ifndef _PKSMCORE_DISABLE_SPECIES_STRINGS
-const std::string& i18n::species(Language lang, u16 val)
-{
-    return stringsFor(lang)->species(val);
-}
-const std::vector<std::string>& i18n::rawSpecies(Language lang)
-{
-    return stringsFor(lang)->rawSpecies();
-}
-#endif
-
-#ifndef _PKSMCORE_DISABLE_GAME_STRINGS
-const std::string& i18n::game(Language lang, u8 v)
-{
-    return stringsFor(lang)->game(v);
-}
-size_t i18n::numGameStrings(Language lang)
-{
-    return stringsFor(lang)->numGameStrings();
-}
-const std::vector<std::string>& i18n::rawGames(Language lang)
-{
-    return stringsFor(lang)->rawGames();
-}
-#endif
-
-#ifndef _PKSMCORE_DISABLE_LOCATION_STRINGS
-const std::string& i18n::location(Language lang, u16 v, Generation generation)
-{
-    return stringsFor(lang)->location(v, generation);
-}
-const std::string& i18n::location(Language lang, u16 v, u8 originGame)
-{
-    switch (originGame)
-    {
-        case 1:
-        case 2:
-        case 3:
-        case 4:
-        case 5:
-            return location(lang, v, Generation::THREE);
-        case 7:
-        case 8:
-        case 10:
-        case 11:
-        case 12:
-            return location(lang, v, Generation::FOUR);
-        case 20:
-        case 21:
-        case 22:
-        case 23:
-            return location(lang, v, Generation::FIVE);
-        case 24:
-        case 25:
-        case 26:
-        case 27:
-            return location(lang, v, Generation::SIX);
-        case 30:
-        case 31:
-        case 32:
-        case 33:
-            return location(lang, v, Generation::SEVEN);
-        case 42:
-        case 43:
-            return location(lang, v, Generation::LGPE);
-        case 44:
-        case 45:
-            return location(lang, v, Generation::EIGHT);
-    }
-    return emptyString;
-}
-const std::map<u16, std::string>& i18n::locations(Language lang, Generation g)
-{
-    return stringsFor(lang)->locations(g);
-}
-#endif
-
-#ifndef _PKSMCORE_DISABLE_GEO_STRINGS
-const std::string& i18n::subregion(Language lang, u8 country, u8 value)
-{
-    return stringsFor(lang)->subregion(country, value);
-}
-const std::string& i18n::country(Language lang, u8 value)
-{
-    return stringsFor(lang)->country(value);
-}
-const std::map<u8, std::string>& i18n::rawCountries(Language lang)
-{
-    return stringsFor(lang)->rawCountries();
-}
-const std::map<u8, std::string>& i18n::rawSubregions(Language lang, u8 country)
-{
-    return stringsFor(lang)->rawSubregions(country);
-}
-#endif
-
-#ifndef _PKSMCORE_DISABLE_GUI_STRINGS
-const std::string& i18n::localize(Language lang, const std::string& val)
-{
-    return stringsFor(lang)->localize(val);
-}
-#endif

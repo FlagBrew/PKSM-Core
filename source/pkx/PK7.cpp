@@ -826,13 +826,13 @@ void PK7::hyperTrain(Stat stat, bool v)
     data[0xDE] = (u8)((data[0xDE] & ~(1 << hyperTrainLookup[size_t(stat)])) | (v ? 1 << hyperTrainLookup[size_t(stat)] : 0));
 }
 
-u8 PK7::version(void) const
+GameVersion PK7::version(void) const
 {
-    return data[0xDF];
+    return GameVersion(data[0xDF]);
 }
-void PK7::version(u8 v)
+void PK7::version(GameVersion v)
 {
-    data[0xDF] = v;
+    data[0xDF] = u8(v);
 }
 
 u8 PK7::country(void) const

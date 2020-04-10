@@ -65,13 +65,13 @@ void Sav7::SID(u16 v)
     LittleEndian::convertFrom<u16>(&data[TrainerCard + 2], v);
 }
 
-u8 Sav7::version(void) const
+GameVersion Sav7::version(void) const
 {
-    return data[TrainerCard + 4];
+    return GameVersion(data[TrainerCard + 4]);
 }
-void Sav7::version(u8 v)
+void Sav7::version(GameVersion v)
 {
-    data[TrainerCard + 4] = v;
+    data[TrainerCard + 4] = u8(v);
 }
 
 u8 Sav7::gender(void) const

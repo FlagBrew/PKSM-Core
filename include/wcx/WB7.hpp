@@ -28,6 +28,7 @@
 #define WB7_HPP
 
 #include "i18n/Language.hpp"
+#include "utils/gameversion.hpp"
 #include "wcx/WCX.hpp"
 
 class WB7 : public WCX
@@ -94,7 +95,7 @@ public:
     u8 nature(void) const override;
     std::string nickname(void) const override;
     std::string nickname(Language lang) const;
-    u8 version(void) const;
+    GameVersion version(void) const;
     std::string otName(void) const override;
     std::string otName(Language lang) const;
     u8 otGender(void) const;

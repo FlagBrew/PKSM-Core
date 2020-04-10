@@ -217,9 +217,9 @@ u16 WC6::SID(void) const
     return LittleEndian::convertTo<u16>(data + 0x6A);
 }
 
-u8 WC6::version(void) const
+GameVersion WC6::version(void) const
 {
-    return data[0x6C];
+    return GameVersion(data[0x6C]);
 }
 
 u32 WC6::encryptionConstant(void) const

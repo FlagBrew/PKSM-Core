@@ -27,6 +27,7 @@
 #ifndef WC6_HPP
 #define WC6_HPP
 
+#include "utils/gameversion.hpp"
 #include "wcx/WCX.hpp"
 
 class WC6 : public WCX
@@ -85,7 +86,7 @@ public:
     u16 relearnMove(u8 index) const;
     u8 nature(void) const override;
     std::string nickname(void) const override;
-    u8 version(void) const;
+    GameVersion version(void) const;
     std::string otName(void) const override;
     u8 otGender(void) const;
     u8 otIntensity(void) const;

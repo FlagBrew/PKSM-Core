@@ -182,8 +182,8 @@ public:
     void fullness(u8 v);
     u8 enjoyment(void) const;
     void enjoyment(u8 v);
-    u8 version(void) const override;
-    void version(u8 v) override;
+    GameVersion version(void) const override;
+    void version(GameVersion v) override;
     u8 country(void) const;
     void country(u8 v);
     u8 region(void) const;

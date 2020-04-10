@@ -24,33 +24,33 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef LANGUAGE_HPP
-#define LANGUAGE_HPP
+#include "i18n_internal.hpp"
 
-#ifndef _PKSMCORE_CONFIGURED
-#include "PKSMCORE_CONFIG.h"
-#endif
-
-#include "utils/coretypes.h"
-#include "utils/generation.hpp"
-
-enum class Language : u8
+namespace i18n
 {
-    JPN = 1,
-    ENG,
-    FRE,
-    ITA,
-    GER,
-    UNUSED,
-    SPA,
-    KOR,
-    CHS,
-    CHT,
-#ifdef _PKSMCORE_EXTRA_LANGUAGES
-    _PKSMCORE_EXTRA_LANGUAGES
-#endif
-};
+    std::unordered_map<Language, nlohmann::json> gui;
 
-Language getSafeLanguage(Generation gen, Language originalLang);
+    void initGui(Language lang)
+    {
+        nlohmann::json j;
+        load(lang, "/gui.json", j);
+        gui.insert_or_assign(lang, std::move(j));
+    }
 
-#endif
+    void exitGui(Language lang) { gui.erase(lang); }
+
+    const std::string& localize(Language lang, const std::string& v)
+    {
+        checkInitialized(lang);
+        auto it = gui.find(lang);
+        if (it != gui.end())
+        {
+            if (!it->second.contains(v))
+            {
+                it->second[v] = "MISSING: " + v;
+            }
+            return it->second[v].get_ref<const std::string&>();
+        }
+        return emptyString;
+    }
+}

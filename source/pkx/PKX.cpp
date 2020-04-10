@@ -271,55 +271,32 @@ void PKX::encrypt(void)
 
 bool PKX::originGen7(void) const
 {
-    return version() >= 30 && version() <= 33;
+    return versionToGen(version()) == Generation::SEVEN;
 }
 
 bool PKX::originGen6(void) const
 {
-    return version() >= 24 && version() <= 29;
+    return versionToGen(version()) == Generation::SIX;
 }
 
 bool PKX::originGen5(void) const
 {
-    return version() >= 20 && version() <= 23;
+    return versionToGen(version()) == Generation::FIVE;
 }
 
 bool PKX::originGen4(void) const
 {
-    return version() >= 7 && version() <= 12 && version() != 9;
+    return versionToGen(version()) == Generation::FOUR;
 }
 
 bool PKX::originGen3(void) const
 {
-    return (version() >= 1 && version() <= 5) || (version() == 15);
+    return versionToGen(version()) == Generation::THREE;
 }
 
-int PKX::originGenNumber(void) const
+Generation PKX::originGen(void) const
 {
-    if (originGen7())
-    {
-        return 7;
-    }
-    else if (originGen6())
-    {
-        return 6;
-    }
-    else if (originGen5())
-    {
-        return 5;
-    }
-    else if (originGen4())
-    {
-        return 4;
-    }
-    else if (originGen3())
-    {
-        return 3;
-    }
-    else
-    {
-        return -1;
-    }
+    return versionToGen(version());
 }
 
 void PKX::fixMoves(void)
@@ -345,78 +322,9 @@ void PKX::fixMoves(void)
     }
 }
 
-u8 PKX::genFromBytes(u8* data, size_t length)
+u32 PKX::getRandomPID(u16 species, u8 gender, GameVersion originGame, u8 nature, u8 form, u8 abilityNum, u32 oldPid, Generation gen)
 {
-    if (length == PK3::BOX_LENGTH || length == PK3::PARTY_LENGTH)
-    {
-        return 3;
-    }
-    else if (length == PK4::BOX_LENGTH)
-    {
-        // decrypt data if necessary
-        PK4 test(PrivateConstructor{}, data);
-        if (LittleEndian::convertTo<u16>(test.rawData() + 4) == 0 &&
-            (LittleEndian::convertTo<u16>(test.rawData() + 0x80) >= 0x3333 || test.rawData()[0x5F] >= 0x10) &&
-            LittleEndian::convertTo<u16>(test.rawData() + 0x46) == 0)
-        {
-            return 5;
-        }
-        return 4;
-    }
-    else if (length == PK4::PARTY_LENGTH)
-    {
-        return 4;
-    }
-    else if (length == PK5::PARTY_LENGTH)
-    {
-        return 5;
-    }
-    else if (length == PK6::BOX_LENGTH || length == PK6::PARTY_LENGTH)
-    {
-        PK6 test(PrivateConstructor{}, data);
-        if (test.species() > 721 || test.version() > 27 || test.move(0) > 621 || test.move(1) > 621 || test.move(2) > 621 || test.move(3) > 621 ||
-            test.relearnMove(0) > 621 || test.relearnMove(1) > 621 || test.relearnMove(2) > 621 || test.relearnMove(3) > 621 ||
-            test.ability() > 191 || test.heldItem() > 775) // Invalid values for gen 6
-        {
-            return 7;
-        }
-
-        int et = test.encounterType();
-        if (et != 0)
-        {
-            if (test.level() < 100)
-            {
-                return 6;
-            }
-
-            switch (test.version())
-            {
-                case 7:
-                case 8:
-                case 10:
-                case 11:
-                case 12:
-                    if (et > 24)
-                    {
-                        return 7;
-                    }
-                    break;
-                default:
-                    return 7;
-            }
-        }
-        return 6;
-    }
-    else if (length == PK8::BOX_LENGTH || length == PK8::PARTY_LENGTH)
-    {
-        return 8;
-    }
-    return 0;
-}
-
-u32 PKX::getRandomPID(u16 species, u8 gender, u8 originGame, u8 nature, u8 form, u8 abilityNum, u32 oldPid, Generation gen)
-{
-    if (originGame >= 24) // Origin game over gen 5
+    if (originGame >= GameVersion::X) // Origin game over gen 5
     {
         return randomNumbers();
     }
@@ -454,12 +362,12 @@ u32 PKX::getRandomPID(u16 species, u8 gender, u8 originGame, u8 nature, u8 form,
     }
 
     u8 genderType   = genderTypeFinder(species);
-    bool g3unown    = (originGame <= 5 || gen == Generation::THREE) && species == 201;
+    bool g3unown    = (originGame <= GameVersion::LG || gen == Generation::THREE) && species == 201;
     u32 abilityBits = oldPid & (abilityNum == 2 ? 0x00010001 : 0);
     while (true)
     {
         u32 possiblePID = randomNumbers();
-        if (originGame <= 15 && possiblePID % 25 != nature)
+        if (originGame <= GameVersion::CXD && possiblePID % 25 != nature)
         {
             continue;
         }
@@ -494,14 +402,14 @@ u32 PKX::versionTID() const
     {
         default:
             return TID();
-        case 30: // SM
-        case 31:
-        case 32: // USUM
-        case 33:
-        case 42: // LGPE
-        case 43:
-        case 44: // SWSH
-        case 45:
+        case GameVersion::SN:
+        case GameVersion::MN:
+        case GameVersion::US:
+        case GameVersion::UM:
+        case GameVersion::GP:
+        case GameVersion::GE:
+        case GameVersion::SW:
+        case GameVersion::SH:
             return (u32)(SID() << 16 | TID()) % 1000000;
     }
 }
@@ -512,14 +420,14 @@ u32 PKX::versionSID() const
     {
         default:
             return SID();
-        case 30: // SM
-        case 31:
-        case 32: // USUM
-        case 33:
-        case 42: // LGPE
-        case 43:
-        case 44: // SWSH
-        case 45:
+        case GameVersion::SN:
+        case GameVersion::MN:
+        case GameVersion::US:
+        case GameVersion::UM:
+        case GameVersion::GP:
+        case GameVersion::GE:
+        case GameVersion::SW:
+        case GameVersion::SH:
             return (u32)(SID() << 16 | TID()) / 1000000;
     }
 }

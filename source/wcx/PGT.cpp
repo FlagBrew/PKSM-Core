@@ -49,7 +49,7 @@ PGT::PGT(u8* pgt)
         pokemonData->heldItem(0);
         pokemonData->fatefulEncounter(true);
         pokemonData->ball(4);
-        pokemonData->version(10); // Diamond
+        pokemonData->version(GameVersion::D); // Diamond
         pokemonData->language(Language::ENG);
         pokemonData->nickname("MANAPHY");
         pokemonData->nicknamed(false);

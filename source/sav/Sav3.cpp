@@ -220,11 +220,11 @@ void Sav3::SID(u16 v)
     LittleEndian::convertFrom<u16>(&data[blockOfs[0] + 0xC], v);
 }
 
-u8 Sav3::version(void) const
+GameVersion Sav3::version(void) const
 {
-    return game == Game::RS ? 1 : game == Game::E ? 3 : 4;
+    return game == Game::RS ? GameVersion::S : game == Game::E ? GameVersion::E : GameVersion::FR;
 }
-void Sav3::version(u8) {}
+void Sav3::version(GameVersion) {}
 
 u8 Sav3::gender(void) const
 {

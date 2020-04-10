@@ -142,8 +142,8 @@ public:
 
     std::string nickname(void) const override;
     void nickname(const std::string& v) override;
-    u8 version(void) const override;
-    void version(u8 v) override;
+    GameVersion version(void) const override;
+    void version(GameVersion v) override;
 
     std::string otName(void) const override;
     void otName(const std::string& v) override;

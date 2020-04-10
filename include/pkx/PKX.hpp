@@ -32,6 +32,7 @@
 #include "utils/DateTime.hpp"
 #include "utils/Ribbons.hpp"
 #include "utils/coretypes.h"
+#include "utils/gameversion.hpp"
 #include "utils/genToPkx.hpp"
 #include "utils/generation.hpp"
 #include "utils/stat.hpp"
@@ -98,7 +99,6 @@ public:
         }
         return nullptr;
     }
-    static u8 genFromBytes(u8* data, size_t length);
 
     virtual ~PKX();
     PKX(const PKX& pk);
@@ -134,10 +134,10 @@ public:
     bool originGen5(void) const;
     bool originGen4(void) const;
     bool originGen3(void) const;
-    int originGenNumber(void) const;
+    Generation originGen(void) const;
     void fixMoves(void);
 
-    static u32 getRandomPID(u16 species, u8 gender, u8 originGame, u8 nature, u8 form, u8 abilityNum, u32 oldPid, Generation gen);
+    static u32 getRandomPID(u16 species, u8 gender, GameVersion originGame, u8 nature, u8 form, u8 abilityNum, u32 oldPid, Generation gen);
     static u8 genderFromRatio(u32 pid, u8 gt);
 
     // BLOCK A
@@ -231,20 +231,20 @@ public:
         metMonth(v.month());
         metYear(v.year());
     }
-    virtual u16 eggLocation(void) const   = 0;
-    virtual void eggLocation(u16 v)       = 0;
-    virtual u16 metLocation(void) const   = 0;
-    virtual void metLocation(u16 v)       = 0;
-    virtual u8 ball(void) const           = 0;
-    virtual void ball(u8 v)               = 0;
-    virtual u8 metLevel(void) const       = 0;
-    virtual void metLevel(u8 v)           = 0;
-    virtual u8 otGender(void) const       = 0;
-    virtual void otGender(u8 v)           = 0;
-    virtual u8 version(void) const        = 0;
-    virtual void version(u8 v)            = 0;
-    virtual Language language(void) const = 0;
-    virtual void language(Language v)     = 0;
+    virtual u16 eggLocation(void) const     = 0;
+    virtual void eggLocation(u16 v)         = 0;
+    virtual u16 metLocation(void) const     = 0;
+    virtual void metLocation(u16 v)         = 0;
+    virtual u8 ball(void) const             = 0;
+    virtual void ball(u8 v)                 = 0;
+    virtual u8 metLevel(void) const         = 0;
+    virtual void metLevel(u8 v)             = 0;
+    virtual u8 otGender(void) const         = 0;
+    virtual void otGender(u8 v)             = 0;
+    virtual GameVersion version(void) const = 0;
+    virtual void version(GameVersion v)     = 0;
+    virtual Language language(void) const   = 0;
+    virtual void language(Language v)       = 0;
 
     virtual u8 currentFriendship(void) const = 0;
     virtual void currentFriendship(u8 v)     = 0;

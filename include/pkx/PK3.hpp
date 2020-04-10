@@ -168,8 +168,8 @@ public:
     bool nPokemon(void) const;
     void nPokemon(bool v);
 
-    u8 version(void) const override;
-    void version(u8 v) override;
+    GameVersion version(void) const override;
+    void version(GameVersion v) override;
 
     u16 eggLocation(void) const override { return 0; }
     void eggLocation(u16) override {}

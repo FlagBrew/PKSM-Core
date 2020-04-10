@@ -50,13 +50,13 @@ void Sav6::SID(u16 v)
     LittleEndian::convertFrom<u16>(&data[TrainerCard + 2], v);
 }
 
-u8 Sav6::version(void) const
+GameVersion Sav6::version(void) const
 {
-    return data[TrainerCard + 4];
+    return GameVersion(data[TrainerCard + 4]);
 }
-void Sav6::version(u8 v)
+void Sav6::version(GameVersion v)
 {
-    data[TrainerCard + 4] = v;
+    data[TrainerCard + 4] = u8(v);
 }
 
 u8 Sav6::gender(void) const
@@ -509,8 +509,7 @@ void Sav6::dex(const PKX& pk)
     int bit          = pk.species() - 1;
     int lang         = u8(pk.language()) - 1;
     if (lang > 5)
-        lang--; // 0-6 language vals
-    int origin   = pk.version();
+        lang--;                     // 0-6 language vals
     int gender   = pk.gender() % 2; // genderless -> male
     int shiny    = pk.shiny() ? 1 : 0;
     int shiftoff = brSize * (1 + gender + 2 * shiny); // after the Owned region
@@ -520,9 +519,9 @@ void Sav6::dex(const PKX& pk)
     int ofs      = PokeDex + 0x8 + bd;
 
     // Owned quality flag
-    if (origin < 0x18 && bit < 649 && game != Game::ORAS) // Species: 1-649 for X/Y, and not for ORAS; Set the Foreign Owned Flag
+    if (pk.version() < GameVersion::X && bit < 649 && game != Game::ORAS) // Species: 1-649 for X/Y, and not for ORAS; Set the Foreign Owned Flag
         data[ofs + 0x644] |= mask;
-    else if (origin >= 0x18 || game == Game::ORAS) // Set Native Owned Flag (should always happen)
+    else if (pk.version() >= GameVersion::X || game == Game::ORAS) // Set Native Owned Flag (should always happen)
         data[ofs + (brSize * 0)] |= mask;
 
     // Set the [Species/Gender/Shiny] Seen Flag

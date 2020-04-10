@@ -42,8 +42,8 @@ public:
     void TID(u16 v) override;
     u16 SID(void) const override;
     void SID(u16 v) override;
-    u8 version(void) const override;
-    void version(u8 v) override;
+    GameVersion version(void) const override;
+    void version(GameVersion v) override;
     u8 gender(void) const override;
     void gender(u8 v) override;
     std::string otName(void) const override;

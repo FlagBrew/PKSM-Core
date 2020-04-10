@@ -120,11 +120,11 @@ void Sav4::SID(u16 v)
     LittleEndian::convertFrom<u16>(&data[Trainer1 + 0x12], v);
 }
 
-u8 Sav4::version(void) const
+GameVersion Sav4::version(void) const
 {
-    return game == Game::DP ? 10 : game == Game::Pt ? 12 : 7;
+    return game == Game::DP ? GameVersion::D : game == Game::Pt ? GameVersion::Pt : GameVersion::HG;
 }
-void Sav4::version(u8) {}
+void Sav4::version(GameVersion) {}
 
 u8 Sav4::gender(void) const
 {

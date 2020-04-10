@@ -697,13 +697,13 @@ void PK5::nickname(const std::string& v)
     StringUtils::setString(data, StringUtils::transString45(v), 0x48, 11, u'\uFFFF', 0);
 }
 
-u8 PK5::version(void) const
+GameVersion PK5::version(void) const
 {
-    return data[0x5F];
+    return GameVersion(data[0x5F]);
 }
-void PK5::version(u8 v)
+void PK5::version(GameVersion v)
 {
-    data[0x5F] = v;
+    data[0x5F] = u8(v);
 }
 
 std::string PK5::otName(void) const

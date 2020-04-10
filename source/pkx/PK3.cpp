@@ -459,13 +459,13 @@ void PK3::metLevel(u8 v)
     LittleEndian::convertFrom<u16>(data + 0x46, (u16)((LittleEndian::convertTo<u16>(data + 0x46) & ~0x7F) | v));
 }
 
-u8 PK3::version(void) const
+GameVersion PK3::version(void) const
 {
-    return (LittleEndian::convertTo<u16>(data + 0x46) >> 7) & 0xF;
+    return GameVersion((LittleEndian::convertTo<u16>(data + 0x46) >> 7) & 0xF);
 }
-void PK3::version(u8 v)
+void PK3::version(GameVersion v)
 {
-    LittleEndian::convertFrom<u16>(data + 0x46, (u16)((LittleEndian::convertTo<u16>(data + 0x46) & ~0x780) | ((v & 0xF) << 7)));
+    LittleEndian::convertFrom<u16>(data + 0x46, (u16)((LittleEndian::convertTo<u16>(data + 0x46) & ~0x780) | ((u8(v) & 0xF) << 7)));
 }
 
 u8 PK3::ball(void) const

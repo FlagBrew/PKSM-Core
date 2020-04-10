@@ -49,13 +49,13 @@ void Sav5::SID(u16 v)
     LittleEndian::convertFrom<u16>(&data[Trainer1 + 0x16], v);
 }
 
-u8 Sav5::version(void) const
+GameVersion Sav5::version(void) const
 {
-    return data[Trainer1 + 0x1F];
+    return GameVersion(data[Trainer1 + 0x1F]);
 }
-void Sav5::version(u8 v)
+void Sav5::version(GameVersion v)
 {
-    data[Trainer1 + 0x1F] = v;
+    data[Trainer1 + 0x1F] = u8(v);
 }
 
 u8 Sav5::gender(void) const

@@ -607,13 +607,13 @@ void PK4::nickname(const std::string& v)
     StringUtils::setString4(data, StringUtils::transString45(v), 0x48, 11);
 }
 
-u8 PK4::version(void) const
+GameVersion PK4::version(void) const
 {
-    return data[0x5F];
+    return GameVersion(data[0x5F]);
 }
-void PK4::version(u8 v)
+void PK4::version(GameVersion v)
 {
-    data[0x5F] = v;
+    data[0x5F] = u8(v);
 }
 
 std::string PK4::otName(void) const
@@ -701,7 +701,8 @@ void PK4::eggLocation(u16 v)
     else
     {
         // If this pokemon is from Platinum, HeartGold, or SoulSilver
-        LittleEndian::convertFrom<u16>(data + 0x44, (version() == 12 || version() == 7 || version() == 8) ? v : 0);
+        LittleEndian::convertFrom<u16>(
+            data + 0x44, (version() == GameVersion::Pt || version() == GameVersion::HG || version() == GameVersion::SS) ? v : 0);
         LittleEndian::convertFrom<u16>(data + 0x7E, v);
     }
 }
@@ -728,7 +729,8 @@ void PK4::metLocation(u16 v)
     else
     {
         // If this pokemon is from Platinum, HeartGold, or SoulSilver
-        LittleEndian::convertFrom<u16>(data + 0x46, (version() == 12 || version() == 7 || version() == 8) ? v : 0);
+        LittleEndian::convertFrom<u16>(
+            data + 0x46, (version() == GameVersion::Pt || version() == GameVersion::HG || version() == GameVersion::SS) ? v : 0);
         LittleEndian::convertFrom<u16>(data + 0x80, v);
     }
 }
@@ -767,7 +769,7 @@ u8 PK4::ball(void) const
 void PK4::ball(u8 v)
 {
     data[0x83] = (u8)(v <= 0x10 ? v : 4);
-    if (v > 0x10 || ((version() == 7 || version() == 8) && !fatefulEncounter()))
+    if (v > 0x10 || ((version() == GameVersion::HG || version() == GameVersion::SS) && !fatefulEncounter()))
         data[0x86] = (u8)(v <= 0x18 ? v : 4);
     else
         data[0x86] = 0;

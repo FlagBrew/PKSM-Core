@@ -378,9 +378,9 @@ u16 WC8::SID(void) const
     return LittleEndian::convertTo<u16>(data + 0x22);
 }
 
-u8 WC8::version(void) const
+GameVersion WC8::version(void) const
 {
-    return LittleEndian::convertTo<u32>(data + 0x24);
+    return GameVersion(LittleEndian::convertTo<u32>(data + 0x24));
 }
 
 u32 WC8::encryptionConstant(void) const

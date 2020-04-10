@@ -218,9 +218,9 @@ u16 WB7::SID(void) const
     return LittleEndian::convertTo<u16>(data + 0x6A);
 }
 
-u8 WB7::version(void) const
+GameVersion WB7::version(void) const
 {
-    return data[0x6C];
+    return GameVersion(data[0x6C]);
 }
 
 u32 WB7::encryptionConstant(void) const

@@ -819,13 +819,13 @@ void PK8::enjoyment(u8 v)
     data[0xDD] = v;
 }
 
-u8 PK8::version(void) const
+GameVersion PK8::version(void) const
 {
-    return data[0xDE];
+    return GameVersion(data[0xDE]);
 }
-void PK8::version(u8 v)
+void PK8::version(GameVersion v)
 {
-    data[0xDE] = v;
+    data[0xDE] = u8(v);
 }
 
 u8 PK8::country(void) const
