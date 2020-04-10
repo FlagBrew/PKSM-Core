@@ -24,6 +24,7 @@
  *         reasonable ways as different from the original version.
  */
 
+#ifndef I18N_HPP
 #define I18N_HPP
 
 #include "i18n/Language.hpp"
@@ -129,3 +130,5 @@ namespace i18n
     void exitGui(Language lang);
     const std::string& localize(Language lang, const std::string& index);
 };
+
+#endif
