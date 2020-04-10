@@ -429,32 +429,6 @@ std::map<Sav::Pouch, std::vector<int>> SavSWSH::validItems(void) const
                          1261, 1262, 1263, 1264}},
         {KeyItem, {78, 628, 629, 631, 632, 73, 943, 944, 945, 946, 174, 175, 176, 177, 180, 181, 110, 1255, 1266, 1267, 1269, 1270, 1271, 1278}}};
 }
-std::string SavSWSH::pouchName(Language lang, Pouch pouch) const
-{
-    switch (pouch)
-    {
-        case Medicine:
-            return i18n::localize(lang, "MEDICINE");
-        case Ball:
-            return i18n::localize(lang, "BALLS");
-        case Battle:
-            return i18n::localize(lang, "BATTLE_ITEMS");
-        case Berry:
-            return i18n::localize(lang, "BERRIES");
-        case NormalItem:
-            return i18n::localize(lang, "ITEMS");
-        case TM:
-            return i18n::localize(lang, "TMHM");
-        case Treasure:
-            return i18n::localize(lang, "TREASURES");
-        case Ingredient:
-            return i18n::localize(lang, "INGREDIENTS");
-        case KeyItem:
-            return i18n::localize(lang, "KEY_ITEMS");
-        default:
-            return "";
-    }
-}
 
 std::string SavSWSH::boxName(u8 box) const
 {

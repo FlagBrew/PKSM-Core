@@ -279,7 +279,7 @@ u32 Sav::displaySID() const
     return 0;
 }
 
-std::string Sav::invalidTransferReason(const PKX& pk) const
+Sav::BadTransferReason Sav::invalidTransferReason(const PKX& pk) const
 {
     bool moveBad = false;
     for (int i = 0; i < 4; i++)
@@ -297,28 +297,28 @@ std::string Sav::invalidTransferReason(const PKX& pk) const
     }
     if (moveBad)
     {
-        return "STORAGE_BAD_MOVE";
+        return BadTransferReason::MOVE;
     }
     else if (availableSpecies().count((int)pk.species()) == 0)
     {
-        return "STORAGE_BAD_SPECIES";
+        return BadTransferReason::SPECIES;
     }
     else if (pk.alternativeForm() >= formCount(pk.species()) &&
              !((pk.species() == 664 || pk.species() == 665) && pk.alternativeForm() <= formCount(666)))
     {
-        return "STORAGE_BAD_FORM";
+        return BadTransferReason::FORM;
     }
     else if (availableAbilities().count((int)pk.ability()) == 0)
     {
-        return "STORAGE_BAD_ABILITY";
+        return BadTransferReason::ABILITY;
     }
     else if (availableItems().count((int)pk.heldItem()) == 0)
     {
-        return "STORAGE_BAD_ITEM";
+        return BadTransferReason::ITEM;
     }
     else if (availableBalls().count((int)pk.ball()) == 0)
     {
-        return "STORAGE_BAD_BALL";
+        return BadTransferReason::BALL;
     }
-    return "";
+    return BadTransferReason::OKAY;
 }

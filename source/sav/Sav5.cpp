@@ -535,25 +535,6 @@ std::vector<std::pair<Sav::Pouch, int>> Sav5::pouches() const
     return {{Pouch::NormalItem, 261}, {Pouch::KeyItem, game == Game::BW ? 19 : 27}, {Pouch::TM, 101}, {Pouch::Medicine, 47}, {Pouch::Berry, 64}};
 }
 
-std::string Sav5::pouchName(Language lang, Pouch pouch) const
-{
-    switch (pouch)
-    {
-        case NormalItem:
-            return i18n::localize(lang, "ITEMS");
-        case KeyItem:
-            return i18n::localize(lang, "KEY_ITEMS");
-        case TM:
-            return i18n::localize(lang, "TMHM");
-        case Medicine:
-            return i18n::localize(lang, "MEDICINE");
-        case Berry:
-            return i18n::localize(lang, "BERRIES");
-        default:
-            return "";
-    }
-}
-
 const std::set<int>& Sav5::availableItems(void) const
 {
     if (items.empty())

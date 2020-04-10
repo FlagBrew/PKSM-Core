@@ -706,27 +706,6 @@ std::vector<std::pair<Sav::Pouch, int>> Sav3::pouches(void) const
         {PCItem, (OFS_PouchHeldItem - OFS_PCItem) / 4}};
 }
 
-std::string Sav3::pouchName(Language lang, Pouch pouch) const
-{
-    switch (pouch)
-    {
-        case NormalItem:
-            return i18n::localize(lang, "ITEMS");
-        case KeyItem:
-            return i18n::localize(lang, "KEY_ITEMS");
-        case Ball:
-            return i18n::localize(lang, "BALLS");
-        case TM:
-            return i18n::localize(lang, "TMHM");
-        case Berry:
-            return i18n::localize(lang, "BERRIES");
-        case PCItem:
-            return i18n::localize(lang, "PC_ITEMS");
-        default:
-            return "";
-    }
-}
-
 u16 Sav3::rtcInitialDay(void) const
 {
     if (game == Game::FRLG)

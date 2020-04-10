@@ -138,7 +138,6 @@ public:
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
     std::vector<std::pair<Pouch, int>> pouches(void) const override;
     std::map<Pouch, std::vector<int>> validItems(void) const override;
-    std::string pouchName(Language lang, Pouch pouch) const override;
 
     u8 formCount(u16 species) const override { return PersonalDPPtHGSS::formCount(species); }
 };

@@ -69,7 +69,6 @@ public:
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
     std::vector<std::pair<Pouch, int>> pouches(void) const override;
     std::map<Pouch, std::vector<int>> validItems(void) const override;
-    std::string pouchName(Language lang, Pouch pouch) const override;
 
     u8 subRegion(void) const override { return 0; }     // Not applicable
     void subRegion(u8) override {}                      // Not applicable

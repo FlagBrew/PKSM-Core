@@ -126,15 +126,15 @@ public:
     void mysteryGift(WCX& wc, int& pos) override;
     std::unique_ptr<WCX> mysteryGift(int pos) const override; // Always returns null: Data not stored
     void cryptBoxData(bool crypted) override;
-    std::string boxName(u8 box) const override;
-    void boxName(u8 box, const std::string& name) override;
+    std::string boxName(u8) const override { return ""; } // There are no actual boxes. They are emulated for interface compatibility
+    void boxName(u8, const std::string&) override {}
     u8 boxWallpaper(u8) const override { return 0; }
     void boxWallpaper(u8, u8) override {}
     u8 partyCount(void) const override;
     void partyCount(u8 count) override;
 
     int maxSlot(void) const override { return 1000; }
-    int maxBoxes(void) const override { return 34; }         // ish; stupid 1000-slot box makes this dumb
+    int maxBoxes(void) const override { return 34; }         // ish; stupid 1000-slot list makes this dumb
     size_t maxWondercards(void) const override { return 1; } // Data not stored
     Generation generation(void) const override { return Generation::LGPE; }
     const std::set<int>& availableItems(void) const override;
@@ -147,7 +147,6 @@ public:
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
     std::vector<std::pair<Pouch, int>> pouches(void) const override;
     std::map<Pouch, std::vector<int>> validItems(void) const override;
-    std::string pouchName(Language lang, Pouch pouch) const override;
 
     u8 formCount(u16 species) const override { return PersonalLGPE::formCount(species); }
 };

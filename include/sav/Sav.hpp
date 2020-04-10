@@ -114,7 +114,19 @@ public:
         ZCrystals,
         Treasure,
         Ingredient,
-        PCItem
+        PCItem,
+        RotomPower,
+        CatchingItem
+    };
+    enum class BadTransferReason
+    {
+        OKAY, // Indicates a transfer that should be successful
+        MOVE,
+        SPECIES,
+        FORM,
+        ABILITY,
+        ITEM,
+        BALL
     };
 
     struct giftData
@@ -140,8 +152,7 @@ public:
     // Not necessary directly after construction
     virtual void beginEditing(void) = 0;
 
-    // If not empty, run through i18n::localize
-    std::string invalidTransferReason(const PKX& pk) const;
+    BadTransferReason invalidTransferReason(const PKX& pk) const;
     std::unique_ptr<PKX> transfer(const PKX& pk);
     static bool isValidDSSave(std::shared_ptr<u8[]> dt);
     static std::unique_ptr<Sav> getSave(std::shared_ptr<u8[]> dt, size_t length);
@@ -221,7 +232,6 @@ public:
     virtual std::unique_ptr<Item> item(Pouch pouch, u16 slot) const  = 0;
     virtual std::vector<std::pair<Pouch, int>> pouches(void) const   = 0;
     virtual std::map<Pouch, std::vector<int>> validItems(void) const = 0;
-    virtual std::string pouchName(Language lang, Pouch pouch) const  = 0;
 
     u32 getLength() const { return length; }
     std::shared_ptr<u8[]> rawData() const { return data; }

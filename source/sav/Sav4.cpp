@@ -871,31 +871,6 @@ std::map<Sav::Pouch, std::vector<int>> Sav4::validItems() const
         {Battle, {55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67}}};
 }
 
-std::string Sav4::pouchName(Language lang, Pouch pouch) const
-{
-    switch (pouch)
-    {
-        case NormalItem:
-            return i18n::localize(lang, "ITEMS");
-        case KeyItem:
-            return i18n::localize(lang, "KEY_ITEMS");
-        case TM:
-            return i18n::localize(lang, "TMHM");
-        case Mail:
-            return i18n::localize(lang, "MAIL");
-        case Medicine:
-            return i18n::localize(lang, "MEDICINE");
-        case Berry:
-            return i18n::localize(lang, "BERRIES");
-        case Ball:
-            return i18n::localize(lang, "BALLS");
-        case Battle:
-            return i18n::localize(lang, "BATTLE_ITEMS");
-        default:
-            return "";
-    }
-}
-
 const std::set<int>& Sav4::availableItems(void) const
 {
     if (items.empty())

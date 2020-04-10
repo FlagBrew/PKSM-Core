@@ -364,7 +364,6 @@ void SavLGPE::pkm(const PKX& pk, u8 slot)
             }
             if (off == 0)
             {
-                // Gui::warn(i18n::localize("LGPE_NO_PARTY_SLOT"));
                 return;
             }
         }
@@ -404,12 +403,6 @@ std::unique_ptr<PKX> SavLGPE::emptyPkm() const
 {
     return PKX::getPKM<Generation::LGPE>(nullptr, true);
 }
-
-std::string SavLGPE::boxName(u8 box) const
-{
-    return i18n::localize(Language(language()), "BOX") + " " + std::to_string((int)box + 1);
-}
-void SavLGPE::boxName(u8, const std::string&) {}
 
 int SavLGPE::dexFormCount(int species) const
 {
@@ -661,7 +654,6 @@ void SavLGPE::mysteryGift(WCX& wc, int&)
         {
             if (boxedPkm() == maxSlot())
             {
-                // Gui::warn(i18n::localize("LGPE_TOO_MANY_PKM"), i18n::localize("BAD_INJECT"));
                 return;
             }
             auto pb7 = PKX::getPKM<Generation::LGPE>(nullptr, false);
@@ -905,7 +897,7 @@ void SavLGPE::item(const Item& item, Pouch pouch, u16 slot)
                 std::copy(write.begin(), write.end(), &data[0x5C0 + slot * 4]);
             }
             break;
-        case Pouch::Ball:
+        case Pouch::CatchingItem:
             if (slot < 50)
             {
                 std::copy(write.begin(), write.end(), &data[0x818 + slot * 4]);
@@ -941,7 +933,7 @@ std::unique_ptr<Item> SavLGPE::item(Pouch pouch, u16 slot) const
             return std::make_unique<Item7b>(&data[0x2A0 + slot * 4]);
         case Pouch::ZCrystals:
             return std::make_unique<Item7b>(&data[0x5C0 + slot * 4]);
-        case Pouch::Ball:
+        case Pouch::CatchingItem:
             return std::make_unique<Item7b>(&data[0x818 + slot * 4]);
         case Pouch::Battle:
             return std::make_unique<Item7b>(&data[0x8E0 + slot * 4]);
@@ -960,7 +952,7 @@ std::unique_ptr<WCX> SavLGPE::mysteryGift(int) const
 
 std::vector<std::pair<Sav::Pouch, int>> SavLGPE::pouches() const
 {
-    return {{Pouch::Medicine, 60}, {Pouch::TM, 108}, {Pouch::Candy, 200}, {Pouch::ZCrystals, 150}, {Pouch::Ball, 50}, {Pouch::Battle, 150},
+    return {{Pouch::Medicine, 60}, {Pouch::TM, 108}, {Pouch::Candy, 200}, {Pouch::ZCrystals, 150}, {Pouch::CatchingItem, 50}, {Pouch::Battle, 150},
         {Pouch::NormalItem, 150}};
 }
 
@@ -975,34 +967,11 @@ std::map<Sav::Pouch, std::vector<int>> SavLGPE::validItems() const
                     1010, 1011, 1012, 1013, 1014, 1015, 1016, 1017, 1018, 1019, 1020, 1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1029, 1030,
                     1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038, 1039, 1040, 1041, 1042, 1043, 1044, 1045, 1046, 1047, 1048, 1049, 1050, 1051,
                     1052, 1053, 1054, 1055, 1056, 1057}},
-        {ZCrystals, {51, 53, 81, 82, 83, 84, 85, 849}}, {Ball, {1, 2, 3, 4, 12, 164, 166, 168, 861, 862, 863, 864, 865, 866}},
+        {ZCrystals, {51, 53, 81, 82, 83, 84, 85, 849}}, {CatchingItem, {1, 2, 3, 4, 12, 164, 166, 168, 861, 862, 863, 864, 865, 866}},
         {Battle, {55, 56, 57, 58, 59, 60, 61, 62, 656, 659, 660, 661, 662, 663, 671, 672, 675, 676, 678, 679, 760, 762, 770, 773}},
         {NormalItem,
             {76, 77, 78, 79, 86, 87, 88, 89, 90, 91, 92, 93, 101, 102, 103, 113, 115, 121, 122, 123, 124, 125, 126, 127, 128, 442, 571, 632, 651, 795,
                 796, 872, 873, 874, 875, 876, 877, 878, 885, 886, 887, 888, 889, 890, 891, 892, 893, 894, 895, 896, 900, 901, 902}}};
-}
-
-std::string SavLGPE::pouchName(Language lang, Pouch pouch) const
-{
-    switch (pouch)
-    {
-        case Medicine:
-            return i18n::localize(lang, "MEDICINE");
-        case TM:
-            return i18n::localize(lang, "TMS");
-        case Candy:
-            return i18n::localize(lang, "CANDIES");
-        case ZCrystals:
-            return i18n::localize(lang, "ZCRYSTALS");
-        case Ball:
-            return i18n::localize(lang, "CATCHING_ITEMS");
-        case Battle:
-            return i18n::localize(lang, "BATTLE_ITEMS");
-        case NormalItem:
-            return i18n::localize(lang, "ITEMS");
-        default:
-            return "";
-    }
 }
 
 const std::set<int>& SavLGPE::availableItems(void) const

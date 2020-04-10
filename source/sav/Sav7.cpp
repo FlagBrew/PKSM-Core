@@ -629,7 +629,7 @@ void Sav7::item(const Item& item, Pouch pouch, u16 slot)
         case ZCrystals:
             std::copy(write.begin(), write.end(), &data[PouchZCrystals + slot * 4]);
             break;
-        case Battle:
+        case RotomPower:
             std::copy(write.begin(), write.end(), &data[BattleItems + slot * 4]);
             break;
         default:
@@ -653,7 +653,7 @@ std::unique_ptr<Item> Sav7::item(Pouch pouch, u16 slot) const
             return std::make_unique<Item7>(&data[PouchBerry + slot * 4]);
         case ZCrystals:
             return std::make_unique<Item7>(&data[PouchZCrystals + slot * 4]);
-        case Battle:
+        case RotomPower:
             return std::make_unique<Item7>(&data[BattleItems + slot * 4]);
         default:
             return nullptr;
@@ -666,32 +666,9 @@ std::vector<std::pair<Sav::Pouch, int>> Sav7::pouches(void) const
         {Medicine, game == Game::SM ? 64 : 60}, {Berry, game == Game::SM ? 72 : 67}, {ZCrystals, game == Game::SM ? 30 : 35}};
 
     if (game == Game::USUM)
-        pouches.push_back({Battle, 11});
+        pouches.push_back({RotomPower, 11});
 
     return pouches;
-}
-
-std::string Sav7::pouchName(Language lang, Pouch pouch) const
-{
-    switch (pouch)
-    {
-        case NormalItem:
-            return i18n::localize(lang, "ITEMS");
-        case KeyItem:
-            return i18n::localize(lang, "KEY_ITEMS");
-        case TM:
-            return i18n::localize(lang, "TMS");
-        case Medicine:
-            return i18n::localize(lang, "MEDICINE");
-        case Berry:
-            return i18n::localize(lang, "BERRIES");
-        case ZCrystals:
-            return i18n::localize(lang, "ZCRYSTALS");
-        case Battle:
-            return i18n::localize(lang, "ROTOM_POWERS");
-        default:
-            return "";
-    }
 }
 
 const std::set<int>& Sav7::availableItems(void) const
