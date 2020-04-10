@@ -271,32 +271,32 @@ void PKX::encrypt(void)
 
 bool PKX::originGen7(void) const
 {
-    return versionToGen(version()) == Generation::SEVEN;
+    return (Generation)version() == Generation::SEVEN;
 }
 
 bool PKX::originGen6(void) const
 {
-    return versionToGen(version()) == Generation::SIX;
+    return (Generation)version() == Generation::SIX;
 }
 
 bool PKX::originGen5(void) const
 {
-    return versionToGen(version()) == Generation::FIVE;
+    return (Generation)version() == Generation::FIVE;
 }
 
 bool PKX::originGen4(void) const
 {
-    return versionToGen(version()) == Generation::FOUR;
+    return (Generation)version() == Generation::FOUR;
 }
 
 bool PKX::originGen3(void) const
 {
-    return versionToGen(version()) == Generation::THREE;
+    return (Generation)version() == Generation::THREE;
 }
 
 Generation PKX::originGen(void) const
 {
-    return versionToGen(version());
+    return (Generation)version();
 }
 
 void PKX::fixMoves(void)

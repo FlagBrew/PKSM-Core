@@ -37,7 +37,7 @@ class PK7;
 class PK8;
 class PB7;
 
-template <Generation g>
+template <Generation::EnumType g>
 struct GenToPkx
 {
 };

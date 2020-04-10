@@ -51,7 +51,7 @@ public:
     WCX& operator=(const WCX&) = delete;
     virtual ~WCX(void) {}
 
-    virtual std::string extension() const { return ".wc" + genToString(generation()); }
+    virtual std::string extension() const { return ".wc" + (std::string)generation(); }
 
     virtual Generation generation(void) const = 0;
     virtual bool bean(void) const             = 0;

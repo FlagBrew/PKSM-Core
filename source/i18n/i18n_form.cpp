@@ -95,7 +95,7 @@ namespace i18n
                     }
                     else
                     {
-                        sVersion       = "G" + genToString((Generation)version);
+                        sVersion       = "G" + (std::string)((Generation)version);
                         auto versionIt = formVal.find(sVersion);
                         if (versionIt != formVal.end())
                         {

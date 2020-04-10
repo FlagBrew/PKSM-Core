@@ -82,7 +82,7 @@ public:
     static constexpr int PKSM_MAX_SPECIES = 890;
 
     static std::unique_ptr<PKX> getPKM(Generation gen, u8* data, bool party = false, bool directAccess = false);
-    template <Generation g>
+    template <Generation::EnumType g>
     static std::unique_ptr<typename GenToPkx<g>::PKX> getPKM(u8* data, bool party = false, bool directAccess = false)
     {
         return std::make_unique<typename GenToPkx<g>::PKX>(PrivateConstructor{}, data, party, directAccess);
@@ -90,7 +90,7 @@ public:
 
     // Returns null if length is not valid for that generation, and a party Pokemon depending on length
     static std::unique_ptr<PKX> getPKM(Generation gen, u8* data, size_t length, bool directAccess = false);
-    template <Generation g>
+    template <Generation::EnumType g>
     static std::unique_ptr<typename GenToPkx<g>::PKX> getPKM(u8* data, size_t length, bool directAccess = false)
     {
         if (GenToPkx<g>::PKX::PARTY_LENGTH == length || GenToPkx<g>::PKX::BOX_LENGTH == length)
@@ -107,7 +107,7 @@ public:
     PKX& operator=(PKX&& pk);
     bool operator==(const PKFilter& filter) const;
 
-    virtual std::string extension(void) const { return ".pk" + genToString(generation()); }
+    virtual std::string extension(void) const { return ".pk" + (std::string)generation(); }
 
     u8* rawData(void) { return data; }
     const u8* rawData(void) const { return data; }
