@@ -93,6 +93,15 @@ namespace i18n
                     {
                         index = versionIt->get<int>();
                     }
+                    else
+                    {
+                        sVersion       = "G" + genToString((Generation)version);
+                        auto versionIt = formVal.find(sVersion);
+                        if (versionIt != formVal.end())
+                        {
+                            index = versionIt->get<int>();
+                        }
+                    }
                 }
                 else
                 {
