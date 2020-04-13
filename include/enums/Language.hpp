@@ -31,11 +31,14 @@
 #include "PKSMCORE_CONFIG.h"
 #endif
 
+#include "enums/Generation.hpp"
 #include "utils/coretypes.h"
-#include "utils/generation.hpp"
+#include <limits>
+#include <type_traits>
 
 enum class Language : u8
 {
+    None = 0,
     JPN = 1,
     ENG,
     FRE,
@@ -47,8 +50,10 @@ enum class Language : u8
     CHS,
     CHT,
 #ifdef _PKSMCORE_EXTRA_LANGUAGES
-    _PKSMCORE_EXTRA_LANGUAGES
+    _PKSMCORE_EXTRA_LANGUAGES,
 #endif
+
+    INVALID = std::numeric_limits<std::underlying_type_t<Language>>::max()
 };
 
 Language getSafeLanguage(Generation gen, Language originalLang);

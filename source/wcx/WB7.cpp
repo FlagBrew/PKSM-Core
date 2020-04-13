@@ -228,9 +228,9 @@ u32 WB7::encryptionConstant(void) const
     return LittleEndian::convertTo<u32>(data + 0x70);
 }
 
-u8 WB7::ball(void) const
+Ball WB7::ball(void) const
 {
-    return data[0x76];
+    return Ball{data[0x76]};
 }
 
 u16 WB7::heldItem(void) const
@@ -243,9 +243,9 @@ u16 WB7::move(u8 m) const
     return LittleEndian::convertTo<u16>(data + 0x7A + m * 2);
 }
 
-u16 WB7::species(void) const
+Species WB7::species(void) const
 {
-    return LittleEndian::convertTo<u16>(data + 0x82);
+    return Species{LittleEndian::convertTo<u16>(data + 0x82)};
 }
 
 u8 WB7::alternativeForm(void) const
@@ -253,17 +253,17 @@ u8 WB7::alternativeForm(void) const
     return data[0x84];
 }
 
-u8 WB7::nature(void) const
+Nature WB7::nature(void) const
 {
-    return data[0xA0];
+    return Nature{data[0xA0]};
 }
 
-u8 WB7::gender(void) const
+Gender WB7::gender(void) const
 {
-    return data[0xA1];
+    return Gender{data[0xA1]};
 }
 
-u16 WB7::ability(void) const
+Ability WB7::ability(void) const
 {
     u8 abilitynum, type = abilityType();
 
@@ -274,7 +274,7 @@ u16 WB7::ability(void) const
     else
         abilitynum = 0;
 
-    return PersonalLGPE::ability(species(), abilitynum);
+    return PersonalLGPE::ability(u16(species()), abilitynum);
 }
 
 u8 WB7::abilityType(void) const
@@ -317,9 +317,9 @@ u8 WB7::iv(Stat index) const
     return data[0xAF + u8(index)];
 }
 
-u8 WB7::otGender(void) const
+Gender WB7::otGender(void) const
 {
-    return data[0xB5];
+    return Gender{data[0xB5]};
 }
 
 u16 WB7::additionalItem(void) const
@@ -394,7 +394,7 @@ bool WB7::oncePerDay(void) const
 
 u16 WB7::formSpecies(void) const
 {
-    u16 tmpSpecies = species();
+    u16 tmpSpecies = u16(species());
     u8 form        = alternativeForm();
     u8 formcount   = PersonalLGPE::formCount(tmpSpecies);
 

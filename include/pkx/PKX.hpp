@@ -27,15 +27,21 @@
 #ifndef PKX_HPP
 #define PKX_HPP
 
-#include "i18n/Language.hpp"
+#include "enums/Ability.hpp"
+#include "enums/Ball.hpp"
+#include "enums/GameVersion.hpp"
+#include "enums/Gender.hpp"
+#include "enums/Generation.hpp"
+#include "enums/Language.hpp"
+#include "enums/Nature.hpp"
+#include "enums/Ribbon.hpp"
+#include "enums/Species.hpp"
+#include "enums/Stat.hpp"
+#include "enums/Type.hpp"
 #include "sav/Item.hpp"
 #include "utils/DateTime.hpp"
-#include "utils/Ribbons.hpp"
 #include "utils/coretypes.h"
-#include "utils/gameversion.hpp"
 #include "utils/genToPkx.hpp"
-#include "utils/generation.hpp"
-#include "utils/stat.hpp"
 #include <memory>
 #include <string>
 
@@ -79,7 +85,7 @@ protected:
     u8* data;
 
 public:
-    static constexpr int PKSM_MAX_SPECIES = 890;
+    static constexpr Species PKSM_MAX_SPECIES = Species::Eternatus;
 
     static std::unique_ptr<PKX> getPKM(Generation gen, u8* data, bool party = false, bool directAccess = false);
     template <Generation::EnumType g>
@@ -137,8 +143,9 @@ public:
     Generation originGen(void) const;
     void fixMoves(void);
 
-    static u32 getRandomPID(u16 species, u8 gender, GameVersion originGame, u8 nature, u8 form, u8 abilityNum, u32 oldPid, Generation gen);
-    static u8 genderFromRatio(u32 pid, u8 gt);
+    static u32 getRandomPID(
+        Species species, Gender gender, GameVersion originGame, Nature nature, u8 form, u8 abilityNum, u32 oldPid, Generation gen);
+    static Gender genderFromRatio(u32 pid, u8 gt);
 
     // BLOCK A
     virtual u32 encryptionConstant(void) const = 0;
@@ -147,8 +154,8 @@ public:
     virtual void sanity(u16 v)                 = 0;
     virtual u16 checksum(void) const           = 0;
     virtual void checksum(u16 v)               = 0;
-    virtual u16 species(void) const            = 0;
-    virtual void species(u16 v)                = 0;
+    virtual Species species(void) const        = 0;
+    virtual void species(Species v)            = 0;
     virtual u16 heldItem(void) const           = 0;
     virtual void heldItem(u16 v)               = 0;
     void heldItem(const Item& item) { heldItem(item.id()); }
@@ -158,8 +165,8 @@ public:
     virtual void SID(u16 v)                   = 0;
     virtual u32 experience(void) const        = 0;
     virtual void experience(u32 v)            = 0;
-    virtual u16 ability(void) const           = 0;
-    virtual void ability(u16 v)               = 0;
+    virtual Ability ability(void) const       = 0;
+    virtual void ability(Ability v)           = 0;
     virtual u8 abilityNumber(void) const      = 0;
     virtual void abilityNumber(u8 v)          = 0;
     virtual void setAbility(u8 abilityNumber) = 0;
@@ -167,12 +174,12 @@ public:
     virtual void markValue(u16 v)             = 0;
     virtual u32 PID(void) const               = 0;
     virtual void PID(u32 v)                   = 0;
-    virtual u8 nature(void) const             = 0;
-    virtual void nature(u8 v)                 = 0;
+    virtual Nature nature(void) const         = 0;
+    virtual void nature(Nature v)             = 0;
     virtual bool fatefulEncounter(void) const = 0;
     virtual void fatefulEncounter(bool v)     = 0;
-    virtual u8 gender(void) const             = 0;
-    virtual void gender(u8 g)                 = 0;
+    virtual Gender gender(void) const         = 0;
+    virtual void gender(Gender g)             = 0;
     virtual u16 alternativeForm(void) const   = 0;
     virtual void alternativeForm(u16 v)       = 0;
     virtual u8 ev(Stat ev) const              = 0;
@@ -235,12 +242,12 @@ public:
     virtual void eggLocation(u16 v)         = 0;
     virtual u16 metLocation(void) const     = 0;
     virtual void metLocation(u16 v)         = 0;
-    virtual u8 ball(void) const             = 0;
-    virtual void ball(u8 v)                 = 0;
+    virtual Ball ball(void) const           = 0;
+    virtual void ball(Ball v)               = 0;
     virtual u8 metLevel(void) const         = 0;
     virtual void metLevel(u8 v)             = 0;
-    virtual u8 otGender(void) const         = 0;
-    virtual void otGender(u8 v)             = 0;
+    virtual Gender otGender(void) const     = 0;
+    virtual void otGender(Gender v)         = 0;
     virtual GameVersion version(void) const = 0;
     virtual void version(GameVersion v)     = 0;
     virtual Language language(void) const   = 0;
@@ -249,8 +256,8 @@ public:
     virtual u8 currentFriendship(void) const = 0;
     virtual void currentFriendship(u8 v)     = 0;
     virtual void refreshChecksum(void)       = 0;
-    virtual u8 hpType(void) const            = 0;
-    virtual void hpType(u8 v)                = 0;
+    virtual Type hpType(void) const          = 0;
+    virtual void hpType(Type v)              = 0;
     virtual u16 TSV(void) const              = 0;
     virtual u16 PSV(void) const              = 0;
     u32 versionTID(void) const;
@@ -294,12 +301,12 @@ public:
     virtual u8 baseSpe(void) const        = 0;
     virtual u8 baseSpa(void) const        = 0;
     virtual u8 baseSpd(void) const        = 0;
-    virtual u8 type1(void) const          = 0;
-    virtual u8 type2(void) const          = 0;
+    virtual Type type1(void) const        = 0;
+    virtual Type type2(void) const        = 0;
     virtual u8 genderType(void) const     = 0;
     virtual u8 baseFriendship(void) const = 0;
     virtual u8 expType(void) const        = 0;
-    virtual u16 abilities(u8 n) const     = 0;
+    virtual Ability abilities(u8 n) const = 0;
     virtual u16 formStatIndex(void) const = 0;
 };
 

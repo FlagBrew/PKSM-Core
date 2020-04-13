@@ -25,9 +25,9 @@
  */
 
 #include "sav/Sav5.hpp"
-#include "i18n/i18n.hpp"
 #include "pkx/PK5.hpp"
 #include "utils/endian.hpp"
+#include "utils/i18n.hpp"
 #include "utils/utils.hpp"
 #include "wcx/PGF.hpp"
 
@@ -58,13 +58,13 @@ void Sav5::version(GameVersion v)
     data[Trainer1 + 0x1F] = u8(v);
 }
 
-u8 Sav5::gender(void) const
+Gender Sav5::gender(void) const
 {
-    return data[Trainer1 + 0x21];
+    return Gender{data[Trainer1 + 0x21]};
 }
-void Sav5::gender(u8 v)
+void Sav5::gender(Gender v)
 {
-    data[Trainer1 + 0x21] = v;
+    data[Trainer1 + 0x21] = u8(v);
 }
 
 Language Sav5::language(void) const
@@ -280,14 +280,12 @@ int Sav5::dexFormIndex(int species, int formct) const
 
 void Sav5::dex(const PKX& pk)
 {
-    if (pk.species() == 0)
-        return;
-    if (pk.species() > 649)
+    if (pk.species() == Species::None || pk.species() > maxSpecies())
         return;
 
     const int brSize = 0x54;
-    int bit          = pk.species() - 1;
-    int gender       = pk.gender() % 2; // genderless -> male
+    int bit          = u16(pk.species()) - 1;
+    int gender       = u8(pk.gender()) % 2; // genderless -> male
     int shiny        = pk.shiny() ? 1 : 0;
     int shift        = shiny * 2 + gender + 1;
     int shiftoff     = shiny * brSize * 2 + gender * brSize + brSize;
@@ -320,8 +318,8 @@ void Sav5::dex(const PKX& pk)
     }
 
     // Formes
-    int fc = PersonalBWB2W2::formCount(pk.species());
-    int f  = dexFormIndex(pk.species(), fc);
+    int fc = PersonalBWB2W2::formCount(u16(pk.species()));
+    int f  = dexFormIndex(u16(pk.species()), fc);
     if (f < 0)
         return;
 
@@ -348,7 +346,7 @@ void Sav5::dex(const PKX& pk)
 int Sav5::dexSeen(void) const
 {
     int ret = 0;
-    for (int i = 1; i <= maxSpecies(); i++)
+    for (int i = 1; i <= u16(maxSpecies()); i++)
     {
         int bitIndex = (i - 1) & 7;
         for (int j = 0; j < 4; j++) // All seen flags: gender & shinies
@@ -367,7 +365,7 @@ int Sav5::dexSeen(void) const
 int Sav5::dexCaught(void) const
 {
     int ret = 0;
-    for (int i = 1; i <= maxSpecies(); i++)
+    for (int i = 1; i <= u16(maxSpecies()); i++)
     {
         int bitIndex = (i - 1) & 7;
         int ofs      = PokeDex + 0x8 + ((i - 1) >> 3);
@@ -424,7 +422,7 @@ std::unique_ptr<PKX> Sav5::emptyPkm() const
     return PKX::getPKM<Generation::FIVE>(nullptr);
 }
 
-int Sav5::emptyGiftLocation(void) const
+int Sav5::currentGiftAmount(void) const
 {
     u8 t;
     bool empty;
@@ -447,27 +445,7 @@ int Sav5::emptyGiftLocation(void) const
         }
     }
 
-    return !empty ? 11 : t;
-}
-
-std::vector<Sav::giftData> Sav5::currentGifts(void) const
-{
-    std::vector<Sav::giftData> ret;
-    u8* wonderCards = data.get() + WondercardData;
-    for (int i = 0; i < emptyGiftLocation(); i++)
-    {
-        if (*(wonderCards + i * PGF::length + 0xB3) == 1)
-        {
-            ret.emplace_back(StringUtils::getString(wonderCards + i * PGF::length, 0x60, 37, u'\uFFFF'), "",
-                LittleEndian::convertTo<u16>(wonderCards + i * PGF::length + 0x1A), *(wonderCards + i * PGF::length + 0x1C),
-                *(wonderCards + i * PGF::length + 0x35));
-        }
-        else
-        {
-            ret.emplace_back(StringUtils::getString(wonderCards + i * PGF::length, 0x60, 37, u'\uFFFF'), "", -1, -1, -1);
-        }
-    }
-    return ret;
+    return t;
 }
 
 void Sav5::cryptMysteryGiftData()
@@ -539,7 +517,7 @@ const std::set<int>& Sav5::availableItems(void) const
 {
     if (items.empty())
     {
-        fill_set(items, 0, maxItem());
+        fill_set_consecutive(items, 0, maxItem());
     }
     return items;
 }
@@ -548,34 +526,34 @@ const std::set<int>& Sav5::availableMoves(void) const
 {
     if (moves.empty())
     {
-        fill_set(moves, 0, maxMove());
+        fill_set_consecutive(moves, 0, maxMove());
     }
     return moves;
 }
 
-const std::set<int>& Sav5::availableSpecies(void) const
+const std::set<Species>& Sav5::availableSpecies(void) const
 {
     if (species.empty())
     {
-        fill_set(species, 1, maxSpecies());
+        fill_set_consecutive<Species>(species, Species::Bulbasaur, maxSpecies());
     }
     return species;
 }
 
-const std::set<int>& Sav5::availableAbilities(void) const
+const std::set<Ability>& Sav5::availableAbilities(void) const
 {
     if (abilities.empty())
     {
-        fill_set(abilities, 1, maxAbility());
+        fill_set_consecutive<Ability>(abilities, Ability::Stench, maxAbility());
     }
     return abilities;
 }
 
-const std::set<int>& Sav5::availableBalls(void) const
+const std::set<Ball>& Sav5::availableBalls(void) const
 {
     if (balls.empty())
     {
-        fill_set(balls, 1, maxBall());
+        fill_set_consecutive<::Ball>(balls, Ball::Master, maxBall());
     }
     return balls;
 }

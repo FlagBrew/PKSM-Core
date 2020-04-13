@@ -24,41 +24,47 @@
  *         reasonable ways as different from the original version.
  */
 
+#include "enums/Type.hpp"
 #include "i18n_internal.hpp"
 
 namespace i18n
 {
-    std::unordered_map<Language, std::vector<std::string>> hps;
+    std::unordered_map<Language, std::vector<std::string>> types;
 
-    void initHP(Language lang)
+    void initType(Language lang)
     {
         std::vector<std::string> vec;
-        load(lang, "/hp.txt", vec);
-        hps.insert_or_assign(lang, std::move(vec));
+        load(lang, "/types.txt", vec);
+        types.insert_or_assign(lang, std::move(vec));
     }
 
-    void exitHP(Language lang) { hps.erase(lang); }
+    void exitType(Language lang) { types.erase(lang); }
 
-    const std::string& hp(Language lang, u8 val)
+    const std::string& type(Language lang, Type val)
     {
         checkInitialized(lang);
-        if (hps.contains(lang))
+        if (types.contains(lang))
         {
-            if (val < hps[lang].size())
+            if (size_t(val) < types[lang].size())
             {
-                return hps[lang][val];
+                return types[lang][size_t(val)];
             }
         }
         return emptyString;
     }
 
-    const std::vector<std::string>& rawHPs(Language lang)
+    const std::vector<std::string>& rawTypes(Language lang)
     {
         checkInitialized(lang);
-        if (hps.contains(lang))
+        if (types.contains(lang))
         {
-            return hps[lang];
+            return types[lang];
         }
         return emptyVector;
     }
+}
+
+const std::string& Type_impl::localize(Language lang) const
+{
+    return i18n::type(lang, *this);
 }

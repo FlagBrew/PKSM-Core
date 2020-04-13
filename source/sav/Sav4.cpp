@@ -25,9 +25,9 @@
  */
 
 #include "sav/Sav4.hpp"
-#include "i18n/i18n.hpp"
 #include "pkx/PK4.hpp"
 #include "utils/endian.hpp"
+#include "utils/i18n.hpp"
 #include "utils/utils.hpp"
 #include "wcx/PGT.hpp"
 
@@ -126,13 +126,13 @@ GameVersion Sav4::version(void) const
 }
 void Sav4::version(GameVersion) {}
 
-u8 Sav4::gender(void) const
+Gender Sav4::gender(void) const
 {
-    return data[Trainer1 + 0x18];
+    return Gender{data[Trainer1 + 0x18]};
 }
-void Sav4::gender(u8 v)
+void Sav4::gender(Gender v)
 {
-    data[Trainer1 + 0x18] = v;
+    data[Trainer1 + 0x18] = u8(v);
 }
 
 Language Sav4::language(void) const
@@ -371,13 +371,13 @@ void Sav4::partyCount(u8 v)
 
 void Sav4::dex(const PKX& pk)
 {
-    if (pk.species() == 0 || pk.species() > 493)
+    if (pk.species() == Species::None || pk.species() > maxSpecies())
     {
         return;
     }
 
     static constexpr int brSize = 0x40;
-    int bit                     = pk.species() - 1;
+    int bit                     = u16(pk.species()) - 1;
     u8 mask                     = (u8)(1 << (bit & 7));
     int ofs                     = PokeDex + (bit >> 3) + 0x4;
 
@@ -417,7 +417,7 @@ void Sav4::dex(const PKX& pk)
                 bool f = (data[ofs + brSize * 3] & mask) != 0;
                 if (m || f) // bit already set?
                     break;
-                u8 gender = pk.gender() & 1;
+                u8 gender = u8(pk.gender()) & 1;
                 data[ofs + brSize * 2] &= ~mask; // unset
                 data[ofs + brSize * 3] &= ~mask; // unset
                 gender ^= 1;                     // Set OTHER gender seen bit so it appears second
@@ -430,7 +430,7 @@ void Sav4::dex(const PKX& pk)
     std::vector<u8> forms = getForms(pk.species());
     if (forms.size() > 0)
     {
-        if (pk.species() == 201) // Unown
+        if (pk.species() == Species::Unown)
         {
             for (u8 i = 0; i < 0x1C; i++)
             {
@@ -444,9 +444,9 @@ void Sav4::dex(const PKX& pk)
                 break; // form now set
             }
         }
-        else if (pk.species() == 172 && game == Game::HGSS) // Pichu
+        else if (pk.species() == Species::Pichu && game == Game::HGSS)
         {
-            u8 form = pk.alternativeForm() == 1 ? 2 : pk.gender();
+            u8 form = pk.alternativeForm() == 1 ? 2 : u8(pk.gender());
             checkInsertForm(forms, form);
             setForms(forms, pk.species());
         }
@@ -460,7 +460,9 @@ void Sav4::dex(const PKX& pk)
     int dpl = 0;
     if (game == Game::DP)
     {
-        int DPLangSpecies[] = {23, 25, 54, 77, 120, 129, 202, 214, 215, 216, 228, 278, 287, 315};
+        Species DPLangSpecies[] = {Species::Ekans, Species::Pikachu, Species::Psyduck, Species::Ponyta, Species::Staryu, Species::Magikarp,
+            Species::Wobbuffet, Species::Heracross, Species::Sneasel, Species::Teddiursa, Species::Houndour, Species::Wingull, Species::Slakoth,
+            Species::Roselia};
         for (int i = 0; i < 14; i++)
         {
             if (pk.species() == DPLangSpecies[i])
@@ -488,7 +490,7 @@ void Sav4::dex(const PKX& pk)
     if (lang > 5)
         lang = 0;                 // no KOR+
     lang = (lang < 0) ? 1 : lang; // default English
-    data[languageFlags + (game == Game::DP ? dpl : pk.species())] |= (u8)(1 << lang);
+    data[languageFlags + (game == Game::DP ? dpl : u16(pk.species()))] |= (u8)(1 << lang);
 }
 
 int Sav4::dexSeen(void) const
@@ -496,7 +498,7 @@ int Sav4::dexSeen(void) const
     int ret                     = 0;
     static constexpr int brSize = 0x40;
     int ofs                     = PokeDex + 0x4;
-    for (int i = 1; i <= maxSpecies(); i++)
+    for (int i = 1; i <= u16(maxSpecies()); i++)
     {
         int bit = i - 1;
         int bd  = bit >> 3;
@@ -514,7 +516,7 @@ int Sav4::dexCaught(void) const
 {
     int ret = 0;
     int ofs = PokeDex + 0x4;
-    for (int i = 1; i <= maxSpecies(); i++)
+    for (int i = 1; i <= u16(maxSpecies()); i++)
     {
         int bit = i - 1;
         int bd  = bit >> 3;
@@ -565,10 +567,10 @@ bool Sav4::checkInsertForm(std::vector<u8>& forms, u8 formNum)
     return true;
 }
 
-std::vector<u8> Sav4::getForms(u16 species)
+std::vector<u8> Sav4::getForms(Species species)
 {
     static constexpr u8 brSize = 0x40;
-    if (species == 386)
+    if (species == Species::Deoxys)
     {
         u32 val = (u32)data[PokeDex + 0x4 + 1 * brSize - 1] | data[PokeDex + 0x4 + 2 * brSize - 1] << 8;
         return getDexFormValues(val, 4, 4);
@@ -577,40 +579,46 @@ std::vector<u8> Sav4::getForms(u16 species)
     int formOffset = PokeDex + 4 + 4 * brSize + 4;
     switch (species)
     {
-        case 422: // Shellos
+        case Species::Shellos:
             return getDexFormValues(data[formOffset + 0], 1, 2);
-        case 423: // Gastrodon
+        case Species::Gastrodon:
             return getDexFormValues(data[formOffset + 1], 1, 2);
-        case 412: // Burmy
+        case Species::Burmy:
             return getDexFormValues(data[formOffset + 2], 2, 3);
-        case 413: // Wormadam
+        case Species::Wormadam:
             return getDexFormValues(data[formOffset + 3], 2, 3);
-        case 201: // Unown
+        case Species::Unown:
+        {
             int ofs = formOffset + 4;
             std::vector<u8> forms(0x1C);
             std::copy(data.get() + ofs, data.get() + ofs + 0x1C, forms.begin());
             return forms;
+        }
+        default:
+            break;
     }
 
     if (game == Game::DP)
-        return std::vector<u8>();
+        return {};
 
     int languageFlags = formOffset + (game == Game::HGSS ? 0x3C : 0x20);
     int formOffset2   = languageFlags + 0x1F4;
     switch (species)
     {
-        case 479: // Rotom
+        case Species::Rotom:
             return getDexFormValues(LittleEndian::convertTo<u32>(data.get() + formOffset2), 3, 6);
-        case 492: // Shaymin
+        case Species::Shaymin:
             return getDexFormValues(data[formOffset2 + 4], 1, 2);
-        case 487: // Giratina
+        case Species::Giratina:
             return getDexFormValues(data[formOffset2 + 5], 1, 2);
-        case 172: // Pichu
+        case Species::Pichu:
             if (game == Game::HGSS)
                 return getDexFormValues(data[formOffset2 + 6], 2, 3);
+        default:
+            break;
     }
 
-    return std::vector<u8>();
+    return {};
 }
 
 std::vector<u8> Sav4::getDexFormValues(u32 v, u8 bitsPerForm, u8 readCt)
@@ -632,10 +640,10 @@ std::vector<u8> Sav4::getDexFormValues(u32 v, u8 bitsPerForm, u8 readCt)
     return forms;
 }
 
-void Sav4::setForms(std::vector<u8> forms, u16 species)
+void Sav4::setForms(std::vector<u8> forms, Species species)
 {
     static constexpr u8 brSize = 0x40;
-    if (species == 386) // Deoxys
+    if (species == Species::Deoxys)
     {
         u32 newval                           = setDexFormValues(forms, 4, 4);
         data[PokeDex + 0x4 + 1 * brSize - 1] = (u8)(newval & 0xFF);
@@ -645,19 +653,19 @@ void Sav4::setForms(std::vector<u8> forms, u16 species)
     int formOffset = PokeDex + 4 + 4 * brSize + 4;
     switch (species)
     {
-        case 422: // Shellos
+        case Species::Shellos:
             data[formOffset + 0] = (u8)setDexFormValues(forms, 1, 2);
             return;
-        case 423: // Gastrodon
+        case Species::Gastrodon:
             data[formOffset + 1] = (u8)setDexFormValues(forms, 1, 2);
             return;
-        case 412: // Burmy
+        case Species::Burmy:
             data[formOffset + 2] = (u8)setDexFormValues(forms, 2, 3);
             return;
-        case 413: // Wormadam
+        case Species::Wormadam:
             data[formOffset + 3] = (u8)setDexFormValues(forms, 2, 3);
             return;
-        case 201: // Unown
+        case Species::Unown:
         {
             int ofs = formOffset + 4;
             int len = forms.size();
@@ -667,6 +675,8 @@ void Sav4::setForms(std::vector<u8> forms, u16 species)
             std::copy(forms.begin(), forms.end(), data.get() + ofs);
             return;
         }
+        default:
+            break;
     }
 
     if (game == Game::DP)
@@ -676,7 +686,7 @@ void Sav4::setForms(std::vector<u8> forms, u16 species)
     int formOffset2   = languageFlags + 0x1F4;
     switch (species)
     {
-        case 479: // Rotom
+        case Species::Rotom:
         {
             auto values = LittleEndian::convertFrom(setDexFormValues(forms, 3, 6));
             for (size_t i = 0; i < values.size(); i++)
@@ -685,17 +695,17 @@ void Sav4::setForms(std::vector<u8> forms, u16 species)
             }
             return;
         }
-        case 492: // Shaymin
+        case Species::Shaymin:
         {
             data[formOffset2 + 4] = (u8)setDexFormValues(forms, 1, 2);
             return;
         }
-        case 487: // Giratina
+        case Species::Giratina:
         {
             data[formOffset2 + 5] = (u8)setDexFormValues(forms, 1, 2);
             return;
         }
-        case 172: // Pichu
+        case Species::Pichu:
         {
             if (game == Game::HGSS)
             {
@@ -703,6 +713,8 @@ void Sav4::setForms(std::vector<u8> forms, u16 species)
                 return;
             }
         }
+        default:
+            break;
     }
 }
 
@@ -726,7 +738,7 @@ std::unique_ptr<PKX> Sav4::emptyPkm() const
     return PKX::getPKM<Generation::FOUR>(nullptr);
 }
 
-int Sav4::emptyGiftLocation(void) const
+int Sav4::currentGiftAmount(void) const
 {
     u8 t;
     bool empty;
@@ -747,30 +759,7 @@ int Sav4::emptyGiftLocation(void) const
             break;
         }
     }
-    return !empty ? 7 : t;
-}
-
-std::vector<Sav::giftData> Sav4::currentGifts(void) const
-{
-    std::vector<Sav::giftData> ret;
-    u8* wonderCards = data.get() + WondercardData;
-    for (int i = 0; i < emptyGiftLocation(); i++)
-    {
-        if (*(wonderCards + i * PGT::length) == 1 || *(wonderCards + i * PGT::length) == 2)
-        {
-            auto getData = PKX::getPKM<Generation::FOUR>(wonderCards + i * PGT::length + 8);
-            ret.emplace_back("Wonder Card", "", getData->species(), getData->alternativeForm(), getData->gender());
-        }
-        else if (*(wonderCards + i * PGT::length) == 7)
-        {
-            ret.emplace_back("Wonder Card", "", 490, -1, -1);
-        }
-        else
-        {
-            ret.emplace_back("Wonder Card", "", -1, -1, -1);
-        }
-    }
-    return ret;
+    return t;
 }
 
 std::unique_ptr<WCX> Sav4::mysteryGift(int pos) const
@@ -875,7 +864,7 @@ const std::set<int>& Sav4::availableItems(void) const
 {
     if (items.empty())
     {
-        fill_set(items, 0, maxItem());
+        fill_set_consecutive(items, 0, maxItem());
     }
     return items;
 }
@@ -884,34 +873,34 @@ const std::set<int>& Sav4::availableMoves(void) const
 {
     if (moves.empty())
     {
-        fill_set(moves, 0, maxMove());
+        fill_set_consecutive(moves, 0, maxMove());
     }
     return moves;
 }
 
-const std::set<int>& Sav4::availableSpecies(void) const
+const std::set<Species>& Sav4::availableSpecies(void) const
 {
     if (species.empty())
     {
-        fill_set(species, 1, maxSpecies());
+        fill_set_consecutive<Species>(species, Species::Bulbasaur, maxSpecies());
     }
     return species;
 }
 
-const std::set<int>& Sav4::availableAbilities(void) const
+const std::set<Ability>& Sav4::availableAbilities(void) const
 {
     if (abilities.empty())
     {
-        fill_set(abilities, 1, maxAbility());
+        fill_set_consecutive<Ability>(abilities, Ability::Stench, maxAbility());
     }
     return abilities;
 }
 
-const std::set<int>& Sav4::availableBalls(void) const
+const std::set<::Ball>& Sav4::availableBalls(void) const
 {
     if (balls.empty())
     {
-        fill_set(balls, 1, maxBall());
+        fill_set_consecutive<::Ball>(balls, Ball::Master, maxBall());
     }
     return balls;
 }

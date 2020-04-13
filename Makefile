@@ -8,7 +8,7 @@ SOURCES		:=	source \
 				swshcrypto
 
 INCLUDES	:=	include \
-				include/i18n \
+				include/enums \
 				include/personal \
 				include/pkx \
 				include/sav \

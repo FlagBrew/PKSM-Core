@@ -36,18 +36,18 @@
 #include "utils/endian.hpp"
 #include "utils/random.hpp"
 
-u8 PKX::genderFromRatio(u32 pid, u8 gt)
+Gender PKX::genderFromRatio(u32 pid, u8 gt)
 {
     switch (gt)
     {
         case 0xFF:
-            return 2;
+            return Gender::Genderless;
         case 0xFE:
-            return 1;
+            return Gender::Female;
         case 0:
-            return 0;
+            return Gender::Male;
         default:
-            return (pid & 0xFF) < gt ? 1 : 0;
+            return (pid & 0xFF) < gt ? Gender::Female : Gender::Male;
     }
 }
 
@@ -322,7 +322,7 @@ void PKX::fixMoves(void)
     }
 }
 
-u32 PKX::getRandomPID(u16 species, u8 gender, GameVersion originGame, u8 nature, u8 form, u8 abilityNum, u32 oldPid, Generation gen)
+u32 PKX::getRandomPID(Species species, Gender gender, GameVersion originGame, Nature nature, u8 form, u8 abilityNum, u32 oldPid, Generation gen)
 {
     if (originGame >= GameVersion::X) // Origin game over gen 5
     {
@@ -361,13 +361,13 @@ u32 PKX::getRandomPID(u16 species, u8 gender, GameVersion originGame, u8 nature,
         return 0;
     }
 
-    u8 genderType   = genderTypeFinder(species);
-    bool g3unown    = (originGame <= GameVersion::LG || gen == Generation::THREE) && species == 201;
+    u8 genderType   = genderTypeFinder(u16(species));
+    bool g3unown    = (originGame <= GameVersion::LG || gen == Generation::THREE) && species == Species::Unown;
     u32 abilityBits = oldPid & (abilityNum == 2 ? 0x00010001 : 0);
     while (true)
     {
         u32 possiblePID = randomNumbers();
-        if (originGame <= GameVersion::CXD && possiblePID % 25 != nature)
+        if (originGame <= GameVersion::CXD && possiblePID % 25 != size_t(nature))
         {
             continue;
         }
@@ -384,7 +384,7 @@ u32 PKX::getRandomPID(u16 species, u8 gender, GameVersion originGame, u8 nature,
             continue;
         }
 
-        if (genderType == 255 || genderType == 254 || genderType == 0 || gender == 2)
+        if (genderType == 255 || genderType == 254 || genderType == 0 || gender == Gender::Genderless)
         {
             return possiblePID;
         }

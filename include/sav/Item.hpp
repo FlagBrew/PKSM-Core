@@ -27,10 +27,10 @@
 #ifndef ITEM_HPP
 #define ITEM_HPP
 
+#include "enums/Generation.hpp"
 #include "utils/ValueConverter.hpp"
 #include "utils/coretypes.h"
 #include "utils/endian.hpp"
-#include "utils/generation.hpp"
 
 class Item3;
 class Item4;

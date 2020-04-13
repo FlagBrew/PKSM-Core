@@ -25,10 +25,10 @@
  */
 
 #include "sav/Sav3.hpp"
-#include "i18n/i18n.hpp"
 #include "pkx/PK3.hpp"
 #include "utils/endian.hpp"
 #include "utils/flagUtil.hpp"
+#include "utils/i18n.hpp"
 #include "utils/utils.hpp"
 #include "wcx/WCX.hpp"
 #include <algorithm>
@@ -69,7 +69,7 @@ int Sav3::getActiveSaveIndex(std::shared_ptr<u8[]> dt, std::array<int, BLOCK_COU
     return count1 > count2 ? 0 : 1;
 }
 
-Game Sav3::getVersion(std::shared_ptr<u8[]> dt)
+Sav::Game Sav3::getVersion(std::shared_ptr<u8[]> dt)
 {
     // Get block 0 offset
     std::array<int, BLOCK_COUNT> o1     = getBlockOrder(dt, 0);
@@ -226,13 +226,13 @@ GameVersion Sav3::version(void) const
 }
 void Sav3::version(GameVersion) {}
 
-u8 Sav3::gender(void) const
+Gender Sav3::gender(void) const
 {
-    return data[blockOfs[0] + 8];
+    return Gender{data[blockOfs[0] + 8]};
 }
-void Sav3::gender(u8 v)
+void Sav3::gender(Gender v)
 {
-    data[blockOfs[0] + 8] = v;
+    data[blockOfs[0] + 8] = u8(v);
 }
 
 Language Sav3::language(void) const
@@ -445,9 +445,9 @@ std::unique_ptr<PKX> Sav3::emptyPkm() const
     return PKX::getPKM<Generation::THREE>(nullptr);
 }
 
-bool Sav3::canSetDex(int species)
+bool Sav3::canSetDex(Species species)
 {
-    if (species <= 0)
+    if (species == Species::None)
         return false;
     if (species > maxSpecies())
         return false;
@@ -476,52 +476,53 @@ void Sav3::dexPIDSpinda(u32 v)
 
 void Sav3::dex(const PKX& pk)
 {
-    int species = pk.species();
-    if (!canSetDex(species))
+    if (!canSetDex(pk.species()))
         return;
 
-    switch (species)
+    switch (pk.species())
     {
-        case 201: // Unown
-            if (!getSeen(species))
+        case Species::Unown:
+            if (!getSeen(pk.species()))
                 dexPIDUnown(pk.PID());
             break;
-        case 327: // Spinda
-            if (!getSeen(species))
+        case Species::Spinda: // Spinda
+            if (!getSeen(pk.species()))
                 dexPIDSpinda(pk.PID());
             break;
+        default:
+            break;
     }
-    setCaught(species, true);
-    setSeen(species, true);
+    setCaught(pk.species(), true);
+    setSeen(pk.species(), true);
 }
 
-bool Sav3::getCaught(int species) const
+bool Sav3::getCaught(Species species) const
 {
-    int bit          = species - 1;
+    int bit          = u16(species) - 1;
     int ofs          = bit >> 3;
     int caughtOffset = PokeDex + 0x10;
     return FlagUtil::getFlag(data.get(), caughtOffset + ofs, bit & 7);
 }
 
-void Sav3::setCaught(int species, bool caught)
+void Sav3::setCaught(Species species, bool caught)
 {
-    int bit          = species - 1;
+    int bit          = u16(species) - 1;
     int ofs          = bit >> 3;
     int caughtOffset = PokeDex + 0x10;
     FlagUtil::setFlag(data.get(), caughtOffset + ofs, bit & 7, caught);
 }
 
-bool Sav3::getSeen(int species) const
+bool Sav3::getSeen(Species species) const
 {
-    int bit        = species - 1;
+    int bit        = u16(species) - 1;
     int ofs        = bit >> 3;
     int seenOffset = PokeDex + 0x44;
     return FlagUtil::getFlag(data.get(), seenOffset + ofs, bit & 7);
 }
 
-void Sav3::setSeen(int species, bool seen)
+void Sav3::setSeen(Species species, bool seen)
 {
-    int bit = species - 1;
+    int bit = u16(species) - 1;
     int ofs = bit >> 3;
 
     for (int o : seenFlagOffsets)
@@ -531,9 +532,9 @@ void Sav3::setSeen(int species, bool seen)
 int Sav3::dexSeen(void) const
 {
     int ret = 0;
-    for (int i = 1; i < maxSpecies(); i++)
+    for (u16 i = 1; i < u16(maxSpecies()); i++)
     {
-        if (getSeen(i))
+        if (getSeen(Species{i}))
             ret++;
     }
 
@@ -543,9 +544,9 @@ int Sav3::dexSeen(void) const
 int Sav3::dexCaught(void) const
 {
     int ret = 0;
-    for (int i = 1; i < maxSpecies(); i++)
+    for (u16 i = 1; i < u16(maxSpecies()); i++)
     {
-        if (getCaught(i))
+        if (getCaught(Species{i}))
             ret++;
     }
 
@@ -609,7 +610,7 @@ const std::set<int>& Sav3::availableItems(void) const
 {
     if (items.empty())
     {
-        fill_set(items, 0, maxItem());
+        fill_set_consecutive(items, 0, maxItem());
     }
     return items;
 }
@@ -618,34 +619,34 @@ const std::set<int>& Sav3::availableMoves(void) const
 {
     if (moves.empty())
     {
-        fill_set(moves, 0, maxMove());
+        fill_set_consecutive(moves, 0, maxMove());
     }
     return moves;
 }
 
-const std::set<int>& Sav3::availableSpecies(void) const
+const std::set<Species>& Sav3::availableSpecies(void) const
 {
     if (species.empty())
     {
-        fill_set(species, 1, maxSpecies());
+        fill_set_consecutive<Species>(species, Species::Bulbasaur, maxSpecies());
     }
     return species;
 }
 
-const std::set<int>& Sav3::availableAbilities(void) const
+const std::set<Ability>& Sav3::availableAbilities(void) const
 {
     if (abilities.empty())
     {
-        fill_set(abilities, 1, maxAbility());
+        fill_set_consecutive<Ability>(abilities, Ability::Stench, maxAbility());
     }
     return abilities;
 }
 
-const std::set<int>& Sav3::availableBalls(void) const
+const std::set<::Ball>& Sav3::availableBalls(void) const
 {
     if (balls.empty())
     {
-        fill_set(balls, 1, maxBall());
+        fill_set_consecutive<::Ball>(balls, Ball::Master, maxBall());
     }
     return balls;
 }

@@ -32,6 +32,7 @@
 #include "pkx/PK8.hpp"
 #include "sav/Sav.hpp"
 #include "utils/endian.hpp"
+#include "utils/flagUtil.hpp"
 #include "utils/random.hpp"
 #include "utils/utils.hpp"
 
@@ -237,13 +238,13 @@ void PK6::checksum(u16 v)
     LittleEndian::convertFrom<u16>(data + 0x06, v);
 }
 
-u16 PK6::species(void) const
+Species PK6::species(void) const
 {
-    return LittleEndian::convertTo<u16>(data + 0x08);
+    return Species{LittleEndian::convertTo<u16>(data + 0x08)};
 }
-void PK6::species(u16 v)
+void PK6::species(Species v)
 {
-    LittleEndian::convertFrom<u16>(data + 0x08, v);
+    LittleEndian::convertFrom<u16>(data + 0x08, u16(v));
 }
 
 u16 PK6::heldItem(void) const
@@ -282,13 +283,13 @@ void PK6::experience(u32 v)
     LittleEndian::convertFrom<u32>(data + 0x10, v);
 }
 
-u16 PK6::ability(void) const
+Ability PK6::ability(void) const
 {
-    return data[0x14];
+    return Ability{data[0x14]};
 }
-void PK6::ability(u16 v)
+void PK6::ability(Ability v)
 {
-    data[0x14] = v;
+    data[0x14] = u8(v);
 }
 
 void PK6::setAbility(u8 v)
@@ -303,7 +304,7 @@ void PK6::setAbility(u8 v)
         abilitynum = 4;
 
     abilityNumber(abilitynum);
-    data[0x14] = abilities(v);
+    ability(abilities(v));
 }
 
 u8 PK6::abilityNumber(void) const
@@ -342,13 +343,13 @@ void PK6::PID(u32 v)
     LittleEndian::convertFrom<u32>(data + 0x18, v);
 }
 
-u8 PK6::nature(void) const
+Nature PK6::nature(void) const
 {
-    return data[0x1C];
+    return Nature{data[0x1C]};
 }
-void PK6::nature(u8 v)
+void PK6::nature(Nature v)
 {
-    data[0x1C] = v;
+    data[0x1C] = u8(v);
 }
 
 bool PK6::fatefulEncounter(void) const
@@ -360,13 +361,13 @@ void PK6::fatefulEncounter(bool v)
     data[0x1D] = (u8)((data[0x1D] & ~0x01) | (v ? 1 : 0));
 }
 
-u8 PK6::gender(void) const
+Gender PK6::gender(void) const
 {
-    return (data[0x1D] >> 1) & 0x3;
+    return Gender{u8((data[0x1D] >> 1) & 0x3)};
 }
-void PK6::gender(u8 v)
+void PK6::gender(Gender v)
 {
-    data[0x1D] = u8((data[0x1D] & ~0x06) | (v << 1));
+    data[0x1D] = u8((data[0x1D] & ~0x06) | (u8(v) << 1));
 }
 
 u16 PK6::alternativeForm(void) const
@@ -576,13 +577,13 @@ void PK6::htName(const std::string& v)
     StringUtils::setString(data, StringUtils::transString67(v), 0x78, 12);
 }
 
-u8 PK6::htGender(void) const
+Gender PK6::htGender(void) const
 {
-    return data[0x92];
+    return Gender{data[0x92]};
 }
-void PK6::htGender(u8 v)
+void PK6::htGender(Gender v)
 {
-    data[0x92] = v;
+    data[0x92] = u8(v);
 }
 
 u8 PK6::currentHandler(void) const
@@ -819,13 +820,13 @@ void PK6::metLocation(u16 v)
     LittleEndian::convertFrom<u16>(data + 0xDA, v);
 }
 
-u8 PK6::ball(void) const
+Ball PK6::ball(void) const
 {
-    return data[0xDC];
+    return Ball{data[0xDC]};
 }
-void PK6::ball(u8 v)
+void PK6::ball(Ball v)
 {
-    data[0xDC] = v;
+    data[0xDC] = u8(v);
 }
 
 u8 PK6::metLevel(void) const
@@ -837,13 +838,13 @@ void PK6::metLevel(u8 v)
     data[0xDD] = (data[0xDD] & 0x80) | v;
 }
 
-u8 PK6::otGender(void) const
+Gender PK6::otGender(void) const
 {
-    return data[0xDD] >> 7;
+    return Gender{u8(data[0xDD] >> 7)};
 }
-void PK6::otGender(u8 v)
+void PK6::otGender(Gender v)
 {
-    data[0xDD] = (data[0xDD] & ~0x80) | (v << 7);
+    data[0xDD] = (data[0xDD] & ~0x80) | (u8(v) << 7);
 }
 
 u8 PK6::encounterType(void) const
@@ -934,15 +935,20 @@ void PK6::refreshChecksum(void)
     checksum(chk);
 }
 
-u8 PK6::hpType(void) const
+Type PK6::hpType(void) const
 {
-    return 15 *
-           ((iv(Stat::HP) & 1) + 2 * (iv(Stat::ATK) & 1) + 4 * (iv(Stat::DEF) & 1) + 8 * (iv(Stat::SPD) & 1) + 16 * (iv(Stat::SPATK) & 1) +
-               32 * (iv(Stat::SPDEF) & 1)) /
-           63;
+    return Type{u8((15 *
+                       ((iv(Stat::HP) & 1) + 2 * (iv(Stat::ATK) & 1) + 4 * (iv(Stat::DEF) & 1) + 8 * (iv(Stat::SPD) & 1) +
+                           16 * (iv(Stat::SPATK) & 1) + 32 * (iv(Stat::SPDEF) & 1)) /
+                       63) +
+                   1)};
 }
-void PK6::hpType(u8 v)
+void PK6::hpType(Type v)
 {
+    if (v <= Type::Normal || v >= Type::Fairy)
+    {
+        return;
+    }
     static constexpr u16 hpivs[16][6] = {
         {1, 1, 0, 0, 0, 0}, // Fighting
         {0, 0, 0, 1, 0, 0}, // Flying
@@ -964,7 +970,7 @@ void PK6::hpType(u8 v)
 
     for (u8 i = 0; i < 6; i++)
     {
-        iv(Stat(i), (iv(Stat(i)) & 0x1e) + hpivs[v][i]);
+        iv(Stat(i), (iv(Stat(i)) & 0x1e) + hpivs[u8(v) - 1][i]);
     }
 }
 
@@ -1015,7 +1021,7 @@ void PK6::shiny(bool v)
 
 u16 PK6::formSpecies(void) const
 {
-    u16 tmpSpecies = species();
+    u16 tmpSpecies = u16(species());
     u8 form        = alternativeForm();
     u8 formcount   = PersonalXYORAS::formCount(tmpSpecies);
 
@@ -1067,9 +1073,9 @@ u16 PK6::stat(Stat stat) const
         calc = 10 + (2 * basestat + iv(stat) + ev(stat) / 4 + 100) * level() / 100;
     else
         calc = 5 + (2 * basestat + iv(stat) + ev(stat) / 4) * level() / 100;
-    if (nature() / 5 + 1 == u8(stat))
+    if (u8(nature()) / 5 + 1 == u8(stat))
         mult++;
-    if (nature() % 5 + 1 == u8(stat))
+    if (u8(nature()) % 5 + 1 == u8(stat))
         mult--;
     return calc * mult / 10;
 }

@@ -1,3 +1,4 @@
+Normal
 Kampf
 Flug
 Gift
@@ -14,3 +15,4 @@ Psycho
 Eis
 Drache
 Unlicht
+Fee

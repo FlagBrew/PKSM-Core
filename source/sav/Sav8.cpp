@@ -66,7 +66,7 @@ const std::set<int>& Sav8::availableItems(void) const
 {
     if (items.empty())
     {
-        fill_set(items, 0, maxItem());
+        fill_set_consecutive(items, 0, maxItem());
     }
     return items;
 }
@@ -75,34 +75,34 @@ const std::set<int>& Sav8::availableMoves(void) const
 {
     if (moves.empty())
     {
-        fill_set(moves, 0, maxMove());
+        fill_set_consecutive(moves, 0, maxMove());
     }
     return moves;
 }
 
-const std::set<int>& Sav8::availableSpecies(void) const
+const std::set<Species>& Sav8::availableSpecies(void) const
 {
     if (species.empty())
     {
-        fill_set(species, 1, maxSpecies());
+        fill_set_consecutive<Species>(species, Species::Bulbasaur, maxSpecies());
     }
     return species;
 }
 
-const std::set<int>& Sav8::availableAbilities(void) const
+const std::set<Ability>& Sav8::availableAbilities(void) const
 {
     if (abilities.empty())
     {
-        fill_set(abilities, 1, maxAbility());
+        fill_set_consecutive<Ability>(abilities, Ability::Stench, maxAbility());
     }
     return abilities;
 }
 
-const std::set<int>& Sav8::availableBalls(void) const
+const std::set<::Ball>& Sav8::availableBalls(void) const
 {
     if (balls.empty())
     {
-        fill_set(balls, 1, maxBall());
+        fill_set_consecutive<::Ball>(balls, Ball::Master, maxBall());
     }
     return balls;
 }

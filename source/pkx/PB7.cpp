@@ -114,13 +114,13 @@ void PB7::checksum(u16 v)
     LittleEndian::convertFrom<u16>(data + 0x06, v);
 }
 
-u16 PB7::species(void) const
+Species PB7::species(void) const
 {
-    return LittleEndian::convertTo<u16>(data + 0x08);
+    return Species{LittleEndian::convertTo<u16>(data + 0x08)};
 }
-void PB7::species(u16 v)
+void PB7::species(Species v)
 {
-    LittleEndian::convertFrom<u16>(data + 0x08, v);
+    LittleEndian::convertFrom<u16>(data + 0x08, u16(v));
 }
 
 u16 PB7::heldItem(void) const
@@ -159,13 +159,13 @@ void PB7::experience(u32 v)
     LittleEndian::convertFrom<u32>(data + 0x10, v);
 }
 
-u16 PB7::ability(void) const
+Ability PB7::ability(void) const
 {
-    return data[0x14];
+    return Ability{data[0x14]};
 }
-void PB7::ability(u16 v)
+void PB7::ability(Ability v)
 {
-    data[0x14] = v;
+    data[0x14] = u8(v);
 }
 
 void PB7::setAbility(u8 v)
@@ -180,7 +180,7 @@ void PB7::setAbility(u8 v)
         abilitynum = 4;
 
     abilityNumber(abilitynum);
-    data[0x14] = abilities(v);
+    ability(abilities(v));
 }
 
 u8 PB7::abilityNumber(void) const
@@ -210,13 +210,13 @@ void PB7::PID(u32 v)
     LittleEndian::convertFrom<u32>(data + 0x18, v);
 }
 
-u8 PB7::nature(void) const
+Nature PB7::nature(void) const
 {
-    return data[0x1C];
+    return Nature{data[0x1C]};
 }
-void PB7::nature(u8 v)
+void PB7::nature(Nature v)
 {
-    data[0x1C] = v;
+    data[0x1C] = u8(v);
 }
 
 bool PB7::fatefulEncounter(void) const
@@ -228,13 +228,13 @@ void PB7::fatefulEncounter(bool v)
     data[0x1D] = (u8)((data[0x1D] & ~0x01) | (v ? 1 : 0));
 }
 
-u8 PB7::gender(void) const
+Gender PB7::gender(void) const
 {
-    return (data[0x1D] >> 1) & 0x3;
+    return Gender{u8((data[0x1D] >> 1) & 0x3)};
 }
-void PB7::gender(u8 v)
+void PB7::gender(Gender v)
 {
-    data[0x1D] = u8((data[0x1D] & ~0x06) | (v << 1));
+    data[0x1D] = u8((data[0x1D] & ~0x06) | (u8(v) << 1));
 }
 
 u16 PB7::alternativeForm(void) const
@@ -386,13 +386,13 @@ void PB7::htName(const std::string& v)
     StringUtils::setString(data, v, 0x78, 12);
 }
 
-u8 PB7::htGender(void) const
+Gender PB7::htGender(void) const
 {
-    return data[0x92];
+    return Gender{data[0x92]};
 }
-void PB7::htGender(u8 v)
+void PB7::htGender(Gender v)
 {
-    data[0x92] = v;
+    data[0x92] = u8(v);
 }
 
 u8 PB7::currentHandler(void) const
@@ -629,13 +629,13 @@ void PB7::metLocation(u16 v)
     LittleEndian::convertFrom<u16>(data + 0xDA, v);
 }
 
-u8 PB7::ball(void) const
+Ball PB7::ball(void) const
 {
-    return data[0xDC];
+    return Ball{data[0xDC]};
 }
-void PB7::ball(u8 v)
+void PB7::ball(Ball v)
 {
-    data[0xDC] = v;
+    data[0xDC] = u8(v);
 }
 
 u8 PB7::metLevel(void) const
@@ -647,13 +647,13 @@ void PB7::metLevel(u8 v)
     data[0xDD] = (data[0xDD] & 0x80) | v;
 }
 
-u8 PB7::otGender(void) const
+Gender PB7::otGender(void) const
 {
-    return data[0xDD] >> 7;
+    return Gender{u8(data[0xDD] >> 7)};
 }
-void PB7::otGender(u8 v)
+void PB7::otGender(Gender v)
 {
-    data[0xDD] = (data[0xDD] & ~0x80) | (v << 7);
+    data[0xDD] = (data[0xDD] & ~0x80) | (u8(v) << 7);
 }
 
 bool PB7::hyperTrain(Stat stat) const
@@ -744,15 +744,20 @@ void PB7::refreshChecksum(void)
     checksum(chk);
 }
 
-u8 PB7::hpType(void) const
+Type PB7::hpType(void) const
 {
-    return 15 *
-           ((iv(Stat::HP) & 1) + 2 * (iv(Stat::ATK) & 1) + 4 * (iv(Stat::DEF) & 1) + 8 * (iv(Stat::SPD) & 1) + 16 * (iv(Stat::SPATK) & 1) +
-               32 * (iv(Stat::SPDEF) & 1)) /
-           63;
+    return Type{u8((15 *
+                       ((iv(Stat::HP) & 1) + 2 * (iv(Stat::ATK) & 1) + 4 * (iv(Stat::DEF) & 1) + 8 * (iv(Stat::SPD) & 1) +
+                           16 * (iv(Stat::SPATK) & 1) + 32 * (iv(Stat::SPDEF) & 1)) /
+                       63) +
+                   1)};
 }
-void PB7::hpType(u8 v)
+void PB7::hpType(Type v)
 {
+    if (v <= Type::Normal || v >= Type::Fairy)
+    {
+        return;
+    }
     static constexpr u16 hpivs[16][6] = {
         {1, 1, 0, 0, 0, 0}, // Fighting
         {0, 0, 0, 1, 0, 0}, // Flying
@@ -774,7 +779,7 @@ void PB7::hpType(u8 v)
 
     for (u8 i = 0; i < 6; i++)
     {
-        iv(Stat(i), (iv(Stat(i)) & 0x1E) + hpivs[v][i]);
+        iv(Stat(i), (iv(Stat(i)) & 0x1E) + hpivs[u8(v) - 1][i]);
     }
 }
 
@@ -825,7 +830,7 @@ void PB7::shiny(bool v)
 
 u16 PB7::formSpecies(void) const
 {
-    u16 tmpSpecies = species();
+    u16 tmpSpecies = u16(species());
     u8 form        = alternativeForm();
     u8 formcount   = PersonalLGPE::formCount(tmpSpecies);
 
@@ -877,9 +882,9 @@ u16 PB7::stat(Stat stat) const
         calc = 10 + ((2 * basestat) + ((((data[0xDE] >> hyperTrainLookup[u8(stat)]) & 1) == 1) ? 31 : iv(stat)) + ev(stat) / 4 + 100) * level() / 100;
     else
         calc = 5 + (2 * basestat + ((((data[0xDE] >> hyperTrainLookup[u8(stat)]) & 1) == 1) ? 31 : iv(stat)) + ev(stat) / 4) * level() / 100;
-    if (nature() / 5 + 1 == u8(stat))
+    if (u8(nature()) / 5 + 1 == u8(stat))
         mult++;
-    if (nature() % 5 + 1 == u8(stat))
+    if (u8(nature()) % 5 + 1 == u8(stat))
         mult--;
     return calc * mult / 10 + awakened(stat);
 }

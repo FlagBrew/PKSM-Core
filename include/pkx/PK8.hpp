@@ -79,8 +79,8 @@ public:
     void sanity(u16 v) override;
     u16 checksum(void) const override;
     void checksum(u16 v) override;
-    u16 species(void) const override;
-    void species(u16 v) override;
+    Species species(void) const override;
+    void species(Species v) override;
     u16 heldItem(void) const override;
     void heldItem(u16 v) override;
     u16 TID(void) const override;
@@ -89,8 +89,8 @@ public:
     void SID(u16 v) override;
     u32 experience(void) const override;
     void experience(u32 v) override;
-    u16 ability(void) const override;
-    void ability(u16 v) override;
+    Ability ability(void) const override;
+    void ability(Ability v) override;
     u8 abilityNumber(void) const override;
     void abilityNumber(u8 v) override;
     void setAbility(u8 abilityNumber) override;
@@ -102,14 +102,14 @@ public:
     void markValue(u16 v) override;
     u32 PID(void) const override;
     void PID(u32 v) override;
-    u8 origNature(void) const;
-    void origNature(u8 v);
-    u8 nature(void) const override;
-    void nature(u8 v) override;
+    Nature origNature(void) const;
+    void origNature(Nature v);
+    Nature nature(void) const override;
+    void nature(Nature v) override;
     bool fatefulEncounter(void) const override;
     void fatefulEncounter(bool v) override;
-    u8 gender(void) const override;
-    void gender(u8 g) override;
+    Gender gender(void) const override;
+    void gender(Gender g) override;
     u16 alternativeForm(void) const override;
     void alternativeForm(u16 v) override;
     u8 ev(Stat ev) const override;
@@ -159,8 +159,8 @@ public:
 
     std::string htName(void) const;
     void htName(const std::string& v);
-    u8 htGender(void) const;
-    void htGender(u8 v);
+    Gender htGender(void) const;
+    void htGender(Gender v);
     Language htLanguage(void) const;
     void htLanguage(Language lang);
     u8 currentHandler(void) const override;
@@ -215,12 +215,12 @@ public:
     void eggLocation(u16 v) override;
     u16 metLocation(void) const override;
     void metLocation(u16 v) override;
-    u8 ball(void) const override;
-    void ball(u8 v) override;
+    Ball ball(void) const override;
+    void ball(Ball v) override;
     u8 metLevel(void) const override;
     void metLevel(u8 v) override;
-    u8 otGender(void) const override;
-    void otGender(u8 v) override;
+    Gender otGender(void) const override;
+    void otGender(Gender v) override;
 
     bool hyperTrain(Stat stat) const;
     void hyperTrain(Stat stat, bool v);
@@ -240,8 +240,8 @@ public:
     u8 oppositeFriendship(void) const;
     void oppositeFriendship(u8 v);
     void refreshChecksum(void) override;
-    u8 hpType(void) const override;
-    void hpType(u8 v) override;
+    Type hpType(void) const override;
+    void hpType(Type v) override;
     u16 TSV(void) const override;
     u16 PSV(void) const override;
     u8 level(void) const override;
@@ -257,12 +257,12 @@ public:
     inline u8 baseSpe(void) const override { return PersonalSWSH::baseSpe(formSpecies()); }
     inline u8 baseSpa(void) const override { return PersonalSWSH::baseSpa(formSpecies()); }
     inline u8 baseSpd(void) const override { return PersonalSWSH::baseSpd(formSpecies()); }
-    inline u8 type1(void) const override { return PersonalSWSH::type1(formSpecies()); }
-    inline u8 type2(void) const override { return PersonalSWSH::type2(formSpecies()); }
+    inline Type type1(void) const override { return PersonalSWSH::type1(formSpecies()); }
+    inline Type type2(void) const override { return PersonalSWSH::type2(formSpecies()); }
     inline u8 genderType(void) const override { return PersonalSWSH::gender(formSpecies()); }
     inline u8 baseFriendship(void) const override { return PersonalSWSH::baseFriendship(formSpecies()); }
     inline u8 expType(void) const override { return PersonalSWSH::expType(formSpecies()); }
-    inline u16 abilities(u8 n) const override { return PersonalSWSH::ability(formSpecies(), n); }
+    inline Ability abilities(u8 n) const override { return PersonalSWSH::ability(formSpecies(), n); }
     inline u16 formStatIndex(void) const override { return PersonalSWSH::formStatIndex(formSpecies()); }
     inline u16 pokedexIndex(void) const { return PersonalSWSH::pokedexIndex(formSpecies()); }
     inline bool canLearnTR(u8 trID) const { return PersonalSWSH::canLearnTR(formSpecies(), trID); }

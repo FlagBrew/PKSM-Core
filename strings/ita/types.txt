@@ -1,3 +1,4 @@
+Normale
 Lotta
 Volante
 Veleno
@@ -14,3 +15,4 @@ Psico
 Ghiaccio
 Drago
 Buio
+Folletto

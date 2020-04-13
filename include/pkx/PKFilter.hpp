@@ -27,9 +27,14 @@
 #ifndef PKFILTER_HPP
 #define PKFILTER_HPP
 
-#include "i18n/Language.hpp"
-#include "utils/generation.hpp"
-#include "utils/stat.hpp"
+#include "enums/Ability.hpp"
+#include "enums/Ball.hpp"
+#include "enums/Gender.hpp"
+#include "enums/Generation.hpp"
+#include "enums/Language.hpp"
+#include "enums/Nature.hpp"
+#include "enums/Species.hpp"
+#include "enums/Stat.hpp"
 #include <bitset>
 #include <string>
 #include <vector>
@@ -78,18 +83,18 @@ private:                                                                        
 class PKFilter
 {
     MAKE_DEFN(generation, Generation);
-    MAKE_DEFN(species, u16);
+    MAKE_DEFN(species, Species);
     MAKE_DEFN(alternativeForm, u8);
     MAKE_DEFN(shiny, bool);
     MAKE_DEFN(heldItem, u16);
     MAKE_DEFN(level, u8);
-    MAKE_DEFN(ability, u8);
+    MAKE_DEFN(ability, Ability);
     MAKE_DEFN(TSV, u16);
-    MAKE_DEFN(nature, u8);
-    MAKE_DEFN(gender, u8);
+    MAKE_DEFN(nature, Nature);
+    MAKE_DEFN(gender, Gender);
     MAKE_NUM_DEFN(move, u16, 4);
     MAKE_NUM_DEFN(relearnMove, u16, 4);
-    MAKE_DEFN(ball, u8);
+    MAKE_DEFN(ball, Ball);
     MAKE_DEFN(language, Language);
     MAKE_DEFN(egg, bool);
     // In the same order as Stat

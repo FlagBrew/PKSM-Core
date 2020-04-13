@@ -27,17 +27,19 @@
 #ifndef GAMEVERSION_HPP
 #define GAMEVERSION_HPP
 
+#include "enums/Generation.hpp"
 #include "utils/coretypes.h"
-#include "utils/generation.hpp"
+#include <limits>
+#include <type_traits>
 
 class GameVersion_impl
 {
     friend class GameVersion;
 
 private:
-    enum class Version : u8
+    enum class GameVersionEnum : u8
     {
-        INVALID = 0,
+        None = 0,
         /// Pokémon Sapphire (GBA)
         S = 1,
         /// Pokémon Ruby (GBA)
@@ -108,9 +110,11 @@ private:
         SW = 44,
         /// Pokémon Shield (NX)
         SH = 45,
+
+        INVALID = std::numeric_limits<std::underlying_type_t<GameVersionEnum>>::max()
     } v;
 
-    constexpr explicit GameVersion_impl(Version v) : v(v) {}
+    constexpr explicit GameVersion_impl(GameVersionEnum v) : v(v) {}
     constexpr GameVersion_impl(const GameVersion_impl&) = default;
     constexpr GameVersion_impl(GameVersion_impl&&)      = default;
     constexpr GameVersion_impl& operator=(const GameVersion_impl&) = default;
@@ -127,54 +131,55 @@ public:
     {
         switch (v)
         {
-            case Version::S:   // 1:
-            case Version::R:   // 2:
-            case Version::E:   // 3:
-            case Version::FR:  // 4:
-            case Version::LG:  // 5:
-            case Version::CXD: // 15:
+            case GameVersionEnum::S:   // 1:
+            case GameVersionEnum::R:   // 2:
+            case GameVersionEnum::E:   // 3:
+            case GameVersionEnum::FR:  // 4:
+            case GameVersionEnum::LG:  // 5:
+            case GameVersionEnum::CXD: // 15:
                 return Generation::THREE;
-            case Version::D:  // 10:
-            case Version::P:  // 11:
-            case Version::Pt: // 12:
-            case Version::HG: // 7:
-            case Version::SS: // 8:
+            case GameVersionEnum::D:  // 10:
+            case GameVersionEnum::P:  // 11:
+            case GameVersionEnum::Pt: // 12:
+            case GameVersionEnum::HG: // 7:
+            case GameVersionEnum::SS: // 8:
                 return Generation::FOUR;
-            case Version::W:  // 20:
-            case Version::B:  // 21:
-            case Version::W2: // 22:
-            case Version::B2: // 23:
+            case GameVersionEnum::W:  // 20:
+            case GameVersionEnum::B:  // 21:
+            case GameVersionEnum::W2: // 22:
+            case GameVersionEnum::B2: // 23:
                 return Generation::FIVE;
-            case Version::X:  // 24:
-            case Version::Y:  // 25:
-            case Version::AS: // 26:
-            case Version::OR: // 27:
+            case GameVersionEnum::X:  // 24:
+            case GameVersionEnum::Y:  // 25:
+            case GameVersionEnum::AS: // 26:
+            case GameVersionEnum::OR: // 27:
                 return Generation::SIX;
-            case Version::SN: // 30:
-            case Version::MN: // 31:
-            case Version::US: // 32:
-            case Version::UM: // 33:
+            case GameVersionEnum::SN: // 30:
+            case GameVersionEnum::MN: // 31:
+            case GameVersionEnum::US: // 32:
+            case GameVersionEnum::UM: // 33:
                 return Generation::SEVEN;
-            case Version::GP: // 42:
-            case Version::GE: // 43:
+            case GameVersionEnum::GP: // 42:
+            case GameVersionEnum::GE: // 43:
                 return Generation::LGPE;
-            case Version::SW: // 44:
-            case Version::SH: // 45:
+            case GameVersionEnum::SW: // 44:
+            case GameVersionEnum::SH: // 45:
                 return Generation::EIGHT;
-            case Version::INVALID: // 0:
-            case Version::GO:      // 34:
-            case Version::RD:      // 35:
-            case Version::GN:      // 36:
-            case Version::BU:      // 37:
-            case Version::YW:      // 38:
-            case Version::GD:      // 39:
-            case Version::SV:      // 40:
-            case Version::C:       // 41:
+            case GameVersionEnum::None: // 0:
+            case GameVersionEnum::GO:   // 34:
+            case GameVersionEnum::RD:   // 35:
+            case GameVersionEnum::GN:   // 36:
+            case GameVersionEnum::BU:   // 37:
+            case GameVersionEnum::YW:   // 38:
+            case GameVersionEnum::GD:   // 39:
+            case GameVersionEnum::SV:   // 40:
+            case GameVersionEnum::C:    // 41:
+            case GameVersionEnum::INVALID:
                 return Generation::UNUSED;
         }
         return Generation::UNUSED;
     }
-    constexpr operator Version() const noexcept { return v; }
+    constexpr operator GameVersionEnum() const noexcept { return v; }
 
     constexpr bool operator<(const GameVersion_impl& other) const noexcept { return v < other.v; }
     constexpr bool operator<=(const GameVersion_impl& other) const noexcept { return v <= other.v; }
@@ -192,9 +197,10 @@ private:
     GameVersion_impl impl;
 
 public:
-    using EnumType = GameVersion_impl::Version;
+    using EnumType = GameVersion_impl::GameVersionEnum;
+    constexpr GameVersion() noexcept : impl(EnumType::INVALID) {}
     constexpr GameVersion(const GameVersion_impl& impl) noexcept : impl(impl) {}
-    constexpr explicit GameVersion(u8 v) noexcept : impl(GameVersion_impl::Version{v}) {}
+    constexpr explicit GameVersion(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v}) {}
     template <typename T>
     constexpr explicit operator T() const noexcept
     {
@@ -202,7 +208,7 @@ public:
         return T(impl);
     }
     constexpr explicit operator Generation() const noexcept { return (Generation)impl; }
-    constexpr operator GameVersion_impl::Version() const noexcept { return (GameVersion_impl::Version)impl; }
+    constexpr operator EnumType() const noexcept { return (EnumType)impl; }
 
     constexpr bool operator<(const GameVersion& other) const noexcept { return impl < other.impl; }
     constexpr bool operator<=(const GameVersion& other) const noexcept { return impl <= other.impl; }
@@ -222,77 +228,79 @@ public:
     constexpr bool operator==(const GameVersion_impl& other) const noexcept { return impl == other; }
     constexpr bool operator!=(const GameVersion_impl& other) const noexcept { return impl != other; }
 
-    static constexpr GameVersion_impl INVALID{GameVersion_impl::Version::INVALID};
+    static constexpr GameVersion_impl None{EnumType::None};
     /// Pokémon Sapphire (GBA)
-    static constexpr GameVersion_impl S{GameVersion_impl::Version::S};
+    static constexpr GameVersion_impl S{EnumType::S};
     /// Pokémon Ruby (GBA)
-    static constexpr GameVersion_impl R{GameVersion_impl::Version::R};
+    static constexpr GameVersion_impl R{EnumType::R};
     /// Pokémon Emerald (GBA)
-    static constexpr GameVersion_impl E{GameVersion_impl::Version::E};
+    static constexpr GameVersion_impl E{EnumType::E};
     /// Pokémon FireRed (GBA)
-    static constexpr GameVersion_impl FR{GameVersion_impl::Version::FR};
+    static constexpr GameVersion_impl FR{EnumType::FR};
     /// Pokémon LeafGreen (GBA)
-    static constexpr GameVersion_impl LG{GameVersion_impl::Version::LG};
+    static constexpr GameVersion_impl LG{EnumType::LG};
     /// Pokémon Colosseum & Pokémon XD (GameCube)
-    static constexpr GameVersion_impl CXD{GameVersion_impl::Version::CXD};
+    static constexpr GameVersion_impl CXD{EnumType::CXD};
     /// Pokémon Diamond (NDS)
-    static constexpr GameVersion_impl D{GameVersion_impl::Version::D};
+    static constexpr GameVersion_impl D{EnumType::D};
     /// Pokémon Pearl (NDS)
-    static constexpr GameVersion_impl P{GameVersion_impl::Version::P};
+    static constexpr GameVersion_impl P{EnumType::P};
     /// Pokémon Platinum (NDS)
-    static constexpr GameVersion_impl Pt{GameVersion_impl::Version::Pt};
+    static constexpr GameVersion_impl Pt{EnumType::Pt};
     /// Pokémon Heart Gold (NDS)
-    static constexpr GameVersion_impl HG{GameVersion_impl::Version::HG};
+    static constexpr GameVersion_impl HG{EnumType::HG};
     /// Pokémon Soul Silver (NDS)
-    static constexpr GameVersion_impl SS{GameVersion_impl::Version::SS};
+    static constexpr GameVersion_impl SS{EnumType::SS};
     /// Pokémon White (NDS)
-    static constexpr GameVersion_impl W{GameVersion_impl::Version::W};
+    static constexpr GameVersion_impl W{EnumType::W};
     /// Pokémon Black (NDS)
-    static constexpr GameVersion_impl B{GameVersion_impl::Version::B};
+    static constexpr GameVersion_impl B{EnumType::B};
     /// Pokémon White 2 (NDS)
-    static constexpr GameVersion_impl W2{GameVersion_impl::Version::W2};
+    static constexpr GameVersion_impl W2{EnumType::W2};
     /// Pokémon Black 2 (NDS)
-    static constexpr GameVersion_impl B2{GameVersion_impl::Version::B2};
+    static constexpr GameVersion_impl B2{EnumType::B2};
     /// Pokémon X (3DS)
-    static constexpr GameVersion_impl X{GameVersion_impl::Version::X};
+    static constexpr GameVersion_impl X{EnumType::X};
     /// Pokémon Y (3DS)
-    static constexpr GameVersion_impl Y{GameVersion_impl::Version::Y};
+    static constexpr GameVersion_impl Y{EnumType::Y};
     /// Pokémon Alpha Sapphire (3DS)
-    static constexpr GameVersion_impl AS{GameVersion_impl::Version::AS};
+    static constexpr GameVersion_impl AS{EnumType::AS};
     /// Pokémon Omega Ruby (3DS)
-    static constexpr GameVersion_impl OR{GameVersion_impl::Version::OR};
+    static constexpr GameVersion_impl OR{EnumType::OR};
     /// Pokémon Sun (3DS)
-    static constexpr GameVersion_impl SN{GameVersion_impl::Version::SN};
+    static constexpr GameVersion_impl SN{EnumType::SN};
     /// Pokémon Moon (3DS)
-    static constexpr GameVersion_impl MN{GameVersion_impl::Version::MN};
+    static constexpr GameVersion_impl MN{EnumType::MN};
     /// Pokémon Ultra Sun (3DS)
-    static constexpr GameVersion_impl US{GameVersion_impl::Version::US};
+    static constexpr GameVersion_impl US{EnumType::US};
     /// Pokémon Ultra Moon (3DS)
-    static constexpr GameVersion_impl UM{GameVersion_impl::Version::UM};
+    static constexpr GameVersion_impl UM{EnumType::UM};
     /// Pokémon GO (GO -> Lets Go transfers)
-    static constexpr GameVersion_impl GO{GameVersion_impl::Version::GO};
+    static constexpr GameVersion_impl GO{EnumType::GO};
     /// Pokémon Red (3DS Virtual Console)
-    static constexpr GameVersion_impl RD{GameVersion_impl::Version::RD};
+    static constexpr GameVersion_impl RD{EnumType::RD};
     /// Pokémon Green[JP]/Blue[INT] (3DS Virtual Console)
-    static constexpr GameVersion_impl GN{GameVersion_impl::Version::GN};
+    static constexpr GameVersion_impl GN{EnumType::GN};
     /// Pokémon Blue[JP] (3DS Virtual Console)
-    static constexpr GameVersion_impl BU{GameVersion_impl::Version::BU};
+    static constexpr GameVersion_impl BU{EnumType::BU};
     /// Pokémon Yellow [JP] (3DS Virtual Console)
-    static constexpr GameVersion_impl YW{GameVersion_impl::Version::YW};
+    static constexpr GameVersion_impl YW{EnumType::YW};
     /// Pokémon Gold (3DS Virtual Console)
-    static constexpr GameVersion_impl GD{GameVersion_impl::Version::GD};
+    static constexpr GameVersion_impl GD{EnumType::GD};
     /// Pokémon Silver (3DS Virtual Console)
-    static constexpr GameVersion_impl SV{GameVersion_impl::Version::SV};
+    static constexpr GameVersion_impl SV{EnumType::SV};
     /// Pokémon Crystal (3DS Virtual Console)
-    static constexpr GameVersion_impl C{GameVersion_impl::Version::C};
+    static constexpr GameVersion_impl C{EnumType::C};
     /// Pokémon Let's Go Pikachu (NX)
-    static constexpr GameVersion_impl GP{GameVersion_impl::Version::GP};
+    static constexpr GameVersion_impl GP{EnumType::GP};
     /// Pokémon Let's Go Eevee (NX)
-    static constexpr GameVersion_impl GE{GameVersion_impl::Version::GE};
+    static constexpr GameVersion_impl GE{EnumType::GE};
     /// Pokémon Sword (NX)
-    static constexpr GameVersion_impl SW{GameVersion_impl::Version::SW};
+    static constexpr GameVersion_impl SW{EnumType::SW};
     /// Pokémon Shield (NX)
-    static constexpr GameVersion_impl SH{GameVersion_impl::Version::SH};
+    static constexpr GameVersion_impl SH{EnumType::SH};
+
+    static constexpr GameVersion_impl INVALID{EnumType::INVALID};
 };
 
 #endif

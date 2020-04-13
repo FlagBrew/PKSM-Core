@@ -34,11 +34,11 @@ class Sav6 : public Sav
 {
 protected:
     int TrainerCard, Trainer2, PlayTime, LastViewedBox, PokeDexLanguageFlags, EncounterCount, PCLayout;
-    int maxSpecies(void) const override { return 721; }
+    Species maxSpecies(void) const override { return Species::Volcanion; }
     int maxMove(void) const override { return game == Game::XY ? 617 : 621; }
     int maxItem(void) const override { return game == Game::XY ? 717 : 775; }
-    int maxAbility(void) const override { return game == Game::XY ? 188 : 191; }
-    int maxBall(void) const override { return 0x19; }
+    Ability maxAbility(void) const override { return game == Game::XY ? Ability::AuraBreak : Ability::DeltaStream; }
+    ::Ball maxBall(void) const override { return Ball::Dream; }
 
 private:
     int dexFormIndex(int species, int formct) const;
@@ -56,8 +56,8 @@ public:
     void SID(u16 v) override;
     GameVersion version(void) const override;
     void version(GameVersion v) override;
-    u8 gender(void) const override;
-    void gender(u8 v) override;
+    Gender gender(void) const override;
+    void gender(Gender v) override;
     u8 subRegion(void) const override;
     void subRegion(u8 v) override;
     u8 country(void) const override;
@@ -100,8 +100,7 @@ public:
     void dex(const PKX& pk) override;
     int dexSeen(void) const override;
     int dexCaught(void) const override;
-    int emptyGiftLocation(void) const override;
-    std::vector<Sav::giftData> currentGifts(void) const override;
+    int currentGiftAmount(void) const override;
     void mysteryGift(WCX& wc, int& pos) override;
     std::unique_ptr<WCX> mysteryGift(int pos) const override;
     void cryptBoxData(bool crypted) override;
@@ -117,9 +116,9 @@ public:
     Generation generation(void) const override { return Generation::SIX; }
     const std::set<int>& availableItems(void) const override;
     const std::set<int>& availableMoves(void) const override;
-    const std::set<int>& availableSpecies(void) const override;
-    const std::set<int>& availableAbilities(void) const override;
-    const std::set<int>& availableBalls(void) const override;
+    const std::set<Species>& availableSpecies(void) const override;
+    const std::set<Ability>& availableAbilities(void) const override;
+    const std::set<::Ball>& availableBalls(void) const override;
 
     void item(const Item& item, Pouch pouch, u16 slot) override;
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;

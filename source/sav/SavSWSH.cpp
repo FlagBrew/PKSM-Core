@@ -25,9 +25,9 @@
  */
 
 #include "sav/SavSWSH.hpp"
-#include "i18n/i18n.hpp"
 #include "pkx/PK8.hpp"
 #include "utils/endian.hpp"
+#include "utils/i18n.hpp"
 #include "utils/random.hpp"
 #include "utils/utils.hpp"
 #include "wcx/WC8.hpp"
@@ -60,9 +60,9 @@ namespace
     };
     static_assert(sizeof(DexEntry) == 0x30);
 
-    void setProperLocation(DexEntry& entry, u16 form, bool shiny, u8 gender)
+    void setProperLocation(DexEntry& entry, u16 form, bool shiny, Gender gender)
     {
-        if (gender == 1)
+        if (gender == Gender::Female)
         {
             if (shiny)
             {
@@ -86,9 +86,9 @@ namespace
         }
     }
 
-    void setProperGiga(DexEntry& entry, bool giga, bool shiny, u8 gender)
+    void setProperGiga(DexEntry& entry, bool giga, bool shiny, Gender gender)
     {
-        if (gender == 1)
+        if (gender == Gender::Female)
         {
             if (shiny)
             {
@@ -226,13 +226,13 @@ void SavSWSH::version(GameVersion v)
     getBlock(Status)->decryptedData()[0xA4] = u8(v);
 }
 
-u8 SavSWSH::gender(void) const
+Gender SavSWSH::gender(void) const
 {
-    return getBlock(Status)->decryptedData()[0xA5];
+    return Gender{getBlock(Status)->decryptedData()[0xA5]};
 }
-void SavSWSH::gender(u8 v)
+void SavSWSH::gender(Gender v)
 {
-    getBlock(Status)->decryptedData()[0xA5] = v;
+    getBlock(Status)->decryptedData()[0xA5] = u8(v);
 }
 
 Language SavSWSH::language(void) const
@@ -529,7 +529,7 @@ void SavSWSH::mysteryGift(WCX& wc, int&)
             int injectPosition = 0;
             for (injectPosition = 0; injectPosition < maxSlot(); injectPosition++)
             {
-                if (pkm(injectPosition / 30, injectPosition % 30)->species() == 0)
+                if (pkm(injectPosition / 30, injectPosition % 30)->species() == Species::None)
                 {
                     break;
                 }
@@ -549,7 +549,7 @@ void SavSWSH::mysteryGift(WCX& wc, int&)
             pk8->species(wc8->species());
             pk8->alternativeForm(wc8->alternativeForm());
             pk8->level(wc8->level() ? wc8->level() : ((randomNumbers() % 100) + 1));
-            pk8->ball(wc8->ball() ? wc8->ball() : 4); // Default Poke Ball
+            pk8->ball(wc8->ball() ? wc8->ball() : Ball::Poke);
             pk8->metLevel(wc8->metLevel() ? wc8->metLevel() : pk8->level());
             pk8->heldItem(wc8->heldItem());
 
@@ -562,7 +562,6 @@ void SavSWSH::mysteryGift(WCX& wc, int&)
             pk8->version(wc8->version() != GameVersion::INVALID ? wc8->version() : version());
 
             std::string wcOT = wc8->otName(language());
-            int wcOTgender   = wc8->otGender();
             if (wcOT.empty())
             {
                 pk8->otName(otName());
@@ -571,7 +570,7 @@ void SavSWSH::mysteryGift(WCX& wc, int&)
             else
             {
                 pk8->otName(wcOT);
-                pk8->otGender(wcOTgender < 2 ? wcOTgender : gender());
+                pk8->otGender(wc8->otGender() < Gender::Genderless ? wc8->otGender() : gender());
                 pk8->htName(otName());
                 pk8->htGender(gender());
                 pk8->htLanguage(language());
@@ -595,15 +594,15 @@ void SavSWSH::mysteryGift(WCX& wc, int&)
             pk8->metLocation(wc8->metLocation());
             pk8->eggLocation(wc8->eggLocation());
 
-            if (wcOTgender >= 2)
+            if (wc8->otGender() >= Gender::Genderless)
             {
                 pk8->TID(TID());
                 pk8->SID(SID());
             }
 
-            if (pk8->species() == 678) // Meowstic
+            if (pk8->species() == Species::Meowstic)
             {
-                pk8->alternativeForm(pk8->gender());
+                pk8->alternativeForm(u8(pk8->gender()));
             }
 
             pk8->metDate(Date::today());
@@ -619,7 +618,7 @@ void SavSWSH::mysteryGift(WCX& wc, int&)
             }
 
             pk8->nicknamed(wc8->nicknamed(pk8->language()));
-            pk8->nickname(pk8->nicknamed() ? wc8->nickname(pk8->language()) : i18n::species(pk8->language(), pk8->species()));
+            pk8->nickname(pk8->nicknamed() ? wc8->nickname(pk8->language()) : pk8->species().localize(pk8->language()));
 
             pk8->ribbon(Ribbon::ChampionKalos, wc8->ribbon(Ribbon::ChampionKalos));
             pk8->ribbon(Ribbon::ChampionG3Hoenn, wc8->ribbon(Ribbon::ChampionG3Hoenn));
@@ -723,7 +722,7 @@ void SavSWSH::mysteryGift(WCX& wc, int&)
             if (wc8->egg())
             {
                 pk8->eggDate(Date::today());
-                pk8->nickname(i18n::species(pk8->language(), 0));
+                pk8->nickname(i18n::species(pk8->language(), Species::None));
                 pk8->nicknamed(true);
             }
 
@@ -732,7 +731,7 @@ void SavSWSH::mysteryGift(WCX& wc, int&)
             pk8->height(randomNumbers() % 0x81 + randomNumbers() % 0x80);
             pk8->weight(randomNumbers() % 0x81 + randomNumbers() % 0x80);
 
-            pk8->nature(wc8->nature() == 255 ? randomNumbers() % 25 : wc8->nature());
+            pk8->nature(wc8->nature() == Nature::INVALID ? Nature{u8(randomNumbers() % 25)} : wc8->nature());
             pk8->origNature(pk8->nature());
             pk8->gender(PKX::genderFromRatio(randomNumbers(), pk8->genderType()));
 
@@ -863,12 +862,12 @@ void SavSWSH::dex(const PKX& pk)
         DexEntry entry = LittleEndian::convertTo<DexEntry>(entryAddr);
 
         u16 form = pk.alternativeForm();
-        if (pk.species() == 869) // Alcremie
+        if (pk.species() == Species::Alcremie)
         {
             form *= 7;
             form += ((PK8&)pk).formDuration();
         }
-        else if (pk.species() == 890) // Eternatus
+        else if (pk.species() == Species::Eternatus)
         {
             form = 0;
             setProperGiga(entry, true, pk.shiny(), pk.gender());
@@ -892,9 +891,9 @@ void SavSWSH::dex(const PKX& pk)
 int SavSWSH::dexSeen() const
 {
     int ret = 0;
-    for (auto i : availableSpecies())
+    for (const auto& i : availableSpecies())
     {
-        u16 index       = PersonalSWSH::pokedexIndex(i);
+        u16 index       = PersonalSWSH::pokedexIndex(u16(i));
         u8* entryOffset = getBlock(PokeDex)->decryptedData() + index * sizeof(DexEntry);
         for (size_t j = 0; j < 0x20; j++) // Entire seen region size
         {
@@ -911,9 +910,9 @@ int SavSWSH::dexSeen() const
 int SavSWSH::dexCaught() const
 {
     int ret = 0;
-    for (auto i : availableSpecies())
+    for (const auto& i : availableSpecies())
     {
-        u16 index       = PersonalSWSH::pokedexIndex(i);
+        u16 index       = PersonalSWSH::pokedexIndex(u16(i));
         u8* entryOffset = getBlock(PokeDex)->decryptedData() + index * sizeof(DexEntry);
         if (entryOffset[0x20] & 3)
         {
@@ -923,26 +922,73 @@ int SavSWSH::dexCaught() const
     return ret;
 }
 
-const std::set<int>& SavSWSH::availableSpecies() const
+const std::set<Species>& SavSWSH::availableSpecies() const
 {
     if (species.empty())
     {
-        species = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 25, 26, 35, 36, 37, 38, 43, 44, 45, 50, 51, 52, 53, 58, 59, 66, 67, 68, 77, 78, 79, 83, 90,
-            91, 92, 93, 94, 95, 98, 99, 106, 107, 109, 110, 111, 112, 118, 119, 122, 129, 130, 131, 132, 133, 134, 135, 136, 143, 150, 151, 163, 164,
-            170, 171, 172, 173, 175, 176, 177, 178, 182, 185, 194, 195, 196, 197, 202, 208, 211, 213, 215, 220, 221, 222, 223, 224, 225, 226, 236,
-            237, 246, 247, 248, 251, 263, 264, 270, 271, 272, 273, 274, 275, 278, 279, 280, 281, 282, 290, 291, 292, 302, 303, 309, 310, 315, 320,
-            321, 324, 328, 329, 330, 337, 338, 339, 340, 341, 342, 343, 344, 349, 350, 355, 356, 360, 361, 362, 385, 406, 407, 415, 416, 420, 421,
-            422, 423, 425, 426, 434, 435, 436, 437, 438, 439, 446, 447, 448, 449, 450, 451, 452, 453, 454, 458, 459, 460, 461, 464, 468, 470, 471,
-            473, 475, 477, 478, 479, 509, 510, 517, 518, 519, 520, 521, 524, 525, 526, 527, 528, 529, 530, 532, 533, 534, 535, 536, 537, 538, 539,
-            546, 547, 550, 554, 555, 556, 557, 558, 559, 560, 561, 562, 563, 568, 569, 572, 573, 574, 575, 576, 577, 578, 579, 582, 583, 584, 588,
-            589, 592, 593, 595, 596, 597, 598, 599, 600, 601, 605, 606, 607, 608, 609, 610, 611, 612, 613, 614, 616, 617, 618, 622, 623, 624, 625,
-            627, 628, 629, 630, 631, 632, 633, 634, 635, 638, 639, 640, 643, 644, 646, 647, 659, 660, 674, 675, 677, 678, 679, 680, 681, 682, 683,
-            684, 685, 686, 687, 688, 689, 694, 695, 700, 701, 704, 705, 706, 708, 709, 710, 711, 712, 713, 714, 715, 722, 723, 724, 725, 726, 727,
-            728, 729, 730, 736, 737, 738, 742, 743, 746, 747, 748, 749, 750, 751, 752, 755, 756, 757, 758, 759, 760, 761, 762, 763, 765, 766, 767,
-            768, 771, 772, 773, 776, 777, 778, 780, 781, 782, 783, 784, 789, 790, 791, 792, 800, 802, 807, 808, 809, 810, 811, 812, 813, 814, 815,
-            816, 817, 818, 819, 820, 821, 822, 823, 824, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834, 835, 836, 837, 838, 839, 840, 841, 842,
-            843, 844, 845, 846, 847, 848, 849, 850, 851, 852, 853, 854, 855, 856, 857, 858, 859, 860, 861, 862, 863, 864, 865, 866, 867, 868, 869,
-            870, 871, 872, 873, 874, 875, 876, 877, 878, 879, 880, 881, 882, 883, 884, 885, 886, 887, 888, 889, 890};
+        species = {Species::Bulbasaur, Species::Ivysaur, Species::Venusaur, Species::Charmander, Species::Charmeleon, Species::Charizard,
+            Species::Squirtle, Species::Wartortle, Species::Blastoise, Species::Caterpie, Species::Metapod, Species::Butterfree, Species::Pikachu,
+            Species::Raichu, Species::Clefairy, Species::Clefable, Species::Vulpix, Species::Ninetales, Species::Oddish, Species::Gloom,
+            Species::Vileplume, Species::Diglett, Species::Dugtrio, Species::Meowth, Species::Persian, Species::Growlithe, Species::Arcanine,
+            Species::Machop, Species::Machoke, Species::Machamp, Species::Ponyta, Species::Rapidash, Species::Slowpoke, Species::Farfetchd,
+            Species::Shellder, Species::Cloyster, Species::Gastly, Species::Haunter, Species::Gengar, Species::Onix, Species::Krabby,
+            Species::Kingler, Species::Hitmonlee, Species::Hitmonchan, Species::Koffing, Species::Weezing, Species::Rhyhorn, Species::Rhydon,
+            Species::Goldeen, Species::Seaking, Species::MrMime, Species::Magikarp, Species::Gyarados, Species::Lapras, Species::Ditto,
+            Species::Eevee, Species::Vaporeon, Species::Jolteon, Species::Flareon, Species::Snorlax, Species::Mewtwo, Species::Mew, Species::Hoothoot,
+            Species::Noctowl, Species::Chinchou, Species::Lanturn, Species::Pichu, Species::Cleffa, Species::Togepi, Species::Togetic, Species::Natu,
+            Species::Xatu, Species::Bellossom, Species::Sudowoodo, Species::Wooper, Species::Quagsire, Species::Espeon, Species::Umbreon,
+            Species::Wobbuffet, Species::Steelix, Species::Qwilfish, Species::Shuckle, Species::Sneasel, Species::Swinub, Species::Piloswine,
+            Species::Corsola, Species::Remoraid, Species::Octillery, Species::Delibird, Species::Mantine, Species::Tyrogue, Species::Hitmontop,
+            Species::Larvitar, Species::Pupitar, Species::Tyranitar, Species::Celebi, Species::Zigzagoon, Species::Linoone, Species::Lotad,
+            Species::Lombre, Species::Ludicolo, Species::Seedot, Species::Nuzleaf, Species::Shiftry, Species::Wingull, Species::Pelipper,
+            Species::Ralts, Species::Kirlia, Species::Gardevoir, Species::Nincada, Species::Ninjask, Species::Shedinja, Species::Sableye,
+            Species::Mawile, Species::Electrike, Species::Manectric, Species::Roselia, Species::Wailmer, Species::Wailord, Species::Torkoal,
+            Species::Trapinch, Species::Vibrava, Species::Flygon, Species::Lunatone, Species::Solrock, Species::Barboach, Species::Whiscash,
+            Species::Corphish, Species::Crawdaunt, Species::Baltoy, Species::Claydol, Species::Feebas, Species::Milotic, Species::Duskull,
+            Species::Dusclops, Species::Wynaut, Species::Snorunt, Species::Glalie, Species::Jirachi, Species::Budew, Species::Roserade,
+            Species::Combee, Species::Vespiquen, Species::Cherubi, Species::Cherrim, Species::Shellos, Species::Gastrodon, Species::Drifloon,
+            Species::Drifblim, Species::Stunky, Species::Skuntank, Species::Bronzor, Species::Bronzong, Species::Bonsly, Species::MimeJr,
+            Species::Munchlax, Species::Riolu, Species::Lucario, Species::Hippopotas, Species::Hippowdon, Species::Skorupi, Species::Drapion,
+            Species::Croagunk, Species::Toxicroak, Species::Mantyke, Species::Snover, Species::Abomasnow, Species::Weavile, Species::Rhyperior,
+            Species::Togekiss, Species::Leafeon, Species::Glaceon, Species::Mamoswine, Species::Gallade, Species::Dusknoir, Species::Froslass,
+            Species::Rotom, Species::Purrloin, Species::Liepard, Species::Munna, Species::Musharna, Species::Pidove, Species::Tranquill,
+            Species::Unfezant, Species::Roggenrola, Species::Boldore, Species::Gigalith, Species::Woobat, Species::Swoobat, Species::Drilbur,
+            Species::Excadrill, Species::Timburr, Species::Gurdurr, Species::Conkeldurr, Species::Tympole, Species::Palpitoad, Species::Seismitoad,
+            Species::Throh, Species::Sawk, Species::Cottonee, Species::Whimsicott, Species::Basculin, Species::Darumaka, Species::Darmanitan,
+            Species::Maractus, Species::Dwebble, Species::Crustle, Species::Scraggy, Species::Scrafty, Species::Sigilyph, Species::Yamask,
+            Species::Cofagrigus, Species::Trubbish, Species::Garbodor, Species::Minccino, Species::Cinccino, Species::Gothita, Species::Gothorita,
+            Species::Gothitelle, Species::Solosis, Species::Duosion, Species::Reuniclus, Species::Vanillite, Species::Vanillish, Species::Vanilluxe,
+            Species::Karrablast, Species::Escavalier, Species::Frillish, Species::Jellicent, Species::Joltik, Species::Galvantula, Species::Ferroseed,
+            Species::Ferrothorn, Species::Klink, Species::Klang, Species::Klinklang, Species::Elgyem, Species::Beheeyem, Species::Litwick,
+            Species::Lampent, Species::Chandelure, Species::Axew, Species::Fraxure, Species::Haxorus, Species::Cubchoo, Species::Beartic,
+            Species::Shelmet, Species::Accelgor, Species::Stunfisk, Species::Golett, Species::Golurk, Species::Pawniard, Species::Bisharp,
+            Species::Rufflet, Species::Braviary, Species::Vullaby, Species::Mandibuzz, Species::Heatmor, Species::Durant, Species::Deino,
+            Species::Zweilous, Species::Hydreigon, Species::Cobalion, Species::Terrakion, Species::Virizion, Species::Reshiram, Species::Zekrom,
+            Species::Kyurem, Species::Keldeo, Species::Bunnelby, Species::Diggersby, Species::Pancham, Species::Pangoro, Species::Espurr,
+            Species::Meowstic, Species::Honedge, Species::Doublade, Species::Aegislash, Species::Spritzee, Species::Aromatisse, Species::Swirlix,
+            Species::Slurpuff, Species::Inkay, Species::Malamar, Species::Binacle, Species::Barbaracle, Species::Helioptile, Species::Heliolisk,
+            Species::Sylveon, Species::Hawlucha, Species::Goomy, Species::Sliggoo, Species::Goodra, Species::Phantump, Species::Trevenant,
+            Species::Pumpkaboo, Species::Gourgeist, Species::Bergmite, Species::Avalugg, Species::Noibat, Species::Noivern, Species::Rowlet,
+            Species::Dartrix, Species::Decidueye, Species::Litten, Species::Torracat, Species::Incineroar, Species::Popplio, Species::Brionne,
+            Species::Primarina, Species::Grubbin, Species::Charjabug, Species::Vikavolt, Species::Cutiefly, Species::Ribombee, Species::Wishiwashi,
+            Species::Mareanie, Species::Toxapex, Species::Mudbray, Species::Mudsdale, Species::Dewpider, Species::Araquanid, Species::Morelull,
+            Species::Shiinotic, Species::Salandit, Species::Salazzle, Species::Stufful, Species::Bewear, Species::Bounsweet, Species::Steenee,
+            Species::Tsareena, Species::Oranguru, Species::Passimian, Species::Wimpod, Species::Golisopod, Species::Pyukumuku, Species::TypeNull,
+            Species::Silvally, Species::Turtonator, Species::Togedemaru, Species::Mimikyu, Species::Drampa, Species::Dhelmise, Species::Jangmoo,
+            Species::Hakamoo, Species::Kommoo, Species::Cosmog, Species::Cosmoem, Species::Solgaleo, Species::Lunala, Species::Necrozma,
+            Species::Marshadow, Species::Zeraora, Species::Meltan, Species::Melmetal, Species::Grookey, Species::Thwackey, Species::Rillaboom,
+            Species::Scorbunny, Species::Raboot, Species::Cinderace, Species::Sobble, Species::Drizzile, Species::Inteleon, Species::Skwovet,
+            Species::Greedent, Species::Rookidee, Species::Corvisquire, Species::Corviknight, Species::Blipbug, Species::Dottler, Species::Orbeetle,
+            Species::Nickit, Species::Thievul, Species::Gossifleur, Species::Eldegoss, Species::Wooloo, Species::Dubwool, Species::Chewtle,
+            Species::Drednaw, Species::Yamper, Species::Boltund, Species::Rolycoly, Species::Carkol, Species::Coalossal, Species::Applin,
+            Species::Flapple, Species::Appletun, Species::Silicobra, Species::Sandaconda, Species::Cramorant, Species::Arrokuda, Species::Barraskewda,
+            Species::Toxel, Species::Toxtricity, Species::Sizzlipede, Species::Centiskorch, Species::Clobbopus, Species::Grapploct, Species::Sinistea,
+            Species::Polteageist, Species::Hatenna, Species::Hattrem, Species::Hatterene, Species::Impidimp, Species::Morgrem, Species::Grimmsnarl,
+            Species::Obstagoon, Species::Perrserker, Species::Cursola, Species::Sirfetchd, Species::MrRime, Species::Runerigus, Species::Milcery,
+            Species::Alcremie, Species::Falinks, Species::Pincurchin, Species::Snom, Species::Frosmoth, Species::Stonjourner, Species::Eiscue,
+            Species::Indeedee, Species::Morpeko, Species::Cufant, Species::Copperajah, Species::Dracozolt, Species::Arctozolt, Species::Dracovish,
+            Species::Arctovish, Species::Duraludon, Species::Dreepy, Species::Drakloak, Species::Dragapult, Species::Zacian, Species::Zamazenta,
+            Species::Eternatus};
     }
     return species;
 }

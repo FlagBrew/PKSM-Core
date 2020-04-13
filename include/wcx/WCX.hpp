@@ -27,12 +27,17 @@
 #ifndef PKSM_WCX
 #define PKSM_WCX
 
-#include "i18n/Language.hpp"
+#include "enums/Ability.hpp"
+#include "enums/Ball.hpp"
+#include "enums/Gender.hpp"
+#include "enums/Generation.hpp"
+#include "enums/Language.hpp"
+#include "enums/Nature.hpp"
+#include "enums/Ribbon.hpp"
+#include "enums/Species.hpp"
+#include "enums/Stat.hpp"
 #include "utils/DateTime.hpp"
-#include "utils/Ribbons.hpp"
 #include "utils/coretypes.h"
-#include "utils/generation.hpp"
-#include "utils/stat.hpp"
 #include <string>
 
 class WCX
@@ -77,23 +82,23 @@ public:
 
     // Pokemon properties
     virtual bool shiny(void) const           = 0;
-    virtual u16 ability(void) const          = 0;
+    virtual Ability ability(void) const      = 0;
     virtual u8 abilityType(void) const       = 0;
-    virtual u8 ball(void) const              = 0;
+    virtual Ball ball(void) const            = 0;
     virtual bool egg(void) const             = 0;
     virtual u8 alternativeForm(void) const   = 0;
-    virtual u8 gender(void) const            = 0;
+    virtual Gender gender(void) const        = 0;
     virtual u16 heldItem(void) const         = 0;
     virtual Language language(void) const    = 0;
     virtual u8 level(void) const             = 0;
     virtual u8 metLevel(void) const          = 0;
     virtual u16 move(u8 index) const         = 0;
-    virtual u8 nature(void) const            = 0;
+    virtual Nature nature(void) const        = 0;
     virtual std::string nickname(void) const = 0;
     virtual std::string otName(void) const   = 0;
     virtual u8 PIDType(void) const           = 0;
     virtual u16 SID(void) const              = 0;
-    virtual u16 species(void) const          = 0;
+    virtual Species species(void) const      = 0;
     virtual u16 TID(void) const              = 0;
     virtual u16 eggLocation(void) const      = 0;
     virtual u16 metLocation(void) const      = 0;

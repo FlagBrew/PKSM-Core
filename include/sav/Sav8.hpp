@@ -40,11 +40,11 @@ protected:
 
     bool encrypted = false;
 
-    int maxSpecies(void) const override { return 890; }
+    Species maxSpecies(void) const override { return Species::Eternatus; }
     int maxMove(void) const override { return 796; }
     int maxItem(void) const override { return 1578; }
-    int maxAbility(void) const override { return 258; }
-    int maxBall(void) const override { return 0x1A; }
+    Ability maxAbility(void) const override { return Ability::HungerSwitch; }
+    ::Ball maxBall(void) const override { return Ball::Beast; }
 
 public:
     Sav8(std::shared_ptr<u8[]> dt, size_t length);
@@ -60,14 +60,13 @@ public:
 
     const std::set<int>& availableItems(void) const override;
     const std::set<int>& availableMoves(void) const override;
-    const std::set<int>& availableSpecies(void) const override;
-    const std::set<int>& availableAbilities(void) const override;
-    const std::set<int>& availableBalls(void) const override;
+    const std::set<Species>& availableSpecies(void) const override;
+    const std::set<Ability>& availableAbilities(void) const override;
+    const std::set<::Ball>& availableBalls(void) const override;
 
     int maxBoxes(void) const override { return 32; }
-    size_t maxWondercards(void) const override { return 1; }                    // Data not stored
-    int emptyGiftLocation(void) const override { return 0; }                    // Data not stored
-    std::vector<Sav::giftData> currentGifts(void) const override { return {}; } // Data not stored
+    size_t maxWondercards(void) const override { return 1; } // Data not stored
+    int currentGiftAmount(void) const override { return 0; } // Data not stored
     Generation generation(void) const override { return Generation::EIGHT; }
 };
 

@@ -25,7 +25,6 @@
  */
 
 #include "pkx/PK3.hpp"
-#include "i18n/i18n.hpp"
 #include "pkx/PK4.hpp"
 #include "pkx/PK5.hpp"
 #include "pkx/PK6.hpp"
@@ -33,6 +32,8 @@
 #include "pkx/PK8.hpp"
 #include "utils/ValueConverter.hpp"
 #include "utils/endian.hpp"
+#include "utils/flagUtil.hpp"
+#include "utils/i18n.hpp"
 #include "utils/random.hpp"
 #include "utils/utils.hpp"
 #include <algorithm>
@@ -323,14 +324,14 @@ void PK3::speciesID3(u16 v)
     LittleEndian::convertFrom<u16>(data + 0x20, v);
 }
 
-u16 PK3::species(void) const
+Species PK3::species(void) const
 {
     return SpeciesConverter::g3ToNational(speciesID3());
 }
-void PK3::species(u16 v)
+void PK3::species(Species v)
 {
     speciesID3(SpeciesConverter::nationalToG3(v));
-    flagHasSpecies(species() > 0);
+    flagHasSpecies(species() != Species::None);
 }
 
 u16 PK3::heldItem3(void) const
@@ -468,22 +469,22 @@ void PK3::version(GameVersion v)
     LittleEndian::convertFrom<u16>(data + 0x46, (u16)((LittleEndian::convertTo<u16>(data + 0x46) & ~0x780) | ((u8(v) & 0xF) << 7)));
 }
 
-u8 PK3::ball(void) const
+Ball PK3::ball(void) const
 {
-    return (LittleEndian::convertTo<u16>(data + 0x46) >> 11) & 0xF;
+    return Ball{u8((LittleEndian::convertTo<u16>(data + 0x46) >> 11) & 0xF)};
 }
-void PK3::ball(u8 v)
+void PK3::ball(Ball v)
 {
-    LittleEndian::convertFrom<u16>(data + 0x46, (u16)((LittleEndian::convertTo<u16>(data + 0x46) & ~0x7800) | ((v & 0xF) << 11)));
+    LittleEndian::convertFrom<u16>(data + 0x46, (u16)((LittleEndian::convertTo<u16>(data + 0x46) & ~0x7800) | ((u16(v) & 0xF) << 11)));
 }
 
-u8 PK3::otGender(void) const
+Gender PK3::otGender(void) const
 {
-    return (LittleEndian::convertTo<u16>(data + 0x46) >> 15) & 1;
+    return Gender{u8((LittleEndian::convertTo<u16>(data + 0x46) >> 15) & 1)};
 }
-void PK3::otGender(u8 v)
+void PK3::otGender(Gender v)
 {
-    LittleEndian::convertFrom<u16>(data + 0x46, (u16)((LittleEndian::convertTo<u16>(data + 0x46) & ~(1 << 15)) | ((v & 1) << 15)));
+    LittleEndian::convertFrom<u16>(data + 0x46, (u16)((LittleEndian::convertTo<u16>(data + 0x46) & ~(1 << 15)) | ((u8(v) & 1) << 15)));
 }
 
 u8 PK3::iv(Stat stat) const
@@ -665,7 +666,7 @@ std::unique_ptr<PK4> PK3::convertToG4(Sav&) const
     pk4->iv(Stat::SPD, iv(Stat::SPD));
     pk4->iv(Stat::SPATK, iv(Stat::SPATK));
     pk4->iv(Stat::SPDEF, iv(Stat::SPDEF));
-    if (ability() == PersonalRSFRLGE::ability(species(), abilityNumber() >> 1))
+    if (ability() == PersonalRSFRLGE::ability(formSpecies(), abilityNumber() >> 1))
     {
         pk4->setAbility(abilityNumber() >> 1);
     }
@@ -725,7 +726,7 @@ std::unique_ptr<PK4> PK3::convertToG4(Sav&) const
         std::copy(trash.begin(), trash.end(), pk4->rawData() + 0x48 + 4);
     }
 
-    std::string name = i18n::species(language(), species());
+    std::string name = species().localize(language());
     pk4->nickname(egg() ? StringUtils::toUpper(name) : nickname());
     pk4->nicknamed(!egg() && nicknamed());
 
@@ -829,11 +830,11 @@ void PK3::level(u8 v)
     experience(expTable(v - 1, expType()));
 }
 
-u16 PK3::ability() const
+Ability PK3::ability() const
 {
     return abilityBit() ? abilities(1) : abilities(0);
 }
-void PK3::ability(u16 v)
+void PK3::ability(Ability v)
 {
     if (v == abilities(1))
     {
@@ -852,37 +853,37 @@ void PK3::setAbility(u8 num)
     }
 }
 
-u8 PK3::nature() const
+Nature PK3::nature() const
 {
-    return PID() % 25;
+    return Nature{u8(PID() % 25)};
 }
-void PK3::nature(u8 v)
+void PK3::nature(Nature v)
 {
     PID(PKX::getRandomPID(species(), gender(), version(), v, alternativeForm(), abilityBit() ? 2 : 1, PID(), Generation::THREE));
 }
 
-u8 PK3::gender() const
+Gender PK3::gender() const
 {
     switch (genderType())
     {
         case 0:
-            return 0;
+            return Gender::Male;
         case 254:
-            return 1;
+            return Gender::Female;
         case 255:
-            return 2;
+            return Gender::Genderless;
         default:
-            return (PID() & 0xFF) < genderType() ? 1 : 0;
+            return (PID() & 0xFF) < genderType() ? Gender::Female : Gender::Male;
     }
 }
-void PK3::gender(u8 v)
+void PK3::gender(Gender v)
 {
     PID(PKX::getRandomPID(species(), v, version(), nature(), alternativeForm(), abilityBit() ? 2 : 1, PID(), Generation::THREE));
 }
 
 u16 PK3::alternativeForm() const
 {
-    if (species() == 201)
+    if (species() == Species::Unown)
     {
         return getUnownForm(PID());
     }
@@ -890,7 +891,7 @@ u16 PK3::alternativeForm() const
 }
 void PK3::alternativeForm(u16 v)
 {
-    if (species() == 201)
+    if (species() == Species::Unown)
     {
         PID(PKX::getRandomPID(species(), gender(), version(), nature(), v, abilityBit() ? 2 : 1, PID(), Generation::THREE));
     }
@@ -898,20 +899,25 @@ void PK3::alternativeForm(u16 v)
 
 bool PK3::nicknamed() const
 {
-    std::string target = i18n::species(language(), species());
+    std::string target = species().localize(language());
     return nickname() != StringUtils::toUpper(target);
 }
 void PK3::nicknamed(bool) {}
 
-u8 PK3::hpType(void) const
+Type PK3::hpType(void) const
 {
-    return 15 *
-           ((iv(Stat::HP) & 1) + 2 * (iv(Stat::ATK) & 1) + 4 * (iv(Stat::DEF) & 1) + 8 * (iv(Stat::SPD) & 1) + 16 * (iv(Stat::SPATK) & 1) +
-               32 * (iv(Stat::SPDEF) & 1)) /
-           63;
+    return Type{u8((15 *
+                       ((iv(Stat::HP) & 1) + 2 * (iv(Stat::ATK) & 1) + 4 * (iv(Stat::DEF) & 1) + 8 * (iv(Stat::SPD) & 1) +
+                           16 * (iv(Stat::SPATK) & 1) + 32 * (iv(Stat::SPDEF) & 1)) /
+                       63) +
+                   1)};
 }
-void PK3::hpType(u8 v)
+void PK3::hpType(Type v)
 {
+    if (v > Type::Normal && v < Type::Fairy)
+    {
+        return;
+    }
     static constexpr u16 hpivs[16][6] = {
         {1, 1, 0, 0, 0, 0}, // Fighting
         {0, 0, 0, 1, 0, 0}, // Flying
@@ -933,7 +939,7 @@ void PK3::hpType(u8 v)
 
     for (u8 i = 0; i < 6; i++)
     {
-        iv(Stat(i), (iv(Stat(i)) & 0x1E) + hpivs[v][i]);
+        iv(Stat(i), (iv(Stat(i)) & 0x1E) + hpivs[u8(v) - 1][i]);
     }
 }
 
@@ -971,7 +977,7 @@ void PK3::shiny(bool v)
 
 u16 PK3::formSpecies() const
 {
-    return species();
+    return u16(species());
 }
 
 u16 PK3::stat(Stat stat) const
@@ -1006,9 +1012,9 @@ u16 PK3::stat(Stat stat) const
     else
         calc = 5 + (2 * basestat + iv(stat) + ev(stat) / 4) * level() / 100;
 
-    if (nature() / 5 + 1 == u8(stat))
+    if (u8(nature()) / 5 + 1 == u8(stat))
         mult++;
-    if (nature() % 5 + 1 == u8(stat))
+    if (u8(nature()) % 5 + 1 == u8(stat))
         mult--;
     return calc * mult / 10;
 }

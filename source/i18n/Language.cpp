@@ -24,8 +24,8 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "i18n/Language.hpp"
-#include "utils/generation.hpp"
+#include "enums/Language.hpp"
+#include "enums/Generation.hpp"
 #include <algorithm>
 #include <array>
 

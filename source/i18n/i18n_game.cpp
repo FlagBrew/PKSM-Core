@@ -24,6 +24,7 @@
  *         reasonable ways as different from the original version.
  */
 
+#include "enums/GameVersion.hpp"
 #include "i18n_internal.hpp"
 
 namespace i18n

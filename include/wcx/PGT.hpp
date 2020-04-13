@@ -71,15 +71,15 @@ public:
     bool used(void) const override;
 
     // Pokemon properties
-    u8 ball(void) const override;
+    Ball ball(void) const override;
     u16 heldItem(void) const override;
     bool shiny(void) const override;
     u8 PIDType(void) const override;
     u16 TID(void) const override;
     u16 SID(void) const override;
     u16 move(u8 index) const override;
-    u16 species(void) const override;
-    u8 gender(void) const override;
+    Species species(void) const override;
+    Gender gender(void) const override;
     std::string otName(void) const override;
     u8 level(void) const override;
     u32 PID(void) const override;
@@ -88,9 +88,9 @@ public:
     u8 alternativeForm(void) const override;
     Language language(void) const override;
     std::string nickname(void) const override;
-    u8 nature(void) const override;
+    Nature nature(void) const override;
     u8 abilityType(void) const override;
-    u16 ability(void) const override;
+    Ability ability(void) const override;
     u16 eggLocation(void) const override;
     u16 metLocation(void) const override;
     u8 metLevel(void) const override;

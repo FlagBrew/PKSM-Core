@@ -27,11 +27,11 @@
 #ifndef I18N_INTERNAL_HPP
 #define I18N_INTERNAL_HPP
 
-#include "Language.hpp"
-#include "coretypes.h"
-#include "i18n.hpp"
-#include "io.hpp"
+#include "enums/Language.hpp"
 #include "nlohmann/json.hpp"
+#include "utils/coretypes.h"
+#include "utils/i18n.hpp"
+#include "utils/io.hpp"
 #include <atomic>
 #include <unistd.h>
 #include <unordered_map>

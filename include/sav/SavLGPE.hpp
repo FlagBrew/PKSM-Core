@@ -46,12 +46,12 @@ protected:
     int dexFormCount(int species) const;
     int getDexFlags(int index, int baseSpecies) const;
     void setDexFlags(int index, int gender, int shiny, int baseSpecies);
-    bool sanitizeFormsToIterate(int species, int& fs, int& fe, int formIn) const;
-    int maxSpecies(void) const override { return 809; } // This is going to be FUN: only numbers 1-151, 808, & 809
+    bool sanitizeFormsToIterate(Species species, int& fs, int& fe, int formIn) const;
+    Species maxSpecies(void) const override { return Species::Melmetal; } // This is going to be FUN: only numbers 1-151, 808, & 809
     int maxMove(void) const override { return 742; }
     int maxItem(void) const override { return 1057; }
-    int maxAbility(void) const override { return 233; } // Same as G7
-    int maxBall(void) const override { return 0x1A; }   // Same as G7
+    Ability maxAbility(void) const override { return Ability::Neuroforce; } // Same as G7
+    ::Ball maxBall(void) const override { return Ball::Beast; }             // Same as G7
 
     static u16 check16(u8* buf, u32 len);
 
@@ -76,8 +76,8 @@ public:
     void SID(u16 v) override;
     GameVersion version(void) const override;
     void version(GameVersion v) override;
-    u8 gender(void) const override;
-    void gender(u8 v) override;
+    Gender gender(void) const override;
+    void gender(Gender v) override;
     u8 subRegion(void) const override { return 0; }
     void subRegion(u8) override {}
     u8 country(void) const override { return 0; }
@@ -121,8 +121,7 @@ public:
     void dex(const PKX& pk) override;
     int dexSeen(void) const override;
     int dexCaught(void) const override;
-    int emptyGiftLocation(void) const override { return 0; }                    // Data not stored
-    std::vector<Sav::giftData> currentGifts(void) const override { return {}; } // Data not stored
+    int currentGiftAmount(void) const override { return 0; } // Data not stored
     void mysteryGift(WCX& wc, int& pos) override;
     std::unique_ptr<WCX> mysteryGift(int pos) const override; // Always returns null: Data not stored
     void cryptBoxData(bool crypted) override;
@@ -139,9 +138,9 @@ public:
     Generation generation(void) const override { return Generation::LGPE; }
     const std::set<int>& availableItems(void) const override;
     const std::set<int>& availableMoves(void) const override;
-    const std::set<int>& availableSpecies(void) const override;
-    const std::set<int>& availableAbilities(void) const override;
-    const std::set<int>& availableBalls(void) const override;
+    const std::set<Species>& availableSpecies(void) const override;
+    const std::set<Ability>& availableAbilities(void) const override;
+    const std::set<::Ball>& availableBalls(void) const override;
 
     void item(const Item& item, Pouch pouch, u16 slot) override;
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;

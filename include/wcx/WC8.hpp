@@ -27,7 +27,7 @@
 #ifndef WC8_HPP
 #define WC8_HPP
 
-#include "utils/gameversion.hpp"
+#include "enums/GameVersion.hpp"
 #include "wcx/WCX.hpp"
 
 class WC8 : public WCX
@@ -76,12 +76,12 @@ public:
     // Pokemon properties
     u16 move(u8 index) const override;
     u16 relearnMove(u8 index) const;
-    u16 species(void) const override;
+    Species species(void) const override;
     u8 alternativeForm(void) const override;
-    u8 gender(void) const override;
+    Gender gender(void) const override;
     u8 level(void) const override;
     bool egg(void) const override;
-    u8 nature(void) const override;
+    Nature nature(void) const override;
     u8 abilityType(void) const override;
     u8 PIDType(void) const override;
     u8 metLevel(void) const override;
@@ -89,11 +89,11 @@ public:
     bool canGigantamax(void) const;
     u8 ribbonValue(int index) const;
     u8 iv(Stat index) const override;
-    u8 otGender(void) const;
+    Gender otGender(void) const;
     u8 ev(Stat index) const;
     bool shiny(void) const override;
-    u16 ability(void) const override;
-    u8 ball(void) const override;
+    Ability ability(void) const override;
+    Ball ball(void) const override;
     u32 encryptionConstant(void) const;
     u16 heldItem(void) const override;
     Language language(void) const override { return Language::UNUSED; } // Apparently all WCs are now multi-language?

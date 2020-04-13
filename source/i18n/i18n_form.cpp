@@ -24,6 +24,8 @@
  *         reasonable ways as different from the original version.
  */
 
+#include "enums/GameVersion.hpp"
+#include "enums/Species.hpp"
 #include "i18n_internal.hpp"
 
 namespace i18n
@@ -72,7 +74,7 @@ namespace i18n
      *numbers compared with the GameVersion passed into i18n::form(s) and the string will only be translated if there is a match.
      **/
 
-    const std::string& form(Language lang, GameVersion version, u16 species, u16 form)
+    const std::string& form(Language lang, GameVersion version, Species species, u16 form)
     {
         checkInitialized(lang);
         auto stringsIt = formss.find(lang);
@@ -117,7 +119,7 @@ namespace i18n
         return emptyString;
     }
 
-    std::vector<std::string> forms(Language lang, GameVersion version, u16 species)
+    std::vector<std::string> forms(Language lang, GameVersion version, Species species)
     {
         checkInitialized(lang);
         auto stringsIt = formss.find(lang);
@@ -138,6 +140,15 @@ namespace i18n
                         if (versionIt != formVal.end())
                         {
                             index = versionIt->get<int>();
+                        }
+                        else
+                        {
+                            sVersion       = "G" + (std::string)((Generation)version);
+                            auto versionIt = formVal.find(sVersion);
+                            if (versionIt != formVal.end())
+                            {
+                                index = versionIt->get<int>();
+                            }
                         }
                     }
                     else

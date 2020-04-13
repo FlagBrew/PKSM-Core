@@ -115,8 +115,8 @@ public:
 
     u16 speciesID3(void) const;
     void speciesID3(u16 v);
-    u16 species(void) const override;
-    void species(u16 v) override;
+    Species species(void) const override;
+    void species(Species v) override;
     u16 heldItem3(void) const;
     void heldItem3(u16 v);
     u16 heldItem(void) const override;
@@ -125,8 +125,8 @@ public:
     void experience(u32 v) override;
     u8 otFriendship(void) const override;
     void otFriendship(u8 v) override;
-    u16 ability(void) const override;
-    void ability(u16 v) override;
+    Ability ability(void) const override;
+    void ability(Ability v) override;
     bool abilityBit(void) const;
     void abilityBit(bool v);
     u8 ev(Stat ev) const override;
@@ -155,14 +155,14 @@ public:
     void nicknamed(bool v) override;
     bool fatefulEncounter(void) const override;
     void fatefulEncounter(bool v) override;
-    u8 gender(void) const override;
-    void gender(u8 g) override;
+    Gender gender(void) const override;
+    void gender(Gender g) override;
     u16 alternativeForm(void) const override;
     void alternativeForm(u16 v) override;
     u8 shinyLeaf(void) const;
     void shinyLeaf(u8 v);
-    u8 nature(void) const override;
-    void nature(u8 v) override;
+    Nature nature(void) const override;
+    void nature(Nature v) override;
     bool hiddenAbility(void) const;
     void hiddenAbility(bool v);
     bool nPokemon(void) const;
@@ -181,19 +181,19 @@ public:
     void pkrsDays(u8 v) override;
     u8 pkrsStrain(void) const override;
     void pkrsStrain(u8 v) override;
-    u8 ball(void) const override;
-    void ball(u8 v) override;
+    Ball ball(void) const override;
+    void ball(Ball v) override;
     u8 metLevel(void) const override;
     void metLevel(u8 v) override;
-    u8 otGender(void) const override;
-    void otGender(u8 v) override;
+    Gender otGender(void) const override;
+    void otGender(Gender v) override;
     u8 encounterType(void) const;
     void encounterType(u8 v);
     u8 characteristic(void) const;
 
     void refreshChecksum(void) override;
-    u8 hpType(void) const override;
-    void hpType(u8 v) override;
+    Type hpType(void) const override;
+    void hpType(Type v) override;
     u16 TSV(void) const override;
     u16 PSV(void) const override;
     u8 level(void) const override;
@@ -217,12 +217,12 @@ public:
     inline u8 baseSpe(void) const override { return PersonalRSFRLGE::baseSpe(formSpecies()); }
     inline u8 baseSpa(void) const override { return PersonalRSFRLGE::baseSpa(formSpecies()); }
     inline u8 baseSpd(void) const override { return PersonalRSFRLGE::baseSpd(formSpecies()); }
-    inline u8 type1(void) const override { return PersonalRSFRLGE::type1(formSpecies()); }
-    inline u8 type2(void) const override { return PersonalRSFRLGE::type2(formSpecies()); }
+    inline Type type1(void) const override { return PersonalRSFRLGE::type1(formSpecies()); }
+    inline Type type2(void) const override { return PersonalRSFRLGE::type2(formSpecies()); }
     inline u8 genderType(void) const override { return PersonalRSFRLGE::gender(formSpecies()); }
     inline u8 baseFriendship(void) const override { return PersonalRSFRLGE::baseFriendship(formSpecies()); }
     inline u8 expType(void) const override { return PersonalRSFRLGE::expType(formSpecies()); }
-    inline u16 abilities(u8 n) const override { return PersonalRSFRLGE::ability(formSpecies(), n); }
+    inline Ability abilities(u8 n) const override { return PersonalRSFRLGE::ability(formSpecies(), n); }
     inline u16 formStatIndex(void) const override { return 0; }
 };
 

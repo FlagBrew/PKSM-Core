@@ -25,6 +25,7 @@
  */
 
 #include "i18n_internal.hpp"
+#include "utils/_map_macro.hpp"
 #include <list>
 
 #ifdef _PKSMCORE_EXTRA_LANGUAGES
@@ -33,7 +34,6 @@
 #define LANGUAGES_TO_USE JPN, ENG, FRE, ITA, GER, SPA, KOR, CHS, CHT
 #endif
 
-#include "_map_macro.hpp"
 #define MAKE_MAP(lang) ret.emplace(Language::lang, LangState::UNINITIALIZED);
 #define TO_STRING_CASE(lang)                                                                                                                         \
     case Language::lang:                                                                                                                             \
@@ -80,9 +80,9 @@ namespace i18n
     }();
 
     std::list<initCallback> initCallbacks = {
-        initAbility, initBall, initForm, initGame, initGeo, initGui, initHP, initItem, initLocation, initMove, initNature, initSpecies};
+        initAbility, initBall, initForm, initGame, initGeo, initGui, initType, initItem, initLocation, initMove, initNature, initSpecies};
     std::list<exitCallback> exitCallbacks = {
-        exitAbility, exitBall, exitForm, exitGame, exitGeo, exitGui, exitHP, exitItem, exitLocation, exitMove, exitNature, exitSpecies};
+        exitAbility, exitBall, exitForm, exitGame, exitGeo, exitGui, exitType, exitItem, exitLocation, exitMove, exitNature, exitSpecies};
 
     void init(Language lang)
     {

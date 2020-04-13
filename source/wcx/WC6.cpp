@@ -227,9 +227,9 @@ u32 WC6::encryptionConstant(void) const
     return LittleEndian::convertTo<u32>(data + 0x70);
 }
 
-u8 WC6::ball(void) const
+Ball WC6::ball(void) const
 {
-    return data[0x76];
+    return Ball{data[0x76]};
 }
 
 u16 WC6::heldItem(void) const
@@ -242,9 +242,9 @@ u16 WC6::move(u8 m) const
     return LittleEndian::convertTo<u16>(data + 0x7A + m * 2);
 }
 
-u16 WC6::species(void) const
+Species WC6::species(void) const
 {
-    return LittleEndian::convertTo<u16>(data + 0x82);
+    return Species{LittleEndian::convertTo<u16>(data + 0x82)};
 }
 
 u8 WC6::alternativeForm(void) const
@@ -262,17 +262,17 @@ std::string WC6::nickname(void) const
     return LittleEndian::convertTo<u16>(data + 0x86) != 0 ? StringUtils::getString(data, 0x86, 12) : "Pokemon Name";
 } // Localization::speciesName(species()); }
 
-u8 WC6::nature(void) const
+Nature WC6::nature(void) const
 {
-    return data[0xA0];
+    return Nature{data[0xA0]};
 }
 
-u8 WC6::gender(void) const
+Gender WC6::gender(void) const
 {
-    return data[0xA1];
+    return Gender{data[0xA1]};
 }
 
-u16 WC6::ability(void) const
+Ability WC6::ability(void) const
 {
     u8 abilitynum, type = abilityType();
 
@@ -283,7 +283,7 @@ u16 WC6::ability(void) const
     else
         abilitynum = 0;
 
-    return PersonalXYORAS::ability(species(), abilitynum);
+    return PersonalXYORAS::ability(u16(species()), abilitynum);
 }
 
 u8 WC6::abilityType(void) const
@@ -331,9 +331,9 @@ u8 WC6::iv(Stat index) const
     return data[0xAF + u8(index)];
 }
 
-u8 WC6::otGender(void) const
+Gender WC6::otGender(void) const
 {
-    return data[0xB5];
+    return Gender{data[0xB5]};
 }
 
 u16 WC6::additionalItem(void) const
@@ -404,7 +404,7 @@ bool WC6::oncePerDay(void) const
 
 u16 WC6::formSpecies(void) const
 {
-    u16 tmpSpecies = species();
+    u16 tmpSpecies = u16(species());
     u8 form        = alternativeForm();
     u8 formcount   = PersonalXYORAS::formCount(tmpSpecies);
 

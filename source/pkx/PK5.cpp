@@ -25,7 +25,6 @@
  */
 
 #include "pkx/PK5.hpp"
-#include "i18n/i18n.hpp"
 #include "pkx/PK3.hpp"
 #include "pkx/PK4.hpp"
 #include "pkx/PK6.hpp"
@@ -33,6 +32,8 @@
 #include "pkx/PK8.hpp"
 #include "sav/Sav.hpp"
 #include "utils/endian.hpp"
+#include "utils/flagUtil.hpp"
+#include "utils/i18n.hpp"
 #include "utils/random.hpp"
 #include "utils/utils.hpp"
 #include <algorithm>
@@ -425,13 +426,13 @@ void PK5::checksum(u16 v)
     LittleEndian::convertFrom<u16>(data + 0x06, v);
 }
 
-u16 PK5::species(void) const
+Species PK5::species(void) const
 {
-    return LittleEndian::convertTo<u16>(data + 0x08);
+    return Species{LittleEndian::convertTo<u16>(data + 0x08)};
 }
-void PK5::species(u16 v)
+void PK5::species(Species v)
 {
-    LittleEndian::convertFrom<u16>(data + 0x08, v);
+    LittleEndian::convertFrom<u16>(data + 0x08, u16(v));
 }
 
 u16 PK5::heldItem(void) const
@@ -479,13 +480,13 @@ void PK5::otFriendship(u8 v)
     data[0x14] = v;
 }
 
-u16 PK5::ability(void) const
+Ability PK5::ability(void) const
 {
-    return data[0x15];
+    return Ability{data[0x15]};
 }
-void PK5::ability(u16 v)
+void PK5::ability(Ability v)
 {
-    data[0x15] = v;
+    data[0x15] = u8(v);
 }
 
 void PK5::setAbility(u8 v)
@@ -629,13 +630,13 @@ void PK5::fatefulEncounter(bool v)
     data[0x40] = (u8)((data[0x40] & ~0x01) | (v ? 1 : 0));
 }
 
-u8 PK5::gender(void) const
+Gender PK5::gender(void) const
 {
-    return (data[0x40] >> 1) & 0x3;
+    return Gender{u8((data[0x40] >> 1) & 0x3)};
 }
-void PK5::gender(u8 g)
+void PK5::gender(Gender g)
 {
-    data[0x40] = u8((data[0x40] & ~0x06) | (g << 1));
+    data[0x40] = u8((data[0x40] & ~0x06) | (u8(g) << 1));
     if (shiny())
     {
         do
@@ -661,13 +662,13 @@ void PK5::alternativeForm(u16 v)
     data[0x40] = u8((data[0x40] & 0x07) | (v << 3));
 }
 
-u8 PK5::nature(void) const
+Nature PK5::nature(void) const
 {
-    return data[0x41];
+    return Nature{data[0x41]};
 }
-void PK5::nature(u8 v)
+void PK5::nature(Nature v)
 {
-    data[0x41] = v;
+    data[0x41] = u8(v);
 }
 
 bool PK5::hiddenAbility(void) const
@@ -814,13 +815,13 @@ void PK5::pkrsStrain(u8 v)
     data[0x82] = (u8)((data[0x82] & 0xF) | v << 4);
 }
 
-u8 PK5::ball(void) const
+Ball PK5::ball(void) const
 {
-    return data[0x83];
+    return Ball{data[0x83]};
 }
-void PK5::ball(u8 v)
+void PK5::ball(Ball v)
 {
-    data[0x83] = v;
+    data[0x83] = u8(v);
 }
 
 u8 PK5::metLevel(void) const
@@ -832,13 +833,13 @@ void PK5::metLevel(u8 v)
     data[0x84] = (data[0x84] & 0x80) | v;
 }
 
-u8 PK5::otGender(void) const
+Gender PK5::otGender(void) const
 {
-    return data[0x84] >> 7;
+    return Gender{u8(data[0x84] >> 7)};
 }
-void PK5::otGender(u8 v)
+void PK5::otGender(Gender v)
 {
-    data[0x84] = (data[0x84] & ~0x80) | (v << 7);
+    data[0x84] = (data[0x84] & ~0x80) | (u8(v) << 7);
 }
 
 u8 PK5::encounterType(void) const
@@ -860,15 +861,20 @@ void PK5::refreshChecksum(void)
     checksum(chk);
 }
 
-u8 PK5::hpType(void) const
+Type PK5::hpType(void) const
 {
-    return 15 *
-           ((iv(Stat::HP) & 1) + 2 * (iv(Stat::ATK) & 1) + 4 * (iv(Stat::DEF) & 1) + 8 * (iv(Stat::SPD) & 1) + 16 * (iv(Stat::SPATK) & 1) +
-               32 * (iv(Stat::SPDEF) & 1)) /
-           63;
+    return Type{u8((15 *
+                       ((iv(Stat::HP) & 1) + 2 * (iv(Stat::ATK) & 1) + 4 * (iv(Stat::DEF) & 1) + 8 * (iv(Stat::SPD) & 1) +
+                           16 * (iv(Stat::SPATK) & 1) + 32 * (iv(Stat::SPDEF) & 1)) /
+                       63) +
+                   1)};
 }
-void PK5::hpType(u8 v)
+void PK5::hpType(Type v)
 {
+    if (v <= Type::Normal || v >= Type::Fairy)
+    {
+        return;
+    }
     static constexpr u16 hpivs[16][6] = {
         {1, 1, 0, 0, 0, 0}, // Fighting
         {0, 0, 0, 1, 0, 0}, // Flying
@@ -890,7 +896,7 @@ void PK5::hpType(u8 v)
 
     for (u8 i = 0; i < 6; i++)
     {
-        iv(Stat(i), (iv(Stat(i)) & 0x1E) + hpivs[v][i]);
+        iv(Stat(i), (iv(Stat(i)) & 0x1E) + hpivs[u8(v) - 1][i]);
     }
 }
 
@@ -941,7 +947,7 @@ void PK5::shiny(bool v)
 
 u16 PK5::formSpecies(void) const
 {
-    u16 tmpSpecies = species();
+    u16 tmpSpecies = u16(species());
     u8 form        = alternativeForm();
     u8 formcount   = PersonalBWB2W2::formCount(tmpSpecies);
 
@@ -994,9 +1000,9 @@ u16 PK5::stat(Stat stat) const
     else
         calc = 5 + (2 * basestat + iv(stat) + ev(stat) / 4) * level() / 100;
 
-    if (nature() / 5 + 1 == u8(stat))
+    if (u8(nature()) / 5 + 1 == u8(stat))
         mult++;
-    if (nature() % 5 + 1 == u8(stat))
+    if (u8(nature()) % 5 + 1 == u8(stat))
         mult--;
     return calc * mult / 10;
 }
@@ -1061,7 +1067,7 @@ std::unique_ptr<PK4> PK5::convertToG4(Sav& save) const
     pk4->nature(nature());
 
     // Force normal Arceus form
-    if (pk4->species() == 493)
+    if (pk4->species() == Species::Arceus)
     {
         pk4->alternativeForm(0);
     }
@@ -1097,8 +1103,8 @@ std::unique_ptr<PK6> PK5::convertToG6(Sav& save) const
     pk6->PID(PID());
     pk6->ability(ability());
 
-    u16 pkmAbilities[3] = {abilities(0), abilities(1), abilities(2)};
-    u8 abilVal          = std::distance(pkmAbilities, std::find(pkmAbilities, pkmAbilities + 3, ability()));
+    Ability pkmAbilities[3] = {abilities(0), abilities(1), abilities(2)};
+    u8 abilVal              = std::distance(pkmAbilities, std::find(pkmAbilities, pkmAbilities + 3, ability()));
     if (abilVal < 3 && pkmAbilities[abilVal] == pkmAbilities[2] && hiddenAbility())
     {
         abilVal = 2; // HA shared by normal ability
@@ -1145,7 +1151,7 @@ std::unique_ptr<PK6> PK5::convertToG6(Sav& save) const
     pk6->alternativeForm(alternativeForm());
     pk6->nature(nature());
 
-    pk6->nickname(i18n::species(pk6->language(), pk6->species()));
+    pk6->nickname(pk6->species().localize(pk6->language()));
     if (nicknamed())
         pk6->nickname(nickname());
 

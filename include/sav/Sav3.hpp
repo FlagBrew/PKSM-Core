@@ -35,14 +35,12 @@ class Sav3 : public Sav
 {
 protected:
     bool japanese;
-    int maxSpecies(void) const override { return 386; } // Index 412
+    Species maxSpecies(void) const override { return Species::Deoxys; } // Index 412
     int maxMove(void) const override { return 354; }
     int maxItem(void) const override { return 374; }
-    int maxAbility(void) const override { return 77; }
-    int maxBall(void) const override { return 0xC; }
+    Ability maxAbility(void) const override { return Ability::TangledFeet; }
+    ::Ball maxBall(void) const override { return Ball::Premier; }
     int OFS_PCItem, OFS_PouchHeldItem, OFS_PouchKeyItem, OFS_PouchBalls, OFS_PouchTMHM, OFS_PouchBerry, eventFlag;
-
-    mutable std::set<int> items, moves, species, abilities, balls;
 
     std::shared_ptr<u8[]> Box; // TODO: Rename this?
 
@@ -88,17 +86,17 @@ protected:
     bool getEventFlag(int flagNumber) const;
     void setEventFlag(int flagNumber, bool value);
 
-    bool canSetDex(int species);
+    bool canSetDex(Species species);
 
     u32 dexPIDUnown(void);
     void dexPIDUnown(u32 v);
     u32 dexPIDSpinda(void);
     void dexPIDSpinda(u32 v);
 
-    bool getCaught(int species) const;
-    void setCaught(int species, bool caught);
-    bool getSeen(int species) const;
-    void setSeen(int species, bool seen);
+    bool getCaught(Species species) const;
+    void setCaught(Species species, bool caught);
+    bool getSeen(Species species) const;
+    void setSeen(Species species, bool seen);
 
 public:
     static Game getVersion(std::shared_ptr<u8[]> dt);
@@ -115,8 +113,8 @@ public:
     void SID(u16 v) override;
     GameVersion version(void) const override;
     void version(GameVersion v) override;
-    u8 gender(void) const override;
-    void gender(u8 v) override;
+    Gender gender(void) const override;
+    void gender(Gender v) override;
     u8 subRegion(void) const override { return 0; }
     void subRegion(u8) override {}
     u8 country(void) const override { return 0; }
@@ -159,8 +157,7 @@ public:
     void dex(const PKX& pk) override;
     int dexSeen(void) const override;
     int dexCaught(void) const override;
-    int emptyGiftLocation(void) const override { return 0; }
-    std::vector<Sav::giftData> currentGifts(void) const override { return {}; }
+    int currentGiftAmount(void) const override { return 0; }
     void mysteryGift(WCX&, int&) override {}
     std::unique_ptr<WCX> mysteryGift(int pos) const override;
     void cryptBoxData(bool crypted) override;
@@ -176,9 +173,9 @@ public:
     Generation generation(void) const override { return Generation::THREE; }
     const std::set<int>& availableItems(void) const override;
     const std::set<int>& availableMoves(void) const override;
-    const std::set<int>& availableSpecies(void) const override;
-    const std::set<int>& availableAbilities(void) const override;
-    const std::set<int>& availableBalls(void) const override;
+    const std::set<Species>& availableSpecies(void) const override;
+    const std::set<Ability>& availableAbilities(void) const override;
+    const std::set<::Ball>& availableBalls(void) const override;
 
     void item(const Item& item, Pouch pouch, u16 slot) override;
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;

@@ -24,6 +24,7 @@
  *         reasonable ways as different from the original version.
  */
 
+#include "enums/Ball.hpp"
 #include "i18n_internal.hpp"
 
 namespace i18n
@@ -39,14 +40,14 @@ namespace i18n
 
     void exitBall(Language lang) { balls.erase(lang); }
 
-    const std::string& ball(Language lang, u8 val)
+    const std::string& ball(Language lang, Ball val)
     {
         checkInitialized(lang);
         if (balls.contains(lang))
         {
-            if (val < balls[lang].size())
+            if (size_t(val) < balls[lang].size())
             {
-                return balls[lang][val];
+                return balls[lang][size_t(val)];
             }
         }
         return emptyString;
@@ -61,4 +62,9 @@ namespace i18n
         }
         return emptyVector;
     }
+}
+
+const std::string& Ball_impl::localize(Language lang) const
+{
+    return i18n::ball(lang, *this);
 }

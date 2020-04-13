@@ -44,8 +44,8 @@ public:
     void SID(u16 v) override;
     GameVersion version(void) const override;
     void version(GameVersion v) override;
-    u8 gender(void) const override;
-    void gender(u8 v) override;
+    Gender gender(void) const override;
+    void gender(Gender v) override;
     std::string otName(void) const override;
     void otName(const std::string& v) override;
     Language language(void) const override;
@@ -103,7 +103,7 @@ public:
     void dex(const PKX& pk) override;
     int dexSeen(void) const override;
     int dexCaught(void) const override;
-    const std::set<int>& availableSpecies(void) const override;
+    const std::set<Species>& availableSpecies(void) const override;
 
     // Check whether gifts are stored, or whether some disgusting record system is used
     void mysteryGift(WCX& wc, int& pos) override;

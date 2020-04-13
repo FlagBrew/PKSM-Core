@@ -251,9 +251,9 @@ u32 WC7::encryptionConstant(void) const
     return LittleEndian::convertTo<u32>(data + 0x70);
 }
 
-u8 WC7::ball(void) const
+Ball WC7::ball(void) const
 {
-    return data[0x76];
+    return Ball{data[0x76]};
 }
 
 u16 WC7::heldItem(void) const
@@ -266,9 +266,9 @@ u16 WC7::move(u8 m) const
     return LittleEndian::convertTo<u16>(data + 0x7A + m * 2);
 }
 
-u16 WC7::species(void) const
+Species WC7::species(void) const
 {
-    return LittleEndian::convertTo<u16>(data + 0x82);
+    return Species{LittleEndian::convertTo<u16>(data + 0x82)};
 }
 
 u8 WC7::alternativeForm(void) const
@@ -286,17 +286,17 @@ std::string WC7::nickname(void) const
     return LittleEndian::convertTo<u16>(data + 0x86) != 0 ? StringUtils::getString(data, 0x86, 12) : "Pokemon Name";
 } // Localization::speciesName(species()); }
 
-u8 WC7::nature(void) const
+Nature WC7::nature(void) const
 {
-    return data[0xA0];
+    return Nature{data[0xA0]};
 }
 
-u8 WC7::gender(void) const
+Gender WC7::gender(void) const
 {
-    return data[0xA1];
+    return Gender{data[0xA1]};
 }
 
-u16 WC7::ability(void) const
+Ability WC7::ability(void) const
 {
     u8 abilitynum, type = abilityType();
 
@@ -307,7 +307,7 @@ u16 WC7::ability(void) const
     else
         abilitynum = 0;
 
-    return PersonalSMUSUM::ability(species(), abilitynum);
+    return PersonalSMUSUM::ability(u16(species()), abilitynum);
 }
 
 u8 WC7::abilityType(void) const
@@ -355,9 +355,9 @@ u8 WC7::iv(Stat index) const
     return data[0xAF + u8(index)];
 }
 
-u8 WC7::otGender(void) const
+Gender WC7::otGender(void) const
 {
-    return data[0xB5];
+    return Gender{data[0xB5]};
 }
 
 u16 WC7::additionalItem(void) const
@@ -428,7 +428,7 @@ bool WC7::oncePerDay(void) const
 
 u16 WC7::formSpecies(void) const
 {
-    u16 tmpSpecies = species();
+    u16 tmpSpecies = u16(species());
     u8 form        = alternativeForm();
     u8 formcount   = PersonalSMUSUM::formCount(tmpSpecies);
 

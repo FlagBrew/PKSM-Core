@@ -27,12 +27,13 @@
 #ifndef VALUECONVERTER_HPP
 #define VALUECONVERTER_HPP
 
+#include "enums/Species.hpp"
 #include "utils/coretypes.h"
 
 namespace SpeciesConverter
 {
-    u16 g3ToNational(u16 v);
-    u16 nationalToG3(u16 v);
+    Species g3ToNational(u16 v);
+    u16 nationalToG3(Species v);
 }
 
 namespace ItemConverter

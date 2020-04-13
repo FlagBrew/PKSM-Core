@@ -24,6 +24,7 @@
  *         reasonable ways as different from the original version.
  */
 
+#include "enums/Nature.hpp"
 #include "i18n_internal.hpp"
 
 namespace i18n
@@ -39,14 +40,14 @@ namespace i18n
 
     void exitNature(Language lang) { natures.erase(lang); }
 
-    const std::string& nature(Language lang, u8 val)
+    const std::string& nature(Language lang, Nature val)
     {
         checkInitialized(lang);
         if (natures.contains(lang))
         {
-            if (val < natures[lang].size())
+            if (size_t(val) < natures[lang].size())
             {
-                return natures[lang][val];
+                return natures[lang][size_t(val)];
             }
         }
         return emptyString;
@@ -61,4 +62,9 @@ namespace i18n
         }
         return emptyVector;
     }
+}
+
+const std::string& Nature_impl::localize(Language lang) const
+{
+    return i18n::nature(lang, *this);
 }

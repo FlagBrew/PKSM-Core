@@ -25,7 +25,6 @@
  */
 
 #include "pkx/PK4.hpp"
-#include "i18n/i18n.hpp"
 #include "pkx/PK3.hpp"
 #include "pkx/PK5.hpp"
 #include "pkx/PK6.hpp"
@@ -33,6 +32,8 @@
 #include "pkx/PK8.hpp"
 #include "sav/Sav.hpp"
 #include "utils/endian.hpp"
+#include "utils/flagUtil.hpp"
+#include "utils/i18n.hpp"
 #include "utils/utils.hpp"
 #include <algorithm>
 
@@ -333,13 +334,13 @@ void PK4::checksum(u16 v)
     LittleEndian::convertFrom<u16>(data + 0x06, v);
 }
 
-u16 PK4::species(void) const
+Species PK4::species(void) const
 {
-    return LittleEndian::convertTo<u16>(data + 0x08);
+    return Species{LittleEndian::convertTo<u16>(data + 0x08)};
 }
-void PK4::species(u16 v)
+void PK4::species(Species v)
 {
-    LittleEndian::convertFrom<u16>(data + 0x08, v);
+    LittleEndian::convertFrom<u16>(data + 0x08, u16(v));
 }
 
 u16 PK4::heldItem(void) const
@@ -387,13 +388,13 @@ void PK4::otFriendship(u8 v)
     data[0x14] = v;
 }
 
-u16 PK4::ability(void) const
+Ability PK4::ability(void) const
 {
-    return data[0x15];
+    return Ability{data[0x15]};
 }
-void PK4::ability(u16 v)
+void PK4::ability(Ability v)
 {
-    data[0x15] = v;
+    data[0x15] = u8(v);
 }
 
 void PK4::setAbility(u8 v)
@@ -535,13 +536,13 @@ void PK4::fatefulEncounter(bool v)
     data[0x40] = (u8)((data[0x40] & ~0x01) | (v ? 1 : 0));
 }
 
-u8 PK4::gender(void) const
+Gender PK4::gender(void) const
 {
-    return (data[0x40] >> 1) & 0x3;
+    return Gender{u8((data[0x40] >> 1) & 0x3)};
 }
-void PK4::gender(u8 g)
+void PK4::gender(Gender g)
 {
-    data[0x40] = u8((data[0x40] & ~0x06) | (g << 1));
+    data[0x40] = u8((data[0x40] & ~0x06) | (u8(g) << 1));
     if (shiny())
     {
         do
@@ -567,11 +568,11 @@ void PK4::alternativeForm(u16 v)
     data[0x40] = u8((data[0x40] & 0x07) | (v << 3));
 }
 
-u8 PK4::nature(void) const
+Nature PK4::nature(void) const
 {
-    return PID() % 25;
+    return Nature{u8(PID() % 25)};
 }
-void PK4::nature(u8 v)
+void PK4::nature(Nature v)
 {
     if (shiny())
     {
@@ -762,15 +763,15 @@ void PK4::pkrsStrain(u8 v)
     data[0x82] = (u8)((data[0x82] & 0xF) | v << 4);
 }
 
-u8 PK4::ball(void) const
+Ball PK4::ball(void) const
 {
-    return data[0x83] > data[0x86] ? data[0x83] : data[0x86];
+    return data[0x83] > data[0x86] ? Ball{data[0x83]} : Ball{data[0x86]};
 }
-void PK4::ball(u8 v)
+void PK4::ball(Ball v)
 {
-    data[0x83] = (u8)(v <= 0x10 ? v : 4);
-    if (v > 0x10 || ((version() == GameVersion::HG || version() == GameVersion::SS) && !fatefulEncounter()))
-        data[0x86] = (u8)(v <= 0x18 ? v : 4);
+    data[0x83] = u8(v <= Ball::Cherish ? v : Ball::Poke);
+    if (v > Ball::Cherish || ((version() == GameVersion::HG || version() == GameVersion::SS) && !fatefulEncounter()))
+        data[0x86] = u8(v <= Ball::Sport ? v : Ball::Poke);
     else
         data[0x86] = 0;
 }
@@ -784,13 +785,13 @@ void PK4::metLevel(u8 v)
     data[0x84] = (data[0x84] & 0x80) | v;
 }
 
-u8 PK4::otGender(void) const
+Gender PK4::otGender(void) const
 {
-    return data[0x84] >> 7;
+    return Gender{u8(data[0x84] >> 7)};
 }
-void PK4::otGender(u8 v)
+void PK4::otGender(Gender v)
 {
-    data[0x84] = (data[0x84] & ~0x80) | (v << 7);
+    data[0x84] = (data[0x84] & ~0x80) | (u8(v) << 7);
 }
 
 u8 PK4::encounterType(void) const
@@ -827,15 +828,20 @@ void PK4::refreshChecksum(void)
     checksum(chk);
 }
 
-u8 PK4::hpType(void) const
+Type PK4::hpType(void) const
 {
-    return 15 *
-           ((iv(Stat::HP) & 1) + 2 * (iv(Stat::ATK) & 1) + 4 * (iv(Stat::DEF) & 1) + 8 * (iv(Stat::SPD) & 1) + 16 * (iv(Stat::SPATK) & 1) +
-               32 * (iv(Stat::SPDEF) & 1)) /
-           63;
+    return Type{u8((15 *
+                       ((iv(Stat::HP) & 1) + 2 * (iv(Stat::ATK) & 1) + 4 * (iv(Stat::DEF) & 1) + 8 * (iv(Stat::SPD) & 1) +
+                           16 * (iv(Stat::SPATK) & 1) + 32 * (iv(Stat::SPDEF) & 1)) /
+                       63) +
+                   1)};
 }
-void PK4::hpType(u8 v)
+void PK4::hpType(Type v)
 {
+    if (v <= Type::Normal || v >= Type::Fairy)
+    {
+        return;
+    }
     static constexpr u16 hpivs[16][6] = {
         {1, 1, 0, 0, 0, 0}, // Fighting
         {0, 0, 0, 1, 0, 0}, // Flying
@@ -857,7 +863,7 @@ void PK4::hpType(u8 v)
 
     for (u8 i = 0; i < 6; i++)
     {
-        iv(Stat(i), (iv(Stat(i)) & 0x1E) + hpivs[v][i]);
+        iv(Stat(i), (iv(Stat(i)) & 0x1E) + hpivs[u8(v) - 1][i]);
     }
 }
 
@@ -908,7 +914,7 @@ void PK4::shiny(bool v)
 
 u16 PK4::formSpecies(void) const
 {
-    u16 tmpSpecies = species();
+    u16 tmpSpecies = u16(species());
     u8 form        = alternativeForm();
     u8 formcount   = PersonalDPPtHGSS::formCount(tmpSpecies);
 
@@ -961,9 +967,9 @@ u16 PK4::stat(Stat stat) const
     else
         calc = 5 + (2 * basestat + iv(stat) + ev(stat) / 4) * level() / 100;
 
-    if (nature() / 5 + 1 == u8(stat))
+    if (u8(nature()) / 5 + 1 == u8(stat))
         mult++;
-    if (nature() % 5 + 1 == u8(stat))
+    if (u8(nature()) % 5 + 1 == u8(stat))
         mult--;
     return calc * mult / 10;
 }
@@ -1097,7 +1103,7 @@ std::unique_ptr<PK3> PK4::convertToG3(Sav&) const
         }
     }
 
-    std::string name = i18n::species(language(), species());
+    std::string name = species().localize(language());
     pk3->nickname((egg() || !nicknamed()) ? StringUtils::toUpper(name) : nickname());
 
     pk3->otName(otName());
@@ -1135,7 +1141,7 @@ std::unique_ptr<PK5> PK4::convertToG5(Sav&) const
     pk5->metDate(Date::today());
 
     // Force normal Arceus form
-    if (pk5->species() == 493)
+    if (pk5->species() == Species::Arceus)
     {
         pk5->alternativeForm(0);
     }
@@ -1146,8 +1152,8 @@ std::unique_ptr<PK5> PK4::convertToG5(Sav&) const
 
     // Check met location
     pk5->metLocation(pk5->originGen4() && pk5->fatefulEncounter() && std::find(beasts, beasts + 4, pk5->species()) != beasts + 4
-                         ? (pk5->species() == 251 ? 30010 : 30012) // Celebi : Beast
-                         : 30001);                                 // Pokétransfer (not Crown)
+                         ? (pk5->species() == Species::Celebi ? 30010 : 30012) // Celebi : Beast
+                         : 30001);                                             // Pokétransfer (not Crown)
 
     pk5->ball(ball());
 

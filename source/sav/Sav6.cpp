@@ -25,9 +25,9 @@
  */
 
 #include "sav/Sav6.hpp"
-#include "i18n/i18n.hpp"
 #include "pkx/PK6.hpp"
 #include "utils/endian.hpp"
+#include "utils/i18n.hpp"
 #include "utils/random.hpp"
 #include "utils/utils.hpp"
 #include "wcx/WC6.hpp"
@@ -59,13 +59,13 @@ void Sav6::version(GameVersion v)
     data[TrainerCard + 4] = u8(v);
 }
 
-u8 Sav6::gender(void) const
+Gender Sav6::gender(void) const
 {
-    return data[TrainerCard + 5];
+    return Gender{data[TrainerCard + 5]};
 }
-void Sav6::gender(u8 v)
+void Sav6::gender(Gender v)
 {
-    data[TrainerCard + 5] = v;
+    data[TrainerCard + 5] = u8(v);
 }
 
 u8 Sav6::subRegion(void) const
@@ -500,17 +500,15 @@ int Sav6::dexFormIndex(int species, int formct) const
 
 void Sav6::dex(const PKX& pk)
 {
-    if (pk.species() == 0)
-        return;
-    if (pk.species() > 721)
+    if (pk.species() == Species::None || pk.species() > maxSpecies())
         return;
 
     const int brSize = 0x60;
-    int bit          = pk.species() - 1;
+    int bit          = u16(pk.species()) - 1;
     int lang         = u8(pk.language()) - 1;
     if (lang > 5)
-        lang--;                     // 0-6 language vals
-    int gender   = pk.gender() % 2; // genderless -> male
+        lang--;                         // 0-6 language vals
+    int gender   = u8(pk.gender()) % 2; // genderless -> male
     int shiny    = pk.shiny() ? 1 : 0;
     int shiftoff = brSize * (1 + gender + 2 * shiny); // after the Owned region
     int bd       = bit >> 3;                          // div8
@@ -542,12 +540,12 @@ void Sav6::dex(const PKX& pk)
     data[PokeDexLanguageFlags + (bit * 7 + lang) / 8] |= (u8)(1 << ((bit * 7 + lang) % 8));
 
     // Set DexNav count (only if not encountered previously)
-    if (game == Game::ORAS && LittleEndian::convertTo<u16>(&data[EncounterCount + (pk.species() - 1) * 2]) == 0)
-        LittleEndian::convertFrom<u16>(&data[EncounterCount + (pk.species() - 1) * 2], 1);
+    if (game == Game::ORAS && LittleEndian::convertTo<u16>(&data[EncounterCount + (u16(pk.species()) - 1) * 2]) == 0)
+        LittleEndian::convertFrom<u16>(&data[EncounterCount + (u16(pk.species()) - 1) * 2], 1);
 
     // Set Form flags
-    int fc = PersonalXYORAS::formCount(pk.species());
-    int f  = dexFormIndex(pk.species(), fc);
+    int fc = PersonalXYORAS::formCount(u16(pk.species()));
+    int f  = dexFormIndex(u16(pk.species()), fc);
     if (f < 0)
         return;
 
@@ -574,7 +572,7 @@ void Sav6::dex(const PKX& pk)
 int Sav6::dexSeen(void) const
 {
     int ret = 0;
-    for (int i = 1; i <= maxSpecies(); i++)
+    for (int i = 1; i <= u16(maxSpecies()); i++)
     {
         int bitIndex = (i - 1) & 7;
         for (int j = 0; j < 4; j++) // All seen flags: gender & shinies
@@ -593,7 +591,7 @@ int Sav6::dexSeen(void) const
 int Sav6::dexCaught(void) const
 {
     int ret = 0;
-    for (int i = 1; i <= maxSpecies(); i++)
+    for (int i = 1; i <= u16(maxSpecies()); i++)
     {
         int bitIndex = (i - 1) & 7;
         int ofs      = PokeDex + 0x8 + ((i - 1) >> 3);
@@ -655,7 +653,7 @@ std::unique_ptr<PKX> Sav6::emptyPkm() const
     return PKX::getPKM<Generation::SIX>(nullptr);
 }
 
-int Sav6::emptyGiftLocation(void) const
+int Sav6::currentGiftAmount(void) const
 {
     u8 t;
     bool empty;
@@ -678,27 +676,7 @@ int Sav6::emptyGiftLocation(void) const
         }
     }
 
-    return !empty ? 23 : t;
-}
-
-std::vector<Sav::giftData> Sav6::currentGifts(void) const
-{
-    std::vector<Sav::giftData> ret;
-    u8* wonderCards = data.get() + WondercardData;
-    for (int i = 0; i < emptyGiftLocation(); i++)
-    {
-        if (*(wonderCards + i * WC6::length + 0x51) == 0)
-        {
-            ret.emplace_back(StringUtils::getString(wonderCards + i * WC6::length, 0x2, 36), "",
-                LittleEndian::convertTo<u16>(wonderCards + i * WC6::length + 0x82), *(wonderCards + i * WC6::length + 0x84),
-                *(wonderCards + i * WC6::length + 0xA1));
-        }
-        else
-        {
-            ret.emplace_back(StringUtils::getString(wonderCards + i * WC6::length, 0x2, 36), "", -1, -1, -1);
-        }
-    }
-    return ret;
+    return t;
 }
 
 std::unique_ptr<WCX> Sav6::mysteryGift(int pos) const
@@ -761,7 +739,7 @@ const std::set<int>& Sav6::availableItems(void) const
 {
     if (items.empty())
     {
-        fill_set(items, 0, maxItem());
+        fill_set_consecutive(items, 0, maxItem());
     }
     return items;
 }
@@ -770,34 +748,34 @@ const std::set<int>& Sav6::availableMoves(void) const
 {
     if (moves.empty())
     {
-        fill_set(moves, 0, maxMove());
+        fill_set_consecutive(moves, 0, maxMove());
     }
     return moves;
 }
 
-const std::set<int>& Sav6::availableSpecies(void) const
+const std::set<Species>& Sav6::availableSpecies(void) const
 {
     if (species.empty())
     {
-        fill_set(species, 1, maxSpecies());
+        fill_set_consecutive<Species>(species, Species::Bulbasaur, maxSpecies());
     }
     return species;
 }
 
-const std::set<int>& Sav6::availableAbilities(void) const
+const std::set<Ability>& Sav6::availableAbilities(void) const
 {
     if (abilities.empty())
     {
-        fill_set(abilities, 1, maxAbility());
+        fill_set_consecutive<Ability>(abilities, Ability::Stench, maxAbility());
     }
     return abilities;
 }
 
-const std::set<int>& Sav6::availableBalls(void) const
+const std::set<::Ball>& Sav6::availableBalls(void) const
 {
     if (balls.empty())
     {
-        fill_set(balls, 1, maxBall());
+        fill_set_consecutive<::Ball>(balls, Ball::Master, maxBall());
     }
     return balls;
 }

@@ -28,8 +28,8 @@
 #define GENERATION_HPP
 
 #include "utils/coretypes.h"
-#include "utils/endian.hpp"
 #include <string>
+#include <type_traits>
 
 class Generation_impl
 {
@@ -37,19 +37,20 @@ class Generation_impl
 
 private:
     // values MUST remain consistent
-    enum class Gen : u32
+    enum class GenerationEnum : u32
     {
-        THREE  = 6,
-        FOUR   = 0,
-        FIVE   = 1,
-        SIX    = 2,
-        SEVEN  = 3,
-        LGPE   = 4,
-        EIGHT  = 5,
+        THREE = 6,
+        FOUR  = 0,
+        FIVE  = 1,
+        SIX   = 2,
+        SEVEN = 3,
+        LGPE  = 4,
+        EIGHT = 5,
+
         UNUSED = 0xFFFFFFFF
     } v;
 
-    constexpr explicit Generation_impl(Gen v) : v(v) {}
+    constexpr explicit Generation_impl(GenerationEnum v) : v(v) {}
     constexpr Generation_impl(const Generation_impl&) = default;
     constexpr Generation_impl(Generation_impl&&)      = default;
     constexpr Generation_impl& operator=(const Generation_impl&) = default;
@@ -59,83 +60,83 @@ public:
     template <typename T>
     constexpr explicit operator T() const noexcept
     {
-        static_assert(std::is_integral_v<T> && sizeof(T) >= sizeof(Gen));
+        static_assert(std::is_integral_v<T>);
         return T(v);
     }
     constexpr explicit operator const char*() const noexcept
     {
         switch (v)
         {
-            case Gen::LGPE:
+            case GenerationEnum::LGPE:
                 return "LGPE";
-            case Gen::THREE:
+            case GenerationEnum::THREE:
                 return "3";
-            case Gen::FOUR:
+            case GenerationEnum::FOUR:
                 return "4";
-            case Gen::FIVE:
+            case GenerationEnum::FIVE:
                 return "5";
-            case Gen::SIX:
+            case GenerationEnum::SIX:
                 return "6";
-            case Gen::SEVEN:
+            case GenerationEnum::SEVEN:
                 return "7";
-            case Gen::EIGHT:
+            case GenerationEnum::EIGHT:
                 return "8";
-            case Gen::UNUSED:
+            case GenerationEnum::UNUSED:
                 return "INVALID";
         }
         return "INVALID";
     }
     constexpr explicit operator std::string_view() const { return std::string_view{(const char*)*this}; }
     explicit operator std::string() const { return std::string{(const char*)*this}; }
-    constexpr operator Gen() const noexcept { return v; }
+    constexpr operator GenerationEnum() const noexcept { return v; }
 
     constexpr bool operator<(const Generation_impl& other) const noexcept
     {
         switch (v)
         {
-            case Gen::THREE:
-                if (other.v == Gen::FOUR)
+            case GenerationEnum::THREE:
+                if (other.v == GenerationEnum::FOUR)
                 {
                     return true;
                 }
                 // falls through
-            case Gen::FOUR:
-                if (other.v == Gen::FIVE)
+            case GenerationEnum::FOUR:
+                if (other.v == GenerationEnum::FIVE)
                 {
                     return true;
                 }
                 // falls through
-            case Gen::FIVE:
-                if (other.v == Gen::SIX)
+            case GenerationEnum::FIVE:
+                if (other.v == GenerationEnum::SIX)
                 {
                     return true;
                 }
                 // falls through
-            case Gen::SIX:
-                if (other.v == Gen::SEVEN)
+            case GenerationEnum::SIX:
+                if (other.v == GenerationEnum::SEVEN)
                 {
                     return true;
                 }
                 // falls through
-            case Gen::SEVEN:
-                if (other.v == Gen::LGPE)
+            case GenerationEnum::SEVEN:
+                if (other.v == GenerationEnum::LGPE)
                 {
                     return true;
                 }
                 // falls through
-            case Gen::LGPE:
-                if (other.v == Gen::EIGHT)
+            case GenerationEnum::LGPE:
+                if (other.v == GenerationEnum::EIGHT)
                 {
                     return true;
                 }
                 // falls through
-            case Gen::EIGHT:
-                if (other.v == Gen::UNUSED)
+            case GenerationEnum::EIGHT:
+                if (other.v == GenerationEnum::UNUSED)
                 {
                     return true;
                 }
                 // falls through
-            case Gen::UNUSED:
+            case GenerationEnum::UNUSED:
             default:
                 return false;
         }
@@ -162,16 +163,16 @@ private:
     Generation_impl impl;
 
 public:
-    using EnumType = Generation_impl::Gen;
-    constexpr Generation() noexcept : impl(Generation_impl::Gen::UNUSED) {}
+    using EnumType = Generation_impl::GenerationEnum;
+    constexpr Generation() noexcept : impl(EnumType::UNUSED) {}
     constexpr Generation(const Generation_impl& impl) noexcept : impl(impl) {}
-    constexpr explicit Generation(u32 v) noexcept : impl(Generation_impl::Gen{v}) {}
+    constexpr explicit Generation(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v}) {}
     template <typename T>
     constexpr explicit operator T() const noexcept
     {
         return T(impl);
     }
-    constexpr operator Generation_impl::Gen() const noexcept { return (Generation_impl::Gen)impl; }
+    constexpr operator EnumType() const noexcept { return (EnumType)impl; }
 
     constexpr explicit operator const char*() const noexcept { return (const char*)impl; }
     constexpr explicit operator std::string_view() const { return (std::string_view)impl; }
@@ -228,54 +229,14 @@ public:
     constexpr bool operator==(const Generation_impl& other) const noexcept { return impl == other; }
     constexpr bool operator!=(const Generation_impl& other) const noexcept { return impl != other; }
 
-    static constexpr Generation_impl THREE{Generation_impl::Gen::THREE};
-    static constexpr Generation_impl FOUR{Generation_impl::Gen::FOUR};
-    static constexpr Generation_impl FIVE{Generation_impl::Gen::FIVE};
-    static constexpr Generation_impl SIX{Generation_impl::Gen::SIX};
-    static constexpr Generation_impl SEVEN{Generation_impl::Gen::SEVEN};
-    static constexpr Generation_impl LGPE{Generation_impl::Gen::LGPE};
-    static constexpr Generation_impl EIGHT{Generation_impl::Gen::EIGHT};
-    static constexpr Generation_impl UNUSED{Generation_impl::Gen::UNUSED};
+    static constexpr Generation_impl THREE{EnumType::THREE};
+    static constexpr Generation_impl FOUR{EnumType::FOUR};
+    static constexpr Generation_impl FIVE{EnumType::FIVE};
+    static constexpr Generation_impl SIX{EnumType::SIX};
+    static constexpr Generation_impl SEVEN{EnumType::SEVEN};
+    static constexpr Generation_impl LGPE{EnumType::LGPE};
+    static constexpr Generation_impl EIGHT{EnumType::EIGHT};
+    static constexpr Generation_impl UNUSED{EnumType::UNUSED};
 };
-
-template <>
-#if __cplusplus > 201703L
-constexpr Generation LittleEndian::convertTo<Generation>(const u8* data)
-#else
-Generation LittleEndian::convertTo<Generation>(const u8* data)
-#endif
-{
-    return Generation{LittleEndian::convertTo<u32>(data)};
-}
-
-template <>
-#if __cplusplus > 201703L
-constexpr void LittleEndian::convertFrom<Generation>(u8* data, const Generation& gen)
-#else
-void LittleEndian::convertFrom<Generation>(const u8* data, const Generation& gen)
-#endif
-{
-    LittleEndian::convertFrom<u32>(data, (u32)gen);
-}
-
-template <>
-#if __cplusplus > 201703L
-constexpr Generation BigEndian::convertTo<Generation>(const u8* data)
-#else
-Generation BigEndian::convertTo<Generation>(const u8* data)
-#endif
-{
-    return Generation{BigEndian::convertTo<u32>(data)};
-}
-
-template <>
-#if __cplusplus > 201703L
-constexpr void BigEndian::convertFrom<Generation>(u8* data, const Generation& gen)
-#else
-void BigEndian::convertFrom<Generation>(const u8* data, const Generation& gen)
-#endif
-{
-    BigEndian::convertFrom<u32>(data, (u32)gen);
-}
 
 #endif

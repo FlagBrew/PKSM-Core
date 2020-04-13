@@ -25,23 +25,24 @@
  */
 
 #include "utils/ValueConverter.hpp"
+#include "enums/Species.hpp"
 #include "utils/g3values.h"
 #include <algorithm>
 
-u16 SpeciesConverter::g3ToNational(u16 v)
+Species SpeciesConverter::g3ToNational(u16 v)
 {
     if (v < g3ToSpecies.size())
     {
-        return g3ToSpecies[v];
+        return Species{g3ToSpecies[v]};
     }
-    return 0;
+    return Species::None;
 }
 
-u16 SpeciesConverter::nationalToG3(u16 v)
+u16 SpeciesConverter::nationalToG3(Species v)
 {
-    if (v < speciesToG3.size())
+    if (u16(v) < speciesToG3.size())
     {
-        return speciesToG3[v];
+        return speciesToG3[u16(v)];
     }
     return 0;
 }

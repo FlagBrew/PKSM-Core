@@ -24,6 +24,7 @@
  *         reasonable ways as different from the original version.
  */
 
+#include "enums/Species.hpp"
 #include "i18n_internal.hpp"
 
 namespace i18n
@@ -39,14 +40,14 @@ namespace i18n
 
     void exitSpecies(Language lang) { speciess.erase(lang); }
 
-    const std::string& species(Language lang, u16 val)
+    const std::string& species(Language lang, Species val)
     {
         checkInitialized(lang);
         if (speciess.contains(lang))
         {
-            if (val < speciess[lang].size())
+            if (size_t(val) < speciess[lang].size())
             {
-                return speciess[lang][val];
+                return speciess[lang][size_t(val)];
             }
         }
         return emptyString;
@@ -61,4 +62,9 @@ namespace i18n
         }
         return emptyVector;
     }
+}
+
+const std::string& Species_impl::localize(Language lang) const
+{
+    return i18n::species(lang, *this);
 }

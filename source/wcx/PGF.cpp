@@ -181,9 +181,9 @@ bool PGF::multiObtainable(void) const
     return flags() == 1;
 }
 
-u8 PGF::ball(void) const
+Ball PGF::ball(void) const
 {
-    return data[0x0E];
+    return Ball{data[0x0E]};
 }
 
 u16 PGF::heldItem(void) const
@@ -216,14 +216,14 @@ u16 PGF::move(u8 index) const
     return LittleEndian::convertTo<u16>(data + 0x12 + index * 2);
 }
 
-u16 PGF::species(void) const
+Species PGF::species(void) const
 {
-    return LittleEndian::convertTo<u16>(data + 0x1A);
+    return Species{LittleEndian::convertTo<u16>(data + 0x1A)};
 }
 
-u8 PGF::gender(void) const
+Gender PGF::gender(void) const
 {
-    return data[0x35];
+    return Gender{data[0x35]};
 }
 
 std::string PGF::otName(void) const
@@ -269,9 +269,9 @@ std::string PGF::nickname(void) const
     return firstChar != 0xFFFF ? StringUtils::getString(data, 0x1E, 11, u'\uFFFF') : "Pokemon Name";
 }
 
-u8 PGF::nature(void) const
+Nature PGF::nature(void) const
 {
-    return data[0x34];
+    return Nature{data[0x34]};
 }
 
 u8 PGF::abilityType(void) const
@@ -279,7 +279,7 @@ u8 PGF::abilityType(void) const
     return data[0x36];
 }
 
-u16 PGF::ability(void) const
+Ability PGF::ability(void) const
 {
     u8 abilitynum, type = abilityType();
 
@@ -290,7 +290,7 @@ u16 PGF::ability(void) const
     else
         abilitynum = 0;
 
-    return PersonalBWB2W2::ability(species(), abilitynum);
+    return PersonalBWB2W2::ability(u16(species()), abilitynum);
 }
 
 u16 PGF::eggLocation(void) const
@@ -325,7 +325,7 @@ bool PGF::egg(void) const
 
 u16 PGF::formSpecies(void) const
 {
-    u16 tmpSpecies = species();
+    u16 tmpSpecies = u16(species());
     u8 form        = alternativeForm();
     u8 formcount   = PersonalBWB2W2::formCount(tmpSpecies);
 

@@ -24,25 +24,47 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef Game_HPP
-#define Game_HPP
+#include "enums/Ribbon.hpp"
+#include "i18n_internal.hpp"
 
-enum class Game
+namespace i18n
 {
-    DP,
-    Pt,
-    HGSS,
-    BW,
-    B2W2,
-    XY,
-    ORAS,
-    SM,
-    USUM,
-    LGPE,
-    SWSH,
-    RS,
-    E,
-    FRLG
-};
+    std::unordered_map<Language, std::vector<std::string>> ribbons;
 
-#endif
+    void initRibbon(Language lang)
+    {
+        std::vector<std::string> vec;
+        load(lang, "/ribbons.txt", vec);
+        ribbons.insert_or_assign(lang, std::move(vec));
+    }
+
+    void exitRibbon(Language lang) { ribbons.erase(lang); }
+
+    const std::string& species(Language lang, Ribbon val)
+    {
+        checkInitialized(lang);
+        if (ribbons.contains(lang))
+        {
+            if (size_t(val) < ribbons[lang].size())
+            {
+                return ribbons[lang][size_t(val)];
+            }
+        }
+        return emptyString;
+    }
+
+    const std::vector<std::string>& rawRibbons(Language lang)
+    {
+        checkInitialized(lang);
+        if (ribbons.contains(lang))
+        {
+            return ribbons[lang];
+        }
+        return emptyVector;
+    }
+}
+
+const std::string& Ribbon_impl::localize(Language lang) const
+{
+    return i18n::species(lang, *this);
+}

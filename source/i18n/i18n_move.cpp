@@ -28,7 +28,7 @@
 
 namespace i18n
 {
-        std::unordered_map<Language, std::vector<std::string>> moves;
+    std::unordered_map<Language, std::vector<std::string>> moves;
 
     void initMove(Language lang)
     {

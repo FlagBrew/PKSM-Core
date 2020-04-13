@@ -224,13 +224,13 @@ void Sav::fixParty()
     for (int i = 5; i > 0; i--)
     {
         auto checkPKM = pkm(i);
-        if (checkPKM->species() == 0)
+        if (checkPKM->species() == Species::None)
         {
             numPkm--;
             continue;
         }
         auto prevPKM = pkm(i - 1);
-        if (checkPKM->species() != 0 && prevPKM->species() == 0)
+        if (checkPKM->species() != Species::None && prevPKM->species() == Species::None)
         {
             pkm(*checkPKM, i - 1);
             pkm(*prevPKM, i);
@@ -299,16 +299,16 @@ Sav::BadTransferReason Sav::invalidTransferReason(const PKX& pk) const
     {
         return BadTransferReason::MOVE;
     }
-    else if (availableSpecies().count((int)pk.species()) == 0)
+    else if (availableSpecies().count(pk.species()) == 0)
     {
         return BadTransferReason::SPECIES;
     }
-    else if (pk.alternativeForm() >= formCount(pk.species()) &&
-             !((pk.species() == 664 || pk.species() == 665) && pk.alternativeForm() <= formCount(666)))
+    else if (pk.alternativeForm() >= formCount(u16(pk.species())) &&
+             !((pk.species() == Species::Scatterbug || pk.species() == Species::Spewpa) && pk.alternativeForm() <= formCount(u16(Species::Vivillon))))
     {
         return BadTransferReason::FORM;
     }
-    else if (availableAbilities().count((int)pk.ability()) == 0)
+    else if (availableAbilities().count(pk.ability()) == 0)
     {
         return BadTransferReason::ABILITY;
     }
@@ -316,7 +316,7 @@ Sav::BadTransferReason Sav::invalidTransferReason(const PKX& pk) const
     {
         return BadTransferReason::ITEM;
     }
-    else if (availableBalls().count((int)pk.ball()) == 0)
+    else if (availableBalls().count(pk.ball()) == 0)
     {
         return BadTransferReason::BALL;
     }

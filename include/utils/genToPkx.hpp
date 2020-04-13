@@ -27,7 +27,7 @@
 #ifndef GENTOPKX_HPP
 #define GENTOPKX_HPP
 
-#include "utils/generation.hpp"
+#include "enums/Generation.hpp"
 
 class PK3;
 class PK4;

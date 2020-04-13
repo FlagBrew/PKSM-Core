@@ -25,9 +25,9 @@
  */
 
 #include "sav/SavLGPE.hpp"
-#include "i18n/i18n.hpp"
 #include "pkx/PB7.hpp"
 #include "utils/endian.hpp"
+#include "utils/i18n.hpp"
 #include "utils/random.hpp"
 #include "utils/utils.hpp"
 #include "wcx/WB7.hpp"
@@ -215,14 +215,14 @@ void SavLGPE::version(GameVersion v)
     data[0x1004] = u8(v);
 }
 
-u8 SavLGPE::gender() const
+Gender SavLGPE::gender() const
 {
-    return data[0x1005];
+    return Gender{data[0x1005]};
 }
 
-void SavLGPE::gender(u8 v)
+void SavLGPE::gender(Gender v)
 {
-    data[0x1005] = v;
+    data[0x1005] = u8(v);
 }
 
 Language SavLGPE::language() const
@@ -342,7 +342,7 @@ void SavLGPE::pkm(const PKX& pk, u8 slot)
     {
         u32 off     = partyOffset(slot);
         u16 newSlot = partyBoxSlot(slot);
-        if (pk.species() == 0)
+        if (pk.species() == Species::None)
         {
             if (off != 0)
             {
@@ -436,17 +436,17 @@ int SavLGPE::dexFormIndex(int species, int formct, int start) const
     return f > formct ? -1 : formindex;
 }
 
-bool SavLGPE::sanitizeFormsToIterate(int species, int& fs, int& fe, int formIn) const
+bool SavLGPE::sanitizeFormsToIterate(Species species, int& fs, int& fe, int formIn) const
 {
     switch (species)
     {
-        case 20:  // Raticate
-        case 105: // Marowak
+        case Species::Raticate: // 20:
+        case Species::Marowak:  // 105:
             fs = 0;
             fe = 1;
             return true;
         default:
-            int count = dexFormCount(species);
+            int count = dexFormCount(u16(species));
             fs = fe = 0;
             return count < formIn;
     }
@@ -513,7 +513,7 @@ int SavLGPE::getDexFlags(int index, int baseSpecies) const
 
 void SavLGPE::dex(const PKX& pk)
 {
-    int n                    = pk.species();
+    int n                    = u16(pk.species());
     int MaxSpeciesID         = 809;
     int PokeDex              = 0x2A00;
     int PokeDexLanguageFlags = PokeDex + 0x550;
@@ -524,7 +524,7 @@ void SavLGPE::dex(const PKX& pk)
     int bit    = n - 1;
     int bd     = bit >> 3;
     int bm     = bit & 7;
-    int gender = pk.gender() % 2;
+    int gender = u8(pk.gender()) % 2;
     int shiny  = pk.shiny() ? 1 : 0;
     if (n == 351)
         shiny = 0;
@@ -550,7 +550,7 @@ void SavLGPE::dex(const PKX& pk)
     int formend   = formstart;
 
     int fs = 0, fe = 0;
-    if (sanitizeFormsToIterate(n, fs, fe, formstart))
+    if (sanitizeFormsToIterate(Species{u16(n)}, fs, fe, formstart))
     {
         formstart = fs;
         formend   = fe;
@@ -590,20 +590,20 @@ void SavLGPE::dex(const PKX& pk)
 int SavLGPE::dexSeen(void) const
 {
     int ret = 0;
-    for (int species : availableSpecies())
+    for (const auto& species : availableSpecies())
     {
-        int forms = formCount(species);
+        int forms = formCount(u16(species));
         for (int form = 0; form < forms; form++)
         {
-            int dexForms = form == 0 ? -1 : dexFormIndex(species, forms, maxSpecies() - 1);
+            int dexForms = form == 0 ? -1 : dexFormIndex(u16(species), forms, u16(maxSpecies()) - 1);
 
-            int index = species - 1;
+            int index = u16(species) - 1;
             if (dexForms >= 0)
             {
                 index = dexForms + form;
             }
 
-            if (getDexFlags(index, species) > 0)
+            if (getDexFlags(index, u16(species)) > 0)
             {
                 ret++;
                 break;
@@ -616,9 +616,9 @@ int SavLGPE::dexSeen(void) const
 int SavLGPE::dexCaught(void) const
 {
     int ret = 0;
-    for (int species : availableSpecies())
+    for (const auto& species : availableSpecies())
     {
-        if (data[PokeDex + 0x88 + (species - 1) / 8] & (1 << ((species - 1) % 8)))
+        if (data[PokeDex + 0x88 + (u16(species) - 1) / 8] & (1 << ((u16(species) - 1) % 8)))
         {
             ret++;
         }
@@ -682,17 +682,17 @@ void SavLGPE::mysteryGift(WCX& wc, int&)
                 pb7->move(i, wb7->move(i));
                 pb7->relearnMove(i, wb7->move(i));
             }
-            if (wb7->nature() == 255)
+            if (wb7->nature() == Nature::INVALID)
             {
-                pb7->nature(randomNumbers() % 25);
+                pb7->nature(Nature{u8(randomNumbers() % 25)});
             }
             else
             {
                 pb7->nature(wb7->nature());
             }
-            if (wb7->gender() == 3)
+            if (u8(wb7->gender()) == 3) // Invalid gender value
             {
-                pb7->gender(randomNumbers() % 3);
+                pb7->gender(PKX::genderFromRatio(randomNumbers(), PersonalLGPE::gender(u16(wb7->species()))));
             }
             else
             {
@@ -722,12 +722,12 @@ void SavLGPE::mysteryGift(WCX& wc, int&)
             }
             if (wb7->nickname((Language)language()).length() == 0)
             {
-                pb7->nickname(i18n::species(language(), pb7->species()));
+                pb7->nickname(pb7->species().localize(language()));
             }
             else
             {
                 pb7->nickname(wb7->nickname((Language)language()));
-                pb7->nicknamed(pb7->nickname() != i18n::species(language(), pb7->species()));
+                pb7->nicknamed(pb7->nickname() != pb7->species().localize(language()));
             }
             if (wb7->otName((Language)language()).length() == 0)
             {
@@ -771,7 +771,7 @@ void SavLGPE::mysteryGift(WCX& wc, int&)
                 }
             }
 
-            if (wb7->otGender() == 3)
+            if (u16(wb7->otGender()) == 3)
             {
                 pb7->TID(TID());
                 pb7->SID(SID());
@@ -813,7 +813,7 @@ void SavLGPE::mysteryGift(WCX& wc, int&)
             {
                 pb7->egg(true);
                 pb7->eggDate(wb7->date());
-                pb7->nickname(i18n::species(language(), pb7->species()));
+                pb7->nickname(pb7->species().localize(language()));
                 pb7->nicknamed(true);
             }
 
@@ -1009,34 +1009,34 @@ const std::set<int>& SavLGPE::availableMoves(void) const
     return moves;
 }
 
-const std::set<int>& SavLGPE::availableSpecies(void) const
+const std::set<Species>& SavLGPE::availableSpecies(void) const
 {
     if (species.empty())
     {
-        for (int i = 1; i <= 151; i++)
+        for (u16 i = 1; i <= 151; i++)
         {
-            species.insert(i);
+            species.insert(Species{i});
         }
-        species.insert(808);
-        species.insert(809);
+        species.insert(Species{808});
+        species.insert(Species{809});
     }
     return species;
 }
 
-const std::set<int>& SavLGPE::availableAbilities(void) const
+const std::set<Ability>& SavLGPE::availableAbilities(void) const
 {
     if (abilities.empty())
     {
-        fill_set(abilities, 1, maxAbility());
+        fill_set_consecutive<Ability>(abilities, Ability::Stench, maxAbility());
     }
     return abilities;
 }
 
-const std::set<int>& SavLGPE::availableBalls(void) const
+const std::set<::Ball>& SavLGPE::availableBalls(void) const
 {
     if (balls.empty())
     {
-        fill_set(balls, 1, maxBall());
+        fill_set_consecutive<::Ball>(balls, Ball::Master, maxBall());
     }
     return balls;
 }

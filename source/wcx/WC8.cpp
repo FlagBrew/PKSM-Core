@@ -393,9 +393,9 @@ u32 WC8::PID(void) const
     return LittleEndian::convertTo<u32>(data + 0x2C);
 }
 
-u8 WC8::ball(void) const
+Ball WC8::ball(void) const
 {
-    return data[0x22C];
+    return Ball{data[0x22C]};
 }
 
 u16 WC8::heldItem(void) const
@@ -413,9 +413,9 @@ u16 WC8::relearnMove(u8 index) const
     return LittleEndian::convertTo<u16>(data + 0x238 + index * 2);
 }
 
-u16 WC8::species(void) const
+Species WC8::species(void) const
 {
-    return LittleEndian::convertTo<u16>(data + 0x240);
+    return Species{LittleEndian::convertTo<u16>(data + 0x240)};
 }
 
 u8 WC8::alternativeForm(void) const
@@ -423,9 +423,9 @@ u8 WC8::alternativeForm(void) const
     return data[0x242];
 }
 
-u8 WC8::gender(void) const
+Gender WC8::gender(void) const
 {
-    return data[0x243];
+    return Gender{data[0x243]};
 }
 
 u8 WC8::level(void) const
@@ -438,9 +438,9 @@ bool WC8::egg(void) const
     return data[0x245] == 1;
 }
 
-u8 WC8::nature(void) const
+Nature WC8::nature(void) const
 {
-    return data[0x246];
+    return Nature{data[0x246]};
 }
 
 u8 WC8::abilityType(void) const
@@ -448,7 +448,7 @@ u8 WC8::abilityType(void) const
     return data[0x247];
 }
 
-u16 WC8::ability(void) const
+Ability WC8::ability(void) const
 {
     u8 abilitynum, type = abilityType();
 
@@ -459,7 +459,7 @@ u16 WC8::ability(void) const
     else
         abilitynum = 0;
 
-    return PersonalSWSH::ability(species(), abilitynum);
+    return PersonalSWSH::ability(u16(species()), abilitynum);
 }
 
 u8 WC8::metLevel(void) const
@@ -487,9 +487,9 @@ u8 WC8::iv(Stat index) const
     return data[0x26C + u8(index)];
 }
 
-u8 WC8::otGender(void) const
+Gender WC8::otGender(void) const
 {
-    return data[0x272];
+    return Gender{data[0x272]};
 }
 
 u8 WC8::ev(Stat index) const
@@ -575,7 +575,7 @@ bool WC8::used() const
 
 u16 WC8::formSpecies(void) const
 {
-    u16 tmpSpecies = species();
+    u16 tmpSpecies = u16(species());
     u8 form        = alternativeForm();
     u8 formcount   = PersonalSWSH::formCount(tmpSpecies);
 

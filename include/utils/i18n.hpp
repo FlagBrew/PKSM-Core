@@ -27,11 +27,18 @@
 #ifndef I18N_HPP
 #define I18N_HPP
 
-#include "i18n/Language.hpp"
+class Ability;
+class Ball;
+class Generation;
+class GameVersion;
+class Nature;
+class Ribbon;
+class Species;
+class Type;
+
+#include "enums/Language.hpp"
 #include "nlohmann/json_fwd.hpp"
 #include "utils/coretypes.h"
-#include "utils/gameversion.hpp"
-#include "utils/generation.hpp"
 #include <map>
 #include <string>
 #include <vector>
@@ -68,29 +75,24 @@ namespace i18n
 
     void initAbility(Language lang);
     void exitAbility(Language lang);
-    const std::string& ability(Language lang, u16 value);
+    const std::string& ability(Language lang, Ability value);
     const std::vector<std::string>& rawAbilities(Language lang);
 
     void initBall(Language lang);
     void exitBall(Language lang);
-    const std::string& ball(Language lang, u8 value);
+    const std::string& ball(Language lang, Ball value);
     const std::vector<std::string>& rawBalls(Language lang);
 
     void initForm(Language lang);
     void exitForm(Language lang);
-    const std::string& form(Language lang, GameVersion version, u16 species, u16 form);
-    std::vector<std::string> forms(Language lang, GameVersion version, u16 species);
+    const std::string& form(Language lang, GameVersion version, Species species, u16 form);
+    std::vector<std::string> forms(Language lang, GameVersion version, Species species);
     // No good raw interface for this
 
     void initGame(Language lang);
     void exitGame(Language lang);
     const std::string& game(Language lang, GameVersion value);
     const std::vector<std::string>& rawGames(Language lang);
-
-    void initHP(Language lang);
-    void exitHP(Language lang);
-    const std::string& hp(Language lang, u8 value);
-    const std::vector<std::string>& rawHPs(Language lang);
 
     void initItem(Language lang);
     void exitItem(Language lang);
@@ -104,15 +106,25 @@ namespace i18n
 
     void initNature(Language lang);
     void exitNature(Language lang);
-    const std::string& nature(Language lang, u8 value);
+    const std::string& nature(Language lang, Nature value);
     const std::vector<std::string>& rawNatures(Language lang);
+
+    void initRibbon(Language lang);
+    void exitRibbon(Language lang);
+    const std::string& ribbon(Language lang, Ribbon value);
+    const std::vector<std::string>& rawRibbons(Language lang);
 
     // Note: several functions require this to function properly.
     // A nonexhaustive list includes PK3::nicknamed, PK4::convertToPK3, PK5::convertToPK6, SavLGPE::mysteryGift, and SavSWSH::mysteryGift
     void initSpecies(Language lang);
     void exitSpecies(Language lang);
-    const std::string& species(Language lang, u16 value);
+    const std::string& species(Language lang, Species value);
     const std::vector<std::string>& rawSpecies(Language lang);
+
+    void initType(Language lang);
+    void exitType(Language lang);
+    const std::string& type(Language lang, Type value);
+    const std::vector<std::string>& rawType(Language lang);
 
     void initLocation(Language lang);
     void exitLocation(Language lang);

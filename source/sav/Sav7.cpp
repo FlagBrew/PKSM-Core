@@ -25,9 +25,9 @@
  */
 
 #include "sav/Sav7.hpp"
-#include "i18n/i18n.hpp"
 #include "pkx/PK7.hpp"
 #include "utils/endian.hpp"
+#include "utils/i18n.hpp"
 #include "utils/utils.hpp"
 #include "wcx/WC7.hpp"
 
@@ -74,13 +74,13 @@ void Sav7::version(GameVersion v)
     data[TrainerCard + 4] = u8(v);
 }
 
-u8 Sav7::gender(void) const
+Gender Sav7::gender(void) const
 {
-    return data[TrainerCard + 5];
+    return Gender{data[TrainerCard + 5]};
 }
-void Sav7::gender(u8 v)
+void Sav7::gender(Gender v)
 {
-    data[TrainerCard + 5] = v;
+    data[TrainerCard + 5] = u8(v);
 }
 
 u8 Sav7::subRegion(void) const
@@ -339,58 +339,60 @@ int Sav7::getDexFlags(int index, int baseSpecies) const
     return ret;
 }
 
-bool Sav7::sanitizeFormsToIterate(int species, int& fs, int& fe, int formIn) const
+bool Sav7::sanitizeFormsToIterate(Species species, int& fs, int& fe, int formIn) const
 {
     switch (species)
     {
-        case 351: // Castform
+        case Species::Castform: // Castform
             fs = 0;
             fe = 3;
             return true;
 
-        case 421: // Cherrim
-        case 555: // Darmanitan
-        case 648: // Meloetta
-        case 746: // Wishiwashi
-        case 778: // Mimikyu
-                  // Alolans
-        case 020: // Raticate
-        case 105: // Marowak
+        case Species::Cherrim:    // 421:
+        case Species::Darmanitan: // 555:
+        case Species::Meloetta:   // 648:
+        case Species::Wishiwashi: // 746:
+        case Species::Mimikyu:    // 778:
+                                  // Alolans
+        case Species::Raticate:   // 020:
+        case Species::Marowak:    // 105:
             fs = 0;
             fe = 1;
             return true;
 
-        case 735: // Gumshoos
-        case 758: // Salazzle
-        case 754: // Lurantis
-        case 738: // Vikavolt
-        case 784: // Kommo-o
-        case 752: // Araquanid
-        case 777: // Togedemaru
-        case 743: // Ribombee
-        case 744: // Rockruff
+        case Species::Gumshoos:   // 735:
+        case Species::Salazzle:   // 758:
+        case Species::Lurantis:   // 754:
+        case Species::Vikavolt:   // 738:
+        case Species::Kommoo:     // 784:
+        case Species::Araquanid:  // 752:
+        case Species::Togedemaru: // 777:
+        case Species::Ribombee:   // 743:
+        case Species::Rockruff:   // 744:
             break;
 
-        case 774: // Minior
+        case Species::Minior: // 774:
             if (formIn <= 6)
                 break;
             else
             {
-                int count = dexFormCount(species);
+                int count = dexFormCount(u16(species));
                 fs        = 0;
                 fe        = 0;
                 return count < formIn;
             }
-        case 718:
+        case Species::Zygarde: // 718:
             if (formIn > 1)
                 break;
             else
             {
-                int count = dexFormCount(species);
+                int count = dexFormCount(u16(species));
                 fs        = 0;
                 fe        = 0;
                 return count < formIn;
             }
+        default:
+            break;
     }
 
     fs = 0;
@@ -400,19 +402,19 @@ bool Sav7::sanitizeFormsToIterate(int species, int& fs, int& fe, int formIn) con
 
 void Sav7::dex(const PKX& pk)
 {
-    if (pk.species() == 0 || pk.species() > maxSpecies() || pk.egg())
+    if (pk.species() == Species::None || pk.species() > maxSpecies() || pk.egg())
         return;
 
-    int bit    = pk.species() - 1;
+    int bit    = u16(pk.species()) - 1;
     int bd     = bit >> 3;
     int bm     = bit & 7;
-    int gender = pk.gender() % 2;
+    int gender = u8(pk.gender()) % 2;
     int shiny  = pk.shiny() ? 1 : 0;
-    if (pk.species() == 351)
+    if (pk.species() == Species::Castform)
         shiny = 0;
     int shift = gender | (shiny << 1);
 
-    if (pk.species() == 327) // Spinda
+    if (pk.species() == Species::Spinda)
     {
         if ((data[PokeDex + 0x84] & (1 << (shift + 4))) != 0)
         { // Already 2
@@ -443,15 +445,15 @@ void Sav7::dex(const PKX& pk)
         int bitIndex = bit;
         if (form > 0)
         {
-            u8 fc = PersonalSMUSUM::formCount(pk.species());
+            u8 fc = PersonalSMUSUM::formCount(u16(pk.species()));
             if (fc > 1)
             { // actually has forms
-                int f = dexFormIndex(pk.species(), fc, maxSpecies() - 1);
+                int f = dexFormIndex(u16(pk.species()), fc, u16(maxSpecies()) - 1);
                 if (f >= 0) // bit index valid
                     bitIndex = f + form;
             }
         }
-        setDexFlags(bitIndex, gender, shiny, pk.species() - 1);
+        setDexFlags(bitIndex, gender, shiny, u16(pk.species()) - 1);
     }
 
     int lang            = u8(pk.language());
@@ -472,12 +474,12 @@ void Sav7::dex(const PKX& pk)
 int Sav7::dexSeen(void) const
 {
     int ret = 0;
-    for (int species = 1; species <= maxSpecies(); species++)
+    for (int species = 1; species <= u16(maxSpecies()); species++)
     {
         int forms = formCount(species);
         for (int form = 0; form < forms; form++)
         {
-            int dexForms = form == 0 ? -1 : dexFormIndex(species, forms, maxSpecies() - 1);
+            int dexForms = form == 0 ? -1 : dexFormIndex(species, forms, u16(maxSpecies()) - 1);
 
             int index = species - 1;
             if (dexForms >= 0)
@@ -498,7 +500,7 @@ int Sav7::dexSeen(void) const
 int Sav7::dexCaught(void) const
 {
     int ret = 0;
-    for (int i = 1; i <= maxSpecies(); i++)
+    for (int i = 1; i <= u16(maxSpecies()); i++)
     {
         int bitIndex = (i - 1) & 7;
         int ofs      = PokeDex + 0x88 + ((i - 1) >> 3);
@@ -554,7 +556,7 @@ std::unique_ptr<PKX> Sav7::emptyPkm() const
     return PKX::getPKM<Generation::SEVEN>(nullptr);
 }
 
-int Sav7::emptyGiftLocation(void) const
+int Sav7::currentGiftAmount(void) const
 {
     u8 t;
     bool empty;
@@ -577,27 +579,7 @@ int Sav7::emptyGiftLocation(void) const
         }
     }
 
-    return !empty ? 47 : t;
-}
-
-std::vector<Sav::giftData> Sav7::currentGifts(void) const
-{
-    std::vector<Sav::giftData> ret;
-    u8* wonderCards = data.get() + WondercardData;
-    for (int i = 0; i < emptyGiftLocation(); i++)
-    {
-        if (*(wonderCards + i * WC7::length + 0x51) == 0)
-        {
-            ret.emplace_back(StringUtils::getString(wonderCards + i * WC7::length, 0x2, 36), "",
-                LittleEndian::convertTo<u16>(wonderCards + i * WC7::length + 0x82), *(wonderCards + i * WC7::length + 0x84),
-                *(wonderCards + i * WC7::length + 0xA1));
-        }
-        else
-        {
-            ret.emplace_back(StringUtils::getString(wonderCards + i * WC7::length, 0x2, 36), "", -1, -1, -1);
-        }
-    }
-    return ret;
+    return t;
 }
 
 std::unique_ptr<WCX> Sav7::mysteryGift(int pos) const
@@ -675,7 +657,7 @@ const std::set<int>& Sav7::availableItems(void) const
 {
     if (items.empty())
     {
-        fill_set(items, 0, maxItem());
+        fill_set_consecutive(items, 0, maxItem());
     }
     return items;
 }
@@ -684,34 +666,34 @@ const std::set<int>& Sav7::availableMoves(void) const
 {
     if (moves.empty())
     {
-        fill_set(moves, 0, maxMove());
+        fill_set_consecutive(moves, 0, maxMove());
     }
     return moves;
 }
 
-const std::set<int>& Sav7::availableSpecies(void) const
+const std::set<Species>& Sav7::availableSpecies(void) const
 {
     if (species.empty())
     {
-        fill_set(species, 1, maxSpecies());
+        fill_set_consecutive<Species>(species, Species::Bulbasaur, maxSpecies());
     }
     return species;
 }
 
-const std::set<int>& Sav7::availableAbilities(void) const
+const std::set<Ability>& Sav7::availableAbilities(void) const
 {
     if (abilities.empty())
     {
-        fill_set(abilities, 1, maxAbility());
+        fill_set_consecutive<Ability>(abilities, Ability::Stench, maxAbility());
     }
     return abilities;
 }
 
-const std::set<int>& Sav7::availableBalls(void) const
+const std::set<::Ball>& Sav7::availableBalls(void) const
 {
     if (balls.empty())
     {
-        fill_set(balls, 1, maxBall());
+        fill_set_consecutive<::Ball>(balls, Ball::Master, maxBall());
     }
     return balls;
 }

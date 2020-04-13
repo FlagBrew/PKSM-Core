@@ -25,7 +25,7 @@
  */
 
 #include "wcx/PGT.hpp"
-#include "i18n/Language.hpp"
+#include "enums/Language.hpp"
 #include "pkx/PK4.hpp"
 #include "utils/endian.hpp"
 
@@ -35,20 +35,19 @@ PGT::PGT(u8* pgt)
     pokemonData = PKX::getPKM<Generation::FOUR>(pgt + 0x8, true);
     if (type() == 7)
     {
-        // Set visible manaphy data
-        pokemonData->species(490);
+        pokemonData->species(Species::Manaphy);
         pokemonData->alternativeForm(0);
         pokemonData->egg(true);
-        pokemonData->gender(2);
+        pokemonData->gender(Gender::Genderless);
         pokemonData->level(1);
-        pokemonData->ability(pokemonData->abilities(0));
+        pokemonData->setAbility(0);
         pokemonData->move(0, 294);
         pokemonData->move(1, 145);
         pokemonData->move(2, 346);
         pokemonData->move(3, 0);
         pokemonData->heldItem(0);
         pokemonData->fatefulEncounter(true);
-        pokemonData->ball(4);
+        pokemonData->ball(Ball::Poke);
         pokemonData->version(GameVersion::D); // Diamond
         pokemonData->language(Language::ENG);
         pokemonData->nickname("MANAPHY");
@@ -198,7 +197,7 @@ bool PGT::used(void) const
     return false;
 }
 
-u8 PGT::ball(void) const
+Ball PGT::ball(void) const
 {
     return pokemonData->ball();
 }
@@ -233,12 +232,12 @@ u16 PGT::move(u8 index) const
     return pokemonData->move(index);
 }
 
-u16 PGT::species(void) const
+Species PGT::species(void) const
 {
     return pokemonData->species();
 }
 
-u8 PGT::gender(void) const
+Gender PGT::gender(void) const
 {
     return pokemonData->gender();
 }
@@ -283,7 +282,7 @@ std::string PGT::nickname(void) const
     return pokemonData->nickname();
 }
 
-u8 PGT::nature(void) const
+Nature PGT::nature(void) const
 {
     return pokemonData->nature();
 }
@@ -293,7 +292,7 @@ u8 PGT::abilityType(void) const
     return pokemonData->abilityNumber();
 }
 
-u16 PGT::ability(void) const
+Ability PGT::ability(void) const
 {
     return pokemonData->ability();
 }
@@ -330,23 +329,5 @@ bool PGT::egg(void) const
 
 u16 PGT::formSpecies(void) const
 {
-    u16 tmpSpecies = species();
-    u8 form        = alternativeForm();
-    u8 formcount   = PersonalDPPtHGSS::formCount(tmpSpecies);
-
-    if (form && form < formcount)
-    {
-        u16 backSpecies = tmpSpecies;
-        tmpSpecies      = PersonalDPPtHGSS::formStatIndex(tmpSpecies);
-        if (!tmpSpecies)
-        {
-            tmpSpecies = backSpecies;
-        }
-        else
-        {
-            tmpSpecies += form - 1;
-        }
-    }
-
-    return tmpSpecies;
+    return pokemonData->formSpecies();
 }

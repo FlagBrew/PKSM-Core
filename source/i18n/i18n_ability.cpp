@@ -24,6 +24,7 @@
  *         reasonable ways as different from the original version.
  */
 
+#include "enums/Ability.hpp"
 #include "i18n_internal.hpp"
 
 namespace i18n
@@ -39,14 +40,14 @@ namespace i18n
 
     void exitAbility(Language lang) { abilities.erase(lang); }
 
-    const std::string& ability(Language lang, u16 val)
+    const std::string& ability(Language lang, Ability val)
     {
         checkInitialized(lang);
         if (abilities.contains(lang))
         {
-            if (val < abilities[lang].size())
+            if (size_t(val) < abilities[lang].size())
             {
-                return abilities[lang][val];
+                return abilities[lang][size_t(val)];
             }
         }
         return emptyString;
@@ -61,4 +62,9 @@ namespace i18n
         }
         return emptyVector;
     }
+}
+
+const std::string& Ability_impl::localize(Language lang) const
+{
+    return i18n::ability(lang, *this);
 }

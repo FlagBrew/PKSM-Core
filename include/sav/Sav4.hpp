@@ -44,15 +44,15 @@ protected:
     void SBO(void);
 
     bool checkInsertForm(std::vector<u8>& forms, u8 formNum);
-    std::vector<u8> getForms(u16 species);
+    std::vector<u8> getForms(Species species);
     std::vector<u8> getDexFormValues(u32 v, u8 bitsPerForm, u8 readCt);
-    void setForms(std::vector<u8> forms, u16 species);
+    void setForms(std::vector<u8> forms, Species species);
     u32 setDexFormValues(std::vector<u8> forms, u8 bitsPerForm, u8 readCt);
-    int maxSpecies(void) const override { return 493; }
+    Species maxSpecies(void) const override { return Species::Arceus; }
     int maxMove(void) const override { return 467; }
     int maxItem(void) const override { return game == Game::DP ? 464 : game == Game::Pt ? 467 : 536; }
-    int maxAbility(void) const override { return 123; }
-    int maxBall(void) const override { return 0x18; }
+    Ability maxAbility(void) const override { return Ability::BadDreams; }
+    ::Ball maxBall(void) const override { return Ball::Sport; }
 
 public:
     Sav4(std::shared_ptr<u8[]> data, u32 length) : Sav(data, length) {}
@@ -67,8 +67,8 @@ public:
     void SID(u16 v) override;
     GameVersion version(void) const override;
     void version(GameVersion v) override;
-    u8 gender(void) const override;
-    void gender(u8 v) override;
+    Gender gender(void) const override;
+    void gender(Gender v) override;
     u8 subRegion(void) const override { return 0; }
     void subRegion(u8) override {}
     u8 country(void) const override { return 0; }
@@ -111,8 +111,7 @@ public:
     void dex(const PKX& pk) override;
     int dexSeen(void) const override;
     int dexCaught(void) const override;
-    int emptyGiftLocation(void) const override;
-    std::vector<Sav::giftData> currentGifts(void) const override;
+    int currentGiftAmount(void) const override;
     void mysteryGift(WCX& wc, int& pos) override;
     std::unique_ptr<WCX> mysteryGift(int pos) const override;
     void cryptBoxData(bool crypted) override;
@@ -130,9 +129,9 @@ public:
     int getSBO(void) const { return sbo; }
     const std::set<int>& availableItems(void) const override;
     const std::set<int>& availableMoves(void) const override;
-    const std::set<int>& availableSpecies(void) const override;
-    const std::set<int>& availableAbilities(void) const override;
-    const std::set<int>& availableBalls(void) const override;
+    const std::set<Species>& availableSpecies(void) const override;
+    const std::set<Ability>& availableAbilities(void) const override;
+    const std::set<::Ball>& availableBalls(void) const override;
 
     void item(const Item& item, Pouch pouch, u16 slot) override;
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
