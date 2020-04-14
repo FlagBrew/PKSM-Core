@@ -224,6 +224,7 @@ public:
     inline u8 expType(void) const override { return PersonalRSFRLGE::expType(formSpecies()); }
     inline Ability abilities(u8 n) const override { return PersonalRSFRLGE::ability(formSpecies(), n); }
     inline u16 formStatIndex(void) const override { return 0; }
+    inline u8 formCount(void) const override { return PersonalRSFRLGE::formCount(u16(species())); }
 };
 
 #endif

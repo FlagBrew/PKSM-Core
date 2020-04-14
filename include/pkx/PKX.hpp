@@ -308,6 +308,7 @@ public:
     virtual u8 expType(void) const        = 0;
     virtual Ability abilities(u8 n) const = 0;
     virtual u16 formStatIndex(void) const = 0;
+    virtual u8 formCount(void) const      = 0;
 };
 
 #endif

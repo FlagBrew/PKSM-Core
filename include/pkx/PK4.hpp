@@ -47,8 +47,8 @@ private:
     void metDay(int v) override;
 
 protected:
-    static constexpr Species beasts[4]  = {Species::Celebi, Species::Raikou, Species::Entei, Species::Suicune};
-    static constexpr u16 banned[8] = {15, 19, 57, 70, 250, 249, 127, 431};
+    static constexpr Species beasts[4] = {Species::Celebi, Species::Raikou, Species::Entei, Species::Suicune};
+    static constexpr u16 banned[8]     = {15, 19, 57, 70, 250, 249, 127, 431};
 
     void shuffleArray(u8 sv) override;
     void crypt(void) override;
@@ -205,6 +205,7 @@ public:
     inline u8 expType(void) const override { return PersonalDPPtHGSS::expType(formSpecies()); }
     inline Ability abilities(u8 n) const override { return PersonalDPPtHGSS::ability(formSpecies(), n); }
     inline u16 formStatIndex(void) const override { return PersonalDPPtHGSS::formStatIndex(formSpecies()); }
+    inline u8 formCount(void) const override { return PersonalDPPtHGSS::formCount(u16(species())); }
 };
 
 #endif

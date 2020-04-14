@@ -199,6 +199,7 @@ public:
     inline u8 expType(void) const override { return PersonalBWB2W2::expType(formSpecies()); }
     inline Ability abilities(u8 n) const override { return PersonalBWB2W2::ability(formSpecies(), n); }
     inline u16 formStatIndex(void) const override { return PersonalBWB2W2::formStatIndex(formSpecies()); }
+    inline u8 formCount(void) const override { return PersonalBWB2W2::formCount(u16(species())); }
 };
 
 #endif

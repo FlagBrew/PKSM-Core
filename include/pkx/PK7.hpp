@@ -252,6 +252,7 @@ public:
     inline u8 expType(void) const override { return PersonalSMUSUM::expType(formSpecies()); }
     inline Ability abilities(u8 n) const override { return PersonalSMUSUM::ability(formSpecies(), n); }
     inline u16 formStatIndex(void) const override { return PersonalSMUSUM::formStatIndex(formSpecies()); }
+    inline u8 formCount(void) const override { return PersonalSMUSUM::formCount(u16(species())); }
 };
 
 #endif
