@@ -27,16 +27,15 @@
 #ifndef I18N_HPP
 #define I18N_HPP
 
-class Ability;
-class Ball;
-class Generation;
-class GameVersion;
-class Nature;
-class Ribbon;
-class Species;
-class Type;
-
+#include "enums/Ability.hpp"
+#include "enums/Ball.hpp"
+#include "enums/GameVersion.hpp"
+#include "enums/Generation.hpp"
 #include "enums/Language.hpp"
+#include "enums/Nature.hpp"
+#include "enums/Ribbon.hpp"
+#include "enums/Species.hpp"
+#include "enums/Type.hpp"
 #include "nlohmann/json_fwd.hpp"
 #include "utils/coretypes.h"
 #include <map>
@@ -85,8 +84,8 @@ namespace i18n
 
     void initForm(Language lang);
     void exitForm(Language lang);
-    const std::string& form(Language lang, GameVersion version, Species species, u16 form);
-    std::vector<std::string> forms(Language lang, GameVersion version, Species species);
+    const std::string& form(Language lang, Generation version, Species species, u8 form);
+    std::vector<std::string> forms(Language lang, Generation version, Species species);
     // No good raw interface for this
 
     void initGame(Language lang);

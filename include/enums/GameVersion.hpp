@@ -165,15 +165,17 @@ public:
             case GameVersionEnum::SW: // 44:
             case GameVersionEnum::SH: // 45:
                 return Generation::EIGHT;
+            case GameVersionEnum::RD: // 35:
+            case GameVersionEnum::GN: // 36:
+            case GameVersionEnum::BU: // 37:
+            case GameVersionEnum::YW: // 38:
+                return Generation::ONE;
+            case GameVersionEnum::GD: // 39:
+            case GameVersionEnum::SV: // 40:
+            case GameVersionEnum::C:  // 41:
+                return Generation::TWO;
             case GameVersionEnum::None: // 0:
             case GameVersionEnum::GO:   // 34:
-            case GameVersionEnum::RD:   // 35:
-            case GameVersionEnum::GN:   // 36:
-            case GameVersionEnum::BU:   // 37:
-            case GameVersionEnum::YW:   // 38:
-            case GameVersionEnum::GD:   // 39:
-            case GameVersionEnum::SV:   // 40:
-            case GameVersionEnum::C:    // 41:
             case GameVersionEnum::INVALID:
                 return Generation::UNUSED;
         }
@@ -181,11 +183,39 @@ public:
     }
     constexpr operator GameVersionEnum() const noexcept { return v; }
 
-    constexpr bool operator<(const GameVersion_impl& other) const noexcept { return v < other.v; }
-    constexpr bool operator<=(const GameVersion_impl& other) const noexcept { return v <= other.v; }
+    constexpr bool operator<(const GameVersion_impl& other) const noexcept
+    {
+        if ((Generation) * this == (Generation)other)
+        {
+            return v < other.v;
+        }
+        return (Generation) * this < (Generation)other;
+    }
+    constexpr bool operator<=(const GameVersion_impl& other) const noexcept
+    {
+        if ((Generation) * this == (Generation)other)
+        {
+            return v <= other.v;
+        }
+        return (Generation) * this <= (Generation)other;
+    }
 
-    constexpr bool operator>(const GameVersion_impl& other) const noexcept { return v > other.v; }
-    constexpr bool operator>=(const GameVersion_impl& other) const noexcept { return v >= other.v; }
+    constexpr bool operator>(const GameVersion_impl& other) const noexcept
+    {
+        if ((Generation) * this == (Generation)other)
+        {
+            return v > other.v;
+        }
+        return (Generation) * this > (Generation)other;
+    }
+    constexpr bool operator>=(const GameVersion_impl& other) const noexcept
+    {
+        if ((Generation) * this == (Generation)other)
+        {
+            return v >= other.v;
+        }
+        return (Generation) * this >= (Generation)other;
+    }
 
     constexpr bool operator==(const GameVersion_impl& other) const noexcept { return v == other.v; }
     constexpr bool operator!=(const GameVersion_impl& other) const noexcept { return v != other.v; }
@@ -209,6 +239,33 @@ public:
     }
     constexpr explicit operator Generation() const noexcept { return (Generation)impl; }
     constexpr operator EnumType() const noexcept { return (EnumType)impl; }
+
+    static constexpr GameVersion maxVersion(const Generation& gen) noexcept
+    {
+        switch (gen)
+        {
+            case Generation::ONE:
+                return GameVersion::YW;
+            case Generation::TWO:
+                return GameVersion::C;
+            case Generation::THREE:
+                return GameVersion::LG;
+            case Generation::FOUR:
+                return GameVersion::HG;
+            case Generation::FIVE:
+                return GameVersion::B2;
+            case Generation::SIX:
+                return GameVersion::OR;
+            case Generation::SEVEN:
+                return GameVersion::UM;
+            case Generation::EIGHT:
+                return GameVersion::SH;
+            case Generation::LGPE:
+                return GameVersion::GE;
+            default:
+                return GameVersion::INVALID;
+        }
+    }
 
     constexpr bool operator<(const GameVersion& other) const noexcept { return impl < other.impl; }
     constexpr bool operator<=(const GameVersion& other) const noexcept { return impl <= other.impl; }

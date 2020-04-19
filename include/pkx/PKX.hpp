@@ -38,6 +38,7 @@
 #include "enums/Species.hpp"
 #include "enums/Stat.hpp"
 #include "enums/Type.hpp"
+#include "pkx/PKFilter.hpp"
 #include "sav/Item.hpp"
 #include "utils/DateTime.hpp"
 #include "utils/coretypes.h"
@@ -46,7 +47,6 @@
 #include <string>
 
 class Sav;
-class PKFilter;
 
 class PKX
 {

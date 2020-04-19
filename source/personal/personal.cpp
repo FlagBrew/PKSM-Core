@@ -25,98 +25,98 @@
  */
 
 #include "personal/personal.hpp"
-#include "personal/personal_bwb2w2.h"
-#include "personal/personal_dppthgss.h"
-#include "personal/personal_lgpe.h"
-#include "personal/personal_rsfrlge.h"
-#include "personal/personal_smusum.h"
-#include "personal/personal_swsh.h"
-#include "personal/personal_xyoras.h"
+#include "personal_bwb2w2.h"
+#include "personal_dppthgss.h"
+#include "personal_lgpe.h"
+#include "personal_rsfrlge.h"
+#include "personal_smusum.h"
+#include "personal_swsh.h"
+#include "personal_xyoras.h"
 #include "utils/endian.hpp"
 
 namespace PersonalLGPE
 {
-    u8 baseHP(u16 species) { return personal_lgpe[species * 17 + 0x0]; }
-    u8 baseAtk(u16 species) { return personal_lgpe[species * 17 + 0x1]; }
-    u8 baseDef(u16 species) { return personal_lgpe[species * 17 + 0x2]; }
-    u8 baseSpe(u16 species) { return personal_lgpe[species * 17 + 0x3]; }
-    u8 baseSpa(u16 species) { return personal_lgpe[species * 17 + 0x4]; }
-    u8 baseSpd(u16 species) { return personal_lgpe[species * 17 + 0x5]; }
-    Type type1(u16 species) { return Type{personal_lgpe[species * 17 + 0x6]}; }
-    Type type2(u16 species) { return Type{personal_lgpe[species * 17 + 0x7]}; }
-    u8 gender(u16 species) { return personal_lgpe[species * 17 + 0x8]; }
-    u8 baseFriendship(u16 species) { return personal_lgpe[species * 17 + 0x9]; }
-    u8 expType(u16 species) { return personal_lgpe[species * 17 + 0xA]; }
-    Ability ability(u16 species, u8 n) { return Ability{personal_lgpe[species * 17 + 0xB + n]}; }
-    u16 formStatIndex(u16 species) { return LittleEndian::convertTo<u16>((u8*)personal_lgpe + species * 17 + 0xE); }
-    u8 formCount(u16 species) { return personal_lgpe[species * 17 + 0x10]; }
+    u8 baseHP(u16 species) { return personal_lgpe[species * personal_lgpe_entrysize + 0x0]; }
+    u8 baseAtk(u16 species) { return personal_lgpe[species * personal_lgpe_entrysize + 0x1]; }
+    u8 baseDef(u16 species) { return personal_lgpe[species * personal_lgpe_entrysize + 0x2]; }
+    u8 baseSpe(u16 species) { return personal_lgpe[species * personal_lgpe_entrysize + 0x3]; }
+    u8 baseSpa(u16 species) { return personal_lgpe[species * personal_lgpe_entrysize + 0x4]; }
+    u8 baseSpd(u16 species) { return personal_lgpe[species * personal_lgpe_entrysize + 0x5]; }
+    Type type1(u16 species) { return Type{personal_lgpe[species * personal_lgpe_entrysize + 0x6]}; }
+    Type type2(u16 species) { return Type{personal_lgpe[species * personal_lgpe_entrysize + 0x7]}; }
+    u8 gender(u16 species) { return personal_lgpe[species * personal_lgpe_entrysize + 0x8]; }
+    u8 baseFriendship(u16 species) { return personal_lgpe[species * personal_lgpe_entrysize + 0x9]; }
+    u8 expType(u16 species) { return personal_lgpe[species * personal_lgpe_entrysize + 0xA]; }
+    Ability ability(u16 species, u8 n) { return Ability{personal_lgpe[species * personal_lgpe_entrysize + 0xB + n]}; }
+    u16 formStatIndex(u16 species) { return LittleEndian::convertTo<u16>((u8*)personal_lgpe + species * personal_lgpe_entrysize + 0xE); }
+    u8 formCount(u16 species) { return personal_lgpe[species * personal_lgpe_entrysize + 0x10]; }
 }
 
 namespace PersonalSMUSUM
 {
-    u8 baseHP(u16 species) { return personal_smusum[species * 17 + 0x0]; }
-    u8 baseAtk(u16 species) { return personal_smusum[species * 17 + 0x1]; }
-    u8 baseDef(u16 species) { return personal_smusum[species * 17 + 0x2]; }
-    u8 baseSpe(u16 species) { return personal_smusum[species * 17 + 0x3]; }
-    u8 baseSpa(u16 species) { return personal_smusum[species * 17 + 0x4]; }
-    u8 baseSpd(u16 species) { return personal_smusum[species * 17 + 0x5]; }
-    Type type1(u16 species) { return Type{personal_smusum[species * 17 + 0x6]}; }
-    Type type2(u16 species) { return Type{personal_smusum[species * 17 + 0x7]}; }
-    u8 gender(u16 species) { return personal_smusum[species * 17 + 0x8]; }
-    u8 baseFriendship(u16 species) { return personal_smusum[species * 17 + 0x9]; }
-    u8 expType(u16 species) { return personal_smusum[species * 17 + 0xA]; }
-    Ability ability(u16 species, u8 n) { return Ability{personal_smusum[species * 17 + 0xB + n]}; }
-    u16 formStatIndex(u16 species) { return LittleEndian::convertTo<u16>((u8*)personal_smusum + species * 17 + 0xE); }
-    u8 formCount(u16 species) { return personal_smusum[species * 17 + 0x10]; }
+    u8 baseHP(u16 species) { return personal_smusum[species * personal_smusum_entrysize + 0x0]; }
+    u8 baseAtk(u16 species) { return personal_smusum[species * personal_smusum_entrysize + 0x1]; }
+    u8 baseDef(u16 species) { return personal_smusum[species * personal_smusum_entrysize + 0x2]; }
+    u8 baseSpe(u16 species) { return personal_smusum[species * personal_smusum_entrysize + 0x3]; }
+    u8 baseSpa(u16 species) { return personal_smusum[species * personal_smusum_entrysize + 0x4]; }
+    u8 baseSpd(u16 species) { return personal_smusum[species * personal_smusum_entrysize + 0x5]; }
+    Type type1(u16 species) { return Type{personal_smusum[species * personal_smusum_entrysize + 0x6]}; }
+    Type type2(u16 species) { return Type{personal_smusum[species * personal_smusum_entrysize + 0x7]}; }
+    u8 gender(u16 species) { return personal_smusum[species * personal_smusum_entrysize + 0x8]; }
+    u8 baseFriendship(u16 species) { return personal_smusum[species * personal_smusum_entrysize + 0x9]; }
+    u8 expType(u16 species) { return personal_smusum[species * personal_smusum_entrysize + 0xA]; }
+    Ability ability(u16 species, u8 n) { return Ability{personal_smusum[species * personal_smusum_entrysize + 0xB + n]}; }
+    u16 formStatIndex(u16 species) { return LittleEndian::convertTo<u16>((u8*)personal_smusum + species * personal_smusum_entrysize + 0xE); }
+    u8 formCount(u16 species) { return personal_smusum[species * personal_smusum_entrysize + 0x10]; }
 }
 
 namespace PersonalXYORAS
 {
-    u8 baseHP(u16 species) { return personal_xyoras[species * 17 + 0x0]; }
-    u8 baseAtk(u16 species) { return personal_xyoras[species * 17 + 0x1]; }
-    u8 baseDef(u16 species) { return personal_xyoras[species * 17 + 0x2]; }
-    u8 baseSpe(u16 species) { return personal_xyoras[species * 17 + 0x3]; }
-    u8 baseSpa(u16 species) { return personal_xyoras[species * 17 + 0x4]; }
-    u8 baseSpd(u16 species) { return personal_xyoras[species * 17 + 0x5]; }
-    Type type1(u16 species) { return Type{personal_xyoras[species * 17 + 0x6]}; }
-    Type type2(u16 species) { return Type{personal_xyoras[species * 17 + 0x7]}; }
-    u8 gender(u16 species) { return personal_xyoras[species * 17 + 0x8]; }
-    u8 baseFriendship(u16 species) { return personal_xyoras[species * 17 + 0x9]; }
-    u8 expType(u16 species) { return personal_xyoras[species * 17 + 0xA]; }
-    Ability ability(u16 species, u8 n) { return Ability{personal_xyoras[species * 17 + 0xB + n]}; }
-    u16 formStatIndex(u16 species) { return LittleEndian::convertTo<u16>((u8*)personal_xyoras + species * 17 + 0xE); }
-    u8 formCount(u16 species) { return personal_xyoras[species * 17 + 0x10]; }
+    u8 baseHP(u16 species) { return personal_xyoras[species * personal_xyoras_entrysize + 0x0]; }
+    u8 baseAtk(u16 species) { return personal_xyoras[species * personal_xyoras_entrysize + 0x1]; }
+    u8 baseDef(u16 species) { return personal_xyoras[species * personal_xyoras_entrysize + 0x2]; }
+    u8 baseSpe(u16 species) { return personal_xyoras[species * personal_xyoras_entrysize + 0x3]; }
+    u8 baseSpa(u16 species) { return personal_xyoras[species * personal_xyoras_entrysize + 0x4]; }
+    u8 baseSpd(u16 species) { return personal_xyoras[species * personal_xyoras_entrysize + 0x5]; }
+    Type type1(u16 species) { return Type{personal_xyoras[species * personal_xyoras_entrysize + 0x6]}; }
+    Type type2(u16 species) { return Type{personal_xyoras[species * personal_xyoras_entrysize + 0x7]}; }
+    u8 gender(u16 species) { return personal_xyoras[species * personal_xyoras_entrysize + 0x8]; }
+    u8 baseFriendship(u16 species) { return personal_xyoras[species * personal_xyoras_entrysize + 0x9]; }
+    u8 expType(u16 species) { return personal_xyoras[species * personal_xyoras_entrysize + 0xA]; }
+    Ability ability(u16 species, u8 n) { return Ability{personal_xyoras[species * personal_xyoras_entrysize + 0xB + n]}; }
+    u16 formStatIndex(u16 species) { return LittleEndian::convertTo<u16>((u8*)personal_xyoras + species * personal_xyoras_entrysize + 0xE); }
+    u8 formCount(u16 species) { return personal_xyoras[species * personal_xyoras_entrysize + 0x10]; }
 }
 
 namespace PersonalBWB2W2
 {
-    u8 baseHP(u16 species) { return personal_bwb2w2[species * 17 + 0x0]; }
-    u8 baseAtk(u16 species) { return personal_bwb2w2[species * 17 + 0x1]; }
-    u8 baseDef(u16 species) { return personal_bwb2w2[species * 17 + 0x2]; }
-    u8 baseSpe(u16 species) { return personal_bwb2w2[species * 17 + 0x3]; }
-    u8 baseSpa(u16 species) { return personal_bwb2w2[species * 17 + 0x4]; }
-    u8 baseSpd(u16 species) { return personal_bwb2w2[species * 17 + 0x5]; }
-    Type type1(u16 species) { return Type{personal_bwb2w2[species * 17 + 0x6]}; }
-    Type type2(u16 species) { return Type{personal_bwb2w2[species * 17 + 0x7]}; }
-    u8 gender(u16 species) { return personal_bwb2w2[species * 17 + 0x8]; }
-    u8 baseFriendship(u16 species) { return personal_bwb2w2[species * 17 + 0x9]; }
-    u8 expType(u16 species) { return personal_bwb2w2[species * 17 + 0xA]; }
-    Ability ability(u16 species, u8 n) { return Ability{personal_bwb2w2[species * 17 + 0xB + n]}; }
-    u16 formStatIndex(u16 species) { return LittleEndian::convertTo<u16>((u8*)personal_bwb2w2 + species * 17 + 0xE); }
-    u8 formCount(u16 species) { return personal_bwb2w2[species * 17 + 0x10]; }
+    u8 baseHP(u16 species) { return personal_bwb2w2[species * personal_bwb2w2_entrysize + 0x0]; }
+    u8 baseAtk(u16 species) { return personal_bwb2w2[species * personal_bwb2w2_entrysize + 0x1]; }
+    u8 baseDef(u16 species) { return personal_bwb2w2[species * personal_bwb2w2_entrysize + 0x2]; }
+    u8 baseSpe(u16 species) { return personal_bwb2w2[species * personal_bwb2w2_entrysize + 0x3]; }
+    u8 baseSpa(u16 species) { return personal_bwb2w2[species * personal_bwb2w2_entrysize + 0x4]; }
+    u8 baseSpd(u16 species) { return personal_bwb2w2[species * personal_bwb2w2_entrysize + 0x5]; }
+    Type type1(u16 species) { return Type{personal_bwb2w2[species * personal_bwb2w2_entrysize + 0x6]}; }
+    Type type2(u16 species) { return Type{personal_bwb2w2[species * personal_bwb2w2_entrysize + 0x7]}; }
+    u8 gender(u16 species) { return personal_bwb2w2[species * personal_bwb2w2_entrysize + 0x8]; }
+    u8 baseFriendship(u16 species) { return personal_bwb2w2[species * personal_bwb2w2_entrysize + 0x9]; }
+    u8 expType(u16 species) { return personal_bwb2w2[species * personal_bwb2w2_entrysize + 0xA]; }
+    Ability ability(u16 species, u8 n) { return Ability{personal_bwb2w2[species * personal_bwb2w2_entrysize + 0xB + n]}; }
+    u16 formStatIndex(u16 species) { return LittleEndian::convertTo<u16>((u8*)personal_bwb2w2 + species * personal_bwb2w2_entrysize + 0xE); }
+    u8 formCount(u16 species) { return personal_bwb2w2[species * personal_bwb2w2_entrysize + 0x10]; }
 }
 
 namespace PersonalDPPtHGSS
 {
-    u8 baseHP(u16 species) { return personal_dppthgss[species * 16 + 0x0]; }
-    u8 baseAtk(u16 species) { return personal_dppthgss[species * 16 + 0x1]; }
-    u8 baseDef(u16 species) { return personal_dppthgss[species * 16 + 0x2]; }
-    u8 baseSpe(u16 species) { return personal_dppthgss[species * 16 + 0x3]; }
-    u8 baseSpa(u16 species) { return personal_dppthgss[species * 16 + 0x4]; }
-    u8 baseSpd(u16 species) { return personal_dppthgss[species * 16 + 0x5]; }
+    u8 baseHP(u16 species) { return personal_dppthgss[species * personal_dppthgss_entrysize + 0x0]; }
+    u8 baseAtk(u16 species) { return personal_dppthgss[species * personal_dppthgss_entrysize + 0x1]; }
+    u8 baseDef(u16 species) { return personal_dppthgss[species * personal_dppthgss_entrysize + 0x2]; }
+    u8 baseSpe(u16 species) { return personal_dppthgss[species * personal_dppthgss_entrysize + 0x3]; }
+    u8 baseSpa(u16 species) { return personal_dppthgss[species * personal_dppthgss_entrysize + 0x4]; }
+    u8 baseSpd(u16 species) { return personal_dppthgss[species * personal_dppthgss_entrysize + 0x5]; }
     Type type1(u16 species)
     {
-        u8 typeVal = personal_dppthgss[species * 16 + 0x6];
+        u8 typeVal = personal_dppthgss[species * personal_dppthgss_entrysize + 0x6];
         if (typeVal > 8)
         {
             return Type{u8(typeVal - 1)};
@@ -126,7 +126,7 @@ namespace PersonalDPPtHGSS
     }
     Type type2(u16 species)
     {
-        u8 typeVal = personal_dppthgss[species * 16 + 0x7];
+        u8 typeVal = personal_dppthgss[species * personal_dppthgss_entrysize + 0x7];
         if (typeVal > 8)
         {
             return Type{u8(typeVal - 1)};
@@ -134,11 +134,11 @@ namespace PersonalDPPtHGSS
         else
             return Type{typeVal};
     }
-    u8 gender(u16 species) { return personal_dppthgss[species * 16 + 0x8]; }
-    u8 baseFriendship(u16 species) { return personal_dppthgss[species * 16 + 0x9]; }
-    u8 expType(u16 species) { return personal_dppthgss[species * 16 + 0xA]; }
-    Ability ability(u16 species, u8 n) { return Ability{personal_dppthgss[species * 16 + 0xB + n]}; }
-    u16 formStatIndex(u16 species) { return LittleEndian::convertTo<u16>((u8*)personal_dppthgss + species * 16 + 0xD); }
+    u8 gender(u16 species) { return personal_dppthgss[species * personal_dppthgss_entrysize + 0x8]; }
+    u8 baseFriendship(u16 species) { return personal_dppthgss[species * personal_dppthgss_entrysize + 0x9]; }
+    u8 expType(u16 species) { return personal_dppthgss[species * personal_dppthgss_entrysize + 0xA]; }
+    Ability ability(u16 species, u8 n) { return Ability{personal_dppthgss[species * personal_dppthgss_entrysize + 0xB + n]}; }
+    u16 formStatIndex(u16 species) { return LittleEndian::convertTo<u16>((u8*)personal_dppthgss + species * personal_dppthgss_entrysize + 0xD); }
     // Normalized to fit with other formCounts' return values
     u8 formCount(u16 species)
     {
@@ -148,7 +148,7 @@ namespace PersonalDPPtHGSS
         }
         else
         {
-            u8 count = personal_dppthgss[species * 16 + 0xF];
+            u8 count = personal_dppthgss[species * personal_dppthgss_entrysize + 0xF];
             if (count == 0)
             {
                 return 1;
@@ -160,35 +160,41 @@ namespace PersonalDPPtHGSS
 
 namespace PersonalSWSH
 {
-    u8 baseHP(u16 species) { return personal_swsh[species * 36 + 0x0]; }
-    u8 baseAtk(u16 species) { return personal_swsh[species * 36 + 0x1]; }
-    u8 baseDef(u16 species) { return personal_swsh[species * 36 + 0x2]; }
-    u8 baseSpe(u16 species) { return personal_swsh[species * 36 + 0x3]; }
-    u8 baseSpa(u16 species) { return personal_swsh[species * 36 + 0x4]; }
-    u8 baseSpd(u16 species) { return personal_swsh[species * 36 + 0x5]; }
-    Type type1(u16 species) { return Type{personal_swsh[species * 36 + 0x6]}; }
-    Type type2(u16 species) { return Type{personal_swsh[species * 36 + 0x7]}; }
-    u8 gender(u16 species) { return personal_swsh[species * 36 + 0x8]; }
-    u8 baseFriendship(u16 species) { return personal_swsh[species * 36 + 0x9]; }
-    u8 expType(u16 species) { return personal_swsh[species * 36 + 0xA]; }
-    u8 formCount(u16 species) { return personal_swsh[species * 36 + 0xB]; }
-    Ability ability(u16 species, u8 n) { return Ability{LittleEndian::convertTo<u16>((u8*)personal_swsh + species * 36 + 0xC + 2 * n)}; }
-    u16 formStatIndex(u16 species) { return LittleEndian::convertTo<u16>((u8*)personal_swsh + species * 36 + 0x12); }
-    u16 pokedexIndex(u16 species) { return LittleEndian::convertTo<u16>((u8*)personal_swsh + species * 36 + 0x14); }
-    bool canLearnTR(u16 species, u8 trID) { return (personal_swsh[species * 36 + 0x16 + (trID >> 3)] & (1 << (trID & 7))) != 0 ? true : false; }
+    u8 baseHP(u16 species) { return personal_swsh[species * personal_swsh_entrysize + 0x0]; }
+    u8 baseAtk(u16 species) { return personal_swsh[species * personal_swsh_entrysize + 0x1]; }
+    u8 baseDef(u16 species) { return personal_swsh[species * personal_swsh_entrysize + 0x2]; }
+    u8 baseSpe(u16 species) { return personal_swsh[species * personal_swsh_entrysize + 0x3]; }
+    u8 baseSpa(u16 species) { return personal_swsh[species * personal_swsh_entrysize + 0x4]; }
+    u8 baseSpd(u16 species) { return personal_swsh[species * personal_swsh_entrysize + 0x5]; }
+    Type type1(u16 species) { return Type{personal_swsh[species * personal_swsh_entrysize + 0x6]}; }
+    Type type2(u16 species) { return Type{personal_swsh[species * personal_swsh_entrysize + 0x7]}; }
+    u8 gender(u16 species) { return personal_swsh[species * personal_swsh_entrysize + 0x8]; }
+    u8 baseFriendship(u16 species) { return personal_swsh[species * personal_swsh_entrysize + 0x9]; }
+    u8 expType(u16 species) { return personal_swsh[species * personal_swsh_entrysize + 0xA]; }
+    u8 formCount(u16 species) { return personal_swsh[species * personal_swsh_entrysize + 0xB]; }
+    Ability ability(u16 species, u8 n)
+    {
+        return Ability{LittleEndian::convertTo<u16>((u8*)personal_swsh + species * personal_swsh_entrysize + 0xC + 2 * n)};
+    }
+    u16 formStatIndex(u16 species) { return LittleEndian::convertTo<u16>((u8*)personal_swsh + species * personal_swsh_entrysize + 0x12); }
+    u16 pokedexIndex(u16 species) { return LittleEndian::convertTo<u16>((u8*)personal_swsh + species * personal_swsh_entrysize + 0x14); }
+    bool canLearnTR(u16 species, u8 trID)
+    {
+        return (personal_swsh[species * personal_swsh_entrysize + 0x16 + (trID >> 3)] & (1 << (trID & 7))) != 0 ? true : false;
+    }
 }
 
 namespace PersonalRSFRLGE
 {
-    u8 baseHP(u16 species) { return personal_rsfrlge[species * 13 + 0x0]; }
-    u8 baseAtk(u16 species) { return personal_rsfrlge[species * 13 + 0x1]; }
-    u8 baseDef(u16 species) { return personal_rsfrlge[species * 13 + 0x2]; }
-    u8 baseSpe(u16 species) { return personal_rsfrlge[species * 13 + 0x3]; }
-    u8 baseSpa(u16 species) { return personal_rsfrlge[species * 13 + 0x4]; }
-    u8 baseSpd(u16 species) { return personal_rsfrlge[species * 13 + 0x5]; }
+    u8 baseHP(u16 species) { return personal_rsfrlge[species * personal_rsfrlge_entrysize + 0x0]; }
+    u8 baseAtk(u16 species) { return personal_rsfrlge[species * personal_rsfrlge_entrysize + 0x1]; }
+    u8 baseDef(u16 species) { return personal_rsfrlge[species * personal_rsfrlge_entrysize + 0x2]; }
+    u8 baseSpe(u16 species) { return personal_rsfrlge[species * personal_rsfrlge_entrysize + 0x3]; }
+    u8 baseSpa(u16 species) { return personal_rsfrlge[species * personal_rsfrlge_entrysize + 0x4]; }
+    u8 baseSpd(u16 species) { return personal_rsfrlge[species * personal_rsfrlge_entrysize + 0x5]; }
     Type type1(u16 species)
     {
-        u8 typeVal = personal_rsfrlge[species * 13 + 0x6];
+        u8 typeVal = personal_rsfrlge[species * personal_rsfrlge_entrysize + 0x6];
         if (typeVal > 8)
         {
             return Type{u8(typeVal - 1)};
@@ -198,7 +204,7 @@ namespace PersonalRSFRLGE
     }
     Type type2(u16 species)
     {
-        u8 typeVal = personal_rsfrlge[species * 13 + 0x7];
+        u8 typeVal = personal_rsfrlge[species * personal_rsfrlge_entrysize + 0x7];
         if (typeVal > 8)
         {
             return Type{u8(typeVal - 1)};
@@ -206,10 +212,10 @@ namespace PersonalRSFRLGE
         else
             return Type{typeVal};
     }
-    u8 gender(u16 species) { return personal_rsfrlge[species * 13 + 0x8]; }
-    u8 baseFriendship(u16 species) { return personal_rsfrlge[species * 13 + 0x9]; }
-    u8 expType(u16 species) { return personal_rsfrlge[species * 13 + 0xA]; }
-    Ability ability(u16 species, u8 n) { return Ability{personal_rsfrlge[species * 13 + 0xB + n]}; }
+    u8 gender(u16 species) { return personal_rsfrlge[species * personal_rsfrlge_entrysize + 0x8]; }
+    u8 baseFriendship(u16 species) { return personal_rsfrlge[species * personal_rsfrlge_entrysize + 0x9]; }
+    u8 expType(u16 species) { return personal_rsfrlge[species * personal_rsfrlge_entrysize + 0xA]; }
+    Ability ability(u16 species, u8 n) { return Ability{personal_rsfrlge[species * personal_rsfrlge_entrysize + 0xB + n]}; }
     u8 formCount(u16 species)
     {
         switch (species)

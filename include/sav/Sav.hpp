@@ -34,17 +34,16 @@
 #include "enums/Generation.hpp"
 #include "enums/Language.hpp"
 #include "enums/Species.hpp"
+#include "pkx/PKX.hpp"
+#include "sav/Item.hpp"
 #include "utils/DateTime.hpp"
 #include "utils/coretypes.h"
+#include "wcx/WCX.hpp"
 #include <map>
 #include <memory>
 #include <set>
 #include <type_traits>
 #include <vector>
-
-class PKX;
-class Item;
-class WCX;
 
 class Sav
 {

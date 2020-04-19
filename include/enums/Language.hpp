@@ -39,7 +39,7 @@
 enum class Language : u8
 {
     None = 0,
-    JPN = 1,
+    JPN  = 1,
     ENG,
     FRE,
     ITA,

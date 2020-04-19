@@ -446,6 +446,8 @@ u32 PKX::formatTID() const
         case Generation::EIGHT:
             return (u32)(SID() << 16 | TID()) % 1000000;
         case Generation::UNUSED:
+        case Generation::ONE:
+        case Generation::TWO:
             return 0;
     }
     return 0;
@@ -464,6 +466,8 @@ u32 PKX::formatSID() const
         case Generation::EIGHT:
             return (u32)(SID() << 16 | TID()) / 1000000;
         case Generation::UNUSED:
+        case Generation::ONE:
+        case Generation::TWO:
             return 0;
     }
     return 0;
@@ -488,6 +492,8 @@ std::unique_ptr<PKX> PKX::getPKM(Generation gen, u8* data, bool party, bool dire
         case Generation::EIGHT:
             return getPKM<Generation::EIGHT>(data, party, directAccess);
         case Generation::UNUSED:
+        case Generation::ONE:
+        case Generation::TWO:
             return nullptr;
     }
     return nullptr;
@@ -512,6 +518,8 @@ std::unique_ptr<PKX> PKX::getPKM(Generation gen, u8* data, size_t length, bool d
         case Generation::EIGHT:
             return getPKM<Generation::EIGHT>(data, length, directAccess);
         case Generation::UNUSED:
+        case Generation::ONE:
+        case Generation::TWO:
             return nullptr;
     }
     return nullptr;

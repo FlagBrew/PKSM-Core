@@ -39,6 +39,8 @@ private:
     // values MUST remain consistent
     enum class GenerationEnum : u32
     {
+        ONE   = 7,
+        TWO   = 8,
         THREE = 6,
         FOUR  = 0,
         FIVE  = 1,
@@ -69,6 +71,10 @@ public:
         {
             case GenerationEnum::LGPE:
                 return "LGPE";
+            case GenerationEnum::ONE:
+                return "1";
+            case GenerationEnum::TWO:
+                return "2";
             case GenerationEnum::THREE:
                 return "3";
             case GenerationEnum::FOUR:
@@ -94,6 +100,18 @@ public:
     {
         switch (v)
         {
+            case GenerationEnum::ONE:
+                if (other.v == GenerationEnum::TWO)
+                {
+                    return true;
+                }
+                // falls through
+            case GenerationEnum::TWO:
+                if (other.v == GenerationEnum::THREE)
+                {
+                    return true;
+                }
+                // falls through
             case GenerationEnum::THREE:
                 if (other.v == GenerationEnum::FOUR)
                 {
@@ -229,6 +247,8 @@ public:
     constexpr bool operator==(const Generation_impl& other) const noexcept { return impl == other; }
     constexpr bool operator!=(const Generation_impl& other) const noexcept { return impl != other; }
 
+    static constexpr Generation_impl ONE{EnumType::ONE};
+    static constexpr Generation_impl TWO{EnumType::TWO};
     static constexpr Generation_impl THREE{EnumType::THREE};
     static constexpr Generation_impl FOUR{EnumType::FOUR};
     static constexpr Generation_impl FIVE{EnumType::FIVE};
