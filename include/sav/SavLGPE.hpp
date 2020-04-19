@@ -47,11 +47,6 @@ protected:
     int getDexFlags(int index, int baseSpecies) const;
     void setDexFlags(int index, int gender, int shiny, int baseSpecies);
     bool sanitizeFormsToIterate(Species species, int& fs, int& fe, int formIn) const;
-    Species maxSpecies(void) const override { return Species::Melmetal; } // This is going to be FUN: only numbers 1-151, 808, & 809
-    int maxMove(void) const override { return 742; }
-    int maxItem(void) const override { return 1057; }
-    Ability maxAbility(void) const override { return Ability::Neuroforce; } // Same as G7
-    ::Ball maxBall(void) const override { return Ball::Beast; }             // Same as G7
 
     static u16 check16(u8* buf, u32 len);
 
@@ -136,11 +131,6 @@ public:
     int maxBoxes(void) const override { return 34; }         // ish; stupid 1000-slot list makes this dumb
     size_t maxWondercards(void) const override { return 1; } // Data not stored
     Generation generation(void) const override { return Generation::LGPE; }
-    const std::set<int>& availableItems(void) const override;
-    const std::set<int>& availableMoves(void) const override;
-    const std::set<Species>& availableSpecies(void) const override;
-    const std::set<Ability>& availableAbilities(void) const override;
-    const std::set<::Ball>& availableBalls(void) const override;
 
     void item(const Item& item, Pouch pouch, u16 slot) override;
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;

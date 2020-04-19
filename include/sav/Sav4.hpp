@@ -48,11 +48,6 @@ protected:
     std::vector<u8> getDexFormValues(u32 v, u8 bitsPerForm, u8 readCt);
     void setForms(std::vector<u8> forms, Species species);
     u32 setDexFormValues(std::vector<u8> forms, u8 bitsPerForm, u8 readCt);
-    Species maxSpecies(void) const override { return Species::Arceus; }
-    int maxMove(void) const override { return 467; }
-    int maxItem(void) const override { return game == Game::DP ? 464 : game == Game::Pt ? 467 : 536; }
-    Ability maxAbility(void) const override { return Ability::BadDreams; }
-    ::Ball maxBall(void) const override { return Ball::Sport; }
 
 public:
     Sav4(std::shared_ptr<u8[]> data, u32 length) : Sav(data, length) {}
@@ -127,11 +122,6 @@ public:
     Generation generation(void) const override { return Generation::FOUR; }
     int getGBO(void) const { return gbo; }
     int getSBO(void) const { return sbo; }
-    const std::set<int>& availableItems(void) const override;
-    const std::set<int>& availableMoves(void) const override;
-    const std::set<Species>& availableSpecies(void) const override;
-    const std::set<Ability>& availableAbilities(void) const override;
-    const std::set<::Ball>& availableBalls(void) const override;
 
     void item(const Item& item, Pouch pouch, u16 slot) override;
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;

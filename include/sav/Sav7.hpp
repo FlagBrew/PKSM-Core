@@ -38,11 +38,6 @@ protected:
 
     virtual int dexFormIndex(int species, int formct, int start) const = 0;
     virtual int dexFormCount(int species) const                        = 0;
-    Species maxSpecies(void) const override { return game == Game::SM ? Species::Marshadow : Species::Zeraora; }
-    int maxMove(void) const override { return game == Game::SM ? 720 : 728; }
-    int maxItem(void) const override { return game == Game::SM ? 920 : 959; }
-    Ability maxAbility(void) const override { return game == Game::SM ? Ability::PrismArmor : Ability::Neuroforce; }
-    ::Ball maxBall(void) const override { return Ball::Beast; }
 
     static u16 check16(u8* buf, u32 blockID, u32 len);
 
@@ -123,11 +118,6 @@ public:
     int maxBoxes(void) const override { return 32; }
     size_t maxWondercards(void) const override { return 48; }
     Generation generation(void) const override { return Generation::SEVEN; }
-    const std::set<int>& availableItems(void) const override;
-    const std::set<int>& availableMoves(void) const override;
-    const std::set<Species>& availableSpecies(void) const override;
-    const std::set<Ability>& availableAbilities(void) const override;
-    const std::set<::Ball>& availableBalls(void) const override;
 
     void item(const Item& item, Pouch pouch, u16 slot) override;
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;

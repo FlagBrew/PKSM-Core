@@ -240,7 +240,7 @@ public:
     constexpr explicit operator Generation() const noexcept { return (Generation)impl; }
     constexpr operator EnumType() const noexcept { return (EnumType)impl; }
 
-    static constexpr GameVersion maxVersion(const Generation& gen) noexcept
+    static constexpr GameVersion newestVersion(const Generation& gen) noexcept
     {
         switch (gen)
         {
@@ -262,6 +262,33 @@ public:
                 return GameVersion::SH;
             case Generation::LGPE:
                 return GameVersion::GE;
+            default:
+                return GameVersion::INVALID;
+        }
+    }
+
+    static constexpr GameVersion oldestVersion(const Generation& gen) noexcept
+    {
+        switch (gen)
+        {
+            case Generation::ONE:
+                return GameVersion::RD;
+            case Generation::TWO:
+                return GameVersion::GD;
+            case Generation::THREE:
+                return GameVersion::S;
+            case Generation::FOUR:
+                return GameVersion::D;
+            case Generation::FIVE:
+                return GameVersion::W;
+            case Generation::SIX:
+                return GameVersion::X;
+            case Generation::SEVEN:
+                return GameVersion::SN;
+            case Generation::EIGHT:
+                return GameVersion::SW;
+            case Generation::LGPE:
+                return GameVersion::GP;
             default:
                 return GameVersion::INVALID;
         }

@@ -449,7 +449,7 @@ bool Sav3::canSetDex(Species species)
 {
     if (species == Species::None)
         return false;
-    if (species > maxSpecies())
+    if (species > Species::Deoxys)
         return false;
     if (std::find_if(blockOfs.begin(), blockOfs.end(), [](const int& val) { return val < 0; }) != blockOfs.end())
         return false;
@@ -476,7 +476,7 @@ void Sav3::dexPIDSpinda(u32 v)
 
 void Sav3::dex(const PKX& pk)
 {
-    if (!canSetDex(pk.species()))
+    if (!canSetDex(pk.species()) || pk.egg())
         return;
 
     switch (pk.species())
@@ -532,9 +532,9 @@ void Sav3::setSeen(Species species, bool seen)
 int Sav3::dexSeen(void) const
 {
     int ret = 0;
-    for (u16 i = 1; i < u16(maxSpecies()); i++)
+    for (const auto& spec : availableSpecies())
     {
-        if (getSeen(Species{i}))
+        if (getSeen(spec))
             ret++;
     }
 
@@ -544,9 +544,9 @@ int Sav3::dexSeen(void) const
 int Sav3::dexCaught(void) const
 {
     int ret = 0;
-    for (u16 i = 1; i < u16(maxSpecies()); i++)
+    for (const auto& spec : availableSpecies())
     {
-        if (getCaught(Species{i}))
+        if (getCaught(spec))
             ret++;
     }
 
@@ -604,51 +604,6 @@ u8 Sav3::partyCount(void) const
 void Sav3::partyCount(u8 v)
 {
     data[blockOfs[1] + (game == Game::FRLG ? 0x34 : 0x234)] = v;
-}
-
-const std::set<int>& Sav3::availableItems(void) const
-{
-    if (items.empty())
-    {
-        fill_set_consecutive(items, 0, maxItem());
-    }
-    return items;
-}
-
-const std::set<int>& Sav3::availableMoves(void) const
-{
-    if (moves.empty())
-    {
-        fill_set_consecutive(moves, 0, maxMove());
-    }
-    return moves;
-}
-
-const std::set<Species>& Sav3::availableSpecies(void) const
-{
-    if (species.empty())
-    {
-        fill_set_consecutive<Species>(species, Species::Bulbasaur, maxSpecies());
-    }
-    return species;
-}
-
-const std::set<Ability>& Sav3::availableAbilities(void) const
-{
-    if (abilities.empty())
-    {
-        fill_set_consecutive<Ability>(abilities, Ability::Stench, maxAbility());
-    }
-    return abilities;
-}
-
-const std::set<::Ball>& Sav3::availableBalls(void) const
-{
-    if (balls.empty())
-    {
-        fill_set_consecutive<::Ball>(balls, Ball::Master, maxBall());
-    }
-    return balls;
 }
 
 void Sav3::item(const Item& item, Pouch pouch, u16 slot)

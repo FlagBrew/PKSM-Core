@@ -402,7 +402,7 @@ bool Sav7::sanitizeFormsToIterate(Species species, int& fs, int& fe, int formIn)
 
 void Sav7::dex(const PKX& pk)
 {
-    if (pk.species() == Species::None || pk.species() > maxSpecies() || pk.egg())
+    if (!availableSpecies().contains(pk.species()) || pk.egg())
         return;
 
     int bit    = u16(pk.species()) - 1;
@@ -448,7 +448,7 @@ void Sav7::dex(const PKX& pk)
             u8 fc = PersonalSMUSUM::formCount(u16(pk.species()));
             if (fc > 1)
             { // actually has forms
-                int f = dexFormIndex(u16(pk.species()), fc, u16(maxSpecies()) - 1);
+                int f = dexFormIndex(u16(pk.species()), fc, u16(VersionTables::maxSpecies(version())) - 1);
                 if (f >= 0) // bit index valid
                     bitIndex = f + form;
             }
@@ -474,12 +474,13 @@ void Sav7::dex(const PKX& pk)
 int Sav7::dexSeen(void) const
 {
     int ret = 0;
-    for (int species = 1; species <= u16(maxSpecies()); species++)
+    for (const auto& spec : availableSpecies())
     {
-        int forms = formCount(species);
+        u16 species = u16(spec);
+        int forms   = formCount(species);
         for (int form = 0; form < forms; form++)
         {
-            int dexForms = form == 0 ? -1 : dexFormIndex(species, forms, u16(maxSpecies()) - 1);
+            int dexForms = form == 0 ? -1 : dexFormIndex(species, forms, u16(VersionTables::maxSpecies(version())) - 1);
 
             int index = species - 1;
             if (dexForms >= 0)
@@ -500,8 +501,9 @@ int Sav7::dexSeen(void) const
 int Sav7::dexCaught(void) const
 {
     int ret = 0;
-    for (int i = 1; i <= u16(maxSpecies()); i++)
+    for (const auto& spec : availableSpecies())
     {
+        u16 i        = u16(spec);
         int bitIndex = (i - 1) & 7;
         int ofs      = PokeDex + 0x88 + ((i - 1) >> 3);
         if ((data[ofs] >> bitIndex & 1) != 0)
@@ -651,49 +653,4 @@ std::vector<std::pair<Sav::Pouch, int>> Sav7::pouches(void) const
         pouches.push_back({RotomPower, 11});
 
     return pouches;
-}
-
-const std::set<int>& Sav7::availableItems(void) const
-{
-    if (items.empty())
-    {
-        fill_set_consecutive(items, 0, maxItem());
-    }
-    return items;
-}
-
-const std::set<int>& Sav7::availableMoves(void) const
-{
-    if (moves.empty())
-    {
-        fill_set_consecutive(moves, 0, maxMove());
-    }
-    return moves;
-}
-
-const std::set<Species>& Sav7::availableSpecies(void) const
-{
-    if (species.empty())
-    {
-        fill_set_consecutive<Species>(species, Species::Bulbasaur, maxSpecies());
-    }
-    return species;
-}
-
-const std::set<Ability>& Sav7::availableAbilities(void) const
-{
-    if (abilities.empty())
-    {
-        fill_set_consecutive<Ability>(abilities, Ability::Stench, maxAbility());
-    }
-    return abilities;
-}
-
-const std::set<::Ball>& Sav7::availableBalls(void) const
-{
-    if (balls.empty())
-    {
-        fill_set_consecutive<::Ball>(balls, Ball::Master, maxBall());
-    }
-    return balls;
 }

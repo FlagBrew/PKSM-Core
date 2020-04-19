@@ -34,11 +34,6 @@ class Sav6 : public Sav
 {
 protected:
     int TrainerCard, Trainer2, PlayTime, LastViewedBox, PokeDexLanguageFlags, EncounterCount, PCLayout;
-    Species maxSpecies(void) const override { return Species::Volcanion; }
-    int maxMove(void) const override { return game == Game::XY ? 617 : 621; }
-    int maxItem(void) const override { return game == Game::XY ? 717 : 775; }
-    Ability maxAbility(void) const override { return game == Game::XY ? Ability::AuraBreak : Ability::DeltaStream; }
-    ::Ball maxBall(void) const override { return Ball::Dream; }
 
 private:
     int dexFormIndex(int species, int formct) const;
@@ -114,11 +109,6 @@ public:
     int maxBoxes(void) const override { return 31; }
     size_t maxWondercards(void) const override { return 24; }
     Generation generation(void) const override { return Generation::SIX; }
-    const std::set<int>& availableItems(void) const override;
-    const std::set<int>& availableMoves(void) const override;
-    const std::set<Species>& availableSpecies(void) const override;
-    const std::set<Ability>& availableAbilities(void) const override;
-    const std::set<::Ball>& availableBalls(void) const override;
 
     void item(const Item& item, Pouch pouch, u16 slot) override;
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;

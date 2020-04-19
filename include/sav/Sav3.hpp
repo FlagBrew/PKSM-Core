@@ -35,11 +35,6 @@ class Sav3 : public Sav
 {
 protected:
     bool japanese;
-    Species maxSpecies(void) const override { return Species::Deoxys; } // Index 412
-    int maxMove(void) const override { return 354; }
-    int maxItem(void) const override { return 374; }
-    Ability maxAbility(void) const override { return Ability::TangledFeet; }
-    ::Ball maxBall(void) const override { return Ball::Premier; }
     int OFS_PCItem, OFS_PouchHeldItem, OFS_PouchKeyItem, OFS_PouchBalls, OFS_PouchTMHM, OFS_PouchBerry, eventFlag;
 
     std::shared_ptr<u8[]> Box; // TODO: Rename this?
@@ -171,11 +166,6 @@ public:
     int maxBoxes(void) const override { return 14; }
     size_t maxWondercards(void) const override { return 0; }
     Generation generation(void) const override { return Generation::THREE; }
-    const std::set<int>& availableItems(void) const override;
-    const std::set<int>& availableMoves(void) const override;
-    const std::set<Species>& availableSpecies(void) const override;
-    const std::set<Ability>& availableAbilities(void) const override;
-    const std::set<::Ball>& availableBalls(void) const override;
 
     void item(const Item& item, Pouch pouch, u16 slot) override;
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;

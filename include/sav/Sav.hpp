@@ -37,6 +37,7 @@
 #include "pkx/PKX.hpp"
 #include "sav/Item.hpp"
 #include "utils/DateTime.hpp"
+#include "utils/VersionTables.hpp"
 #include "utils/coretypes.h"
 #include "wcx/WCX.hpp"
 #include <map>
@@ -47,16 +48,6 @@
 
 class Sav
 {
-    // Friends so they can use the max functions, as these classes are guaranteed to know what they're doing
-    // This allows for some optimizations in transfer code
-    friend class PKX;
-    friend class PK4;
-    friend class PK5;
-    friend class PK6;
-    friend class PK7;
-    friend class PB7;
-    friend class PK8;
-
 protected:
     enum class Game
     {
@@ -102,38 +93,6 @@ protected:
     static std::unique_ptr<Sav> checkGBAType(std::shared_ptr<u8[]> dt);
     static std::unique_ptr<Sav> checkDSType(std::shared_ptr<u8[]> dt);
     static bool validSequence(std::shared_ptr<u8[]> dt, size_t offset);
-
-    virtual Species maxSpecies(void) const = 0;
-    virtual int maxMove(void) const        = 0;
-    virtual int maxItem(void) const        = 0;
-    virtual Ability maxAbility(void) const = 0;
-    virtual ::Ball maxBall(void) const     = 0;
-
-    template <typename T>
-    static inline void fill_set_consecutive(std::set<T>& set, const T& begin, const T& end)
-    {
-        if constexpr (std::is_integral_v<T>)
-        {
-            for (T i = begin; i <= end; i++)
-            {
-                set.insert(i);
-            }
-        }
-        else
-        {
-            static_assert(std::is_enum_v<typename T::EnumType>);
-            using INT = std::underlying_type_t<typename T::EnumType>;
-            for (INT i = INT(begin); i < INT(end); i++)
-            {
-                set.insert(T(i));
-            }
-        }
-    }
-
-    mutable std::set<int> items, moves;
-    mutable std::set<Species> species;
-    mutable std::set<Ability> abilities;
-    mutable std::set<::Ball> balls;
 
 public:
     enum Pouch
@@ -241,14 +200,20 @@ public:
     virtual void fixParty(void); // Has to be overridden by SavLGPE because it works stupidly
 
     virtual int maxSlot(void) const { return maxBoxes() * 30; }
-    virtual int maxBoxes(void) const                                = 0;
-    virtual size_t maxWondercards(void) const                       = 0;
-    virtual Generation generation(void) const                       = 0;
-    virtual const std::set<int>& availableItems(void) const         = 0;
-    virtual const std::set<int>& availableMoves(void) const         = 0;
-    virtual const std::set<Species>& availableSpecies(void) const   = 0;
-    virtual const std::set<Ability>& availableAbilities(void) const = 0;
-    virtual const std::set<::Ball>& availableBalls(void) const      = 0;
+    virtual int maxBoxes(void) const          = 0;
+    virtual size_t maxWondercards(void) const = 0;
+    virtual Generation generation(void) const = 0;
+    const std::set<int>& availableItems(void) const { return VersionTables::availableItems(version()); }
+    const std::set<int>& availableMoves(void) const { return VersionTables::availableMoves(version()); }
+    const std::set<Species>& availableSpecies(void) const { return VersionTables::availableSpecies(version()); }
+    const std::set<Ability>& availableAbilities(void) const { return VersionTables::availableAbilities(version()); }
+    const std::set<::Ball>& availableBalls(void) const { return VersionTables::availableBalls(version()); }
+    // Not guaranteed to be useful
+    int maxItem() const { return VersionTables::maxItem(version()); }
+    int maxMove() const { return VersionTables::maxMove(version()); }
+    Species maxSpecies() const { return VersionTables::maxSpecies(version()); }
+    Ability maxAbility() const { return VersionTables::maxAbility(version()); }
+    ::Ball maxBall() const { return VersionTables::maxBall(version()); }
 
     virtual void item(const Item& item, Pouch pouch, u16 slot)       = 0;
     virtual std::unique_ptr<Item> item(Pouch pouch, u16 slot) const  = 0;

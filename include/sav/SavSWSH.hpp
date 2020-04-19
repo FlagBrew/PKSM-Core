@@ -103,7 +103,6 @@ public:
     void dex(const PKX& pk) override;
     int dexSeen(void) const override;
     int dexCaught(void) const override;
-    const std::set<Species>& availableSpecies(void) const override;
 
     // Check whether gifts are stored, or whether some disgusting record system is used
     void mysteryGift(WCX& wc, int& pos) override;

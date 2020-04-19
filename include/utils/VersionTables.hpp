@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM-Core
- *   Copyright (C) 2016-2020 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2020 Bernardo Giordano, Admiral Fish, piepie62, Pk11
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,38 +24,29 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef SAV8_HPP
-#define SAV8_HPP
+#ifndef VERSION_TABLES_HPP
+#define VERSION_TABLES_HPP
 
-#include "personal/personal.hpp"
-#include "sav/Sav.hpp"
-#include "swshcrypto.hpp"
+#include "enums/Ability.hpp"
+#include "enums/Ball.hpp"
+#include "enums/GameVersion.hpp"
+#include "enums/Species.hpp"
+#include <set>
 
-class Sav8 : public Sav
+namespace VersionTables
 {
-protected:
-    std::vector<std::shared_ptr<SCBlock>> blocks;
+    const std::set<int>& availableItems(GameVersion version);
+    const std::set<int>& availableMoves(GameVersion version);
+    const std::set<Species>& availableSpecies(GameVersion version);
+    const std::set<Ability>& availableAbilities(GameVersion version);
+    const std::set<Ball>& availableBalls(GameVersion version);
 
-    int Items, BoxLayout, Misc, TrainerCard, PlayTime, Status;
-
-    bool encrypted = false;
-
-public:
-    Sav8(std::shared_ptr<u8[]> dt, size_t length);
-    virtual ~Sav8() {}
-
-    std::shared_ptr<SCBlock> getBlock(u32 key) const;
-
-    void finishEditing(void) override;
-    void beginEditing(void) override;
-
-    void trade(PKX& pk, const Date& date = Date::today()) const override;
-    std::unique_ptr<PKX> emptyPkm() const override;
-
-    int maxBoxes(void) const override { return 32; }
-    size_t maxWondercards(void) const override { return 1; } // Data not stored
-    int currentGiftAmount(void) const override { return 0; } // Data not stored
-    Generation generation(void) const override { return Generation::EIGHT; }
-};
+    // Not guaranteed to be useful
+    int maxItem(GameVersion version);
+    int maxMove(GameVersion version);
+    Species maxSpecies(GameVersion version);
+    Ability maxAbility(GameVersion version);
+    Ball maxBall(GameVersion version);
+}
 
 #endif

@@ -856,7 +856,7 @@ std::unique_ptr<WCX> SavSWSH::mysteryGift(int) const
 
 void SavSWSH::dex(const PKX& pk)
 {
-    if (u16 index = ((PK8&)pk).pokedexIndex())
+    if (u16 index = ((PK8&)pk).pokedexIndex() && !pk.egg())
     {
         u8* entryAddr  = getBlock(PokeDex)->decryptedData() + sizeof(DexEntry) * (index - 1);
         DexEntry entry = LittleEndian::convertTo<DexEntry>(entryAddr);
@@ -920,75 +920,4 @@ int SavSWSH::dexCaught() const
         }
     }
     return ret;
-}
-
-const std::set<Species>& SavSWSH::availableSpecies() const
-{
-    if (species.empty())
-    {
-        species = {Species::Bulbasaur, Species::Ivysaur, Species::Venusaur, Species::Charmander, Species::Charmeleon, Species::Charizard,
-            Species::Squirtle, Species::Wartortle, Species::Blastoise, Species::Caterpie, Species::Metapod, Species::Butterfree, Species::Pikachu,
-            Species::Raichu, Species::Clefairy, Species::Clefable, Species::Vulpix, Species::Ninetales, Species::Oddish, Species::Gloom,
-            Species::Vileplume, Species::Diglett, Species::Dugtrio, Species::Meowth, Species::Persian, Species::Growlithe, Species::Arcanine,
-            Species::Machop, Species::Machoke, Species::Machamp, Species::Ponyta, Species::Rapidash, Species::Slowpoke, Species::Farfetchd,
-            Species::Shellder, Species::Cloyster, Species::Gastly, Species::Haunter, Species::Gengar, Species::Onix, Species::Krabby,
-            Species::Kingler, Species::Hitmonlee, Species::Hitmonchan, Species::Koffing, Species::Weezing, Species::Rhyhorn, Species::Rhydon,
-            Species::Goldeen, Species::Seaking, Species::MrMime, Species::Magikarp, Species::Gyarados, Species::Lapras, Species::Ditto,
-            Species::Eevee, Species::Vaporeon, Species::Jolteon, Species::Flareon, Species::Snorlax, Species::Mewtwo, Species::Mew, Species::Hoothoot,
-            Species::Noctowl, Species::Chinchou, Species::Lanturn, Species::Pichu, Species::Cleffa, Species::Togepi, Species::Togetic, Species::Natu,
-            Species::Xatu, Species::Bellossom, Species::Sudowoodo, Species::Wooper, Species::Quagsire, Species::Espeon, Species::Umbreon,
-            Species::Wobbuffet, Species::Steelix, Species::Qwilfish, Species::Shuckle, Species::Sneasel, Species::Swinub, Species::Piloswine,
-            Species::Corsola, Species::Remoraid, Species::Octillery, Species::Delibird, Species::Mantine, Species::Tyrogue, Species::Hitmontop,
-            Species::Larvitar, Species::Pupitar, Species::Tyranitar, Species::Celebi, Species::Zigzagoon, Species::Linoone, Species::Lotad,
-            Species::Lombre, Species::Ludicolo, Species::Seedot, Species::Nuzleaf, Species::Shiftry, Species::Wingull, Species::Pelipper,
-            Species::Ralts, Species::Kirlia, Species::Gardevoir, Species::Nincada, Species::Ninjask, Species::Shedinja, Species::Sableye,
-            Species::Mawile, Species::Electrike, Species::Manectric, Species::Roselia, Species::Wailmer, Species::Wailord, Species::Torkoal,
-            Species::Trapinch, Species::Vibrava, Species::Flygon, Species::Lunatone, Species::Solrock, Species::Barboach, Species::Whiscash,
-            Species::Corphish, Species::Crawdaunt, Species::Baltoy, Species::Claydol, Species::Feebas, Species::Milotic, Species::Duskull,
-            Species::Dusclops, Species::Wynaut, Species::Snorunt, Species::Glalie, Species::Jirachi, Species::Budew, Species::Roserade,
-            Species::Combee, Species::Vespiquen, Species::Cherubi, Species::Cherrim, Species::Shellos, Species::Gastrodon, Species::Drifloon,
-            Species::Drifblim, Species::Stunky, Species::Skuntank, Species::Bronzor, Species::Bronzong, Species::Bonsly, Species::MimeJr,
-            Species::Munchlax, Species::Riolu, Species::Lucario, Species::Hippopotas, Species::Hippowdon, Species::Skorupi, Species::Drapion,
-            Species::Croagunk, Species::Toxicroak, Species::Mantyke, Species::Snover, Species::Abomasnow, Species::Weavile, Species::Rhyperior,
-            Species::Togekiss, Species::Leafeon, Species::Glaceon, Species::Mamoswine, Species::Gallade, Species::Dusknoir, Species::Froslass,
-            Species::Rotom, Species::Purrloin, Species::Liepard, Species::Munna, Species::Musharna, Species::Pidove, Species::Tranquill,
-            Species::Unfezant, Species::Roggenrola, Species::Boldore, Species::Gigalith, Species::Woobat, Species::Swoobat, Species::Drilbur,
-            Species::Excadrill, Species::Timburr, Species::Gurdurr, Species::Conkeldurr, Species::Tympole, Species::Palpitoad, Species::Seismitoad,
-            Species::Throh, Species::Sawk, Species::Cottonee, Species::Whimsicott, Species::Basculin, Species::Darumaka, Species::Darmanitan,
-            Species::Maractus, Species::Dwebble, Species::Crustle, Species::Scraggy, Species::Scrafty, Species::Sigilyph, Species::Yamask,
-            Species::Cofagrigus, Species::Trubbish, Species::Garbodor, Species::Minccino, Species::Cinccino, Species::Gothita, Species::Gothorita,
-            Species::Gothitelle, Species::Solosis, Species::Duosion, Species::Reuniclus, Species::Vanillite, Species::Vanillish, Species::Vanilluxe,
-            Species::Karrablast, Species::Escavalier, Species::Frillish, Species::Jellicent, Species::Joltik, Species::Galvantula, Species::Ferroseed,
-            Species::Ferrothorn, Species::Klink, Species::Klang, Species::Klinklang, Species::Elgyem, Species::Beheeyem, Species::Litwick,
-            Species::Lampent, Species::Chandelure, Species::Axew, Species::Fraxure, Species::Haxorus, Species::Cubchoo, Species::Beartic,
-            Species::Shelmet, Species::Accelgor, Species::Stunfisk, Species::Golett, Species::Golurk, Species::Pawniard, Species::Bisharp,
-            Species::Rufflet, Species::Braviary, Species::Vullaby, Species::Mandibuzz, Species::Heatmor, Species::Durant, Species::Deino,
-            Species::Zweilous, Species::Hydreigon, Species::Cobalion, Species::Terrakion, Species::Virizion, Species::Reshiram, Species::Zekrom,
-            Species::Kyurem, Species::Keldeo, Species::Bunnelby, Species::Diggersby, Species::Pancham, Species::Pangoro, Species::Espurr,
-            Species::Meowstic, Species::Honedge, Species::Doublade, Species::Aegislash, Species::Spritzee, Species::Aromatisse, Species::Swirlix,
-            Species::Slurpuff, Species::Inkay, Species::Malamar, Species::Binacle, Species::Barbaracle, Species::Helioptile, Species::Heliolisk,
-            Species::Sylveon, Species::Hawlucha, Species::Goomy, Species::Sliggoo, Species::Goodra, Species::Phantump, Species::Trevenant,
-            Species::Pumpkaboo, Species::Gourgeist, Species::Bergmite, Species::Avalugg, Species::Noibat, Species::Noivern, Species::Rowlet,
-            Species::Dartrix, Species::Decidueye, Species::Litten, Species::Torracat, Species::Incineroar, Species::Popplio, Species::Brionne,
-            Species::Primarina, Species::Grubbin, Species::Charjabug, Species::Vikavolt, Species::Cutiefly, Species::Ribombee, Species::Wishiwashi,
-            Species::Mareanie, Species::Toxapex, Species::Mudbray, Species::Mudsdale, Species::Dewpider, Species::Araquanid, Species::Morelull,
-            Species::Shiinotic, Species::Salandit, Species::Salazzle, Species::Stufful, Species::Bewear, Species::Bounsweet, Species::Steenee,
-            Species::Tsareena, Species::Oranguru, Species::Passimian, Species::Wimpod, Species::Golisopod, Species::Pyukumuku, Species::TypeNull,
-            Species::Silvally, Species::Turtonator, Species::Togedemaru, Species::Mimikyu, Species::Drampa, Species::Dhelmise, Species::Jangmoo,
-            Species::Hakamoo, Species::Kommoo, Species::Cosmog, Species::Cosmoem, Species::Solgaleo, Species::Lunala, Species::Necrozma,
-            Species::Marshadow, Species::Zeraora, Species::Meltan, Species::Melmetal, Species::Grookey, Species::Thwackey, Species::Rillaboom,
-            Species::Scorbunny, Species::Raboot, Species::Cinderace, Species::Sobble, Species::Drizzile, Species::Inteleon, Species::Skwovet,
-            Species::Greedent, Species::Rookidee, Species::Corvisquire, Species::Corviknight, Species::Blipbug, Species::Dottler, Species::Orbeetle,
-            Species::Nickit, Species::Thievul, Species::Gossifleur, Species::Eldegoss, Species::Wooloo, Species::Dubwool, Species::Chewtle,
-            Species::Drednaw, Species::Yamper, Species::Boltund, Species::Rolycoly, Species::Carkol, Species::Coalossal, Species::Applin,
-            Species::Flapple, Species::Appletun, Species::Silicobra, Species::Sandaconda, Species::Cramorant, Species::Arrokuda, Species::Barraskewda,
-            Species::Toxel, Species::Toxtricity, Species::Sizzlipede, Species::Centiskorch, Species::Clobbopus, Species::Grapploct, Species::Sinistea,
-            Species::Polteageist, Species::Hatenna, Species::Hattrem, Species::Hatterene, Species::Impidimp, Species::Morgrem, Species::Grimmsnarl,
-            Species::Obstagoon, Species::Perrserker, Species::Cursola, Species::Sirfetchd, Species::MrRime, Species::Runerigus, Species::Milcery,
-            Species::Alcremie, Species::Falinks, Species::Pincurchin, Species::Snom, Species::Frosmoth, Species::Stonjourner, Species::Eiscue,
-            Species::Indeedee, Species::Morpeko, Species::Cufant, Species::Copperajah, Species::Dracozolt, Species::Arctozolt, Species::Dracovish,
-            Species::Arctovish, Species::Duraludon, Species::Dreepy, Species::Drakloak, Species::Dragapult, Species::Zacian, Species::Zamazenta,
-            Species::Eternatus};
-    }
-    return species;
 }
