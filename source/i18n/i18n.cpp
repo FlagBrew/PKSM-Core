@@ -80,9 +80,9 @@ namespace i18n
     }();
 
     std::list<initCallback> initCallbacks = {
-        initAbility, initBall, initForm, initGame, initGeo, initGui, initType, initItem, initLocation, initMove, initNature, initSpecies};
+        initAbility, initBall, initForm, initGame, initGeo, initType, initItem, initLocation, initMove, initNature, initSpecies};
     std::list<exitCallback> exitCallbacks = {
-        exitAbility, exitBall, exitForm, exitGame, exitGeo, exitGui, exitType, exitItem, exitLocation, exitMove, exitNature, exitSpecies};
+        exitAbility, exitBall, exitForm, exitGame, exitGeo, exitType, exitItem, exitLocation, exitMove, exitNature, exitSpecies};
 
     void init(Language lang)
     {

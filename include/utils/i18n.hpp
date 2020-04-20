@@ -136,10 +136,6 @@ namespace i18n
     const std::map<u8, std::string>& rawSubregions(Language lang, u8 country);
     const std::string& country(Language lang, u8 value);
     const std::map<u8, std::string>& rawCountries(Language lang);
-
-    void initGui(Language lang);
-    void exitGui(Language lang);
-    const std::string& localize(Language lang, const std::string& index);
 };
 
 #endif
