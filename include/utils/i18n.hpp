@@ -84,8 +84,8 @@ namespace i18n
 
     void initForm(Language lang);
     void exitForm(Language lang);
-    const std::string& form(Language lang, Generation version, Species species, u8 form);
-    std::vector<std::string> forms(Language lang, Generation version, Species species);
+    const std::string& form(Language lang, GameVersion version, Species species, u8 form);
+    std::vector<std::string> forms(Language lang, GameVersion version, Species species);
     // No good raw interface for this
 
     void initGame(Language lang);

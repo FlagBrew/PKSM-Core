@@ -214,6 +214,7 @@ public:
     Species maxSpecies() const { return VersionTables::maxSpecies(version()); }
     Ability maxAbility() const { return VersionTables::maxAbility(version()); }
     ::Ball maxBall() const { return VersionTables::maxBall(version()); }
+    u8 formCount(Species s) const { return VersionTables::formCount(version(), s); }
 
     virtual void item(const Item& item, Pouch pouch, u16 slot)       = 0;
     virtual std::unique_ptr<Item> item(Pouch pouch, u16 slot) const  = 0;
@@ -222,9 +223,6 @@ public:
 
     u32 getLength() const { return length; }
     std::shared_ptr<u8[]> rawData() const { return data; }
-
-    // Personal interface
-    virtual u8 formCount(u16 species) const = 0;
 };
 
 #endif

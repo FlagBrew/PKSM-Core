@@ -47,6 +47,9 @@ namespace VersionTables
     Species maxSpecies(GameVersion version);
     Ability maxAbility(GameVersion version);
     Ball maxBall(GameVersion version);
+
+    // Takes version-specific forms into account
+    u8 formCount(GameVersion version, Species species);
 }
 
 #endif

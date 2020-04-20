@@ -592,7 +592,7 @@ int SavLGPE::dexSeen(void) const
     int ret = 0;
     for (const auto& species : availableSpecies())
     {
-        int forms = formCount(u16(species));
+        int forms = formCount(species);
         for (int form = 0; form < forms; form++)
         {
             int dexForms = form == 0 ? -1 : dexFormIndex(u16(species), forms, u16(VersionTables::maxSpecies(version())) - 1);

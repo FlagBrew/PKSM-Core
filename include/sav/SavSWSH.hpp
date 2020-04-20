@@ -107,8 +107,6 @@ public:
     // Check whether gifts are stored, or whether some disgusting record system is used
     void mysteryGift(WCX& wc, int& pos) override;
     std::unique_ptr<WCX> mysteryGift(int) const override;
-
-    u8 formCount(u16 species) const override { return PersonalSWSH::formCount(species); }
 };
 
 #endif

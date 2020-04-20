@@ -113,8 +113,6 @@ public:
     void item(const Item& item, Pouch pouch, u16 slot) override;
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
     std::vector<std::pair<Pouch, int>> pouches(void) const override;
-
-    u8 formCount(u16 species) const override { return PersonalXYORAS::formCount(species); }
 };
 
 #endif

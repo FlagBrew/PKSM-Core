@@ -24,7 +24,8 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "VersionTables.hpp"
+#include "utils/VersionTables.hpp"
+#include "personal/personal.hpp"
 #include <unordered_map>
 
 namespace
@@ -813,5 +814,86 @@ Ball VersionTables::maxBall(GameVersion version)
             return Ball::Beast;
         default:
             return Ball::None;
+    }
+}
+
+u8 VersionTables::formCount(GameVersion version, Species species)
+{
+    switch (version)
+    {
+        case GameVersion::R:
+        case GameVersion::S:
+        case GameVersion::FR:
+        case GameVersion::LG:
+        case GameVersion::E:
+            return PersonalRSFRLGE::formCount(u16(species));
+        case GameVersion::D:
+        case GameVersion::P:
+            if (species == Species::Rotom || species == Species::Giratina || species == Species::Shaymin)
+            {
+                return 1;
+            }
+        // falls through
+        case GameVersion::Pt:
+            if (species == Species::Pichu)
+            {
+                return 1;
+            }
+            // falls through
+        case GameVersion::HG:
+        case GameVersion::SS:
+            return PersonalDPPtHGSS::formCount(u16(species));
+        case GameVersion::B:
+        case GameVersion::W:
+            if (species == Species::Tornadus || species == Species::Thundurus || species == Species::Landorus || species == Species::Kyurem ||
+                species == Species::Keldeo)
+            {
+                return 1;
+            }
+        // falls through
+        case GameVersion::B2:
+        case GameVersion::W2:
+            return PersonalBWB2W2::formCount(u16(species));
+        case GameVersion::X:
+        case GameVersion::Y:
+            if (species == Species::Beedrill || species == Species::Pidgeot || species == Species::Pikachu || species == Species::Slowbro ||
+                species == Species::Steelix || species == Species::Sceptile || species == Species::Swampert || species == Species::Sableye ||
+                species == Species::Sharpedo || species == Species::Camerupt || species == Species::Altaria || species == Species::Glalie ||
+                species == Species::Salamence || species == Species::Metagross || species == Species::Kyogre || species == Species::Groudon ||
+                species == Species::Rayquaza || species == Species::Lopunny || species == Species::Gallade || species == Species::Audino ||
+                species == Species::Hoopa || species == Species::Diancie)
+            {
+                return 1;
+            }
+            // falls through
+        case GameVersion::OR:
+        case GameVersion::AS:
+            return PersonalXYORAS::formCount(u16(species));
+        case GameVersion::SN:
+        case GameVersion::MN:
+            if (species == Species::Lycanroc)
+            {
+                return 2;
+            }
+            if (species == Species::Pikachu)
+            {
+                return 6;
+            }
+            if (species == Species::Necrozma)
+            {
+                return 1;
+            }
+            // falls through
+        case GameVersion::US:
+        case GameVersion::UM:
+            return PersonalSMUSUM::formCount(u16(species));
+        case GameVersion::GE:
+        case GameVersion::GP:
+            return PersonalLGPE::formCount(u16(species));
+        case GameVersion::SW:
+        case GameVersion::SH:
+            return PersonalSWSH::formCount(u16(species));
+        default:
+            return 1;
     }
 }

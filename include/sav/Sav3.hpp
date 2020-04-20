@@ -171,8 +171,6 @@ public:
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
     std::vector<std::pair<Pouch, int>> pouches(void) const override;
 
-    u8 formCount(u16 species) const override { return PersonalRSFRLGE::formCount(species); }
-
     u16 rtcInitialDay(void) const;
     void rtcInitialDay(u16 v);
     u8 rtcInitialHour(void) const;

@@ -28,6 +28,7 @@
 #include "enums/Species.hpp"
 #include "i18n_internal.hpp"
 #include "personal/personal.hpp"
+#include "utils/VersionTables.hpp"
 
 namespace i18n
 {
@@ -265,36 +266,10 @@ namespace i18n
     static constexpr size_t Phony            = 202;
     static constexpr size_t Antique          = 203;
 
-    const std::vector<size_t> formIndices(Generation version, Species species)
+    const std::vector<size_t> formIndices(GameVersion version, Species species)
     {
         // TODO: Galarian and Gigantamax
-        u8 forms;
-        switch (version)
-        {
-            case Generation::THREE:
-                forms = PersonalRSFRLGE::formCount(u16(species));
-                break;
-            case Generation::FOUR:
-                forms = PersonalDPPtHGSS::formCount(u16(species));
-                break;
-            case Generation::FIVE:
-                forms = PersonalBWB2W2::formCount(u16(species));
-                break;
-            case Generation::SIX:
-                forms = PersonalXYORAS::formCount(u16(species));
-                break;
-            case Generation::SEVEN:
-                forms = PersonalSMUSUM::formCount(u16(species));
-                break;
-            case Generation::EIGHT:
-                forms = PersonalSWSH::formCount(u16(species));
-                break;
-            case Generation::LGPE:
-                forms = PersonalLGPE::formCount(u16(species));
-                break;
-            default:
-                return {};
-        }
+        u8 forms = VersionTables::formCount(version, species);
         if (forms == 1)
         {
             return {Default};
@@ -711,7 +686,7 @@ namespace i18n
         return ret;
     }
 
-    const std::string& form(Language lang, Generation version, Species species, u8 form)
+    const std::string& form(Language lang, GameVersion version, Species species, u8 form)
     {
         checkInitialized(lang);
         if (formss.contains(lang))
@@ -729,7 +704,7 @@ namespace i18n
         return emptyString;
     }
 
-    std::vector<std::string> forms(Language lang, Generation version, Species species)
+    std::vector<std::string> forms(Language lang, GameVersion version, Species species)
     {
         checkInitialized(lang);
         std::vector<std::string> ret;

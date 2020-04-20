@@ -266,7 +266,6 @@ public:
     inline u16 formStatIndex(void) const override { return PersonalSWSH::formStatIndex(formSpecies()); }
     inline u16 pokedexIndex(void) const { return PersonalSWSH::pokedexIndex(formSpecies()); }
     inline bool canLearnTR(u8 trID) const { return PersonalSWSH::canLearnTR(formSpecies(), trID); }
-    inline u8 formCount(void) const override { return PersonalSWSH::formCount(u16(species())); }
 };
 
 #endif

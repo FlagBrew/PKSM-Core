@@ -303,8 +303,8 @@ Sav::BadTransferReason Sav::invalidTransferReason(const PKX& pk) const
     {
         return BadTransferReason::SPECIES;
     }
-    else if (pk.alternativeForm() >= formCount(u16(pk.species())) &&
-             !((pk.species() == Species::Scatterbug || pk.species() == Species::Spewpa) && pk.alternativeForm() <= formCount(u16(Species::Vivillon))))
+    else if (pk.alternativeForm() >= formCount(pk.species()) &&
+             !((pk.species() == Species::Scatterbug || pk.species() == Species::Spewpa) && pk.alternativeForm() <= formCount(Species::Vivillon)))
     {
         return BadTransferReason::FORM;
     }

@@ -477,7 +477,7 @@ int Sav7::dexSeen(void) const
     for (const auto& spec : availableSpecies())
     {
         u16 species = u16(spec);
-        int forms   = formCount(species);
+        int forms   = formCount(spec);
         for (int form = 0; form < forms; form++)
         {
             int dexForms = form == 0 ? -1 : dexFormIndex(species, forms, u16(VersionTables::maxSpecies(version())) - 1);

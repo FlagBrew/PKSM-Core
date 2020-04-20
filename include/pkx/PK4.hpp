@@ -205,7 +205,6 @@ public:
     inline u8 expType(void) const override { return PersonalDPPtHGSS::expType(formSpecies()); }
     inline Ability abilities(u8 n) const override { return PersonalDPPtHGSS::ability(formSpecies(), n); }
     inline u16 formStatIndex(void) const override { return PersonalDPPtHGSS::formStatIndex(formSpecies()); }
-    inline u8 formCount(void) const override { return PersonalDPPtHGSS::formCount(u16(species())); }
 };
 
 #endif
