@@ -43,7 +43,7 @@ namespace i18n
     const std::string& game(Language lang, GameVersion val)
     {
         checkInitialized(lang);
-        if (games.contains(lang))
+        if (games.count(lang) > 0)
         {
             if (u8(val) < games[lang].size())
             {
@@ -56,7 +56,7 @@ namespace i18n
     const std::vector<std::string>& rawGames(Language lang)
     {
         checkInitialized(lang);
-        if (games.contains(lang))
+        if (games.count(lang) > 0)
         {
             return games[lang];
         }

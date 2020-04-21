@@ -42,7 +42,7 @@ namespace i18n
     const std::string& item(Language lang, u16 val)
     {
         checkInitialized(lang);
-        if (items.contains(lang))
+        if (items.count(lang) > 0)
         {
             if (val < items[lang].size())
             {
@@ -55,7 +55,7 @@ namespace i18n
     const std::vector<std::string>& rawItems(Language lang)
     {
         checkInitialized(lang);
-        if (items.contains(lang))
+        if (items.count(lang) > 0)
         {
             return items[lang];
         }

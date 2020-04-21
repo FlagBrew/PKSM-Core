@@ -671,7 +671,7 @@ namespace i18n
     const std::string& form(Language lang, GameVersion version, Species species, u8 form)
     {
         checkInitialized(lang);
-        if (formss.contains(lang))
+        if (formss.count(lang) > 0)
         {
             auto indices = formIndices(version, species);
             if (form < indices.size())
@@ -690,7 +690,7 @@ namespace i18n
     {
         checkInitialized(lang);
         std::vector<std::string> ret;
-        if (formss.contains(lang))
+        if (formss.count(lang) > 0)
         {
             auto indices = formIndices(version, species);
             for (const auto& index : indices)

@@ -60,48 +60,48 @@ namespace i18n
     const std::string& location(Language lang, Generation gen, u16 v)
     {
         checkInitialized(lang);
-        if (locationss.contains(lang))
+        if (locationss.count(lang) > 0)
         {
             switch (gen)
             {
                 case Generation::THREE:
-                    if (locationss[lang].locations3.contains(v))
+                    if (locationss[lang].locations3.count(v) > 0)
                     {
                         return locationss[lang].locations3[v];
                     }
                     break;
                 case Generation::FOUR:
-                    if (locationss[lang].locations4.contains(v))
+                    if (locationss[lang].locations4.count(v) > 0)
                     {
                         return locationss[lang].locations4[v];
                     }
                     break;
                 case Generation::FIVE:
-                    if (locationss[lang].locations5.contains(v))
+                    if (locationss[lang].locations5.count(v) > 0)
                     {
                         return locationss[lang].locations5[v];
                     }
                     break;
                 case Generation::SIX:
-                    if (locationss[lang].locations6.contains(v))
+                    if (locationss[lang].locations6.count(v) > 0)
                     {
                         return locationss[lang].locations6[v];
                     }
                     break;
                 case Generation::SEVEN:
-                    if (locationss[lang].locations7.contains(v))
+                    if (locationss[lang].locations7.count(v) > 0)
                     {
                         return locationss[lang].locations7[v];
                     }
                     break;
                 case Generation::LGPE:
-                    if (locationss[lang].locationsLGPE.contains(v))
+                    if (locationss[lang].locationsLGPE.count(v) > 0)
                     {
                         return locationss[lang].locationsLGPE[v];
                     }
                     break;
                 case Generation::EIGHT:
-                    if (locationss[lang].locations8.contains(v))
+                    if (locationss[lang].locations8.count(v) > 0)
                     {
                         return locationss[lang].locations8[v];
                     }
@@ -118,7 +118,7 @@ namespace i18n
     const std::map<u16, std::string>& rawLocations(Language lang, Generation g)
     {
         checkInitialized(lang);
-        if (locationss.contains(lang))
+        if (locationss.count(lang) > 0)
         {
             switch (g)
             {

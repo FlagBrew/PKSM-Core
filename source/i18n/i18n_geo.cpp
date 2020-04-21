@@ -67,11 +67,11 @@ namespace i18n
     const std::string& subregion(Language lang, u8 country, u8 v)
     {
         checkInitialized(lang);
-        if (subregions.contains(lang))
+        if (subregions.count(lang) > 0)
         {
-            if (subregions[lang].contains(country))
+            if (subregions[lang].count(country) > 0)
             {
-                if (subregions[lang][country].contains(v))
+                if (subregions[lang][country].count(v) > 0)
                 {
                     return subregions[lang][country][v];
                 }
@@ -83,9 +83,9 @@ namespace i18n
     const std::string& country(Language lang, u8 v)
     {
         checkInitialized(lang);
-        if (countries.contains(lang))
+        if (countries.count(lang) > 0)
         {
-            if (countries[lang].contains(v))
+            if (countries[lang].count(v) > 0)
             {
                 return countries[lang][v];
             }
@@ -96,7 +96,7 @@ namespace i18n
     const std::map<u8, std::string>& rawCountries(Language lang)
     {
         checkInitialized(lang);
-        if (countries.contains(lang))
+        if (countries.count(lang) > 0)
         {
             return countries[lang];
         }
@@ -106,9 +106,9 @@ namespace i18n
     const std::map<u8, std::string>& rawSubregions(Language lang, u8 country)
     {
         checkInitialized(lang);
-        if (subregions.contains(lang))
+        if (subregions.count(lang) > 0)
         {
-            if (subregions[lang].contains(country))
+            if (subregions[lang].count(country) > 0)
             {
                 return subregions[lang][country];
             }

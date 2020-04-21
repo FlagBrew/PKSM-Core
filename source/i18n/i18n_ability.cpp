@@ -43,7 +43,7 @@ namespace i18n
     const std::string& ability(Language lang, Ability val)
     {
         checkInitialized(lang);
-        if (abilities.contains(lang))
+        if (abilities.count(lang) > 0)
         {
             if (size_t(val) < abilities[lang].size())
             {
@@ -56,7 +56,7 @@ namespace i18n
     const std::vector<std::string>& rawAbilities(Language lang)
     {
         checkInitialized(lang);
-        if (abilities.contains(lang))
+        if (abilities.count(lang) > 0)
         {
             return abilities[lang];
         }

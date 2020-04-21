@@ -43,7 +43,7 @@ namespace i18n
     const std::string& species(Language lang, Ribbon val)
     {
         checkInitialized(lang);
-        if (ribbons.contains(lang))
+        if (ribbons.count(lang) > 0)
         {
             if (size_t(val) < ribbons[lang].size())
             {
@@ -56,7 +56,7 @@ namespace i18n
     const std::vector<std::string>& rawRibbons(Language lang)
     {
         checkInitialized(lang);
-        if (ribbons.contains(lang))
+        if (ribbons.count(lang) > 0)
         {
             return ribbons[lang];
         }

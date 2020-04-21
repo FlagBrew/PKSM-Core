@@ -26,6 +26,7 @@
 
 #include "i18n_internal.hpp"
 #include "utils/_map_macro.hpp"
+#include <algorithm>
 #include <list>
 
 #ifdef _PKSMCORE_EXTRA_LANGUAGES

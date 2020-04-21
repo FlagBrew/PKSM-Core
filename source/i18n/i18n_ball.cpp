@@ -43,7 +43,7 @@ namespace i18n
     const std::string& ball(Language lang, Ball val)
     {
         checkInitialized(lang);
-        if (balls.contains(lang))
+        if (balls.count(lang) > 0)
         {
             if (size_t(val) < balls[lang].size())
             {
@@ -56,7 +56,7 @@ namespace i18n
     const std::vector<std::string>& rawBalls(Language lang)
     {
         checkInitialized(lang);
-        if (balls.contains(lang))
+        if (balls.count(lang) > 0)
         {
             return balls[lang];
         }

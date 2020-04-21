@@ -42,7 +42,7 @@ namespace i18n
     const std::string& move(Language lang, u16 val)
     {
         checkInitialized(lang);
-        if (moves.contains(lang))
+        if (moves.count(lang) > 0)
         {
             if (val < moves[lang].size())
             {
@@ -55,7 +55,7 @@ namespace i18n
     const std::vector<std::string>& rawMoves(Language lang)
     {
         checkInitialized(lang);
-        if (moves.contains(lang))
+        if (moves.count(lang) > 0)
         {
             return moves[lang];
         }

@@ -280,7 +280,7 @@ int Sav5::dexFormIndex(int species, int formct) const
 
 void Sav5::dex(const PKX& pk)
 {
-    if (!availableSpecies().contains(pk.species()) || pk.egg())
+    if (!availableSpecies().count(pk.species()) > 0 || pk.egg())
         return;
 
     const int brSize = 0x54;

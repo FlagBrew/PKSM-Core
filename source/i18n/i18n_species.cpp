@@ -43,7 +43,7 @@ namespace i18n
     const std::string& species(Language lang, Species val)
     {
         checkInitialized(lang);
-        if (speciess.contains(lang))
+        if (speciess.count(lang) > 0)
         {
             if (size_t(val) < speciess[lang].size())
             {
@@ -56,7 +56,7 @@ namespace i18n
     const std::vector<std::string>& rawSpecies(Language lang)
     {
         checkInitialized(lang);
-        if (speciess.contains(lang))
+        if (speciess.count(lang) > 0)
         {
             return speciess[lang];
         }

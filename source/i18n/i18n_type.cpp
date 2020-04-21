@@ -43,7 +43,7 @@ namespace i18n
     const std::string& type(Language lang, Type val)
     {
         checkInitialized(lang);
-        if (types.contains(lang))
+        if (types.count(lang) > 0)
         {
             if (size_t(val) < types[lang].size())
             {
@@ -56,7 +56,7 @@ namespace i18n
     const std::vector<std::string>& rawTypes(Language lang)
     {
         checkInitialized(lang);
-        if (types.contains(lang))
+        if (types.count(lang) > 0)
         {
             return types[lang];
         }
