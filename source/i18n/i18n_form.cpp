@@ -32,9 +32,6 @@
 
 namespace i18n
 {
-    std::atomic<LangState> jsonState = LangState::UNINITIALIZED;
-    nlohmann::json formJson;
-
     std::unordered_map<Language, std::vector<std::string>> formss;
 
     void initForm(Language lang)
@@ -42,21 +39,6 @@ namespace i18n
         std::vector<std::string> vec;
         load(lang, "/forms.txt", vec);
         formss.insert_or_assign(lang, std::move(vec));
-
-        if (jsonState == LangState::UNINITIALIZED)
-        {
-            jsonState = LangState::INITIALIZING;
-            FILE* in  = fopen(_PKSMCORE_LANG_FOLDER "forms.json", "rt");
-            if (in)
-            {
-                if (!ferror(in))
-                {
-                    formJson = nlohmann::json::parse(in, nullptr, false);
-                }
-                fclose(in);
-            }
-            jsonState = LangState::INITIALIZED;
-        }
     }
 
     void exitForm(Language lang) { formss.erase(lang); }

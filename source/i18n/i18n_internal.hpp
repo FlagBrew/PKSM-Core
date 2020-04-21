@@ -28,7 +28,6 @@
 #define I18N_INTERNAL_HPP
 
 #include "enums/Language.hpp"
-#include "nlohmann/json.hpp"
 #include "utils/coretypes.h"
 #include "utils/i18n.hpp"
 #include "utils/io.hpp"
@@ -117,7 +116,6 @@ namespace i18n
             free(data);
         }
     }
-    void load(Language lang, const std::string& name, nlohmann::json& json);
 }
 
 #endif

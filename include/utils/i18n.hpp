@@ -36,7 +36,6 @@
 #include "enums/Ribbon.hpp"
 #include "enums/Species.hpp"
 #include "enums/Type.hpp"
-#include "nlohmann/json_fwd.hpp"
 #include "utils/coretypes.h"
 #include <map>
 #include <string>
