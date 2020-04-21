@@ -107,6 +107,8 @@ namespace i18n
                     }
                     break;
                 case Generation::UNUSED:
+                case Generation::ONE:
+                case Generation::TWO:
                     break;
             }
         }
@@ -135,6 +137,8 @@ namespace i18n
                 case Generation::EIGHT:
                     return locationss[lang].locations8;
                 case Generation::UNUSED:
+                case Generation::ONE:
+                case Generation::TWO:
                     break;
             }
         }

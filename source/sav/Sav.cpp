@@ -212,6 +212,8 @@ std::unique_ptr<PKX> Sav::transfer(const PKX& pk)
         case Generation::EIGHT:
             return pk.convertToG8(*this);
         case Generation::UNUSED:
+        case Generation::ONE:
+        case Generation::TWO:
             return nullptr;
     }
     return nullptr;
@@ -255,6 +257,8 @@ u32 Sav::displayTID() const
         case Generation::EIGHT:
             return (u32)(SID() << 16 | TID()) % 1000000;
         case Generation::UNUSED:
+        case Generation::ONE:
+        case Generation::TWO:
             return 0;
     }
     return 0;
@@ -274,6 +278,8 @@ u32 Sav::displaySID() const
         case Generation::EIGHT:
             return (u32)(SID() << 16 | TID()) / 1000000;
         case Generation::UNUSED:
+        case Generation::ONE:
+        case Generation::TWO:
             return 0;
     }
     return 0;

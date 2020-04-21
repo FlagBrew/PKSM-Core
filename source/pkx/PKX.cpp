@@ -354,6 +354,8 @@ u32 PKX::getRandomPID(Species species, Gender gender, GameVersion originGame, Na
             genderTypeFinder = PersonalSWSH::gender;
             break;
         case Generation::UNUSED:
+        case Generation::ONE:
+        case Generation::TWO:
             return 0;
     }
     if (!genderTypeFinder)
