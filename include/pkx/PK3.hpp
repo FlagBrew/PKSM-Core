@@ -72,8 +72,8 @@ public:
 
     std::unique_ptr<PKX> clone(void) const override;
 
-    Generation generation(void) const;
-    bool isEncrypted(void) const;
+    Generation generation(void) const override;
+    bool isEncrypted(void) const override;
     bool isParty(void) const override { return getLength() == PARTY_LENGTH; }
     void encrypt(void) override;
     void decrypt(void) override;
