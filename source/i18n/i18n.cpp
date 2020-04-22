@@ -47,29 +47,24 @@
         return Language::lang;
 #define TO_FOLDER_CASE(lang)                                                                                                                         \
     case Language::lang:                                                                                                                             \
-        return std::string(toLower(#lang));
+        return toLower(#lang);
 
 namespace
 {
-#if __cplusplus > 201703L
-    constexpr std::string_view toLower(std::string_view str)
-#else
-    std::string_view toLower(std::string_view str)
-#endif
+    std::string toLower(const std::string& str)
     {
-        char ret[str.size() + 1] = {'\0'};
-        char upper[]             = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        char lower[]             = "abcdefghijklmnopqrstuvwxyz";
-        for (size_t i = 0; i < str.size(); i++)
+        std::string ret               = str;
+        static constexpr char upper[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        static constexpr char lower[] = "abcdefghijklmnopqrstuvwxyz";
+        for (size_t i = 0; i < ret.size(); i++)
         {
-            auto found = std::find(std::begin(upper), std::end(upper), str[i]);
+            auto found = std::find(std::begin(upper), std::end(upper), ret[i]);
             if (found != std::end(upper))
             {
                 ret[i] = lower[std::distance(std::begin(upper), found)];
             }
         }
-        ret[str.size()] = '\0';
-        return std::string_view(ret);
+        return ret;
     }
 }
 namespace i18n
