@@ -518,7 +518,7 @@ void SavLGPE::dex(const PKX& pk)
     int PokeDex              = 0x2A00;
     int PokeDexLanguageFlags = PokeDex + 0x550;
 
-    if (!availableSpecies().count(pk.species()) > 0 || pk.egg())
+    if (!(availableSpecies().count(pk.species()) > 0) || pk.egg())
         return;
 
     int bit    = n - 1;

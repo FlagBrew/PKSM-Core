@@ -371,7 +371,7 @@ void Sav4::partyCount(u8 v)
 
 void Sav4::dex(const PKX& pk)
 {
-    if (!availableSpecies().count(pk.species()) > 0 || pk.egg())
+    if (!(availableSpecies().count(pk.species()) > 0) || pk.egg())
     {
         return;
     }

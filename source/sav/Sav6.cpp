@@ -500,7 +500,7 @@ int Sav6::dexFormIndex(int species, int formct) const
 
 void Sav6::dex(const PKX& pk)
 {
-    if (!availableSpecies().count(pk.species()) > 0 || pk.egg())
+    if (!(availableSpecies().count(pk.species()) > 0) || pk.egg())
         return;
 
     const int brSize = 0x60;

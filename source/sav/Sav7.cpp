@@ -402,7 +402,7 @@ bool Sav7::sanitizeFormsToIterate(Species species, int& fs, int& fe, int formIn)
 
 void Sav7::dex(const PKX& pk)
 {
-    if (!availableSpecies().count(pk.species()) > 0 || pk.egg())
+    if (!(availableSpecies().count(pk.species()) > 0) || pk.egg())
         return;
 
     int bit    = u16(pk.species()) - 1;
