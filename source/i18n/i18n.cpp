@@ -107,7 +107,9 @@ namespace i18n
             {
                 while (lang.second != LangState::INITIALIZED)
                 {
-                    usleep(100);
+                    timespec time = {0, 100000};
+                    timespec rem;
+                    nanosleep(&time, &rem);
                 }
 
                 for (auto& callback : exitCallbacks)

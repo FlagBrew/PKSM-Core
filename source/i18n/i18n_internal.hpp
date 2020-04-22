@@ -32,7 +32,7 @@
 #include "utils/i18n.hpp"
 #include "utils/io.hpp"
 #include <atomic>
-#include <unistd.h>
+#include <time.h>
 #include <unordered_map>
 
 #ifndef _PKSMCORE_CONFIGURED
@@ -72,7 +72,9 @@ namespace i18n
         }
         while (found->second != LangState::INITIALIZED)
         {
-            usleep(100);
+            timespec time = {0, 100000};
+            timespec rem;
+            nanosleep(&time, &rem);
         }
     }
 
