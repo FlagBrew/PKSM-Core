@@ -836,13 +836,13 @@ Ability PK3::ability() const
 }
 void PK3::ability(Ability v)
 {
-    if (v == abilities(1))
-    {
-        abilityBit(true);
-    }
-    else if (v == abilities(0))
+    if (v == abilities(0))
     {
         abilityBit(false);
+    }
+    else if (v == abilities(1))
+    {
+        abilityBit(true);
     }
 }
 void PK3::setAbility(u8 num)
