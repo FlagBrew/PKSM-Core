@@ -322,7 +322,7 @@ u8 WC7::metLevel(void) const
 
 std::string WC7::otName(void) const
 {
-    return LittleEndian::convertTo<u16>(data + 0xB6) != 0 ? StringUtils::getString(data, 0xB6, 12) : "Your OT Name";
+    return StringUtils::getString(data, 0xB6, 12);
 }
 
 u8 WC7::level(void) const

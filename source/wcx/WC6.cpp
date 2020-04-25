@@ -298,7 +298,7 @@ u8 WC6::metLevel(void) const
 
 std::string WC6::otName(void) const
 {
-    return LittleEndian::convertTo<u16>(data + 0xB6) != 0 ? StringUtils::getString(data, 0xB6, 12) : "Your OT Name";
+    return StringUtils::getString(data, 0xB6, 12);
 }
 
 u8 WC6::level(void) const

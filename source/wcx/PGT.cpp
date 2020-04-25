@@ -244,7 +244,7 @@ Gender PGT::gender(void) const
 
 std::string PGT::otName(void) const
 {
-    return !(flags() == 0 && type() != 1) ? pokemonData->otName() : "Your OT Name";
+    return !(flags() == 0 && type() != 1) ? pokemonData->otName() : "";
 }
 
 u8 PGT::level(void) const

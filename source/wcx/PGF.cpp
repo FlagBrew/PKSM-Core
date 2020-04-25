@@ -228,8 +228,7 @@ Gender PGF::gender(void) const
 
 std::string PGF::otName(void) const
 {
-    char16_t firstChar = LittleEndian::convertTo<char16_t>(data + 0x4A);
-    return firstChar != 0xFFFF ? StringUtils::getString(data, 0x4A, 8, u'\uFFFF') : "Your OT Name";
+    return StringUtils::getString(data, 0x4A, 8, u'\uFFFF');
 }
 
 u8 PGF::level(void) const
