@@ -73,8 +73,7 @@ namespace i18n
         while (found->second != LangState::INITIALIZED)
         {
             timespec time = {0, 100000};
-            timespec rem;
-            nanosleep(&time, &rem);
+            nanosleep(&time, nullptr);
         }
     }
 
