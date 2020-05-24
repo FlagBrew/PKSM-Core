@@ -57,16 +57,13 @@ SavUSUM::SavUSUM(std::shared_ptr<u8[]> dt) : Sav7(dt, 0x6CC00)
 void SavUSUM::resign(void)
 {
     constexpr u8 blockCount = 39;
-    u8* tmp                 = new u8[*std::max_element(chklen, chklen + blockCount)];
     constexpr u32 csoff     = 0x6CA1A;
 
     for (u8 i = 0; i < blockCount; i++)
     {
-        std::copy(&data[chkofs[i]], &data[chkofs[i] + chklen[i]], tmp);
-        LittleEndian::convertFrom<u16>(&data[csoff + i * 8], check16(tmp, LittleEndian::convertTo<u16>(&data[csoff + i * 8 - 2]), chklen[i]));
+        LittleEndian::convertFrom<u16>(
+            &data[csoff + i * 8], check16(&data[chkofs[i]], LittleEndian::convertTo<u16>(&data[csoff + i * 8 - 2]), chklen[i]));
     }
-
-    delete[] tmp;
 
     const u32 checksumTableOffset = 0x6CA00;
     const u32 checksumTableLength = 0x150;

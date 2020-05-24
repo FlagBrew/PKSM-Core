@@ -52,17 +52,13 @@ SavB2W2::SavB2W2(std::shared_ptr<u8[]> dt) : Sav5(dt, 0x80000)
 void SavB2W2::resign(void)
 {
     const u8 blockCount = 74;
-    u8* tmp             = new u8[*std::max_element(lengths, lengths + blockCount)];
 
     for (u8 i = 0; i < blockCount; i++)
     {
-        std::copy(&data[blockOfs[i]], &data[blockOfs[i] + lengths[i]], tmp);
-        u16 cs = ccitt16(tmp, lengths[i]);
+        u16 cs = ccitt16(&data[blockOfs[i]], lengths[i]);
         LittleEndian::convertFrom<u16>(&data[chkMirror[i]], cs);
         LittleEndian::convertFrom<u16>(&data[chkofs[i]], cs);
     }
-
-    delete[] tmp;
 }
 
 std::map<Sav::Pouch, std::vector<int>> SavB2W2::validItems() const

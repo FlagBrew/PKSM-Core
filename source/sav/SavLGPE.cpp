@@ -173,16 +173,12 @@ u16 SavLGPE::check16(u8* buf, u32 len)
 void SavLGPE::resign()
 {
     const u8 blockCount = 21;
-    u8* tmp             = new u8[*std::max_element(chklen, chklen + blockCount)];
     const u32 csoff     = 0xB861A;
 
     for (u8 i = 0; i < blockCount; i++)
     {
-        std::copy(&data[chkofs[i]], &data[chkofs[i] + chklen[i]], tmp);
-        LittleEndian::convertFrom<u16>(&data[csoff + i * 8], check16(tmp, chklen[i]));
+        LittleEndian::convertFrom<u16>(&data[csoff + i * 8], check16(&data[chkofs[i]], chklen[i]));
     }
-
-    delete[] tmp;
 }
 
 u16 SavLGPE::TID() const

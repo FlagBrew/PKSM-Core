@@ -145,7 +145,6 @@ void Sav4::SBO(void)
 
 void Sav4::resign(void)
 {
-    u8* tmp = new u8[0x12300];
     u16 cs;
     // start, end, chkoffset
     int general[3] = {
@@ -153,15 +152,11 @@ void Sav4::resign(void)
     int storage[3] = {game == Game::DP ? 0xC100 : game == Game::Pt ? 0xCF2C : 0xF700,
         game == Game::DP ? 0x1E2CC : game == Game::Pt ? 0x1F0FC : 0x21A00, game == Game::DP ? 0x1E2DE : game == Game::Pt ? 0x1F10E : 0x21A0E};
 
-    std::copy(&data[gbo + general[0]], &data[gbo + general[1]], tmp);
-    cs = ccitt16(tmp, general[1] - general[0]);
+    cs = ccitt16(&data[gbo + general[0]], general[1] - general[0]);
     LittleEndian::convertFrom<u16>(&data[gbo + general[2]], cs);
 
-    std::copy(&data[sbo + storage[0]], &data[sbo + storage[1]], tmp);
-    cs = ccitt16(tmp, storage[1] - storage[0]);
+    cs = ccitt16(&data[sbo + storage[0]], storage[1] - storage[0]);
     LittleEndian::convertFrom<u16>(&data[sbo + storage[2]], cs);
-
-    delete[] tmp;
 }
 
 u16 Sav4::TID(void) const

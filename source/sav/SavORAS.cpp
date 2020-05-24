@@ -54,16 +54,12 @@ SavORAS::SavORAS(std::shared_ptr<u8[]> dt) : Sav6(dt, 0x76000)
 void SavORAS::resign(void)
 {
     constexpr u8 blockCount = 58;
-    u8* tmp                 = new u8[*std::max_element(chklen, chklen + blockCount)];
     constexpr u32 csoff     = 0x75E1A;
 
     for (u8 i = 0; i < blockCount; i++)
     {
-        std::copy(&data[chkofs[i]], &data[chkofs[i] + chklen[i]], tmp);
-        LittleEndian::convertFrom<u16>(&data[csoff + i * 8], ccitt16(tmp, chklen[i]));
+        LittleEndian::convertFrom<u16>(&data[csoff + i * 8], ccitt16(&data[chkofs[i]], chklen[i]));
     }
-
-    delete[] tmp;
 }
 
 std::map<Sav::Pouch, std::vector<int>> SavORAS::validItems() const

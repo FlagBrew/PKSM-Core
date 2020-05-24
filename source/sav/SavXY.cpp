@@ -54,16 +54,12 @@ SavXY::SavXY(std::shared_ptr<u8[]> dt) : Sav6(dt, 0x65600)
 void SavXY::resign(void)
 {
     static constexpr u8 blockCount = 55;
-    u8* tmp                        = new u8[*std::max_element(chklen, chklen + blockCount)];
     static constexpr u32 csoff     = 0x6541A;
 
     for (u8 i = 0; i < blockCount; i++)
     {
-        std::copy(&data[chkofs[i]], &data[chkofs[i] + chklen[i]], tmp);
-        LittleEndian::convertFrom<u16>(&data[csoff + i * 8], ccitt16(tmp, chklen[i]));
+        LittleEndian::convertFrom<u16>(&data[csoff + i * 8], ccitt16(&data[chkofs[i]], chklen[i]));
     }
-
-    delete[] tmp;
 }
 
 std::map<Sav::Pouch, std::vector<int>> SavXY::validItems() const
