@@ -31,7 +31,7 @@
 #include "utils/utils.hpp"
 #include "wcx/PGT.hpp"
 
-static Sav4::CountType Sav4::compareCounters(u32 c1, u32 c2)
+Sav4::CountType Sav4::compareCounters(u32 c1, u32 c2)
 {
     if (c1 == 0xFFFFFFFF && c2 == 0)
     {
