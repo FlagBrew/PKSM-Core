@@ -49,6 +49,15 @@ protected:
     void setForms(std::vector<u8> forms, Species species);
     u32 setDexFormValues(std::vector<u8> forms, u8 bitsPerForm, u8 readCt);
 
+    enum class CountType
+    {
+        FIRST,
+        SECOND,
+        SAME
+    };
+
+    static CountType compareCounters(u32 c1, u32 c2);
+
 public:
     Sav4(std::shared_ptr<u8[]> data, u32 length) : Sav(data, length) {}
     virtual ~Sav4() {}

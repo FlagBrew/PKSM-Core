@@ -31,8 +31,8 @@ SavDP::SavDP(std::shared_ptr<u8[]> dt) : Sav4(dt, 0x80000)
 {
     game = Game::DP;
 
-    GBOOffset = 0xC0F0;
-    SBOOffset = 0x1E2D0;
+    GBOOffset = 0xC0EC;
+    SBOOffset = 0x1E2CC;
     GBO();
     SBO();
 

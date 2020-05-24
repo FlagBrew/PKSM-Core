@@ -31,8 +31,8 @@ SavHGSS::SavHGSS(std::shared_ptr<u8[]> dt) : Sav4(dt, 0x80000)
 {
     game = Game::HGSS;
 
-    GBOOffset = 0xF618;
-    SBOOffset = 0x21A00;
+    GBOOffset = 0xF614;
+    SBOOffset = 0x219FC;
     GBO();
     SBO();
 

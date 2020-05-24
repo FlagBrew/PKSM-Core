@@ -31,8 +31,8 @@ SavPT::SavPT(std::shared_ptr<u8[]> dt) : Sav4(dt, 0x80000)
 {
     game = Game::Pt;
 
-    GBOOffset = 0xCF1C;
-    SBOOffset = 0x1F100;
+    GBOOffset = 0xCF18;
+    SBOOffset = 0x1F0FC;
     GBO();
     SBO();
 

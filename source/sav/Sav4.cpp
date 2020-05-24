@@ -31,6 +31,26 @@
 #include "utils/utils.hpp"
 #include "wcx/PGT.hpp"
 
+static Sav4::CountType Sav4::compareCounters(u32 c1, u32 c2)
+{
+    if (c1 == 0xFFFFFFFF && c2 == 0)
+    {
+        return CountType::SECOND;
+    }
+    else if (c1 > c2)
+    {
+        return CountType::FIRST;
+    }
+    else if (c2 > c1)
+    {
+        return CountType::SECOND;
+    }
+    else
+    {
+        return CountType::SAME;
+    }
+}
+
 void Sav4::GBO(void)
 {
     int ofs = GBOOffset;
@@ -51,9 +71,30 @@ void Sav4::GBO(void)
         return;
     }
 
-    u16 c1 = LittleEndian::convertTo<u16>(&data[ofs]), c2 = LittleEndian::convertTo<u16>(&data[ofs + 0x40000]);
+    u32 major1 = LittleEndian::convertTo<u32>(&data[ofs]), major2 = LittleEndian::convertTo<u32>(&data[ofs + 0x40000]),
+        minor1 = LittleEndian::convertTo<u32>(&data[ofs + 4]), minor2 = LittleEndian::convertTo<u32>(&data[ofs + 0x40004]);
 
-    gbo = (c1 >= c2) ? 0 : 0x40000;
+    CountType cmp = compareCounters(major1, major2);
+    if (cmp == CountType::FIRST)
+    {
+        gbo = 0;
+    }
+    else if (cmp == CountType::SECOND)
+    {
+        gbo = 0x40000;
+    }
+    else
+    {
+        cmp = compareCounters(minor1, minor2);
+        if (cmp == CountType::SECOND)
+        {
+            gbo = 0x40000;
+        }
+        else
+        {
+            gbo = 0;
+        }
+    }
 }
 
 void Sav4::SBO(void)
@@ -76,9 +117,30 @@ void Sav4::SBO(void)
         return;
     }
 
-    u16 c1 = LittleEndian::convertTo<u16>(&data[ofs]), c2 = LittleEndian::convertTo<u16>(&data[ofs + 0x40000]);
+    u32 major1 = LittleEndian::convertTo<u32>(&data[ofs]), major2 = LittleEndian::convertTo<u32>(&data[ofs + 0x40000]),
+        minor1 = LittleEndian::convertTo<u32>(&data[ofs + 4]), minor2 = LittleEndian::convertTo<u32>(&data[ofs + 0x40004]);
 
-    sbo = (c1 >= c2) ? 0 : 0x40000;
+    CountType cmp = compareCounters(major1, major2);
+    if (cmp == CountType::FIRST)
+    {
+        sbo = 0;
+    }
+    else if (cmp == CountType::SECOND)
+    {
+        sbo = 0x40000;
+    }
+    else
+    {
+        cmp = compareCounters(minor1, minor2);
+        if (cmp == CountType::SECOND)
+        {
+            sbo = 0x40000;
+        }
+        else
+        {
+            sbo = 0;
+        }
+    }
 }
 
 void Sav4::resign(void)
