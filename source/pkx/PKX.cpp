@@ -90,7 +90,10 @@ PKX::PKX(PKX&& pk)
 
 PKX& PKX::operator=(const PKX& pk)
 {
-    delete[] data;
+    if (!directAccess && data)
+    {
+        delete[] data;
+    }
     directAccess = false;
     data         = new u8[length = pk.getLength()];
     std::copy(pk.data, pk.data + length, data);
@@ -99,7 +102,10 @@ PKX& PKX::operator=(const PKX& pk)
 
 PKX& PKX::operator=(PKX&& pk)
 {
-    delete[] data;
+    if (!directAccess && data)
+    {
+        delete[] data;
+    }
     data         = pk.data;
     length       = pk.length;
     directAccess = pk.directAccess;
