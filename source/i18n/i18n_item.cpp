@@ -34,6 +34,10 @@ namespace i18n
     {
         std::vector<std::string> vec;
         load(lang, "/items.txt", vec);
+
+        // HM07 & HM08
+        vec[426] = vec[425].substr(0, vec[425].size() - 1) + '7';
+        vec[427] = vec[425].substr(0, vec[425].size() - 1) + '8';
         items.insert_or_assign(lang, std::move(vec));
     }
 
