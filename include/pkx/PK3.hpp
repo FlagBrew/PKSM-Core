@@ -121,6 +121,7 @@ public:
     void heldItem3(u16 v);
     u16 heldItem(void) const override;
     void heldItem(u16 v) override;
+    void heldItem(const Item& item) override;
     u32 experience(void) const override;
     void experience(u32 v) override;
     u8 otFriendship(void) const override;

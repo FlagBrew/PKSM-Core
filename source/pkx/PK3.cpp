@@ -352,6 +352,18 @@ void PK3::heldItem(u16 v)
     heldItem3(ItemConverter::nationalToG3(v));
 }
 
+void PK3::heldItem(const Item& item)
+{
+    if (item.generation() == Generation::THREE)
+    {
+        heldItem3(((Item3*)&item)->id3());
+    }
+    else
+    {
+        heldItem(item.id());
+    }
+}
+
 u32 PK3::experience(void) const
 {
     return LittleEndian::convertTo<u32>(data + 0x24);

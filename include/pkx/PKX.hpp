@@ -158,7 +158,7 @@ public:
     virtual void species(Species v)            = 0;
     virtual u16 heldItem(void) const           = 0;
     virtual void heldItem(u16 v)               = 0;
-    void heldItem(const Item& item) { heldItem(item.id()); }
+    virtual void heldItem(const Item& item) { heldItem(item.id()); }
     virtual u16 TID(void) const               = 0;
     virtual void TID(u16 v)                   = 0;
     virtual u16 SID(void) const               = 0;
