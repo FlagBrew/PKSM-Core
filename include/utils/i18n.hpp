@@ -97,6 +97,11 @@ namespace i18n
     const std::string& item(Language lang, u16 value);
     const std::vector<std::string>& rawItems(Language lang);
 
+    void initItem3(Language lang);
+    void exitItem3(Language lang);
+    const std::string& item3(Language lang, u16 value);
+    const std::vector<std::string>& rawItems3(Language lang);
+
     void initMove(Language lang);
     void exitMove(Language lang);
     const std::string& move(Language lang, u16 value);

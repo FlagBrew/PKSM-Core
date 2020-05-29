@@ -29,6 +29,7 @@
 namespace i18n
 {
     std::unordered_map<Language, std::vector<std::string>> items;
+    std::unordered_map<Language, std::vector<std::string>> items3;
 
     void initItem(Language lang)
     {
@@ -41,7 +42,16 @@ namespace i18n
         items.insert_or_assign(lang, std::move(vec));
     }
 
+    void initItem3(Language lang)
+    {
+        std::vector<std::string> vec;
+        load(lang, "/items3.txt", vec);
+        items3.insert_or_assign(lang, std::move(vec));
+    }
+
     void exitItem(Language lang) { items.erase(lang); }
+
+    void exitItem3(Language lang) { items3.erase(lang); }
 
     const std::string& item(Language lang, u16 val)
     {
@@ -56,12 +66,35 @@ namespace i18n
         return emptyString;
     }
 
+    const std::string& item3(Language lang, u16 val)
+    {
+        checkInitialized(lang);
+        if (items3.count(lang) > 0)
+        {
+            if (val < items3[lang].size())
+            {
+                return items3[lang][val];
+            }
+        }
+        return emptyString;
+    }
+
     const std::vector<std::string>& rawItems(Language lang)
     {
         checkInitialized(lang);
         if (items.count(lang) > 0)
         {
             return items[lang];
+        }
+        return emptyVector;
+    }
+
+    const std::vector<std::string>& rawItems3(Language lang)
+    {
+        checkInitialized(lang);
+        if (items3.count(lang) > 0)
+        {
+            return items3[lang];
         }
         return emptyVector;
     }
