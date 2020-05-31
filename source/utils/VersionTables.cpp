@@ -44,7 +44,7 @@ namespace
         {
             static_assert(std::is_enum_v<typename T::EnumType>);
             using INT = std::underlying_type_t<typename T::EnumType>;
-            for (INT i = INT(begin); i < INT(end); i++)
+            for (INT i = INT(begin); i <= INT(end); i++)
             {
                 set.insert(T(i));
             }
