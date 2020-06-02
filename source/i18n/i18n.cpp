@@ -26,6 +26,7 @@
 
 #include "i18n_internal.hpp"
 #include "utils/_map_macro.hpp"
+#include "utils/utils.hpp"
 #include <algorithm>
 #include <list>
 
@@ -47,26 +48,8 @@
         return Language::lang;
 #define TO_FOLDER_CASE(lang)                                                                                                                         \
     case Language::lang:                                                                                                                             \
-        return toLower(#lang);
+        return StringUtils::toLower(#lang);
 
-namespace
-{
-    std::string toLower(const std::string& str)
-    {
-        std::string ret               = str;
-        static constexpr char upper[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        static constexpr char lower[] = "abcdefghijklmnopqrstuvwxyz";
-        for (size_t i = 0; i < ret.size(); i++)
-        {
-            auto found = std::find(std::begin(upper), std::end(upper), ret[i]);
-            if (found != std::end(upper))
-            {
-                ret[i] = lower[std::distance(std::begin(upper), found)];
-            }
-        }
-        return ret;
-    }
-}
 namespace i18n
 {
     std::unordered_map<Language, std::atomic<LangState>> languages = []() {

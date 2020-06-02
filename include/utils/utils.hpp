@@ -51,7 +51,9 @@ namespace StringUtils
     void setString3(u8* data, const std::string& v, int ofs, int len, bool jp, int padTo = 0, u8 padWith = 0xFF);
     std::vector<u16> stringToG4(const std::string& v);
     std::string& toLower(std::string& in);
+    std::string toLower(const std::string& in);
     std::string& toUpper(std::string& in);
+    std::string toUpper(const std::string& in);
     std::u16string& toFullWidth(std::u16string& in);
     /** Swaps and reswaps Pokemon specific characters, namely:
      * 0x2227, 0x2228, 0x2460, 0x2461, 0x2462,

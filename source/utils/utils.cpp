@@ -567,6 +567,12 @@ std::string& StringUtils::toUpper(std::string& in)
     return in;
 }
 
+std::string StringUtils::toUpper(const std::string& in)
+{
+    std::string ret = in;
+    return toUpper(ret);
+}
+
 std::string& StringUtils::toLower(std::string& in)
 {
     std::transform(in.begin(), in.end(), in.begin(), ::tolower);
@@ -582,6 +588,12 @@ std::string& StringUtils::toLower(std::string& in)
         }
     }
     return in;
+}
+
+std::string StringUtils::toLower(const std::string& in)
+{
+    std::string ret = in;
+    return toLower(ret);
 }
 
 // Converts a single latin character from half-width to full-width
