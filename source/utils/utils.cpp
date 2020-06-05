@@ -457,7 +457,7 @@ std::string StringUtils::getString4(const u8* data, int ofs, int len)
         {
             break;
         }
-        u16 codepoint = *found;
+        u16 codepoint = pksm::internal::G4Chars[std::distance(pksm::internal::G4Values.begin(), found)];
         if (codepoint == 0xFFFF)
             break;
         if (codepoint < 0x0080)
