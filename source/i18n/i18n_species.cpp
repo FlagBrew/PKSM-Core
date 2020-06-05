@@ -29,18 +29,18 @@
 
 namespace i18n
 {
-    std::unordered_map<Language, std::vector<std::string>> speciess;
+    std::unordered_map<pksm::Language, std::vector<std::string>> speciess;
 
-    void initSpecies(Language lang)
+    void initSpecies(pksm::Language lang)
     {
         std::vector<std::string> vec;
         load(lang, "/species.txt", vec);
         speciess.insert_or_assign(lang, std::move(vec));
     }
 
-    void exitSpecies(Language lang) { speciess.erase(lang); }
+    void exitSpecies(pksm::Language lang) { speciess.erase(lang); }
 
-    const std::string& species(Language lang, Species val)
+    const std::string& species(pksm::Language lang, pksm::Species val)
     {
         checkInitialized(lang);
         if (speciess.count(lang) > 0)
@@ -53,7 +53,7 @@ namespace i18n
         return emptyString;
     }
 
-    const std::vector<std::string>& rawSpecies(Language lang)
+    const std::vector<std::string>& rawSpecies(pksm::Language lang)
     {
         checkInitialized(lang);
         if (speciess.count(lang) > 0)
@@ -64,7 +64,7 @@ namespace i18n
     }
 }
 
-const std::string& Species_impl::localize(Language lang) const
+const std::string& pksm::internal::Species_impl::localize(pksm::Language lang) const
 {
     return i18n::species(lang, *this);
 }

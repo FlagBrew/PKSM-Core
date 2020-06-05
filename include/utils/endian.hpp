@@ -38,7 +38,7 @@
 #include <type_traits>
 #include <vector>
 
-namespace
+namespace pksm::internal
 {
 #if (defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN) || (defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__) ||                \
     defined(__BIG_ENDIAN__) || defined(__ARMEB__) || defined(__THUMBEB__) || defined(__AARCH64EB__) || defined(_MIBSEB) || defined(__MIBSEB) ||      \
@@ -68,10 +68,10 @@ namespace BigEndian
         static_assert((std::is_same_v<T, float> && sizeof(float) == 4 && std::numeric_limits<T>::is_iec559) ||
                       (std::is_same_v<T, double> && sizeof(double) == 8 && std::numeric_limits<T>::is_iec559) || std::is_integral_v<T>);
 
-        if constexpr (ENDIAN_easyArch)
+        if constexpr (pksm::internal::ENDIAN_easyArch)
         {
             memcpy(dest, &orig, sizeof(T));
-            if constexpr (ENDIAN_littleEndian)
+            if constexpr (pksm::internal::ENDIAN_littleEndian)
             {
                 for (size_t i = 0; i < sizeof(T) / 2; i++)
                 {
@@ -219,10 +219,10 @@ namespace BigEndian
         static_assert((std::is_same_v<T, float> && sizeof(float) == 4 && std::numeric_limits<T>::is_iec559) ||
                       (std::is_same_v<T, double> && sizeof(double) == 8 && std::numeric_limits<T>::is_iec559) || std::is_integral_v<T>);
 
-        if constexpr (ENDIAN_easyArch)
+        if constexpr (pksm::internal::ENDIAN_easyArch)
         {
             T dest;
-            if constexpr (ENDIAN_littleEndian)
+            if constexpr (pksm::internal::ENDIAN_littleEndian)
             {
                 u8 data[sizeof(T)];
                 memcpy(data, from, sizeof(T));
@@ -354,10 +354,10 @@ namespace LittleEndian
         static_assert((std::is_same_v<T, float> && sizeof(float) == 4 && std::numeric_limits<T>::is_iec559) ||
                       (std::is_same_v<T, double> && sizeof(double) == 8 && std::numeric_limits<T>::is_iec559) || std::is_integral_v<T>);
 
-        if constexpr (ENDIAN_easyArch)
+        if constexpr (pksm::internal::ENDIAN_easyArch)
         {
             memcpy(dest, &orig, sizeof(T));
-            if constexpr (ENDIAN_bigEndian)
+            if constexpr (pksm::internal::ENDIAN_bigEndian)
             {
                 for (size_t i = 0; i < sizeof(T) / 2; i++)
                 {
@@ -505,10 +505,10 @@ namespace LittleEndian
         static_assert((std::is_same_v<T, float> && sizeof(float) == 4 && std::numeric_limits<T>::is_iec559) ||
                       (std::is_same_v<T, double> && sizeof(double) == 8 && std::numeric_limits<T>::is_iec559) || std::is_integral_v<T>);
 
-        if constexpr (ENDIAN_easyArch)
+        if constexpr (pksm::internal::ENDIAN_easyArch)
         {
             T dest;
-            if constexpr (ENDIAN_bigEndian)
+            if constexpr (pksm::internal::ENDIAN_bigEndian)
             {
                 u8 data[sizeof(T)];
                 memcpy(data, from, sizeof(T));

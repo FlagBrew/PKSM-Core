@@ -29,18 +29,18 @@
 
 namespace i18n
 {
-    std::unordered_map<Language, std::vector<std::string>> games;
+    std::unordered_map<pksm::Language, std::vector<std::string>> games;
 
-    void initGame(Language lang)
+    void initGame(pksm::Language lang)
     {
         std::vector<std::string> vec;
         load(lang, "/games.txt", vec);
         games.insert_or_assign(lang, std::move(vec));
     }
 
-    void exitGame(Language lang) { games.erase(lang); }
+    void exitGame(pksm::Language lang) { games.erase(lang); }
 
-    const std::string& game(Language lang, GameVersion val)
+    const std::string& game(pksm::Language lang, pksm::GameVersion val)
     {
         checkInitialized(lang);
         if (games.count(lang) > 0)
@@ -53,7 +53,7 @@ namespace i18n
         return emptyString;
     }
 
-    const std::vector<std::string>& rawGames(Language lang)
+    const std::vector<std::string>& rawGames(pksm::Language lang)
     {
         checkInitialized(lang);
         if (games.count(lang) > 0)

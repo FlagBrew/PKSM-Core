@@ -31,86 +31,93 @@
 #include <limits>
 #include <type_traits>
 
-class Gender_impl
+namespace pksm
 {
-    friend class Gender;
-
-private:
-    enum class GenderEnum : u8
+    class Gender;
+    namespace internal
     {
-        Male       = 0,
-        Female     = 1,
-        Genderless = 2,
+        class Gender_impl
+        {
+            friend class pksm::Gender;
 
-        INVALID = std::numeric_limits<std::underlying_type_t<GenderEnum>>::max()
-    } v;
+        private:
+            enum class GenderEnum : u8
+            {
+                Male       = 0,
+                Female     = 1,
+                Genderless = 2,
 
-    constexpr explicit Gender_impl(GenderEnum v) : v(v) {}
-    constexpr Gender_impl(const Gender_impl&) = default;
-    constexpr Gender_impl(Gender_impl&&)      = default;
-    constexpr Gender_impl& operator=(const Gender_impl&) = default;
-    constexpr Gender_impl& operator=(Gender_impl&&) = default;
+                INVALID = std::numeric_limits<std::underlying_type_t<GenderEnum>>::max()
+            } v;
 
-public:
-    template <typename T>
-    constexpr explicit operator T() const noexcept
-    {
-        static_assert(std::is_integral_v<T>);
-        return T(v);
+            constexpr explicit Gender_impl(GenderEnum v) : v(v) {}
+            constexpr Gender_impl(const Gender_impl&) = default;
+            constexpr Gender_impl(Gender_impl&&)      = default;
+            constexpr Gender_impl& operator=(const Gender_impl&) = default;
+            constexpr Gender_impl& operator=(Gender_impl&&) = default;
+
+        public:
+            template <typename T>
+            constexpr explicit operator T() const noexcept
+            {
+                static_assert(std::is_integral_v<T>);
+                return T(v);
+            }
+            constexpr operator GenderEnum() const noexcept { return v; }
+
+            constexpr bool operator<(const Gender_impl& other) const noexcept { return v < other.v; }
+            constexpr bool operator<=(const Gender_impl& other) const noexcept { return v <= other.v; }
+
+            constexpr bool operator>(const Gender_impl& other) const noexcept { return v > other.v; }
+            constexpr bool operator>=(const Gender_impl& other) const noexcept { return v >= other.v; }
+
+            constexpr bool operator==(const Gender_impl& other) const noexcept { return v == other.v; }
+            constexpr bool operator!=(const Gender_impl& other) const noexcept { return v != other.v; }
+        };
     }
-    constexpr operator GenderEnum() const noexcept { return v; }
 
-    constexpr bool operator<(const Gender_impl& other) const noexcept { return v < other.v; }
-    constexpr bool operator<=(const Gender_impl& other) const noexcept { return v <= other.v; }
-
-    constexpr bool operator>(const Gender_impl& other) const noexcept { return v > other.v; }
-    constexpr bool operator>=(const Gender_impl& other) const noexcept { return v >= other.v; }
-
-    constexpr bool operator==(const Gender_impl& other) const noexcept { return v == other.v; }
-    constexpr bool operator!=(const Gender_impl& other) const noexcept { return v != other.v; }
-};
-
-class Gender
-{
-private:
-    Gender_impl impl;
-
-public:
-    using EnumType = Gender_impl::GenderEnum;
-    constexpr Gender() noexcept : impl(EnumType::INVALID) {}
-    constexpr Gender(const Gender_impl& impl) noexcept : impl(impl) {}
-    constexpr explicit Gender(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v}) {}
-    template <typename T>
-    constexpr explicit operator T() const noexcept
+    class Gender
     {
-        static_assert(std::is_integral_v<T>);
-        return T(impl);
-    }
-    constexpr operator EnumType() const noexcept { return (EnumType)impl; }
+    private:
+        internal::Gender_impl impl;
 
-    constexpr bool operator<(const Gender& other) const noexcept { return impl < other.impl; }
-    constexpr bool operator<=(const Gender& other) const noexcept { return impl <= other.impl; }
+    public:
+        using EnumType = internal::Gender_impl::GenderEnum;
+        constexpr Gender() noexcept : impl(EnumType::INVALID) {}
+        constexpr Gender(const internal::Gender_impl& impl) noexcept : impl(impl) {}
+        constexpr explicit Gender(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v}) {}
+        template <typename T>
+        constexpr explicit operator T() const noexcept
+        {
+            static_assert(std::is_integral_v<T>);
+            return T(impl);
+        }
+        constexpr operator EnumType() const noexcept { return (EnumType)impl; }
 
-    constexpr bool operator>(const Gender& other) const noexcept { return impl > other.impl; }
-    constexpr bool operator>=(const Gender& other) const noexcept { return impl >= other.impl; }
+        constexpr bool operator<(const Gender& other) const noexcept { return impl < other.impl; }
+        constexpr bool operator<=(const Gender& other) const noexcept { return impl <= other.impl; }
 
-    constexpr bool operator==(const Gender& other) const noexcept { return impl == other.impl; }
-    constexpr bool operator!=(const Gender& other) const noexcept { return impl != other.impl; }
+        constexpr bool operator>(const Gender& other) const noexcept { return impl > other.impl; }
+        constexpr bool operator>=(const Gender& other) const noexcept { return impl >= other.impl; }
 
-    constexpr bool operator<(const Gender_impl& other) const noexcept { return impl < other; }
-    constexpr bool operator<=(const Gender_impl& other) const noexcept { return impl <= other; }
+        constexpr bool operator==(const Gender& other) const noexcept { return impl == other.impl; }
+        constexpr bool operator!=(const Gender& other) const noexcept { return impl != other.impl; }
 
-    constexpr bool operator>(const Gender_impl& other) const noexcept { return impl > other; }
-    constexpr bool operator>=(const Gender_impl& other) const noexcept { return impl >= other; }
+        constexpr bool operator<(const internal::Gender_impl& other) const noexcept { return impl < other; }
+        constexpr bool operator<=(const internal::Gender_impl& other) const noexcept { return impl <= other; }
 
-    constexpr bool operator==(const Gender_impl& other) const noexcept { return impl == other; }
-    constexpr bool operator!=(const Gender_impl& other) const noexcept { return impl != other; }
+        constexpr bool operator>(const internal::Gender_impl& other) const noexcept { return impl > other; }
+        constexpr bool operator>=(const internal::Gender_impl& other) const noexcept { return impl >= other; }
 
-    static constexpr Gender_impl Male{EnumType::Male};
-    static constexpr Gender_impl Female{EnumType::Female};
-    static constexpr Gender_impl Genderless{EnumType::Genderless};
+        constexpr bool operator==(const internal::Gender_impl& other) const noexcept { return impl == other; }
+        constexpr bool operator!=(const internal::Gender_impl& other) const noexcept { return impl != other; }
 
-    static constexpr Gender_impl INVALID{EnumType::INVALID};
-};
+        static constexpr internal::Gender_impl Male{EnumType::Male};
+        static constexpr internal::Gender_impl Female{EnumType::Female};
+        static constexpr internal::Gender_impl Genderless{EnumType::Genderless};
+
+        static constexpr internal::Gender_impl INVALID{EnumType::INVALID};
+    };
+}
 
 #endif

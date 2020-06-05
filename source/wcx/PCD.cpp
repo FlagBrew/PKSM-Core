@@ -27,7 +27,7 @@
 #include "wcx/PCD.hpp"
 #include "utils/endian.hpp"
 
-PCD::PCD(u8* pcd) : PGT(pcd), name(StringUtils::getString4(pcd, 0x104, 0x24))
+pksm::PCD::PCD(u8* pcd) : PGT(pcd), name(StringUtils::getString4(pcd, 0x104, 0x24))
 {
     id = LittleEndian::convertTo<u16>(data + 0x150);
 }

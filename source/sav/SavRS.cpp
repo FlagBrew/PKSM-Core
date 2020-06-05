@@ -26,46 +26,51 @@
 
 #include "sav/SavRS.hpp"
 
-SavRS::SavRS(std::shared_ptr<u8[]> dt) : Sav3(dt)
+namespace pksm
 {
-    game = Game::RS;
+    SavRS::SavRS(std::shared_ptr<u8[]> dt) : Sav3(dt)
+    {
+        game = Game::RS;
 
-    seenFlagOffsets = std::vector<int>({PokeDex + 0x44, blockOfs[1] + 0x938, blockOfs[4] + 0xC0C});
+        seenFlagOffsets = std::vector<int>({PokeDex + 0x44, blockOfs[1] + 0x938, blockOfs[4] + 0xC0C});
 
-    OFS_PCItem        = blockOfs[1] + 0x0498;
-    OFS_PouchHeldItem = blockOfs[1] + 0x0560;
-    OFS_PouchKeyItem  = blockOfs[1] + 0x05B0;
-    OFS_PouchBalls    = blockOfs[1] + 0x0600;
-    OFS_PouchTMHM     = blockOfs[1] + 0x0640;
-    OFS_PouchBerry    = blockOfs[1] + 0x0740;
-    eventFlag         = blockOfs[2] + 0x2A0;
-    // EventConst = EventFlag + (EventFlagMax / 8);
-    // DaycareOffset = blockOfs[4] + 0x11C;
-}
+        OFS_PCItem        = blockOfs[1] + 0x0498;
+        OFS_PouchHeldItem = blockOfs[1] + 0x0560;
+        OFS_PouchKeyItem  = blockOfs[1] + 0x05B0;
+        OFS_PouchBalls    = blockOfs[1] + 0x0600;
+        OFS_PouchTMHM     = blockOfs[1] + 0x0640;
+        OFS_PouchBerry    = blockOfs[1] + 0x0740;
+        eventFlag         = blockOfs[2] + 0x2A0;
+        // EventConst = EventFlag + (EventFlagMax / 8);
+        // DaycareOffset = blockOfs[4] + 0x11C;
+    }
 
-std::map<Sav::Pouch, std::vector<int>> SavRS::validItems() const
-{
-    std::map<Sav::Pouch, std::vector<int>> items = {
-        {NormalItem, {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 65, 66, 67, 68, 69, 43,
-                         44, 70, 71, 72, 73, 74, 75, 45, 46, 47, 48, 49, 50, 51, 52, 53, 55, 56, 57, 58, 59, 60, 61, 63, 64, 76, 77, 78, 79, 80, 81,
-                         82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 213, 214, 215,
-                         216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240,
-                         241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264}},
-        {Ball, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}},
-        {KeyItem, {128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
-                      128, 128, 128}},
-        {TM, {328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354,
-                 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377}},
-        {Berry, {149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174,
-                    175, 176, 177, 178, 179, 180, 181, 182, 183, 201, 202, 203, 204, 205, 206, 207, 208}},
-        {PCItem, {}}};
+    std::map<Sav::Pouch, std::vector<int>> SavRS::validItems() const
+    {
+        std::map<Sav::Pouch, std::vector<int>> items = {
+            {Pouch::NormalItem,
+                {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 65, 66, 67, 68, 69, 43, 44,
+                    70, 71, 72, 73, 74, 75, 45, 46, 47, 48, 49, 50, 51, 52, 53, 55, 56, 57, 58, 59, 60, 61, 63, 64, 76, 77, 78, 79, 80, 81, 82, 83,
+                    84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 213, 214, 215, 216, 217, 218,
+                    219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244,
+                    245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264}},
+            {Pouch::Ball, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}},
+            {Pouch::KeyItem, {128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
+                                 128, 128, 128, 128, 128}},
+            {Pouch::TM,
+                {328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353,
+                    354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377}},
+            {Pouch::Berry, {149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172,
+                               173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 201, 202, 203, 204, 205, 206, 207, 208}},
+            {Pouch::PCItem, {}}};
 
-    // PC can hold any item
-    items[PCItem].insert(items[PCItem].end(), items[NormalItem].begin(), items[NormalItem].end());
-    items[PCItem].insert(items[PCItem].end(), items[Ball].begin(), items[Ball].end());
-    items[PCItem].insert(items[PCItem].end(), items[KeyItem].begin(), items[KeyItem].end());
-    items[PCItem].insert(items[PCItem].end(), items[TM].begin(), items[TM].end());
-    items[PCItem].insert(items[PCItem].end(), items[Berry].begin(), items[Berry].end());
+        // PC can hold any item
+        items[Pouch::PCItem].insert(items[Pouch::PCItem].end(), items[Pouch::NormalItem].begin(), items[Pouch::NormalItem].end());
+        items[Pouch::PCItem].insert(items[Pouch::PCItem].end(), items[Pouch::Ball].begin(), items[Pouch::Ball].end());
+        items[Pouch::PCItem].insert(items[Pouch::PCItem].end(), items[Pouch::KeyItem].begin(), items[Pouch::KeyItem].end());
+        items[Pouch::PCItem].insert(items[Pouch::PCItem].end(), items[Pouch::TM].begin(), items[Pouch::TM].end());
+        items[Pouch::PCItem].insert(items[Pouch::PCItem].end(), items[Pouch::Berry].begin(), items[Pouch::Berry].end());
 
-    return items;
+        return items;
+    }
 }

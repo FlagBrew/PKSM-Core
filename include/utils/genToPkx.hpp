@@ -29,59 +29,62 @@
 
 #include "enums/Generation.hpp"
 
-class PK3;
-class PK4;
-class PK5;
-class PK6;
-class PK7;
-class PK8;
-class PB7;
-
-template <Generation::EnumType g>
-struct GenToPkx
+namespace pksm
 {
-};
+    class PK3;
+    class PK4;
+    class PK5;
+    class PK6;
+    class PK7;
+    class PK8;
+    class PB7;
 
-template <>
-struct GenToPkx<Generation::THREE>
-{
-    using PKX = PK3;
-};
+    template <pksm::Generation::EnumType g>
+    struct GenToPkx
+    {
+    };
 
-template <>
-struct GenToPkx<Generation::FOUR>
-{
-    using PKX = PK4;
-};
+    template <>
+    struct GenToPkx<pksm::Generation::THREE>
+    {
+        using PKX = pksm::PK3;
+    };
 
-template <>
-struct GenToPkx<Generation::FIVE>
-{
-    using PKX = PK5;
-};
+    template <>
+    struct GenToPkx<pksm::Generation::FOUR>
+    {
+        using PKX = pksm::PK4;
+    };
 
-template <>
-struct GenToPkx<Generation::SIX>
-{
-    using PKX = PK6;
-};
+    template <>
+    struct GenToPkx<pksm::Generation::FIVE>
+    {
+        using PKX = pksm::PK5;
+    };
 
-template <>
-struct GenToPkx<Generation::SEVEN>
-{
-    using PKX = PK7;
-};
+    template <>
+    struct GenToPkx<pksm::Generation::SIX>
+    {
+        using PKX = pksm::PK6;
+    };
 
-template <>
-struct GenToPkx<Generation::EIGHT>
-{
-    using PKX = PK8;
-};
+    template <>
+    struct GenToPkx<pksm::Generation::SEVEN>
+    {
+        using PKX = pksm::PK7;
+    };
 
-template <>
-struct GenToPkx<Generation::LGPE>
-{
-    using PKX = PB7;
-};
+    template <>
+    struct GenToPkx<pksm::Generation::EIGHT>
+    {
+        using PKX = pksm::PK8;
+    };
+
+    template <>
+    struct GenToPkx<pksm::Generation::LGPE>
+    {
+        using PKX = pksm::PB7;
+    };
+}
 
 #endif

@@ -33,7 +33,7 @@
 #include "enums/Species.hpp"
 #include <set>
 
-namespace VersionTables
+namespace pksm::VersionTables
 {
     const std::set<int>& availableItems(GameVersion version);
     const std::set<int>& availableMoves(GameVersion version);

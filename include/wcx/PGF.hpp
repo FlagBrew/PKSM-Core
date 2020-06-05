@@ -29,74 +29,77 @@
 
 #include "wcx/WCX.hpp"
 
-class PGF : public WCX
+namespace pksm
 {
-private:
-    int year(void) const override;
-    int month(void) const override;
-    int day(void) const override;
-    void year(int v) override;
-    void month(int v) override;
-    void day(int v) override;
+    class PGF : public WCX
+    {
+    private:
+        int year(void) const override;
+        int month(void) const override;
+        int day(void) const override;
+        void year(int v) override;
+        void month(int v) override;
+        void day(int v) override;
 
-protected:
-    u8 data[204];
+    protected:
+        u8 data[204];
 
-public:
-    static constexpr u16 length = 204;
+    public:
+        static constexpr u16 length = 204;
 
-    PGF(u8* pgf);
-    virtual ~PGF(){};
+        PGF(u8* pgf);
+        virtual ~PGF(){};
 
-    std::string extension() const override { return ".pgf"; }
+        std::string extension() const override { return ".pgf"; }
 
-    Generation generation(void) const override;
-    u16 ID(void) const override;
-    std::string title(void) const override;
-    u8 type(void) const override;
-    bool item(void) const override;
-    u16 object(void) const override;
-    bool pokemon(void) const override;
-    bool power(void) const override;
-    bool bean(void) const override;
-    bool BP(void) const override;
-    u8 cardLocation(void) const override;
-    u8 flags(void) const override;
-    bool used(void) const override;
-    bool multiObtainable(void) const override;
+        Generation generation(void) const override;
+        u16 ID(void) const override;
+        std::string title(void) const override;
+        u8 type(void) const override;
+        bool item(void) const override;
+        u16 object(void) const override;
+        bool pokemon(void) const override;
+        bool power(void) const override;
+        bool bean(void) const override;
+        bool BP(void) const override;
+        u8 cardLocation(void) const override;
+        u8 flags(void) const override;
+        bool used(void) const override;
+        bool multiObtainable(void) const override;
 
-    // Pokemon Properties
-    Ball ball(void) const override;
-    u16 heldItem(void) const override;
-    bool shiny(void) const override;
-    u8 PIDType(void) const override;
-    u16 TID(void) const override;
-    u16 SID(void) const override;
-    u16 move(u8 index) const override;
-    Species species(void) const override;
-    Gender gender(void) const override;
-    std::string otName(void) const override;
-    u8 level(void) const override;
-    u32 PID(void) const override;
-    bool hasRibbon(Ribbon rib) const override;
-    bool ribbon(Ribbon rib) const override;
-    u8 alternativeForm(void) const override;
-    Language language(void) const override;
-    std::string nickname(void) const override;
-    Nature nature(void) const override;
-    u8 abilityType(void) const override;
-    Ability ability(void) const override;
-    u16 eggLocation(void) const override;
-    u16 metLocation(void) const override;
-    u8 metLevel(void) const override;
-    u8 contest(u8 index) const override;
-    u8 iv(Stat index) const override;
-    bool egg(void) const override;
+        // Pokemon Properties
+        Ball ball(void) const override;
+        u16 heldItem(void) const override;
+        bool shiny(void) const override;
+        u8 PIDType(void) const override;
+        u16 TID(void) const override;
+        u16 SID(void) const override;
+        u16 move(u8 index) const override;
+        Species species(void) const override;
+        Gender gender(void) const override;
+        std::string otName(void) const override;
+        u8 level(void) const override;
+        u32 PID(void) const override;
+        bool hasRibbon(Ribbon rib) const override;
+        bool ribbon(Ribbon rib) const override;
+        u8 alternativeForm(void) const override;
+        Language language(void) const override;
+        std::string nickname(void) const override;
+        Nature nature(void) const override;
+        u8 abilityType(void) const override;
+        Ability ability(void) const override;
+        u16 eggLocation(void) const override;
+        u16 metLocation(void) const override;
+        u8 metLevel(void) const override;
+        u8 contest(u8 index) const override;
+        u8 iv(Stat index) const override;
+        bool egg(void) const override;
 
-    u16 formSpecies(void) const override;
+        u16 formSpecies(void) const override;
 
-    int size(void) const override { return length; }
-    const u8* rawData(void) const override { return data; }
-};
+        int size(void) const override { return length; }
+        const u8* rawData(void) const override { return data; }
+    };
+}
 
 #endif

@@ -28,8 +28,8 @@
 
 namespace i18n
 {
-    std::unordered_map<Language, std::map<u8, std::string>> countries;
-    std::unordered_map<Language, std::map<u8, std::map<u8, std::string>>> subregions;
+    std::unordered_map<pksm::Language, std::map<u8, std::string>> countries;
+    std::unordered_map<pksm::Language, std::map<u8, std::map<u8, std::string>>> subregions;
 
     std::string subregionFileName(u8 region)
     {
@@ -43,7 +43,7 @@ namespace i18n
         return ret;
     }
 
-    void initGeo(Language lang)
+    void initGeo(pksm::Language lang)
     {
         std::map<u8, std::string> tmp;
         load(lang, "/countries.txt", tmp);
@@ -58,13 +58,13 @@ namespace i18n
         subregions.insert_or_assign(lang, std::move(tmp2));
     }
 
-    void exitGeo(Language lang)
+    void exitGeo(pksm::Language lang)
     {
         countries.erase(lang);
         subregions.erase(lang);
     }
 
-    const std::string& subregion(Language lang, u8 country, u8 v)
+    const std::string& subregion(pksm::Language lang, u8 country, u8 v)
     {
         checkInitialized(lang);
         if (subregions.count(lang) > 0)
@@ -80,7 +80,7 @@ namespace i18n
         return emptyString;
     }
 
-    const std::string& country(Language lang, u8 v)
+    const std::string& country(pksm::Language lang, u8 v)
     {
         checkInitialized(lang);
         if (countries.count(lang) > 0)
@@ -93,7 +93,7 @@ namespace i18n
         return emptyString;
     }
 
-    const std::map<u8, std::string>& rawCountries(Language lang)
+    const std::map<u8, std::string>& rawCountries(pksm::Language lang)
     {
         checkInitialized(lang);
         if (countries.count(lang) > 0)
@@ -103,7 +103,7 @@ namespace i18n
         return emptyU8Map;
     }
 
-    const std::map<u8, std::string>& rawSubregions(Language lang, u8 country)
+    const std::map<u8, std::string>& rawSubregions(pksm::Language lang, u8 country)
     {
         checkInitialized(lang);
         if (subregions.count(lang) > 0)

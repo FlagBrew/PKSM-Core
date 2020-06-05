@@ -28,10 +28,10 @@
 
 namespace i18n
 {
-    std::unordered_map<Language, std::vector<std::string>> items;
-    std::unordered_map<Language, std::vector<std::string>> items3;
+    std::unordered_map<pksm::Language, std::vector<std::string>> items;
+    std::unordered_map<pksm::Language, std::vector<std::string>> items3;
 
-    void initItem(Language lang)
+    void initItem(pksm::Language lang)
     {
         std::vector<std::string> vec;
         load(lang, "/items.txt", vec);
@@ -42,18 +42,18 @@ namespace i18n
         items.insert_or_assign(lang, std::move(vec));
     }
 
-    void initItem3(Language lang)
+    void initItem3(pksm::Language lang)
     {
         std::vector<std::string> vec;
         load(lang, "/items3.txt", vec);
         items3.insert_or_assign(lang, std::move(vec));
     }
 
-    void exitItem(Language lang) { items.erase(lang); }
+    void exitItem(pksm::Language lang) { items.erase(lang); }
 
-    void exitItem3(Language lang) { items3.erase(lang); }
+    void exitItem3(pksm::Language lang) { items3.erase(lang); }
 
-    const std::string& item(Language lang, u16 val)
+    const std::string& item(pksm::Language lang, u16 val)
     {
         checkInitialized(lang);
         if (items.count(lang) > 0)
@@ -66,7 +66,7 @@ namespace i18n
         return emptyString;
     }
 
-    const std::string& item3(Language lang, u16 val)
+    const std::string& item3(pksm::Language lang, u16 val)
     {
         checkInitialized(lang);
         if (items3.count(lang) > 0)
@@ -79,7 +79,7 @@ namespace i18n
         return emptyString;
     }
 
-    const std::vector<std::string>& rawItems(Language lang)
+    const std::vector<std::string>& rawItems(pksm::Language lang)
     {
         checkInitialized(lang);
         if (items.count(lang) > 0)
@@ -89,7 +89,7 @@ namespace i18n
         return emptyVector;
     }
 
-    const std::vector<std::string>& rawItems3(Language lang)
+    const std::vector<std::string>& rawItems3(pksm::Language lang)
     {
         checkInitialized(lang);
         if (items3.count(lang) > 0)

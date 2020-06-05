@@ -29,33 +29,36 @@
 
 #include "personal/personal.hpp"
 #include "sav/Sav.hpp"
-#include "swshcrypto.hpp"
+#include "utils/crypto.hpp"
 
-class Sav8 : public Sav
+namespace pksm
 {
-protected:
-    std::vector<std::shared_ptr<SCBlock>> blocks;
+    class Sav8 : public Sav
+    {
+    protected:
+        std::vector<std::shared_ptr<pksm::crypto::swsh::SCBlock>> blocks;
 
-    int Items, BoxLayout, Misc, TrainerCard, PlayTime, Status;
+        int Items, BoxLayout, Misc, TrainerCard, PlayTime, Status;
 
-    bool encrypted = false;
+        bool encrypted = false;
 
-public:
-    Sav8(std::shared_ptr<u8[]> dt, size_t length);
-    virtual ~Sav8() {}
+    public:
+        Sav8(std::shared_ptr<u8[]> dt, size_t length);
+        virtual ~Sav8() {}
 
-    std::shared_ptr<SCBlock> getBlock(u32 key) const;
+        std::shared_ptr<pksm::crypto::swsh::SCBlock> getBlock(u32 key) const;
 
-    void finishEditing(void) override;
-    void beginEditing(void) override;
+        void finishEditing(void) override;
+        void beginEditing(void) override;
 
-    void trade(PKX& pk, const Date& date = Date::today()) const override;
-    std::unique_ptr<PKX> emptyPkm() const override;
+        void trade(PKX& pk, const Date& date = Date::today()) const override;
+        std::unique_ptr<PKX> emptyPkm() const override;
 
-    int maxBoxes(void) const override { return 32; }
-    size_t maxWondercards(void) const override { return 1; } // Data not stored
-    int currentGiftAmount(void) const override { return 0; } // Data not stored
-    Generation generation(void) const override { return Generation::EIGHT; }
-};
+        int maxBoxes(void) const override { return 32; }
+        size_t maxWondercards(void) const override { return 1; } // Data not stored
+        int currentGiftAmount(void) const override { return 0; } // Data not stored
+        Generation generation(void) const override { return Generation::EIGHT; }
+    };
+}
 
 #endif

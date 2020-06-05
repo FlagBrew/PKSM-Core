@@ -28,87 +28,87 @@
 #include "pkx/PK8.hpp"
 #include <algorithm>
 
-Sav8::Sav8(std::shared_ptr<u8[]> dt, size_t length) : Sav(dt, length)
+namespace pksm
 {
-    swshcrypto_applyXor(dt, length);
-    blocks = swshcrypto_getBlockList(dt, length);
-}
-
-std::shared_ptr<SCBlock> Sav8::getBlock(u32 key) const
-{
-    int min = 0, mid = 0, max = blocks.size();
-    while (min <= max)
+    Sav8::Sav8(std::shared_ptr<u8[]> dt, size_t length) : Sav(dt, length)
     {
-        mid = min + (max - min) / 2;
-        if (blocks[mid]->key() == key)
+        pksm::crypto::swsh::applyXor(dt, length);
+        blocks = pksm::crypto::swsh::getBlockList(dt, length);
+    }
+
+    std::shared_ptr<pksm::crypto::swsh::SCBlock> Sav8::getBlock(u32 key) const
+    {
+        int min = 0, mid = 0, max = blocks.size();
+        while (min <= max)
         {
-            return blocks[mid];
+            mid = min + (max - min) / 2;
+            if (blocks[mid]->key() == key)
+            {
+                return blocks[mid];
+            }
+            if (blocks[mid]->key() < key)
+            {
+                min = mid + 1;
+            }
+            else
+            {
+                max = mid - 1;
+            }
         }
-        if (blocks[mid]->key() < key)
+
+        return nullptr;
+    }
+
+    std::unique_ptr<PKX> Sav8::emptyPkm() const { return PKX::getPKM<Generation::EIGHT>(nullptr); }
+
+    void Sav8::trade(PKX& pk, const Date& date) const
+    {
+        if (pk.egg())
         {
-            min = mid + 1;
+            if (pk.otName() != otName() || pk.TID() != TID() || pk.SID() != SID() || pk.gender() != gender())
+            {
+                pk.metLocation(30002);
+                pk.metDate(date);
+            }
         }
         else
         {
-            max = mid - 1;
+            if (pk.otName() != otName() || pk.TID() != TID() || pk.SID() != SID() || pk.gender() != gender())
+            {
+                pk.currentHandler(0);
+            }
+            else
+            {
+                pk.currentHandler(1);
+                ((PK8&)pk).htName(otName());
+                ((PK8&)pk).currentFriendship(pk.baseFriendship());
+                ((PK8&)pk).htGender(gender());
+                ((PK8&)pk).htLanguage(language());
+            }
         }
     }
 
-    return nullptr;
-}
-
-std::unique_ptr<PKX> Sav8::emptyPkm() const
-{
-    return PKX::getPKM<Generation::EIGHT>(nullptr);
-}
-
-void Sav8::trade(PKX& pk, const Date& date) const
-{
-    if (pk.egg())
+    void Sav8::finishEditing()
     {
-        if (pk.otName() != otName() || pk.TID() != TID() || pk.SID() != SID() || pk.gender() != gender())
+        if (!encrypted)
         {
-            pk.metLocation(30002);
-            pk.metDate(date);
+            for (auto& block : blocks)
+            {
+                block->encrypt();
+            }
+
+            pksm::crypto::swsh::applyXor(data, length);
+            pksm::crypto::swsh::sign(data, length);
         }
     }
-    else
+
+    void Sav8::beginEditing()
     {
-        if (pk.otName() != otName() || pk.TID() != TID() || pk.SID() != SID() || pk.gender() != gender())
+        if (encrypted)
         {
-            pk.currentHandler(0);
-        }
-        else
-        {
-            pk.currentHandler(1);
-            ((PK8&)pk).htName(otName());
-            ((PK8&)pk).currentFriendship(pk.baseFriendship());
-            ((PK8&)pk).htGender(gender());
-            ((PK8&)pk).htLanguage(language());
-        }
-    }
-}
-
-void Sav8::finishEditing()
-{
-    if (!encrypted)
-    {
-        for (auto& block : blocks)
-        {
-            block->encrypt();
+            pksm::crypto::swsh::applyXor(data, length);
         }
 
-        swshcrypto_applyXor(data, length);
-        swshcrypto_sign(data, length);
+        // I could decrypt every block here, but why not just let them be done on the fly via the functions that need them?
     }
-}
-
-void Sav8::beginEditing()
-{
-    if (encrypted)
-    {
-        swshcrypto_applyXor(data, length);
-    }
-
-    // I could decrypt every block here, but why not just let them be done on the fly via the functions that need them?
 }

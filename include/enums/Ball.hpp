@@ -32,138 +32,145 @@
 #include <limits>
 #include <type_traits>
 
-class Ball_impl
+namespace pksm
 {
-    friend class Ball;
-
-private:
-    enum class BallEnum : u8
+    class Ball;
+    namespace internal
     {
-        None,
-        Master,
-        Ultra,
-        Great,
-        Poke,
-        Safari,
-        Net,
-        Dive,
-        Nest,
-        Repeat,
-        Timer,
-        Luxury,
-        Premier,
-        Dusk,
-        Heal,
-        Quick,
-        Cherish,
-        Fast,
-        Level,
-        Lure,
-        Heavy,
-        Love,
-        Friend,
-        Moon,
-        Sport,
-        Dream,
-        Beast,
+        class Ball_impl
+        {
+            friend class pksm::Ball;
 
-        INVALID = std::numeric_limits<std::underlying_type_t<BallEnum>>::max()
-    } v;
+        private:
+            enum class BallEnum : u8
+            {
+                None,
+                Master,
+                Ultra,
+                Great,
+                Poke,
+                Safari,
+                Net,
+                Dive,
+                Nest,
+                Repeat,
+                Timer,
+                Luxury,
+                Premier,
+                Dusk,
+                Heal,
+                Quick,
+                Cherish,
+                Fast,
+                Level,
+                Lure,
+                Heavy,
+                Love,
+                Friend,
+                Moon,
+                Sport,
+                Dream,
+                Beast,
 
-    constexpr explicit Ball_impl(BallEnum v) : v(v) {}
-    constexpr Ball_impl(const Ball_impl&) = default;
-    constexpr Ball_impl(Ball_impl&&)      = default;
-    constexpr Ball_impl& operator=(const Ball_impl&) = default;
-    constexpr Ball_impl& operator=(Ball_impl&&) = default;
+                INVALID = std::numeric_limits<std::underlying_type_t<BallEnum>>::max()
+            } v;
 
-public:
-    template <typename T>
-    constexpr explicit operator T() const noexcept
-    {
-        static_assert(std::is_integral_v<T>);
-        return T(v);
+            constexpr explicit Ball_impl(BallEnum v) : v(v) {}
+            constexpr Ball_impl(const Ball_impl&) = default;
+            constexpr Ball_impl(Ball_impl&&)      = default;
+            constexpr Ball_impl& operator=(const Ball_impl&) = default;
+            constexpr Ball_impl& operator=(Ball_impl&&) = default;
+
+        public:
+            template <typename T>
+            constexpr explicit operator T() const noexcept
+            {
+                static_assert(std::is_integral_v<T>);
+                return T(v);
+            }
+            constexpr operator BallEnum() const noexcept { return v; }
+
+            constexpr bool operator<(const Ball_impl& other) const noexcept { return v < other.v; }
+            constexpr bool operator<=(const Ball_impl& other) const noexcept { return v <= other.v; }
+
+            constexpr bool operator>(const Ball_impl& other) const noexcept { return v > other.v; }
+            constexpr bool operator>=(const Ball_impl& other) const noexcept { return v >= other.v; }
+
+            constexpr bool operator==(const Ball_impl& other) const noexcept { return v == other.v; }
+            constexpr bool operator!=(const Ball_impl& other) const noexcept { return v != other.v; }
+
+            const std::string& localize(Language lang) const;
+        };
     }
-    constexpr operator BallEnum() const noexcept { return v; }
 
-    constexpr bool operator<(const Ball_impl& other) const noexcept { return v < other.v; }
-    constexpr bool operator<=(const Ball_impl& other) const noexcept { return v <= other.v; }
-
-    constexpr bool operator>(const Ball_impl& other) const noexcept { return v > other.v; }
-    constexpr bool operator>=(const Ball_impl& other) const noexcept { return v >= other.v; }
-
-    constexpr bool operator==(const Ball_impl& other) const noexcept { return v == other.v; }
-    constexpr bool operator!=(const Ball_impl& other) const noexcept { return v != other.v; }
-
-    const std::string& localize(Language lang) const;
-};
-
-class Ball
-{
-private:
-    Ball_impl impl;
-
-public:
-    using EnumType = Ball_impl::BallEnum;
-    constexpr Ball() noexcept : impl(EnumType::INVALID) {}
-    constexpr Ball(const Ball_impl& impl) noexcept : impl(impl) {}
-    constexpr explicit Ball(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v}) {}
-    template <typename T>
-    constexpr explicit operator T() const noexcept
+    class Ball
     {
-        static_assert(std::is_integral_v<T>);
-        return T(impl);
-    }
-    constexpr operator EnumType() const noexcept { return (EnumType)impl; }
+    private:
+        internal::Ball_impl impl;
 
-    constexpr bool operator<(const Ball& other) const noexcept { return impl < other.impl; }
-    constexpr bool operator<=(const Ball& other) const noexcept { return impl <= other.impl; }
+    public:
+        using EnumType = internal::Ball_impl::BallEnum;
+        constexpr Ball() noexcept : impl(EnumType::INVALID) {}
+        constexpr Ball(const internal::Ball_impl& impl) noexcept : impl(impl) {}
+        constexpr explicit Ball(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v}) {}
+        template <typename T>
+        constexpr explicit operator T() const noexcept
+        {
+            static_assert(std::is_integral_v<T>);
+            return T(impl);
+        }
+        constexpr operator EnumType() const noexcept { return (EnumType)impl; }
 
-    constexpr bool operator>(const Ball& other) const noexcept { return impl > other.impl; }
-    constexpr bool operator>=(const Ball& other) const noexcept { return impl >= other.impl; }
+        constexpr bool operator<(const Ball& other) const noexcept { return impl < other.impl; }
+        constexpr bool operator<=(const Ball& other) const noexcept { return impl <= other.impl; }
 
-    constexpr bool operator==(const Ball& other) const noexcept { return impl == other.impl; }
-    constexpr bool operator!=(const Ball& other) const noexcept { return impl != other.impl; }
+        constexpr bool operator>(const Ball& other) const noexcept { return impl > other.impl; }
+        constexpr bool operator>=(const Ball& other) const noexcept { return impl >= other.impl; }
 
-    constexpr bool operator<(const Ball_impl& other) const noexcept { return impl < other; }
-    constexpr bool operator<=(const Ball_impl& other) const noexcept { return impl <= other; }
+        constexpr bool operator==(const Ball& other) const noexcept { return impl == other.impl; }
+        constexpr bool operator!=(const Ball& other) const noexcept { return impl != other.impl; }
 
-    constexpr bool operator>(const Ball_impl& other) const noexcept { return impl > other; }
-    constexpr bool operator>=(const Ball_impl& other) const noexcept { return impl >= other; }
+        constexpr bool operator<(const internal::Ball_impl& other) const noexcept { return impl < other; }
+        constexpr bool operator<=(const internal::Ball_impl& other) const noexcept { return impl <= other; }
 
-    constexpr bool operator==(const Ball_impl& other) const noexcept { return impl == other; }
-    constexpr bool operator!=(const Ball_impl& other) const noexcept { return impl != other; }
+        constexpr bool operator>(const internal::Ball_impl& other) const noexcept { return impl > other; }
+        constexpr bool operator>=(const internal::Ball_impl& other) const noexcept { return impl >= other; }
 
-    const std::string& localize(Language lang) const { return impl.localize(lang); }
+        constexpr bool operator==(const internal::Ball_impl& other) const noexcept { return impl == other; }
+        constexpr bool operator!=(const internal::Ball_impl& other) const noexcept { return impl != other; }
 
-    static constexpr Ball_impl None{EnumType::None};
-    static constexpr Ball_impl Master{EnumType::Master};
-    static constexpr Ball_impl Ultra{EnumType::Ultra};
-    static constexpr Ball_impl Great{EnumType::Great};
-    static constexpr Ball_impl Poke{EnumType::Poke};
-    static constexpr Ball_impl Safari{EnumType::Safari};
-    static constexpr Ball_impl Net{EnumType::Net};
-    static constexpr Ball_impl Dive{EnumType::Dive};
-    static constexpr Ball_impl Nest{EnumType::Nest};
-    static constexpr Ball_impl Repeat{EnumType::Repeat};
-    static constexpr Ball_impl Timer{EnumType::Timer};
-    static constexpr Ball_impl Luxury{EnumType::Luxury};
-    static constexpr Ball_impl Premier{EnumType::Premier};
-    static constexpr Ball_impl Dusk{EnumType::Dusk};
-    static constexpr Ball_impl Heal{EnumType::Heal};
-    static constexpr Ball_impl Quick{EnumType::Quick};
-    static constexpr Ball_impl Cherish{EnumType::Cherish};
-    static constexpr Ball_impl Fast{EnumType::Fast};
-    static constexpr Ball_impl Level{EnumType::Level};
-    static constexpr Ball_impl Lure{EnumType::Lure};
-    static constexpr Ball_impl Heavy{EnumType::Heavy};
-    static constexpr Ball_impl Love{EnumType::Love};
-    static constexpr Ball_impl Friend{EnumType::Friend};
-    static constexpr Ball_impl Moon{EnumType::Moon};
-    static constexpr Ball_impl Sport{EnumType::Sport};
-    static constexpr Ball_impl Dream{EnumType::Dream};
-    static constexpr Ball_impl Beast{EnumType::Beast};
+        const std::string& localize(Language lang) const { return impl.localize(lang); }
 
-    static constexpr Ball_impl INVALID{EnumType::INVALID};
-};
+        static constexpr internal::Ball_impl None{EnumType::None};
+        static constexpr internal::Ball_impl Master{EnumType::Master};
+        static constexpr internal::Ball_impl Ultra{EnumType::Ultra};
+        static constexpr internal::Ball_impl Great{EnumType::Great};
+        static constexpr internal::Ball_impl Poke{EnumType::Poke};
+        static constexpr internal::Ball_impl Safari{EnumType::Safari};
+        static constexpr internal::Ball_impl Net{EnumType::Net};
+        static constexpr internal::Ball_impl Dive{EnumType::Dive};
+        static constexpr internal::Ball_impl Nest{EnumType::Nest};
+        static constexpr internal::Ball_impl Repeat{EnumType::Repeat};
+        static constexpr internal::Ball_impl Timer{EnumType::Timer};
+        static constexpr internal::Ball_impl Luxury{EnumType::Luxury};
+        static constexpr internal::Ball_impl Premier{EnumType::Premier};
+        static constexpr internal::Ball_impl Dusk{EnumType::Dusk};
+        static constexpr internal::Ball_impl Heal{EnumType::Heal};
+        static constexpr internal::Ball_impl Quick{EnumType::Quick};
+        static constexpr internal::Ball_impl Cherish{EnumType::Cherish};
+        static constexpr internal::Ball_impl Fast{EnumType::Fast};
+        static constexpr internal::Ball_impl Level{EnumType::Level};
+        static constexpr internal::Ball_impl Lure{EnumType::Lure};
+        static constexpr internal::Ball_impl Heavy{EnumType::Heavy};
+        static constexpr internal::Ball_impl Love{EnumType::Love};
+        static constexpr internal::Ball_impl Friend{EnumType::Friend};
+        static constexpr internal::Ball_impl Moon{EnumType::Moon};
+        static constexpr internal::Ball_impl Sport{EnumType::Sport};
+        static constexpr internal::Ball_impl Dream{EnumType::Dream};
+        static constexpr internal::Ball_impl Beast{EnumType::Beast};
+
+        static constexpr internal::Ball_impl INVALID{EnumType::INVALID};
+    };
+}
 
 #endif

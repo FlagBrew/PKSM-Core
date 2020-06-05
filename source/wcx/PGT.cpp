@@ -29,305 +29,179 @@
 #include "pkx/PK4.hpp"
 #include "utils/endian.hpp"
 
-PGT::PGT(u8* pgt)
+namespace pksm
 {
-    std::copy(pgt, pgt + length, data);
-    pokemonData = PKX::getPKM<Generation::FOUR>(pgt + 0x8, true);
-    if (type() == 7)
+    PGT::PGT(u8* pgt)
     {
-        pokemonData->species(Species::Manaphy);
-        pokemonData->alternativeForm(0);
-        pokemonData->egg(true);
-        pokemonData->gender(Gender::Genderless);
-        pokemonData->level(1);
-        pokemonData->setAbility(0);
-        pokemonData->move(0, 294);
-        pokemonData->move(1, 145);
-        pokemonData->move(2, 346);
-        pokemonData->move(3, 0);
-        pokemonData->heldItem(0);
-        pokemonData->fatefulEncounter(true);
-        pokemonData->ball(Ball::Poke);
-        pokemonData->version(GameVersion::D); // Diamond
-        pokemonData->language(Language::ENG);
-        pokemonData->nickname("MANAPHY");
-        pokemonData->nicknamed(false);
-        pokemonData->eggLocation(1);
+        std::copy(pgt, pgt + length, data);
+        pokemonData = PKX::getPKM<Generation::FOUR>(pgt + 0x8, true);
+        if (type() == 7)
+        {
+            pokemonData->species(Species::Manaphy);
+            pokemonData->alternativeForm(0);
+            pokemonData->egg(true);
+            pokemonData->gender(Gender::Genderless);
+            pokemonData->level(1);
+            pokemonData->setAbility(0);
+            pokemonData->move(0, 294);
+            pokemonData->move(1, 145);
+            pokemonData->move(2, 346);
+            pokemonData->move(3, 0);
+            pokemonData->heldItem(0);
+            pokemonData->fatefulEncounter(true);
+            pokemonData->ball(Ball::Poke);
+            pokemonData->version(GameVersion::D); // Diamond
+            pokemonData->language(Language::ENG);
+            pokemonData->nickname("MANAPHY");
+            pokemonData->nicknamed(false);
+            pokemonData->eggLocation(1);
+        }
+        pokemonData->refreshChecksum();
+        pokemonData->encrypt();
+        std::copy(pokemonData->rawData(), pokemonData->rawData() + PK4::PARTY_LENGTH, data + 0x8);
+        pokemonData->decrypt(); // encrypt Pokemon data if it isn't already
     }
-    pokemonData->refreshChecksum();
-    pokemonData->encrypt();
-    std::copy(pokemonData->rawData(), pokemonData->rawData() + PK4::PARTY_LENGTH, data + 0x8);
-    pokemonData->decrypt(); // encrypt Pokemon data if it isn't already
-}
 
-PGT::~PGT() {}
+    PGT::~PGT() {}
 
-u16 PGT::ID(void) const
-{
-    return 0;
-}
+    u16 PGT::ID(void) const { return 0; }
 
-std::string PGT::title(void) const
-{
-    return "Wondercard";
-}
+    std::string PGT::title(void) const { return "Wondercard"; }
 
-bool PGT::power(void) const
-{
-    return false;
-}
+    bool PGT::power(void) const { return false; }
 
-Generation PGT::generation(void) const
-{
-    return Generation::FOUR;
-}
+    Generation PGT::generation(void) const { return Generation::FOUR; }
 
-u8 PGT::type(void) const
-{
-    return data[0];
-}
+    u8 PGT::type(void) const { return data[0]; }
 
-bool PGT::bean(void) const
-{
-    return false;
-}
+    bool PGT::bean(void) const { return false; }
 
-bool PGT::BP(void) const
-{
-    return false;
-}
+    bool PGT::BP(void) const { return false; }
 
-bool PGT::item(void) const
-{
-    return type() == 3 || type() == 8 || type() == 9 || type() == 10 || type() == 12;
-}
+    bool PGT::item(void) const { return type() == 3 || type() == 8 || type() == 9 || type() == 10 || type() == 12; }
 
-// Pokemon, egg, or Manaphy egg
-bool PGT::pokemon(void) const
-{
-    return type() == 1 || type() == 2 || type() == 7;
-}
+    // Pokemon, egg, or Manaphy egg
+    bool PGT::pokemon(void) const { return type() == 1 || type() == 2 || type() == 7; }
 
-u16 PGT::object(void) const
-{
-    if (type() == 8)
+    u16 PGT::object(void) const
     {
-        return 454;
+        if (type() == 8)
+        {
+            return 454;
+        }
+        else if (type() == 9)
+        {
+            return 452;
+        }
+        else if (type() == 10)
+        {
+            return 455;
+        }
+        else if (type() == 12)
+        {
+            return 467;
+        }
+        return LittleEndian::convertTo<u16>(data + 0x4);
     }
-    else if (type() == 9)
+
+    u8 PGT::flags(void) const { return data[3]; }
+
+    bool PGT::multiObtainable(void) const { return false; }
+
+    int PGT::year(void) const { return (pokemonData->egg() ? pokemonData->eggDate() : pokemonData->metDate()).year(); }
+
+    int PGT::month(void) const { return (pokemonData->egg() ? pokemonData->eggDate() : pokemonData->metDate()).month(); }
+
+    int PGT::day(void) const { return (pokemonData->egg() ? pokemonData->eggDate() : pokemonData->metDate()).day(); }
+
+    void PGT::year(int v)
     {
-        return 452;
+        Date newDate = date();
+        newDate.year(v);
+        pokemonData->egg() ? pokemonData->eggDate(newDate) : pokemonData->metDate(newDate);
+        pokemonData->refreshChecksum();
+        pokemonData->encrypt();
+        std::copy(pokemonData->rawData(), pokemonData->rawData() + 236, data + 0x8); // Actually set the data
+        pokemonData->decrypt();
     }
-    else if (type() == 10)
+
+    void PGT::month(int v)
     {
-        return 455;
+        Date newDate = date();
+        newDate.month(v);
+        pokemonData->egg() ? pokemonData->eggDate(newDate) : pokemonData->metDate(newDate);
+        pokemonData->refreshChecksum();
+        pokemonData->encrypt();
+        std::copy(pokemonData->rawData(), pokemonData->rawData() + 236, data + 0x8); // Actually set the data
+        pokemonData->decrypt();
     }
-    else if (type() == 12)
+
+    void PGT::day(int v)
     {
-        return 467;
+        Date newDate = date();
+        newDate.day(v);
+        pokemonData->egg() ? pokemonData->eggDate(newDate) : pokemonData->metDate(newDate);
+        pokemonData->refreshChecksum();
+        pokemonData->encrypt();
+        std::copy(pokemonData->rawData(), pokemonData->rawData() + 236, data + 0x8); // Actually set the data
+        pokemonData->decrypt();
     }
-    return LittleEndian::convertTo<u16>(data + 0x4);
-}
 
-u8 PGT::flags(void) const
-{
-    return data[3];
-}
+    u8 PGT::cardLocation(void) const { return 0; }
 
-bool PGT::multiObtainable(void) const
-{
-    return false;
-}
+    bool PGT::used(void) const { return false; }
 
-int PGT::year(void) const
-{
-    return (pokemonData->egg() ? pokemonData->eggDate() : pokemonData->metDate()).year();
-}
+    Ball PGT::ball(void) const { return pokemonData->ball(); }
 
-int PGT::month(void) const
-{
-    return (pokemonData->egg() ? pokemonData->eggDate() : pokemonData->metDate()).month();
-}
+    u16 PGT::heldItem(void) const { return pokemonData->heldItem(); }
 
-int PGT::day(void) const
-{
-    return (pokemonData->egg() ? pokemonData->eggDate() : pokemonData->metDate()).day();
-}
+    bool PGT::shiny(void) const { return pokemonData->shiny(); }
 
-void PGT::year(int v)
-{
-    Date newDate = date();
-    newDate.year(v);
-    pokemonData->egg() ? pokemonData->eggDate(newDate) : pokemonData->metDate(newDate);
-    pokemonData->refreshChecksum();
-    pokemonData->encrypt();
-    std::copy(pokemonData->rawData(), pokemonData->rawData() + 236, data + 0x8); // Actually set the data
-    pokemonData->decrypt();
-}
+    u8 PGT::PIDType(void) const { return pokemonData->shiny() ? 2 : 0; }
 
-void PGT::month(int v)
-{
-    Date newDate = date();
-    newDate.month(v);
-    pokemonData->egg() ? pokemonData->eggDate(newDate) : pokemonData->metDate(newDate);
-    pokemonData->refreshChecksum();
-    pokemonData->encrypt();
-    std::copy(pokemonData->rawData(), pokemonData->rawData() + 236, data + 0x8); // Actually set the data
-    pokemonData->decrypt();
-}
+    u16 PGT::TID(void) const { return pokemonData->TID(); }
 
-void PGT::day(int v)
-{
-    Date newDate = date();
-    newDate.day(v);
-    pokemonData->egg() ? pokemonData->eggDate(newDate) : pokemonData->metDate(newDate);
-    pokemonData->refreshChecksum();
-    pokemonData->encrypt();
-    std::copy(pokemonData->rawData(), pokemonData->rawData() + 236, data + 0x8); // Actually set the data
-    pokemonData->decrypt();
-}
+    u16 PGT::SID(void) const { return pokemonData->SID(); }
 
-u8 PGT::cardLocation(void) const
-{
-    return 0;
-}
+    u16 PGT::move(u8 index) const { return pokemonData->move(index); }
 
-bool PGT::used(void) const
-{
-    return false;
-}
+    Species PGT::species(void) const { return pokemonData->species(); }
 
-Ball PGT::ball(void) const
-{
-    return pokemonData->ball();
-}
+    Gender PGT::gender(void) const { return pokemonData->gender(); }
 
-u16 PGT::heldItem(void) const
-{
-    return pokemonData->heldItem();
-}
+    std::string PGT::otName(void) const { return !(flags() == 0 && type() != 1) ? pokemonData->otName() : ""; }
 
-bool PGT::shiny(void) const
-{
-    return pokemonData->shiny();
-}
+    u8 PGT::level(void) const { return pokemonData->level(); }
 
-u8 PGT::PIDType(void) const
-{
-    return pokemonData->shiny() ? 2 : 0;
-}
+    u32 PGT::PID(void) const { return pokemonData->PID(); }
 
-u16 PGT::TID(void) const
-{
-    return pokemonData->TID();
-}
+    bool PGT::hasRibbon(Ribbon rib) const { return pokemonData->hasRibbon(rib); }
 
-u16 PGT::SID(void) const
-{
-    return pokemonData->SID();
-}
+    bool PGT::ribbon(Ribbon rib) const { return pokemonData->ribbon(rib); }
 
-u16 PGT::move(u8 index) const
-{
-    return pokemonData->move(index);
-}
+    u8 PGT::alternativeForm(void) const { return pokemonData->alternativeForm(); }
 
-Species PGT::species(void) const
-{
-    return pokemonData->species();
-}
+    Language PGT::language(void) const { return pokemonData->language(); }
 
-Gender PGT::gender(void) const
-{
-    return pokemonData->gender();
-}
+    std::string PGT::nickname(void) const { return pokemonData->nickname(); }
 
-std::string PGT::otName(void) const
-{
-    return !(flags() == 0 && type() != 1) ? pokemonData->otName() : "";
-}
+    Nature PGT::nature(void) const { return pokemonData->nature(); }
 
-u8 PGT::level(void) const
-{
-    return pokemonData->level();
-}
+    u8 PGT::abilityType(void) const { return pokemonData->abilityNumber(); }
 
-u32 PGT::PID(void) const
-{
-    return pokemonData->PID();
-}
+    Ability PGT::ability(void) const { return pokemonData->ability(); }
 
-bool PGT::hasRibbon(Ribbon rib) const
-{
-    return pokemonData->hasRibbon(rib);
-}
+    u16 PGT::eggLocation(void) const { return pokemonData->eggLocation(); }
 
-bool PGT::ribbon(Ribbon rib) const
-{
-    return pokemonData->ribbon(rib);
-}
+    u16 PGT::metLocation(void) const { return pokemonData->metLocation(); }
 
-u8 PGT::alternativeForm(void) const
-{
-    return pokemonData->alternativeForm();
-}
+    u8 PGT::metLevel(void) const { return pokemonData->metLevel(); }
 
-Language PGT::language(void) const
-{
-    return pokemonData->language();
-}
+    u8 PGT::contest(u8 index) const { return pokemonData->contest(index); }
 
-std::string PGT::nickname(void) const
-{
-    return pokemonData->nickname();
-}
+    u8 PGT::iv(Stat index) const { return pokemonData->iv(index); }
 
-Nature PGT::nature(void) const
-{
-    return pokemonData->nature();
-}
+    bool PGT::egg(void) const { return pokemonData->egg(); }
 
-u8 PGT::abilityType(void) const
-{
-    return pokemonData->abilityNumber();
-}
-
-Ability PGT::ability(void) const
-{
-    return pokemonData->ability();
-}
-
-u16 PGT::eggLocation(void) const
-{
-    return pokemonData->eggLocation();
-}
-
-u16 PGT::metLocation(void) const
-{
-    return pokemonData->metLocation();
-}
-
-u8 PGT::metLevel(void) const
-{
-    return pokemonData->metLevel();
-}
-
-u8 PGT::contest(u8 index) const
-{
-    return pokemonData->contest(index);
-}
-
-u8 PGT::iv(Stat index) const
-{
-    return pokemonData->iv(index);
-}
-
-bool PGT::egg(void) const
-{
-    return pokemonData->egg();
-}
-
-u16 PGT::formSpecies(void) const
-{
-    return pokemonData->formSpecies();
+    u16 PGT::formSpecies(void) const { return pokemonData->formSpecies(); }
 }

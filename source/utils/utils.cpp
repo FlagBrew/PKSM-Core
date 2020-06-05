@@ -25,9 +25,9 @@
  */
 
 #include "utils/utils.hpp"
+#include "g3text.hpp"
+#include "g4text.hpp"
 #include "utils/endian.hpp"
-#include "utils/g3text.hpp"
-#include "utils/g4text.h"
 #include <algorithm>
 #include <map>
 #include <queue>
@@ -451,8 +451,13 @@ std::string StringUtils::getString4(const u8* data, int ofs, int len)
         u16 temp = LittleEndian::convertTo<u16>(data + ofs + i);
         if (temp == 0xFFFF)
             break;
-        u16 index     = std::distance(G4Values, std::find(G4Values, G4Values + G4TEXT_LENGTH, temp));
-        u16 codepoint = G4Chars[index];
+        auto found = std::find(pksm::internal::G4Values.begin(), pksm::internal::G4Values.end(), temp);
+        // Treat an invalid value as a terminator
+        if (found == pksm::internal::G4Values.end())
+        {
+            break;
+        }
+        u16 codepoint = *found;
         if (codepoint == 0xFFFF)
             break;
         if (codepoint < 0x0080)
@@ -499,13 +504,13 @@ std::vector<u16> StringUtils::stringToG4(const std::string& v)
                 codepoint = codepoint << 6 | (v[charIndex + 1] & 0x3F);
                 charIndex += 1;
             }
-            size_t index = std::distance(G4Chars, std::find(G4Chars, G4Chars + G4TEXT_LENGTH, codepoint));
-            ret.push_back(index < G4TEXT_LENGTH ? G4Values[index] : 0x0000);
+            auto found = std::find(pksm::internal::G4Chars.begin(), pksm::internal::G4Chars.end(), codepoint);
+            ret.push_back(found != pksm::internal::G4Chars.end() ? *found : 0x0000);
         }
         else
         {
-            size_t index = std::distance(G4Chars, std::find(G4Chars, G4Chars + G4TEXT_LENGTH, v[charIndex]));
-            ret.push_back(index < G4TEXT_LENGTH ? G4Values[index] : 0x0000);
+            auto found = std::find(pksm::internal::G4Chars.begin(), pksm::internal::G4Chars.end(), v[charIndex]);
+            ret.push_back(found != pksm::internal::G4Chars.end() ? *found : 0x0000);
         }
     }
     if (ret.back() != 0xFFFF)
@@ -537,13 +542,13 @@ void StringUtils::setString4(u8* data, const std::string& v, int ofs, int len)
                 codepoint = codepoint << 6 | (v[charIndex + 1] & 0x3F);
                 charIndex += 1;
             }
-            size_t index     = std::distance(G4Chars, std::find(G4Chars, G4Chars + G4TEXT_LENGTH, codepoint));
-            output[outIndex] = (index < G4TEXT_LENGTH ? G4Values[index] : 0x0000);
+            auto found       = std::find(pksm::internal::G4Chars.begin(), pksm::internal::G4Chars.end(), codepoint);
+            output[outIndex] = found != pksm::internal::G4Chars.end() ? *found : 0x0000;
         }
         else
         {
-            size_t index     = std::distance(G4Chars, std::find(G4Chars, G4Chars + G4TEXT_LENGTH, v[charIndex]));
-            output[outIndex] = (index < G4TEXT_LENGTH ? G4Values[index] : 0x0000);
+            auto found       = std::find(pksm::internal::G4Chars.begin(), pksm::internal::G4Chars.end(), v[charIndex]);
+            output[outIndex] = found != pksm::internal::G4Chars.end() ? *found : 0x0000;
         }
     }
     output[outIndex >= len ? len - 1 : outIndex] = 0xFFFF;
@@ -638,7 +643,7 @@ std::u16string StringUtils::transString67(const std::u16string& str)
 
 std::string StringUtils::getString3(const u8* data, int ofs, int len, bool jp)
 {
-    auto& characters = jp ? G3_JP : G3_EN;
+    auto& characters = jp ? pksm::internal::G3_JP : pksm::internal::G3_EN;
     std::u16string outString;
 
     for (size_t i = 0; i < (size_t)len; i++)
@@ -658,7 +663,7 @@ std::string StringUtils::getString3(const u8* data, int ofs, int len, bool jp)
 
 void StringUtils::setString3(u8* data, const std::string& v, int ofs, int len, bool jp, int padTo, u8 padWith)
 {
-    auto& characters   = jp ? G3_JP : G3_EN;
+    auto& characters   = jp ? pksm::internal::G3_JP : pksm::internal::G3_EN;
     std::u16string str = StringUtils::UTF8toUTF16(v);
     if (jp)
         str = StringUtils::toFullWidth(str);

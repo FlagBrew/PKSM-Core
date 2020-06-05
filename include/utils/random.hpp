@@ -27,7 +27,9 @@
 #ifndef RANDOM_HPP
 #define RANDOM_HPP
 
+#ifndef _PKSMCORE_CONFIGURED
 #include "PKSMCORE_CONFIG.h"
+#endif
 #include <random>
 
 #ifdef _PKSMCORE_DISABLE_THREAD_SAFE_RANDOM

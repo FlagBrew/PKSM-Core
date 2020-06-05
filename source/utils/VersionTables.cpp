@@ -52,848 +52,855 @@ namespace
     }
 }
 
-const std::set<int>& VersionTables::availableItems(GameVersion version)
+namespace pksm
 {
-    static const std::set<int> emptySet;
-    switch (version)
+    const std::set<int>& VersionTables::availableItems(GameVersion version)
     {
-        case GameVersion::R:
-        case GameVersion::S:
-        case GameVersion::FR:
-        case GameVersion::LG:
-        case GameVersion::E:
+        static const std::set<int> emptySet;
+        switch (version)
         {
-            static std::set<int> items;
-            if (items.empty())
+            case GameVersion::R:
+            case GameVersion::S:
+            case GameVersion::FR:
+            case GameVersion::LG:
+            case GameVersion::E:
             {
-                fill_set_consecutive<int>(items, 0, 374);
+                static std::set<int> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<int>(items, 0, 374);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::D:
-        case GameVersion::P:
-        {
-            static std::set<int> items;
-            if (items.empty())
+            case GameVersion::D:
+            case GameVersion::P:
             {
-                fill_set_consecutive<int>(items, 0, 464);
+                static std::set<int> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<int>(items, 0, 464);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::Pt:
-        {
-            static std::set<int> items;
-            if (items.empty())
+            case GameVersion::Pt:
             {
-                fill_set_consecutive<int>(items, 0, 467);
+                static std::set<int> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<int>(items, 0, 467);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::HG:
-        case GameVersion::SS:
-        {
-            static std::set<int> items;
-            if (items.empty())
+            case GameVersion::HG:
+            case GameVersion::SS:
             {
-                fill_set_consecutive<int>(items, 0, 536);
+                static std::set<int> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<int>(items, 0, 536);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::B:
-        case GameVersion::W:
-        {
-            static std::set<int> items;
-            if (items.empty())
+            case GameVersion::B:
+            case GameVersion::W:
             {
-                fill_set_consecutive<int>(items, 0, 632);
+                static std::set<int> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<int>(items, 0, 632);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::B2:
-        case GameVersion::W2:
-        {
-            static std::set<int> items;
-            if (items.empty())
+            case GameVersion::B2:
+            case GameVersion::W2:
             {
-                fill_set_consecutive<int>(items, 0, 638);
+                static std::set<int> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<int>(items, 0, 638);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::X:
-        case GameVersion::Y:
-        {
-            static std::set<int> items;
-            if (items.empty())
+            case GameVersion::X:
+            case GameVersion::Y:
             {
-                fill_set_consecutive<int>(items, 0, 717);
+                static std::set<int> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<int>(items, 0, 717);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::OR:
-        case GameVersion::AS:
-        {
-            static std::set<int> items;
-            if (items.empty())
+            case GameVersion::OR:
+            case GameVersion::AS:
             {
-                fill_set_consecutive<int>(items, 0, 775);
+                static std::set<int> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<int>(items, 0, 775);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::SN:
-        case GameVersion::MN:
-        {
-            static std::set<int> items;
-            if (items.empty())
+            case GameVersion::SN:
+            case GameVersion::MN:
             {
-                fill_set_consecutive<int>(items, 0, 920);
+                static std::set<int> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<int>(items, 0, 920);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::US:
-        case GameVersion::UM:
-        {
-            static std::set<int> items;
-            if (items.empty())
+            case GameVersion::US:
+            case GameVersion::UM:
             {
-                fill_set_consecutive<int>(items, 0, 959);
+                static std::set<int> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<int>(items, 0, 959);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::GE:
-        case GameVersion::GP:
-        {
-            static std::set<int> items = {0, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 38, 39, 40, 41, 709, 903, 328, 329, 330,
-                331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357,
-                358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384,
-                385, 386, 387, 50, 960, 961, 962, 963, 964, 965, 966, 967, 968, 969, 970, 971, 972, 973, 974, 975, 976, 977, 978, 979, 980, 981, 982,
-                983, 984, 985, 986, 987, 988, 989, 990, 991, 992, 993, 994, 995, 996, 997, 998, 999, 1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007,
-                1008, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 1016, 1017, 1018, 1019, 1020, 1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1029,
-                1030, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038, 1039, 1040, 1041, 1042, 1043, 1044, 1045, 1046, 1047, 1048, 1049, 1050, 1051,
-                1052, 1053, 1054, 1055, 1056, 1057, 51, 53, 81, 82, 83, 84, 85, 849, 1, 2, 3, 4, 12, 164, 166, 168, 861, 862, 863, 864, 865, 866, 55,
-                56, 57, 58, 59, 60, 61, 62, 656, 659, 660, 661, 662, 663, 671, 672, 675, 676, 678, 679, 760, 762, 770, 773, 76, 77, 78, 79, 86, 87,
-                88, 89, 90, 91, 92, 93, 101, 102, 103, 113, 115, 121, 122, 123, 124, 125, 126, 127, 128, 442, 571, 632, 651, 795, 796, 872, 873, 874,
-                875, 876, 877, 878, 885, 886, 887, 888, 889, 890, 891, 892, 893, 894, 895, 896, 900, 901, 902};
-            return items;
-        }
-        case GameVersion::SW:
-        case GameVersion::SH:
-        {
-            static std::set<int> items;
-            if (items.empty())
+            case GameVersion::GE:
+            case GameVersion::GP:
             {
-                fill_set_consecutive<int>(items, 0, 1578);
+                static std::set<int> items = {0, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 38, 39, 40, 41, 709, 903, 328, 329,
+                    330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355,
+                    356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381,
+                    382, 383, 384, 385, 386, 387, 50, 960, 961, 962, 963, 964, 965, 966, 967, 968, 969, 970, 971, 972, 973, 974, 975, 976, 977, 978,
+                    979, 980, 981, 982, 983, 984, 985, 986, 987, 988, 989, 990, 991, 992, 993, 994, 995, 996, 997, 998, 999, 1000, 1001, 1002, 1003,
+                    1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 1016, 1017, 1018, 1019, 1020, 1021, 1022, 1023, 1024,
+                    1025, 1026, 1027, 1028, 1029, 1030, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038, 1039, 1040, 1041, 1042, 1043, 1044, 1045,
+                    1046, 1047, 1048, 1049, 1050, 1051, 1052, 1053, 1054, 1055, 1056, 1057, 51, 53, 81, 82, 83, 84, 85, 849, 1, 2, 3, 4, 12, 164, 166,
+                    168, 861, 862, 863, 864, 865, 866, 55, 56, 57, 58, 59, 60, 61, 62, 656, 659, 660, 661, 662, 663, 671, 672, 675, 676, 678, 679,
+                    760, 762, 770, 773, 76, 77, 78, 79, 86, 87, 88, 89, 90, 91, 92, 93, 101, 102, 103, 113, 115, 121, 122, 123, 124, 125, 126, 127,
+                    128, 442, 571, 632, 651, 795, 796, 872, 873, 874, 875, 876, 877, 878, 885, 886, 887, 888, 889, 890, 891, 892, 893, 894, 895, 896,
+                    900, 901, 902};
+                return items;
             }
-            return items;
+            case GameVersion::SW:
+            case GameVersion::SH:
+            {
+                static std::set<int> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<int>(items, 0, 1578);
+                }
+                return items;
+            }
+            default:
+                return emptySet;
         }
-        default:
-            return emptySet;
     }
-}
 
-const std::set<int>& VersionTables::availableMoves(GameVersion version)
-{
-    static const std::set<int> emptySet;
-    switch (version)
+    const std::set<int>& VersionTables::availableMoves(GameVersion version)
     {
-        case GameVersion::R:
-        case GameVersion::S:
-        case GameVersion::FR:
-        case GameVersion::LG:
-        case GameVersion::E:
+        static const std::set<int> emptySet;
+        switch (version)
         {
-            static std::set<int> items;
-            if (items.empty())
+            case GameVersion::R:
+            case GameVersion::S:
+            case GameVersion::FR:
+            case GameVersion::LG:
+            case GameVersion::E:
             {
-                fill_set_consecutive<int>(items, 0, 354);
+                static std::set<int> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<int>(items, 0, 354);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::D:
-        case GameVersion::P:
-        case GameVersion::Pt:
-        case GameVersion::HG:
-        case GameVersion::SS:
-        {
-            static std::set<int> items;
-            if (items.empty())
+            case GameVersion::D:
+            case GameVersion::P:
+            case GameVersion::Pt:
+            case GameVersion::HG:
+            case GameVersion::SS:
             {
-                fill_set_consecutive<int>(items, 0, 467);
+                static std::set<int> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<int>(items, 0, 467);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::B:
-        case GameVersion::W:
-        case GameVersion::B2:
-        case GameVersion::W2:
-        {
-            static std::set<int> items;
-            if (items.empty())
+            case GameVersion::B:
+            case GameVersion::W:
+            case GameVersion::B2:
+            case GameVersion::W2:
             {
-                fill_set_consecutive<int>(items, 0, 559);
+                static std::set<int> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<int>(items, 0, 559);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::X:
-        case GameVersion::Y:
-        {
-            static std::set<int> items;
-            if (items.empty())
+            case GameVersion::X:
+            case GameVersion::Y:
             {
-                fill_set_consecutive<int>(items, 0, 617);
+                static std::set<int> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<int>(items, 0, 617);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::OR:
-        case GameVersion::AS:
-        {
-            static std::set<int> items;
-            if (items.empty())
+            case GameVersion::OR:
+            case GameVersion::AS:
             {
-                fill_set_consecutive<int>(items, 0, 621);
+                static std::set<int> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<int>(items, 0, 621);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::SN:
-        case GameVersion::MN:
-        {
-            static std::set<int> items;
-            if (items.empty())
+            case GameVersion::SN:
+            case GameVersion::MN:
             {
-                fill_set_consecutive<int>(items, 0, 720);
+                static std::set<int> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<int>(items, 0, 720);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::US:
-        case GameVersion::UM:
-        {
-            static std::set<int> items;
-            if (items.empty())
+            case GameVersion::US:
+            case GameVersion::UM:
             {
-                fill_set_consecutive<int>(items, 0, 728);
+                static std::set<int> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<int>(items, 0, 728);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::GE:
-        case GameVersion::GP:
-        {
-            static std::set<int> items = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
-                29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61,
-                62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94,
-                95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122,
-                123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149,
-                150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 182, 188, 200, 224, 227, 231, 242, 243, 247, 252, 257, 261,
-                263, 269, 270, 276, 280, 281, 339, 347, 355, 364, 369, 389, 394, 398, 399, 403, 404, 405, 406, 417, 420, 430, 438, 446, 453, 483, 492,
-                499, 503, 504, 525, 529, 583, 585, 603, 605, 606, 607, 729, 730, 731, 733, 734, 735, 736, 737, 738, 739, 740, 742};
-            return items;
-        }
-        case GameVersion::SW:
-        case GameVersion::SH:
-        {
-            static std::set<int> items;
-            if (items.empty())
+            case GameVersion::GE:
+            case GameVersion::GP:
             {
-                fill_set_consecutive<int>(items, 0, 796);
+                static std::set<int> items = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
+                    28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
+                    60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91,
+                    92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118,
+                    119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144,
+                    145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 182, 188, 200, 224, 227, 231,
+                    242, 243, 247, 252, 257, 261, 263, 269, 270, 276, 280, 281, 339, 347, 355, 364, 369, 389, 394, 398, 399, 403, 404, 405, 406, 417,
+                    420, 430, 438, 446, 453, 483, 492, 499, 503, 504, 525, 529, 583, 585, 603, 605, 606, 607, 729, 730, 731, 733, 734, 735, 736, 737,
+                    738, 739, 740, 742};
+                return items;
             }
-            return items;
+            case GameVersion::SW:
+            case GameVersion::SH:
+            {
+                static std::set<int> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<int>(items, 0, 796);
+                }
+                return items;
+            }
+            default:
+                return emptySet;
         }
-        default:
-            return emptySet;
     }
-}
 
-const std::set<Species>& VersionTables::availableSpecies(GameVersion version)
-{
-    static const std::set<Species> emptySet;
-    switch (version)
+    const std::set<Species>& VersionTables::availableSpecies(GameVersion version)
     {
-        case GameVersion::R:
-        case GameVersion::S:
-        case GameVersion::FR:
-        case GameVersion::LG:
-        case GameVersion::E:
+        static const std::set<Species> emptySet;
+        switch (version)
         {
-            static std::set<Species> items;
-            if (items.empty())
+            case GameVersion::R:
+            case GameVersion::S:
+            case GameVersion::FR:
+            case GameVersion::LG:
+            case GameVersion::E:
             {
-                fill_set_consecutive<Species>(items, Species::Bulbasaur, Species::Deoxys);
+                static std::set<Species> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<Species>(items, Species::Bulbasaur, Species::Deoxys);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::D:
-        case GameVersion::P:
-        case GameVersion::Pt:
-        case GameVersion::HG:
-        case GameVersion::SS:
-        {
-            static std::set<Species> items;
-            if (items.empty())
+            case GameVersion::D:
+            case GameVersion::P:
+            case GameVersion::Pt:
+            case GameVersion::HG:
+            case GameVersion::SS:
             {
-                fill_set_consecutive<Species>(items, Species::Bulbasaur, Species::Arceus);
+                static std::set<Species> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<Species>(items, Species::Bulbasaur, Species::Arceus);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::B:
-        case GameVersion::W:
-        case GameVersion::B2:
-        case GameVersion::W2:
-        {
-            static std::set<Species> items;
-            if (items.empty())
+            case GameVersion::B:
+            case GameVersion::W:
+            case GameVersion::B2:
+            case GameVersion::W2:
             {
-                fill_set_consecutive<Species>(items, Species::Bulbasaur, Species::Genesect);
+                static std::set<Species> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<Species>(items, Species::Bulbasaur, Species::Genesect);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::X:
-        case GameVersion::Y:
-        case GameVersion::OR:
-        case GameVersion::AS:
-        {
-            static std::set<Species> items;
-            if (items.empty())
+            case GameVersion::X:
+            case GameVersion::Y:
+            case GameVersion::OR:
+            case GameVersion::AS:
             {
-                fill_set_consecutive<Species>(items, Species::Bulbasaur, Species::Volcanion);
+                static std::set<Species> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<Species>(items, Species::Bulbasaur, Species::Volcanion);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::SN:
-        case GameVersion::MN:
-        {
-            static std::set<Species> items;
-            if (items.empty())
+            case GameVersion::SN:
+            case GameVersion::MN:
             {
-                fill_set_consecutive<Species>(items, Species::Bulbasaur, Species::Marshadow);
+                static std::set<Species> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<Species>(items, Species::Bulbasaur, Species::Marshadow);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::US:
-        case GameVersion::UM:
-        {
-            static std::set<Species> items;
-            if (items.empty())
+            case GameVersion::US:
+            case GameVersion::UM:
             {
-                fill_set_consecutive<Species>(items, Species::Bulbasaur, Species::Zeraora);
+                static std::set<Species> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<Species>(items, Species::Bulbasaur, Species::Zeraora);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::GE:
-        case GameVersion::GP:
-        {
-            static std::set<Species> items;
-            if (items.empty())
+            case GameVersion::GE:
+            case GameVersion::GP:
             {
-                fill_set_consecutive<Species>(items, Species::Bulbasaur, Species::Mew);
-                items.emplace(Species::Meltan);
-                items.emplace(Species::Melmetal);
+                static std::set<Species> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<Species>(items, Species::Bulbasaur, Species::Mew);
+                    items.emplace(Species::Meltan);
+                    items.emplace(Species::Melmetal);
+                }
+                return items;
             }
-            return items;
+            case GameVersion::SW:
+            case GameVersion::SH:
+            {
+                static std::set<Species> items = {Species::Bulbasaur, Species::Ivysaur, Species::Venusaur, Species::Charmander, Species::Charmeleon,
+                    Species::Charizard, Species::Squirtle, Species::Wartortle, Species::Blastoise, Species::Caterpie, Species::Metapod,
+                    Species::Butterfree, Species::Pikachu, Species::Raichu, Species::Clefairy, Species::Clefable, Species::Vulpix, Species::Ninetales,
+                    Species::Oddish, Species::Gloom, Species::Vileplume, Species::Diglett, Species::Dugtrio, Species::Meowth, Species::Persian,
+                    Species::Growlithe, Species::Arcanine, Species::Machop, Species::Machoke, Species::Machamp, Species::Ponyta, Species::Rapidash,
+                    Species::Slowpoke, Species::Farfetchd, Species::Shellder, Species::Cloyster, Species::Gastly, Species::Haunter, Species::Gengar,
+                    Species::Onix, Species::Krabby, Species::Kingler, Species::Hitmonlee, Species::Hitmonchan, Species::Koffing, Species::Weezing,
+                    Species::Rhyhorn, Species::Rhydon, Species::Goldeen, Species::Seaking, Species::MrMime, Species::Magikarp, Species::Gyarados,
+                    Species::Lapras, Species::Ditto, Species::Eevee, Species::Vaporeon, Species::Jolteon, Species::Flareon, Species::Snorlax,
+                    Species::Mewtwo, Species::Mew, Species::Hoothoot, Species::Noctowl, Species::Chinchou, Species::Lanturn, Species::Pichu,
+                    Species::Cleffa, Species::Togepi, Species::Togetic, Species::Natu, Species::Xatu, Species::Bellossom, Species::Sudowoodo,
+                    Species::Wooper, Species::Quagsire, Species::Espeon, Species::Umbreon, Species::Wobbuffet, Species::Steelix, Species::Qwilfish,
+                    Species::Shuckle, Species::Sneasel, Species::Swinub, Species::Piloswine, Species::Corsola, Species::Remoraid, Species::Octillery,
+                    Species::Delibird, Species::Mantine, Species::Tyrogue, Species::Hitmontop, Species::Larvitar, Species::Pupitar,
+                    Species::Tyranitar, Species::Celebi, Species::Zigzagoon, Species::Linoone, Species::Lotad, Species::Lombre, Species::Ludicolo,
+                    Species::Seedot, Species::Nuzleaf, Species::Shiftry, Species::Wingull, Species::Pelipper, Species::Ralts, Species::Kirlia,
+                    Species::Gardevoir, Species::Nincada, Species::Ninjask, Species::Shedinja, Species::Sableye, Species::Mawile, Species::Electrike,
+                    Species::Manectric, Species::Roselia, Species::Wailmer, Species::Wailord, Species::Torkoal, Species::Trapinch, Species::Vibrava,
+                    Species::Flygon, Species::Lunatone, Species::Solrock, Species::Barboach, Species::Whiscash, Species::Corphish, Species::Crawdaunt,
+                    Species::Baltoy, Species::Claydol, Species::Feebas, Species::Milotic, Species::Duskull, Species::Dusclops, Species::Wynaut,
+                    Species::Snorunt, Species::Glalie, Species::Jirachi, Species::Budew, Species::Roserade, Species::Combee, Species::Vespiquen,
+                    Species::Cherubi, Species::Cherrim, Species::Shellos, Species::Gastrodon, Species::Drifloon, Species::Drifblim, Species::Stunky,
+                    Species::Skuntank, Species::Bronzor, Species::Bronzong, Species::Bonsly, Species::MimeJr, Species::Munchlax, Species::Riolu,
+                    Species::Lucario, Species::Hippopotas, Species::Hippowdon, Species::Skorupi, Species::Drapion, Species::Croagunk,
+                    Species::Toxicroak, Species::Mantyke, Species::Snover, Species::Abomasnow, Species::Weavile, Species::Rhyperior,
+                    Species::Togekiss, Species::Leafeon, Species::Glaceon, Species::Mamoswine, Species::Gallade, Species::Dusknoir, Species::Froslass,
+                    Species::Rotom, Species::Purrloin, Species::Liepard, Species::Munna, Species::Musharna, Species::Pidove, Species::Tranquill,
+                    Species::Unfezant, Species::Roggenrola, Species::Boldore, Species::Gigalith, Species::Woobat, Species::Swoobat, Species::Drilbur,
+                    Species::Excadrill, Species::Timburr, Species::Gurdurr, Species::Conkeldurr, Species::Tympole, Species::Palpitoad,
+                    Species::Seismitoad, Species::Throh, Species::Sawk, Species::Cottonee, Species::Whimsicott, Species::Basculin, Species::Darumaka,
+                    Species::Darmanitan, Species::Maractus, Species::Dwebble, Species::Crustle, Species::Scraggy, Species::Scrafty, Species::Sigilyph,
+                    Species::Yamask, Species::Cofagrigus, Species::Trubbish, Species::Garbodor, Species::Minccino, Species::Cinccino,
+                    Species::Gothita, Species::Gothorita, Species::Gothitelle, Species::Solosis, Species::Duosion, Species::Reuniclus,
+                    Species::Vanillite, Species::Vanillish, Species::Vanilluxe, Species::Karrablast, Species::Escavalier, Species::Frillish,
+                    Species::Jellicent, Species::Joltik, Species::Galvantula, Species::Ferroseed, Species::Ferrothorn, Species::Klink, Species::Klang,
+                    Species::Klinklang, Species::Elgyem, Species::Beheeyem, Species::Litwick, Species::Lampent, Species::Chandelure, Species::Axew,
+                    Species::Fraxure, Species::Haxorus, Species::Cubchoo, Species::Beartic, Species::Shelmet, Species::Accelgor, Species::Stunfisk,
+                    Species::Golett, Species::Golurk, Species::Pawniard, Species::Bisharp, Species::Rufflet, Species::Braviary, Species::Vullaby,
+                    Species::Mandibuzz, Species::Heatmor, Species::Durant, Species::Deino, Species::Zweilous, Species::Hydreigon, Species::Cobalion,
+                    Species::Terrakion, Species::Virizion, Species::Reshiram, Species::Zekrom, Species::Kyurem, Species::Keldeo, Species::Bunnelby,
+                    Species::Diggersby, Species::Pancham, Species::Pangoro, Species::Espurr, Species::Meowstic, Species::Honedge, Species::Doublade,
+                    Species::Aegislash, Species::Spritzee, Species::Aromatisse, Species::Swirlix, Species::Slurpuff, Species::Inkay, Species::Malamar,
+                    Species::Binacle, Species::Barbaracle, Species::Helioptile, Species::Heliolisk, Species::Sylveon, Species::Hawlucha,
+                    Species::Goomy, Species::Sliggoo, Species::Goodra, Species::Phantump, Species::Trevenant, Species::Pumpkaboo, Species::Gourgeist,
+                    Species::Bergmite, Species::Avalugg, Species::Noibat, Species::Noivern, Species::Rowlet, Species::Dartrix, Species::Decidueye,
+                    Species::Litten, Species::Torracat, Species::Incineroar, Species::Popplio, Species::Brionne, Species::Primarina, Species::Grubbin,
+                    Species::Charjabug, Species::Vikavolt, Species::Cutiefly, Species::Ribombee, Species::Wishiwashi, Species::Mareanie,
+                    Species::Toxapex, Species::Mudbray, Species::Mudsdale, Species::Dewpider, Species::Araquanid, Species::Morelull,
+                    Species::Shiinotic, Species::Salandit, Species::Salazzle, Species::Stufful, Species::Bewear, Species::Bounsweet, Species::Steenee,
+                    Species::Tsareena, Species::Oranguru, Species::Passimian, Species::Wimpod, Species::Golisopod, Species::Pyukumuku,
+                    Species::TypeNull, Species::Silvally, Species::Turtonator, Species::Togedemaru, Species::Mimikyu, Species::Drampa,
+                    Species::Dhelmise, Species::Jangmoo, Species::Hakamoo, Species::Kommoo, Species::Cosmog, Species::Cosmoem, Species::Solgaleo,
+                    Species::Lunala, Species::Necrozma, Species::Marshadow, Species::Zeraora, Species::Meltan, Species::Melmetal, Species::Grookey,
+                    Species::Thwackey, Species::Rillaboom, Species::Scorbunny, Species::Raboot, Species::Cinderace, Species::Sobble,
+                    Species::Drizzile, Species::Inteleon, Species::Skwovet, Species::Greedent, Species::Rookidee, Species::Corvisquire,
+                    Species::Corviknight, Species::Blipbug, Species::Dottler, Species::Orbeetle, Species::Nickit, Species::Thievul,
+                    Species::Gossifleur, Species::Eldegoss, Species::Wooloo, Species::Dubwool, Species::Chewtle, Species::Drednaw, Species::Yamper,
+                    Species::Boltund, Species::Rolycoly, Species::Carkol, Species::Coalossal, Species::Applin, Species::Flapple, Species::Appletun,
+                    Species::Silicobra, Species::Sandaconda, Species::Cramorant, Species::Arrokuda, Species::Barraskewda, Species::Toxel,
+                    Species::Toxtricity, Species::Sizzlipede, Species::Centiskorch, Species::Clobbopus, Species::Grapploct, Species::Sinistea,
+                    Species::Polteageist, Species::Hatenna, Species::Hattrem, Species::Hatterene, Species::Impidimp, Species::Morgrem,
+                    Species::Grimmsnarl, Species::Obstagoon, Species::Perrserker, Species::Cursola, Species::Sirfetchd, Species::MrRime,
+                    Species::Runerigus, Species::Milcery, Species::Alcremie, Species::Falinks, Species::Pincurchin, Species::Snom, Species::Frosmoth,
+                    Species::Stonjourner, Species::Eiscue, Species::Indeedee, Species::Morpeko, Species::Cufant, Species::Copperajah,
+                    Species::Dracozolt, Species::Arctozolt, Species::Dracovish, Species::Arctovish, Species::Duraludon, Species::Dreepy,
+                    Species::Drakloak, Species::Dragapult, Species::Zacian, Species::Zamazenta, Species::Eternatus};
+                return items;
+            }
+            default:
+                return emptySet;
         }
-        case GameVersion::SW:
-        case GameVersion::SH:
-        {
-            static std::set<Species> items = {Species::Bulbasaur, Species::Ivysaur, Species::Venusaur, Species::Charmander, Species::Charmeleon,
-                Species::Charizard, Species::Squirtle, Species::Wartortle, Species::Blastoise, Species::Caterpie, Species::Metapod,
-                Species::Butterfree, Species::Pikachu, Species::Raichu, Species::Clefairy, Species::Clefable, Species::Vulpix, Species::Ninetales,
-                Species::Oddish, Species::Gloom, Species::Vileplume, Species::Diglett, Species::Dugtrio, Species::Meowth, Species::Persian,
-                Species::Growlithe, Species::Arcanine, Species::Machop, Species::Machoke, Species::Machamp, Species::Ponyta, Species::Rapidash,
-                Species::Slowpoke, Species::Farfetchd, Species::Shellder, Species::Cloyster, Species::Gastly, Species::Haunter, Species::Gengar,
-                Species::Onix, Species::Krabby, Species::Kingler, Species::Hitmonlee, Species::Hitmonchan, Species::Koffing, Species::Weezing,
-                Species::Rhyhorn, Species::Rhydon, Species::Goldeen, Species::Seaking, Species::MrMime, Species::Magikarp, Species::Gyarados,
-                Species::Lapras, Species::Ditto, Species::Eevee, Species::Vaporeon, Species::Jolteon, Species::Flareon, Species::Snorlax,
-                Species::Mewtwo, Species::Mew, Species::Hoothoot, Species::Noctowl, Species::Chinchou, Species::Lanturn, Species::Pichu,
-                Species::Cleffa, Species::Togepi, Species::Togetic, Species::Natu, Species::Xatu, Species::Bellossom, Species::Sudowoodo,
-                Species::Wooper, Species::Quagsire, Species::Espeon, Species::Umbreon, Species::Wobbuffet, Species::Steelix, Species::Qwilfish,
-                Species::Shuckle, Species::Sneasel, Species::Swinub, Species::Piloswine, Species::Corsola, Species::Remoraid, Species::Octillery,
-                Species::Delibird, Species::Mantine, Species::Tyrogue, Species::Hitmontop, Species::Larvitar, Species::Pupitar, Species::Tyranitar,
-                Species::Celebi, Species::Zigzagoon, Species::Linoone, Species::Lotad, Species::Lombre, Species::Ludicolo, Species::Seedot,
-                Species::Nuzleaf, Species::Shiftry, Species::Wingull, Species::Pelipper, Species::Ralts, Species::Kirlia, Species::Gardevoir,
-                Species::Nincada, Species::Ninjask, Species::Shedinja, Species::Sableye, Species::Mawile, Species::Electrike, Species::Manectric,
-                Species::Roselia, Species::Wailmer, Species::Wailord, Species::Torkoal, Species::Trapinch, Species::Vibrava, Species::Flygon,
-                Species::Lunatone, Species::Solrock, Species::Barboach, Species::Whiscash, Species::Corphish, Species::Crawdaunt, Species::Baltoy,
-                Species::Claydol, Species::Feebas, Species::Milotic, Species::Duskull, Species::Dusclops, Species::Wynaut, Species::Snorunt,
-                Species::Glalie, Species::Jirachi, Species::Budew, Species::Roserade, Species::Combee, Species::Vespiquen, Species::Cherubi,
-                Species::Cherrim, Species::Shellos, Species::Gastrodon, Species::Drifloon, Species::Drifblim, Species::Stunky, Species::Skuntank,
-                Species::Bronzor, Species::Bronzong, Species::Bonsly, Species::MimeJr, Species::Munchlax, Species::Riolu, Species::Lucario,
-                Species::Hippopotas, Species::Hippowdon, Species::Skorupi, Species::Drapion, Species::Croagunk, Species::Toxicroak, Species::Mantyke,
-                Species::Snover, Species::Abomasnow, Species::Weavile, Species::Rhyperior, Species::Togekiss, Species::Leafeon, Species::Glaceon,
-                Species::Mamoswine, Species::Gallade, Species::Dusknoir, Species::Froslass, Species::Rotom, Species::Purrloin, Species::Liepard,
-                Species::Munna, Species::Musharna, Species::Pidove, Species::Tranquill, Species::Unfezant, Species::Roggenrola, Species::Boldore,
-                Species::Gigalith, Species::Woobat, Species::Swoobat, Species::Drilbur, Species::Excadrill, Species::Timburr, Species::Gurdurr,
-                Species::Conkeldurr, Species::Tympole, Species::Palpitoad, Species::Seismitoad, Species::Throh, Species::Sawk, Species::Cottonee,
-                Species::Whimsicott, Species::Basculin, Species::Darumaka, Species::Darmanitan, Species::Maractus, Species::Dwebble, Species::Crustle,
-                Species::Scraggy, Species::Scrafty, Species::Sigilyph, Species::Yamask, Species::Cofagrigus, Species::Trubbish, Species::Garbodor,
-                Species::Minccino, Species::Cinccino, Species::Gothita, Species::Gothorita, Species::Gothitelle, Species::Solosis, Species::Duosion,
-                Species::Reuniclus, Species::Vanillite, Species::Vanillish, Species::Vanilluxe, Species::Karrablast, Species::Escavalier,
-                Species::Frillish, Species::Jellicent, Species::Joltik, Species::Galvantula, Species::Ferroseed, Species::Ferrothorn, Species::Klink,
-                Species::Klang, Species::Klinklang, Species::Elgyem, Species::Beheeyem, Species::Litwick, Species::Lampent, Species::Chandelure,
-                Species::Axew, Species::Fraxure, Species::Haxorus, Species::Cubchoo, Species::Beartic, Species::Shelmet, Species::Accelgor,
-                Species::Stunfisk, Species::Golett, Species::Golurk, Species::Pawniard, Species::Bisharp, Species::Rufflet, Species::Braviary,
-                Species::Vullaby, Species::Mandibuzz, Species::Heatmor, Species::Durant, Species::Deino, Species::Zweilous, Species::Hydreigon,
-                Species::Cobalion, Species::Terrakion, Species::Virizion, Species::Reshiram, Species::Zekrom, Species::Kyurem, Species::Keldeo,
-                Species::Bunnelby, Species::Diggersby, Species::Pancham, Species::Pangoro, Species::Espurr, Species::Meowstic, Species::Honedge,
-                Species::Doublade, Species::Aegislash, Species::Spritzee, Species::Aromatisse, Species::Swirlix, Species::Slurpuff, Species::Inkay,
-                Species::Malamar, Species::Binacle, Species::Barbaracle, Species::Helioptile, Species::Heliolisk, Species::Sylveon, Species::Hawlucha,
-                Species::Goomy, Species::Sliggoo, Species::Goodra, Species::Phantump, Species::Trevenant, Species::Pumpkaboo, Species::Gourgeist,
-                Species::Bergmite, Species::Avalugg, Species::Noibat, Species::Noivern, Species::Rowlet, Species::Dartrix, Species::Decidueye,
-                Species::Litten, Species::Torracat, Species::Incineroar, Species::Popplio, Species::Brionne, Species::Primarina, Species::Grubbin,
-                Species::Charjabug, Species::Vikavolt, Species::Cutiefly, Species::Ribombee, Species::Wishiwashi, Species::Mareanie, Species::Toxapex,
-                Species::Mudbray, Species::Mudsdale, Species::Dewpider, Species::Araquanid, Species::Morelull, Species::Shiinotic, Species::Salandit,
-                Species::Salazzle, Species::Stufful, Species::Bewear, Species::Bounsweet, Species::Steenee, Species::Tsareena, Species::Oranguru,
-                Species::Passimian, Species::Wimpod, Species::Golisopod, Species::Pyukumuku, Species::TypeNull, Species::Silvally,
-                Species::Turtonator, Species::Togedemaru, Species::Mimikyu, Species::Drampa, Species::Dhelmise, Species::Jangmoo, Species::Hakamoo,
-                Species::Kommoo, Species::Cosmog, Species::Cosmoem, Species::Solgaleo, Species::Lunala, Species::Necrozma, Species::Marshadow,
-                Species::Zeraora, Species::Meltan, Species::Melmetal, Species::Grookey, Species::Thwackey, Species::Rillaboom, Species::Scorbunny,
-                Species::Raboot, Species::Cinderace, Species::Sobble, Species::Drizzile, Species::Inteleon, Species::Skwovet, Species::Greedent,
-                Species::Rookidee, Species::Corvisquire, Species::Corviknight, Species::Blipbug, Species::Dottler, Species::Orbeetle, Species::Nickit,
-                Species::Thievul, Species::Gossifleur, Species::Eldegoss, Species::Wooloo, Species::Dubwool, Species::Chewtle, Species::Drednaw,
-                Species::Yamper, Species::Boltund, Species::Rolycoly, Species::Carkol, Species::Coalossal, Species::Applin, Species::Flapple,
-                Species::Appletun, Species::Silicobra, Species::Sandaconda, Species::Cramorant, Species::Arrokuda, Species::Barraskewda,
-                Species::Toxel, Species::Toxtricity, Species::Sizzlipede, Species::Centiskorch, Species::Clobbopus, Species::Grapploct,
-                Species::Sinistea, Species::Polteageist, Species::Hatenna, Species::Hattrem, Species::Hatterene, Species::Impidimp, Species::Morgrem,
-                Species::Grimmsnarl, Species::Obstagoon, Species::Perrserker, Species::Cursola, Species::Sirfetchd, Species::MrRime,
-                Species::Runerigus, Species::Milcery, Species::Alcremie, Species::Falinks, Species::Pincurchin, Species::Snom, Species::Frosmoth,
-                Species::Stonjourner, Species::Eiscue, Species::Indeedee, Species::Morpeko, Species::Cufant, Species::Copperajah, Species::Dracozolt,
-                Species::Arctozolt, Species::Dracovish, Species::Arctovish, Species::Duraludon, Species::Dreepy, Species::Drakloak,
-                Species::Dragapult, Species::Zacian, Species::Zamazenta, Species::Eternatus};
-            return items;
-        }
-        default:
-            return emptySet;
     }
-}
 
-const std::set<Ability>& VersionTables::availableAbilities(GameVersion version)
-{
-    static const std::set<Ability> emptySet;
-    switch (version)
+    const std::set<Ability>& VersionTables::availableAbilities(GameVersion version)
     {
-        case GameVersion::R:
-        case GameVersion::S:
-        case GameVersion::FR:
-        case GameVersion::LG:
-        case GameVersion::E:
+        static const std::set<Ability> emptySet;
+        switch (version)
         {
-            static std::set<Ability> items;
-            if (items.empty())
+            case GameVersion::R:
+            case GameVersion::S:
+            case GameVersion::FR:
+            case GameVersion::LG:
+            case GameVersion::E:
             {
-                fill_set_consecutive<Ability>(items, Ability::Stench, Ability::TangledFeet);
+                static std::set<Ability> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<Ability>(items, Ability::Stench, Ability::TangledFeet);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::D:
-        case GameVersion::P:
-        case GameVersion::Pt:
-        case GameVersion::HG:
-        case GameVersion::SS:
-        {
-            static std::set<Ability> items;
-            if (items.empty())
+            case GameVersion::D:
+            case GameVersion::P:
+            case GameVersion::Pt:
+            case GameVersion::HG:
+            case GameVersion::SS:
             {
-                fill_set_consecutive<Ability>(items, Ability::Stench, Ability::BadDreams);
+                static std::set<Ability> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<Ability>(items, Ability::Stench, Ability::BadDreams);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::B:
-        case GameVersion::W:
-        case GameVersion::B2:
-        case GameVersion::W2:
-        {
-            static std::set<Ability> items;
-            if (items.empty())
+            case GameVersion::B:
+            case GameVersion::W:
+            case GameVersion::B2:
+            case GameVersion::W2:
             {
-                fill_set_consecutive<Ability>(items, Ability::Stench, Ability::Teravolt);
+                static std::set<Ability> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<Ability>(items, Ability::Stench, Ability::Teravolt);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::X:
-        case GameVersion::Y:
-        {
-            static std::set<Ability> items;
-            if (items.empty())
+            case GameVersion::X:
+            case GameVersion::Y:
             {
-                fill_set_consecutive<Ability>(items, Ability::Stench, Ability::AuraBreak);
+                static std::set<Ability> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<Ability>(items, Ability::Stench, Ability::AuraBreak);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::OR:
-        case GameVersion::AS:
-        {
-            static std::set<Ability> items;
-            if (items.empty())
+            case GameVersion::OR:
+            case GameVersion::AS:
             {
-                fill_set_consecutive<Ability>(items, Ability::Stench, Ability::DeltaStream);
+                static std::set<Ability> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<Ability>(items, Ability::Stench, Ability::DeltaStream);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::SN:
-        case GameVersion::MN:
-        {
-            static std::set<Ability> items;
-            if (items.empty())
+            case GameVersion::SN:
+            case GameVersion::MN:
             {
-                fill_set_consecutive<Ability>(items, Ability::Stench, Ability::PrismArmor);
+                static std::set<Ability> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<Ability>(items, Ability::Stench, Ability::PrismArmor);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::US:
-        case GameVersion::UM:
-        {
-            static std::set<Ability> items;
-            if (items.empty())
+            case GameVersion::US:
+            case GameVersion::UM:
             {
-                fill_set_consecutive<Ability>(items, Ability::Stench, Ability::Neuroforce);
+                static std::set<Ability> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<Ability>(items, Ability::Stench, Ability::Neuroforce);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::GE:
-        case GameVersion::GP:
-        {
-            static std::set<Ability> items;
-            if (items.empty())
+            case GameVersion::GE:
+            case GameVersion::GP:
             {
-                fill_set_consecutive<Ability>(items, Ability::Stench, Ability::Neuroforce);
+                static std::set<Ability> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<Ability>(items, Ability::Stench, Ability::Neuroforce);
+                }
+                return items;
             }
-            return items;
-        }
-        case GameVersion::SW:
-        case GameVersion::SH:
-        {
-            static std::set<Ability> items;
-            if (items.empty())
+            case GameVersion::SW:
+            case GameVersion::SH:
             {
-                fill_set_consecutive<Ability>(items, Ability::Stench, Ability::HungerSwitch);
+                static std::set<Ability> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<Ability>(items, Ability::Stench, Ability::HungerSwitch);
+                }
+                return items;
             }
-            return items;
+            default:
+                return emptySet;
         }
-        default:
-            return emptySet;
     }
-}
 
-const std::set<Ball>& VersionTables::availableBalls(GameVersion version)
-{
-    static const std::set<Ball> emptySet;
-    switch ((Generation)version)
+    const std::set<Ball>& VersionTables::availableBalls(GameVersion version)
     {
-        case Generation::THREE:
+        static const std::set<Ball> emptySet;
+        switch ((Generation)version)
         {
-            static std::set<Ball> items;
-            if (items.empty())
+            case Generation::THREE:
             {
-                fill_set_consecutive<Ball>(items, Ball::Master, Ball::Premier);
+                static std::set<Ball> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<Ball>(items, Ball::Master, Ball::Premier);
+                }
+                return items;
             }
-            return items;
+            case Generation::FOUR:
+            {
+                static std::set<Ball> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<Ball>(items, Ball::Master, Ball::Sport);
+                }
+                return items;
+            }
+            case Generation::FIVE:
+            case Generation::SIX:
+            {
+                static std::set<Ball> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<Ball>(items, Ball::Master, Ball::Dream);
+                }
+                return items;
+            }
+            case Generation::SEVEN:
+            case Generation::LGPE:
+            case Generation::EIGHT:
+            {
+                static std::set<Ball> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<Ball>(items, Ball::Master, Ball::Beast);
+                }
+                return items;
+            }
+            default:
+                return emptySet;
         }
-        case Generation::FOUR:
+    }
+
+    int VersionTables::maxItem(GameVersion version)
+    {
+        switch (version)
         {
-            static std::set<Ball> items;
-            if (items.empty())
-            {
-                fill_set_consecutive<Ball>(items, Ball::Master, Ball::Sport);
-            }
-            return items;
+            case GameVersion::R:
+            case GameVersion::S:
+            case GameVersion::FR:
+            case GameVersion::LG:
+            case GameVersion::E:
+                return 374;
+            case GameVersion::D:
+            case GameVersion::P:
+                return 464;
+            case GameVersion::Pt:
+                return 467;
+            case GameVersion::HG:
+            case GameVersion::SS:
+                return 536;
+            case GameVersion::B:
+            case GameVersion::W:
+                return 632;
+            case GameVersion::B2:
+            case GameVersion::W2:
+                return 638;
+            case GameVersion::X:
+            case GameVersion::Y:
+                return 717;
+            case GameVersion::OR:
+            case GameVersion::AS:
+                return 775;
+            case GameVersion::SN:
+            case GameVersion::MN:
+                return 920;
+            case GameVersion::US:
+            case GameVersion::UM:
+                return 959;
+            case GameVersion::GE:
+            case GameVersion::GP:
+                return 1057;
+            case GameVersion::SW:
+            case GameVersion::SH:
+                return 1578;
+            default:
+                return 0;
         }
-        case Generation::FIVE:
-        case Generation::SIX:
+    }
+
+    int VersionTables::maxMove(GameVersion version)
+    {
+        switch (version)
         {
-            static std::set<Ball> items;
-            if (items.empty())
-            {
-                fill_set_consecutive<Ball>(items, Ball::Master, Ball::Dream);
-            }
-            return items;
+            case GameVersion::R:
+            case GameVersion::S:
+            case GameVersion::FR:
+            case GameVersion::LG:
+            case GameVersion::E:
+                return 354;
+            case GameVersion::D:
+            case GameVersion::P:
+            case GameVersion::Pt:
+            case GameVersion::HG:
+            case GameVersion::SS:
+                return 467;
+            case GameVersion::B:
+            case GameVersion::W:
+            case GameVersion::B2:
+            case GameVersion::W2:
+                return 559;
+            case GameVersion::X:
+            case GameVersion::Y:
+                return 617;
+            case GameVersion::OR:
+            case GameVersion::AS:
+                return 621;
+            case GameVersion::SN:
+            case GameVersion::MN:
+                return 720;
+            case GameVersion::US:
+            case GameVersion::UM:
+                return 728;
+            case GameVersion::GE:
+            case GameVersion::GP:
+                return 742;
+            case GameVersion::SW:
+            case GameVersion::SH:
+                return 796;
+            default:
+                return 0;
         }
-        case Generation::SEVEN:
-        case Generation::LGPE:
-        case Generation::EIGHT:
+    }
+
+    Species VersionTables::maxSpecies(GameVersion version)
+    {
+        switch (version)
         {
-            static std::set<Ball> items;
-            if (items.empty())
-            {
-                fill_set_consecutive<Ball>(items, Ball::Master, Ball::Beast);
-            }
-            return items;
+            case GameVersion::R:
+            case GameVersion::S:
+            case GameVersion::FR:
+            case GameVersion::LG:
+            case GameVersion::E:
+                return Species::Deoxys;
+            case GameVersion::D:
+            case GameVersion::P:
+            case GameVersion::Pt:
+            case GameVersion::HG:
+            case GameVersion::SS:
+                return Species::Arceus;
+            case GameVersion::B:
+            case GameVersion::W:
+            case GameVersion::B2:
+            case GameVersion::W2:
+                return Species::Genesect;
+            case GameVersion::X:
+            case GameVersion::Y:
+            case GameVersion::OR:
+            case GameVersion::AS:
+                return Species::Volcanion;
+            case GameVersion::SN:
+            case GameVersion::MN:
+                return Species::Marshadow;
+            case GameVersion::US:
+            case GameVersion::UM:
+                return Species::Zeraora;
+            case GameVersion::GE:
+            case GameVersion::GP:
+                return Species::Melmetal;
+            case GameVersion::SW:
+            case GameVersion::SH:
+                return Species::Eternatus;
+            default:
+                return Species::None;
         }
-        default:
-            return emptySet;
     }
-}
 
-int VersionTables::maxItem(GameVersion version)
-{
-    switch (version)
+    Ability VersionTables::maxAbility(GameVersion version)
     {
-        case GameVersion::R:
-        case GameVersion::S:
-        case GameVersion::FR:
-        case GameVersion::LG:
-        case GameVersion::E:
-            return 374;
-        case GameVersion::D:
-        case GameVersion::P:
-            return 464;
-        case GameVersion::Pt:
-            return 467;
-        case GameVersion::HG:
-        case GameVersion::SS:
-            return 536;
-        case GameVersion::B:
-        case GameVersion::W:
-            return 632;
-        case GameVersion::B2:
-        case GameVersion::W2:
-            return 638;
-        case GameVersion::X:
-        case GameVersion::Y:
-            return 717;
-        case GameVersion::OR:
-        case GameVersion::AS:
-            return 775;
-        case GameVersion::SN:
-        case GameVersion::MN:
-            return 920;
-        case GameVersion::US:
-        case GameVersion::UM:
-            return 959;
-        case GameVersion::GE:
-        case GameVersion::GP:
-            return 1057;
-        case GameVersion::SW:
-        case GameVersion::SH:
-            return 1578;
-        default:
-            return 0;
+        switch (version)
+        {
+            case GameVersion::R:
+            case GameVersion::S:
+            case GameVersion::FR:
+            case GameVersion::LG:
+            case GameVersion::E:
+                return Ability::TangledFeet;
+            case GameVersion::D:
+            case GameVersion::P:
+            case GameVersion::Pt:
+            case GameVersion::HG:
+            case GameVersion::SS:
+                return Ability::BadDreams;
+            case GameVersion::B:
+            case GameVersion::W:
+            case GameVersion::B2:
+            case GameVersion::W2:
+                return Ability::Teravolt;
+            case GameVersion::X:
+            case GameVersion::Y:
+                return Ability::AuraBreak;
+            case GameVersion::OR:
+            case GameVersion::AS:
+                return Ability::DeltaStream;
+            case GameVersion::SN:
+            case GameVersion::MN:
+                return Ability::PrismArmor;
+            case GameVersion::US:
+            case GameVersion::UM:
+                return Ability::Neuroforce;
+            case GameVersion::GE:
+            case GameVersion::GP:
+                return Ability::Neuroforce;
+            case GameVersion::SW:
+            case GameVersion::SH:
+                return Ability::HungerSwitch;
+            default:
+                return Ability::None;
+        }
     }
-}
 
-int VersionTables::maxMove(GameVersion version)
-{
-    switch (version)
+    Ball VersionTables::maxBall(GameVersion version)
     {
-        case GameVersion::R:
-        case GameVersion::S:
-        case GameVersion::FR:
-        case GameVersion::LG:
-        case GameVersion::E:
-            return 354;
-        case GameVersion::D:
-        case GameVersion::P:
-        case GameVersion::Pt:
-        case GameVersion::HG:
-        case GameVersion::SS:
-            return 467;
-        case GameVersion::B:
-        case GameVersion::W:
-        case GameVersion::B2:
-        case GameVersion::W2:
-            return 559;
-        case GameVersion::X:
-        case GameVersion::Y:
-            return 617;
-        case GameVersion::OR:
-        case GameVersion::AS:
-            return 621;
-        case GameVersion::SN:
-        case GameVersion::MN:
-            return 720;
-        case GameVersion::US:
-        case GameVersion::UM:
-            return 728;
-        case GameVersion::GE:
-        case GameVersion::GP:
-            return 742;
-        case GameVersion::SW:
-        case GameVersion::SH:
-            return 796;
-        default:
-            return 0;
+        switch ((Generation)version)
+        {
+            case Generation::THREE:
+                return Ball::Premier;
+            case Generation::FOUR:
+                return Ball::Sport;
+            case Generation::FIVE:
+            case Generation::SIX:
+                return Ball::Dream;
+            case Generation::SEVEN:
+            case Generation::LGPE:
+            case Generation::EIGHT:
+                return Ball::Beast;
+            default:
+                return Ball::None;
+        }
     }
-}
 
-Species VersionTables::maxSpecies(GameVersion version)
-{
-    switch (version)
+    u8 VersionTables::formCount(GameVersion version, Species species)
     {
-        case GameVersion::R:
-        case GameVersion::S:
-        case GameVersion::FR:
-        case GameVersion::LG:
-        case GameVersion::E:
-            return Species::Deoxys;
-        case GameVersion::D:
-        case GameVersion::P:
-        case GameVersion::Pt:
-        case GameVersion::HG:
-        case GameVersion::SS:
-            return Species::Arceus;
-        case GameVersion::B:
-        case GameVersion::W:
-        case GameVersion::B2:
-        case GameVersion::W2:
-            return Species::Genesect;
-        case GameVersion::X:
-        case GameVersion::Y:
-        case GameVersion::OR:
-        case GameVersion::AS:
-            return Species::Volcanion;
-        case GameVersion::SN:
-        case GameVersion::MN:
-            return Species::Marshadow;
-        case GameVersion::US:
-        case GameVersion::UM:
-            return Species::Zeraora;
-        case GameVersion::GE:
-        case GameVersion::GP:
-            return Species::Melmetal;
-        case GameVersion::SW:
-        case GameVersion::SH:
-            return Species::Eternatus;
-        default:
-            return Species::None;
-    }
-}
-
-Ability VersionTables::maxAbility(GameVersion version)
-{
-    switch (version)
-    {
-        case GameVersion::R:
-        case GameVersion::S:
-        case GameVersion::FR:
-        case GameVersion::LG:
-        case GameVersion::E:
-            return Ability::TangledFeet;
-        case GameVersion::D:
-        case GameVersion::P:
-        case GameVersion::Pt:
-        case GameVersion::HG:
-        case GameVersion::SS:
-            return Ability::BadDreams;
-        case GameVersion::B:
-        case GameVersion::W:
-        case GameVersion::B2:
-        case GameVersion::W2:
-            return Ability::Teravolt;
-        case GameVersion::X:
-        case GameVersion::Y:
-            return Ability::AuraBreak;
-        case GameVersion::OR:
-        case GameVersion::AS:
-            return Ability::DeltaStream;
-        case GameVersion::SN:
-        case GameVersion::MN:
-            return Ability::PrismArmor;
-        case GameVersion::US:
-        case GameVersion::UM:
-            return Ability::Neuroforce;
-        case GameVersion::GE:
-        case GameVersion::GP:
-            return Ability::Neuroforce;
-        case GameVersion::SW:
-        case GameVersion::SH:
-            return Ability::HungerSwitch;
-        default:
-            return Ability::None;
-    }
-}
-
-Ball VersionTables::maxBall(GameVersion version)
-{
-    switch ((Generation)version)
-    {
-        case Generation::THREE:
-            return Ball::Premier;
-        case Generation::FOUR:
-            return Ball::Sport;
-        case Generation::FIVE:
-        case Generation::SIX:
-            return Ball::Dream;
-        case Generation::SEVEN:
-        case Generation::LGPE:
-        case Generation::EIGHT:
-            return Ball::Beast;
-        default:
-            return Ball::None;
-    }
-}
-
-u8 VersionTables::formCount(GameVersion version, Species species)
-{
-    switch (version)
-    {
-        case GameVersion::R:
-        case GameVersion::S:
-        case GameVersion::FR:
-        case GameVersion::LG:
-        case GameVersion::E:
-            return PersonalRSFRLGE::formCount(u16(species));
-        case GameVersion::D:
-        case GameVersion::P:
-            if (species == Species::Rotom || species == Species::Giratina || species == Species::Shaymin)
-            {
-                return 1;
-            }
-        // falls through
-        case GameVersion::Pt:
-            if (species == Species::Pichu)
-            {
-                return 1;
-            }
+        switch (version)
+        {
+            case GameVersion::R:
+            case GameVersion::S:
+            case GameVersion::FR:
+            case GameVersion::LG:
+            case GameVersion::E:
+                return PersonalRSFRLGE::formCount(u16(species));
+            case GameVersion::D:
+            case GameVersion::P:
+                if (species == Species::Rotom || species == Species::Giratina || species == Species::Shaymin)
+                {
+                    return 1;
+                }
             // falls through
-        case GameVersion::HG:
-        case GameVersion::SS:
-            return PersonalDPPtHGSS::formCount(u16(species));
-        case GameVersion::B:
-        case GameVersion::W:
-            if (species == Species::Tornadus || species == Species::Thundurus || species == Species::Landorus || species == Species::Kyurem ||
-                species == Species::Keldeo)
-            {
-                return 1;
-            }
-        // falls through
-        case GameVersion::B2:
-        case GameVersion::W2:
-            return PersonalBWB2W2::formCount(u16(species));
-        case GameVersion::X:
-        case GameVersion::Y:
-            if (species == Species::Beedrill || species == Species::Pidgeot || species == Species::Pikachu || species == Species::Slowbro ||
-                species == Species::Steelix || species == Species::Sceptile || species == Species::Swampert || species == Species::Sableye ||
-                species == Species::Sharpedo || species == Species::Camerupt || species == Species::Altaria || species == Species::Glalie ||
-                species == Species::Salamence || species == Species::Metagross || species == Species::Kyogre || species == Species::Groudon ||
-                species == Species::Rayquaza || species == Species::Lopunny || species == Species::Gallade || species == Species::Audino ||
-                species == Species::Hoopa || species == Species::Diancie)
-            {
-                return 1;
-            }
+            case GameVersion::Pt:
+                if (species == Species::Pichu)
+                {
+                    return 1;
+                }
+                // falls through
+            case GameVersion::HG:
+            case GameVersion::SS:
+                return PersonalDPPtHGSS::formCount(u16(species));
+            case GameVersion::B:
+            case GameVersion::W:
+                if (species == Species::Tornadus || species == Species::Thundurus || species == Species::Landorus || species == Species::Kyurem ||
+                    species == Species::Keldeo)
+                {
+                    return 1;
+                }
             // falls through
-        case GameVersion::OR:
-        case GameVersion::AS:
-            return PersonalXYORAS::formCount(u16(species));
-        case GameVersion::SN:
-        case GameVersion::MN:
-            if (species == Species::Lycanroc)
-            {
-                return 2;
-            }
-            if (species == Species::Pikachu)
-            {
-                return 6;
-            }
-            if (species == Species::Necrozma)
-            {
+            case GameVersion::B2:
+            case GameVersion::W2:
+                return PersonalBWB2W2::formCount(u16(species));
+            case GameVersion::X:
+            case GameVersion::Y:
+                if (species == Species::Beedrill || species == Species::Pidgeot || species == Species::Pikachu || species == Species::Slowbro ||
+                    species == Species::Steelix || species == Species::Sceptile || species == Species::Swampert || species == Species::Sableye ||
+                    species == Species::Sharpedo || species == Species::Camerupt || species == Species::Altaria || species == Species::Glalie ||
+                    species == Species::Salamence || species == Species::Metagross || species == Species::Kyogre || species == Species::Groudon ||
+                    species == Species::Rayquaza || species == Species::Lopunny || species == Species::Gallade || species == Species::Audino ||
+                    species == Species::Hoopa || species == Species::Diancie)
+                {
+                    return 1;
+                }
+                // falls through
+            case GameVersion::OR:
+            case GameVersion::AS:
+                return PersonalXYORAS::formCount(u16(species));
+            case GameVersion::SN:
+            case GameVersion::MN:
+                if (species == Species::Lycanroc)
+                {
+                    return 2;
+                }
+                if (species == Species::Pikachu)
+                {
+                    return 6;
+                }
+                if (species == Species::Necrozma)
+                {
+                    return 1;
+                }
+                // falls through
+            case GameVersion::US:
+            case GameVersion::UM:
+                return PersonalSMUSUM::formCount(u16(species));
+            case GameVersion::GE:
+            case GameVersion::GP:
+                return PersonalLGPE::formCount(u16(species));
+            case GameVersion::SW:
+            case GameVersion::SH:
+                return PersonalSWSH::formCount(u16(species));
+            default:
                 return 1;
-            }
-            // falls through
-        case GameVersion::US:
-        case GameVersion::UM:
-            return PersonalSMUSUM::formCount(u16(species));
-        case GameVersion::GE:
-        case GameVersion::GP:
-            return PersonalLGPE::formCount(u16(species));
-        case GameVersion::SW:
-        case GameVersion::SH:
-            return PersonalSWSH::formCount(u16(species));
-        default:
-            return 1;
+        }
     }
 }

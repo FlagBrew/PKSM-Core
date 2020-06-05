@@ -29,18 +29,18 @@
 
 namespace i18n
 {
-    std::unordered_map<Language, std::vector<std::string>> types;
+    std::unordered_map<pksm::Language, std::vector<std::string>> types;
 
-    void initType(Language lang)
+    void initType(pksm::Language lang)
     {
         std::vector<std::string> vec;
         load(lang, "/types.txt", vec);
         types.insert_or_assign(lang, std::move(vec));
     }
 
-    void exitType(Language lang) { types.erase(lang); }
+    void exitType(pksm::Language lang) { types.erase(lang); }
 
-    const std::string& type(Language lang, Type val)
+    const std::string& type(pksm::Language lang, pksm::Type val)
     {
         checkInitialized(lang);
         if (types.count(lang) > 0)
@@ -53,7 +53,7 @@ namespace i18n
         return emptyString;
     }
 
-    const std::vector<std::string>& rawTypes(Language lang)
+    const std::vector<std::string>& rawTypes(pksm::Language lang)
     {
         checkInitialized(lang);
         if (types.count(lang) > 0)
@@ -64,7 +64,7 @@ namespace i18n
     }
 }
 
-const std::string& Type_impl::localize(Language lang) const
+const std::string& pksm::internal::Type_impl::localize(pksm::Language lang) const
 {
     return i18n::type(lang, *this);
 }

@@ -30,112 +30,115 @@
 #include "personal/personal.hpp"
 #include "sav/Sav.hpp"
 
-class Sav4 : public Sav
+namespace pksm
 {
-protected:
-    int Trainer1;
-    int MailItems, PouchBalls, BattleItems;
-    int GBOOffset, SBOOffset;
-
-    int gbo = -1;
-    int sbo = -1;
-
-    void GBO(void);
-    void SBO(void);
-
-    bool checkInsertForm(std::vector<u8>& forms, u8 formNum);
-    std::vector<u8> getForms(Species species);
-    std::vector<u8> getDexFormValues(u32 v, u8 bitsPerForm, u8 readCt);
-    void setForms(std::vector<u8> forms, Species species);
-    u32 setDexFormValues(std::vector<u8> forms, u8 bitsPerForm, u8 readCt);
-
-    enum class CountType
+    class Sav4 : public Sav
     {
-        FIRST,
-        SECOND,
-        SAME
+    protected:
+        int Trainer1;
+        int MailItems, PouchBalls, BattleItems;
+        int GBOOffset, SBOOffset;
+
+        int gbo = -1;
+        int sbo = -1;
+
+        void GBO(void);
+        void SBO(void);
+
+        bool checkInsertForm(std::vector<u8>& forms, u8 formNum);
+        std::vector<u8> getForms(Species species);
+        std::vector<u8> getDexFormValues(u32 v, u8 bitsPerForm, u8 readCt);
+        void setForms(std::vector<u8> forms, Species species);
+        u32 setDexFormValues(std::vector<u8> forms, u8 bitsPerForm, u8 readCt);
+
+        enum class CountType
+        {
+            FIRST,
+            SECOND,
+            SAME
+        };
+
+        static CountType compareCounters(u32 c1, u32 c2);
+
+    public:
+        Sav4(std::shared_ptr<u8[]> data, u32 length) : Sav(data, length) {}
+        virtual ~Sav4() {}
+        void resign(void);
+        void finishEditing(void) override { resign(); }
+        void beginEditing(void) override {}
+
+        u16 TID(void) const override;
+        void TID(u16 v) override;
+        u16 SID(void) const override;
+        void SID(u16 v) override;
+        GameVersion version(void) const override;
+        void version(GameVersion v) override;
+        Gender gender(void) const override;
+        void gender(Gender v) override;
+        u8 subRegion(void) const override { return 0; }
+        void subRegion(u8) override {}
+        u8 country(void) const override { return 0; }
+        void country(u8) override {}
+        u8 consoleRegion(void) const override { return 0; }
+        void consoleRegion(u8) override {}
+        Language language(void) const override;
+        void language(Language v) override;
+        std::string otName(void) const override;
+        void otName(const std::string& v) override;
+        u32 money(void) const override;
+        void money(u32 v) override;
+        u32 BP(void) const override;
+        void BP(u32 v) override;
+        u8 badges(void) const override;
+        u16 playedHours(void) const override;
+        void playedHours(u16 v) override;
+        u8 playedMinutes(void) const override;
+        void playedMinutes(u8 v) override;
+        u8 playedSeconds(void) const override;
+        void playedSeconds(u8 v) override;
+
+        u8 currentBox(void) const override;
+        void currentBox(u8 v) override;
+        u32 boxOffset(u8 box, u8 slot) const override;
+        u32 partyOffset(u8 slot) const override;
+
+        std::unique_ptr<PKX> pkm(u8 slot) const override;
+        std::unique_ptr<PKX> pkm(u8 box, u8 slot) const override;
+
+        // NOTICE: this sets a pkx into the savefile, not a ekx
+        // that's because PKSM works with decrypted boxes and
+        // crypts them back during resigning
+        void pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade) override;
+        void pkm(const PKX& pk, u8 slot) override;
+
+        void trade(PKX& pk, const Date& date = Date::today()) const override;
+        std::unique_ptr<PKX> emptyPkm() const override;
+
+        void dex(const PKX& pk) override;
+        int dexSeen(void) const override;
+        int dexCaught(void) const override;
+        int currentGiftAmount(void) const override;
+        void mysteryGift(WCX& wc, int& pos) override;
+        std::unique_ptr<WCX> mysteryGift(int pos) const override;
+        void cryptBoxData(bool crypted) override;
+        std::string boxName(u8 box) const override;
+        void boxName(u8 box, const std::string& name) override;
+        u8 boxWallpaper(u8 box) const override;
+        void boxWallpaper(u8 box, const u8 v) override;
+        u8 partyCount(void) const override;
+        void partyCount(u8 count) override;
+
+        int maxBoxes(void) const override { return 18; }
+        size_t maxWondercards(void) const override { return 8; }
+        Generation generation(void) const override { return Generation::FOUR; }
+        int getGBO(void) const { return gbo; }
+        int getSBO(void) const { return sbo; }
+
+        void item(const Item& item, Pouch pouch, u16 slot) override;
+        std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
+        std::vector<std::pair<Pouch, int>> pouches(void) const override;
+        std::map<Pouch, std::vector<int>> validItems(void) const override;
     };
-
-    static CountType compareCounters(u32 c1, u32 c2);
-
-public:
-    Sav4(std::shared_ptr<u8[]> data, u32 length) : Sav(data, length) {}
-    virtual ~Sav4() {}
-    void resign(void);
-    void finishEditing(void) override { resign(); }
-    void beginEditing(void) override {}
-
-    u16 TID(void) const override;
-    void TID(u16 v) override;
-    u16 SID(void) const override;
-    void SID(u16 v) override;
-    GameVersion version(void) const override;
-    void version(GameVersion v) override;
-    Gender gender(void) const override;
-    void gender(Gender v) override;
-    u8 subRegion(void) const override { return 0; }
-    void subRegion(u8) override {}
-    u8 country(void) const override { return 0; }
-    void country(u8) override {}
-    u8 consoleRegion(void) const override { return 0; }
-    void consoleRegion(u8) override {}
-    Language language(void) const override;
-    void language(Language v) override;
-    std::string otName(void) const override;
-    void otName(const std::string& v) override;
-    u32 money(void) const override;
-    void money(u32 v) override;
-    u32 BP(void) const override;
-    void BP(u32 v) override;
-    u8 badges(void) const override;
-    u16 playedHours(void) const override;
-    void playedHours(u16 v) override;
-    u8 playedMinutes(void) const override;
-    void playedMinutes(u8 v) override;
-    u8 playedSeconds(void) const override;
-    void playedSeconds(u8 v) override;
-
-    u8 currentBox(void) const override;
-    void currentBox(u8 v) override;
-    u32 boxOffset(u8 box, u8 slot) const override;
-    u32 partyOffset(u8 slot) const override;
-
-    std::unique_ptr<PKX> pkm(u8 slot) const override;
-    std::unique_ptr<PKX> pkm(u8 box, u8 slot) const override;
-
-    // NOTICE: this sets a pkx into the savefile, not a ekx
-    // that's because PKSM works with decrypted boxes and
-    // crypts them back during resigning
-    void pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade) override;
-    void pkm(const PKX& pk, u8 slot) override;
-
-    void trade(PKX& pk, const Date& date = Date::today()) const override;
-    std::unique_ptr<PKX> emptyPkm() const override;
-
-    void dex(const PKX& pk) override;
-    int dexSeen(void) const override;
-    int dexCaught(void) const override;
-    int currentGiftAmount(void) const override;
-    void mysteryGift(WCX& wc, int& pos) override;
-    std::unique_ptr<WCX> mysteryGift(int pos) const override;
-    void cryptBoxData(bool crypted) override;
-    std::string boxName(u8 box) const override;
-    void boxName(u8 box, const std::string& name) override;
-    u8 boxWallpaper(u8 box) const override;
-    void boxWallpaper(u8 box, const u8 v) override;
-    u8 partyCount(void) const override;
-    void partyCount(u8 count) override;
-
-    int maxBoxes(void) const override { return 18; }
-    size_t maxWondercards(void) const override { return 8; }
-    Generation generation(void) const override { return Generation::FOUR; }
-    int getGBO(void) const { return gbo; }
-    int getSBO(void) const { return sbo; }
-
-    void item(const Item& item, Pouch pouch, u16 slot) override;
-    std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
-    std::vector<std::pair<Pouch, int>> pouches(void) const override;
-    std::map<Pouch, std::vector<int>> validItems(void) const override;
-};
+}
 
 #endif

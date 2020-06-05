@@ -36,26 +36,29 @@
 #include <limits>
 #include <type_traits>
 
-enum class Language : u8
+namespace pksm
 {
-    None = 0,
-    JPN  = 1,
-    ENG,
-    FRE,
-    ITA,
-    GER,
-    UNUSED,
-    SPA,
-    KOR,
-    CHS,
-    CHT,
+    enum class Language : u8
+    {
+        None = 0,
+        JPN  = 1,
+        ENG,
+        FRE,
+        ITA,
+        GER,
+        UNUSED,
+        SPA,
+        KOR,
+        CHS,
+        CHT,
 #ifdef _PKSMCORE_EXTRA_LANGUAGES
-    _PKSMCORE_EXTRA_LANGUAGES,
+        _PKSMCORE_EXTRA_LANGUAGES,
 #endif
 
-    INVALID = std::numeric_limits<std::underlying_type_t<Language>>::max()
-};
+        INVALID = std::numeric_limits<std::underlying_type_t<Language>>::max()
+    };
 
-Language getSafeLanguage(Generation gen, Language originalLang);
+    Language getSafeLanguage(Generation gen, Language originalLang);
+}
 
 #endif

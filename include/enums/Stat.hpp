@@ -29,14 +29,17 @@
 
 #include "utils/coretypes.h"
 
-enum class Stat : u8
+namespace pksm
 {
-    HP,
-    ATK,
-    DEF,
-    SPD,
-    SPATK,
-    SPDEF
-};
+    enum class Stat : u8
+    {
+        HP,
+        ATK,
+        DEF,
+        SPD,
+        SPATK,
+        SPDEF
+    };
+}
 
 #endif

@@ -30,21 +30,24 @@
 #include "utils/utils.hpp"
 #include "wcx/PGT.hpp"
 
-class PCD : public PGT
+namespace pksm
 {
-public:
-    PCD(u8* pcd);
+    class PCD : public PGT
+    {
+    public:
+        PCD(u8* pcd);
 
-    std::string extension() const override { return ".pcd"; }
+        std::string extension() const override { return ".pcd"; }
 
-    static constexpr int length = 856;
-    std::string title(void) const override { return name; };
+        static constexpr int length = 856;
+        std::string title(void) const override { return name; };
 
-    u16 ID(void) const override { return id; }
+        u16 ID(void) const override { return id; }
 
-private:
-    std::string name;
-    u16 id;
-};
+    private:
+        std::string name;
+        u16 id;
+    };
+}
 
 #endif

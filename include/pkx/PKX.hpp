@@ -46,268 +46,278 @@
 #include <memory>
 #include <string>
 
-class Sav;
-
-class PKX
+namespace pksm
 {
-private:
-    bool directAccess;
-    virtual int eggYear(void) const  = 0;
-    virtual void eggYear(int v)      = 0;
-    virtual int eggMonth(void) const = 0;
-    virtual void eggMonth(int v)     = 0;
-    virtual int eggDay(void) const   = 0;
-    virtual void eggDay(int v)       = 0;
-    virtual int metYear(void) const  = 0;
-    virtual void metYear(int v)      = 0;
-    virtual int metMonth(void) const = 0;
-    virtual void metMonth(int v)     = 0;
-    virtual int metDay(void) const   = 0;
-    virtual void metDay(int v)       = 0;
+    class Sav;
+    class PK3;
+    class PK4;
+    class PK5;
+    class PK6;
+    class PK7;
+    class PK8;
+    class PB7;
 
-protected:
-    struct PrivateConstructor
+    class PKX
     {
-    };
+    private:
+        bool directAccess;
+        virtual int eggYear(void) const  = 0;
+        virtual void eggYear(int v)      = 0;
+        virtual int eggMonth(void) const = 0;
+        virtual void eggMonth(int v)     = 0;
+        virtual int eggDay(void) const   = 0;
+        virtual void eggDay(int v)       = 0;
+        virtual int metYear(void) const  = 0;
+        virtual void metYear(int v)      = 0;
+        virtual int metMonth(void) const = 0;
+        virtual void metMonth(int v)     = 0;
+        virtual int metDay(void) const   = 0;
+        virtual void metDay(int v)       = 0;
 
-    PKX(u8* data, size_t length, bool directAccess = false);
-
-    u32 expTable(u8 row, u8 col) const;
-    u8 blockPosition(u8 index) const;
-    u8 blockPositionInvert(u8 index) const;
-    u32 seedStep(u32 seed);
-    virtual void reorderMoves(void);
-
-    virtual void crypt(void)         = 0;
-    virtual void shuffleArray(u8 sv) = 0;
-
-    u32 length = 0;
-    u8* data;
-
-public:
-    static constexpr Species PKSM_MAX_SPECIES = Species::Eternatus;
-
-    static std::unique_ptr<PKX> getPKM(Generation gen, u8* data, bool party = false, bool directAccess = false);
-    template <Generation::EnumType g>
-    static std::unique_ptr<typename GenToPkx<g>::PKX> getPKM(u8* data, bool party = false, bool directAccess = false)
-    {
-        return std::make_unique<typename GenToPkx<g>::PKX>(PrivateConstructor{}, data, party, directAccess);
-    }
-
-    // Returns null if length is not valid for that generation, and a party Pokemon depending on length
-    static std::unique_ptr<PKX> getPKM(Generation gen, u8* data, size_t length, bool directAccess = false);
-    template <Generation::EnumType g>
-    static std::unique_ptr<typename GenToPkx<g>::PKX> getPKM(u8* data, size_t length, bool directAccess = false)
-    {
-        if (GenToPkx<g>::PKX::PARTY_LENGTH == length || GenToPkx<g>::PKX::BOX_LENGTH == length)
+    protected:
+        struct PrivateConstructor
         {
-            return getPKM<g>(data, length == GenToPkx<g>::PKX::PARTY_LENGTH, directAccess);
+        };
+
+        PKX(u8* data, size_t length, bool directAccess = false);
+
+        u32 expTable(u8 row, u8 col) const;
+        u8 blockPosition(u8 index) const;
+        u8 blockPositionInvert(u8 index) const;
+        u32 seedStep(u32 seed);
+        virtual void reorderMoves(void);
+
+        virtual void crypt(void)         = 0;
+        virtual void shuffleArray(u8 sv) = 0;
+
+        u32 length = 0;
+        u8* data;
+
+    public:
+        static constexpr Species PKSM_MAX_SPECIES = Species::Eternatus;
+
+        static std::unique_ptr<PKX> getPKM(Generation gen, u8* data, bool party = false, bool directAccess = false);
+        template <Generation::EnumType g>
+        static std::unique_ptr<typename GenToPkx<g>::PKX> getPKM(u8* data, bool party = false, bool directAccess = false)
+        {
+            return std::make_unique<typename GenToPkx<g>::PKX>(PrivateConstructor{}, data, party, directAccess);
         }
-        return nullptr;
-    }
 
-    virtual ~PKX();
-    PKX(const PKX& pk);
-    PKX(PKX&& pk);
-    PKX& operator=(const PKX& pk);
-    PKX& operator=(PKX&& pk);
-    bool operator==(const PKFilter& filter) const;
+        // Returns null if length is not valid for that generation, and a party Pokemon depending on length
+        static std::unique_ptr<PKX> getPKM(Generation gen, u8* data, size_t length, bool directAccess = false);
+        template <Generation::EnumType g>
+        static std::unique_ptr<typename GenToPkx<g>::PKX> getPKM(u8* data, size_t length, bool directAccess = false)
+        {
+            if (GenToPkx<g>::PKX::PARTY_LENGTH == length || GenToPkx<g>::PKX::BOX_LENGTH == length)
+            {
+                return getPKM<g>(data, length == GenToPkx<g>::PKX::PARTY_LENGTH, directAccess);
+            }
+            return nullptr;
+        }
 
-    virtual std::string extension(void) const { return ".pk" + (std::string)generation(); }
+        virtual ~PKX();
+        PKX(const PKX& pk);
+        PKX(PKX&& pk);
+        PKX& operator=(const PKX& pk);
+        PKX& operator=(PKX&& pk);
+        bool operator==(const PKFilter& filter) const;
 
-    u8* rawData(void) { return data; }
-    const u8* rawData(void) const { return data; }
-    u32 getLength(void) const { return length; }
-    virtual bool isParty(void) const = 0;
+        virtual std::string extension(void) const { return ".pk" + (std::string)generation(); }
 
-    virtual void decrypt(void);
-    virtual void encrypt(void);
-    virtual bool isEncrypted() const = 0;
+        u8* rawData(void) { return data; }
+        const u8* rawData(void) const { return data; }
+        u32 getLength(void) const { return length; }
+        virtual bool isParty(void) const = 0;
 
-    virtual std::unique_ptr<PK3> convertToG3(Sav& save) const;
-    virtual std::unique_ptr<PK4> convertToG4(Sav& save) const;
-    virtual std::unique_ptr<PK5> convertToG5(Sav& save) const;
-    virtual std::unique_ptr<PK6> convertToG6(Sav& save) const;
-    virtual std::unique_ptr<PK7> convertToG7(Sav& save) const;
-    virtual std::unique_ptr<PB7> convertToLGPE(Sav& save) const;
-    virtual std::unique_ptr<PK8> convertToG8(Sav& save) const;
-    virtual std::unique_ptr<PKX> clone(void) const = 0;
-    std::unique_ptr<PKX> partyClone(void) const;
+        virtual void decrypt(void);
+        virtual void encrypt(void);
+        virtual bool isEncrypted() const = 0;
 
-    virtual Generation generation(void) const = 0;
-    bool originGen7(void) const;
-    bool originGen6(void) const;
-    bool originGen5(void) const;
-    bool originGen4(void) const;
-    bool originGen3(void) const;
-    Generation originGen(void) const;
-    void fixMoves(void);
+        virtual std::unique_ptr<PK3> convertToG3(Sav& save) const;
+        virtual std::unique_ptr<PK4> convertToG4(Sav& save) const;
+        virtual std::unique_ptr<PK5> convertToG5(Sav& save) const;
+        virtual std::unique_ptr<PK6> convertToG6(Sav& save) const;
+        virtual std::unique_ptr<PK7> convertToG7(Sav& save) const;
+        virtual std::unique_ptr<PB7> convertToLGPE(Sav& save) const;
+        virtual std::unique_ptr<PK8> convertToG8(Sav& save) const;
+        virtual std::unique_ptr<PKX> clone(void) const = 0;
+        std::unique_ptr<PKX> partyClone(void) const;
 
-    static u32 getRandomPID(
-        Species species, Gender gender, GameVersion originGame, Nature nature, u8 form, u8 abilityNum, u32 oldPid, Generation gen);
-    static Gender genderFromRatio(u32 pid, u8 gt);
+        virtual Generation generation(void) const = 0;
+        bool originGen7(void) const;
+        bool originGen6(void) const;
+        bool originGen5(void) const;
+        bool originGen4(void) const;
+        bool originGen3(void) const;
+        Generation originGen(void) const;
+        void fixMoves(void);
 
-    // BLOCK A
-    virtual u32 encryptionConstant(void) const = 0;
-    virtual void encryptionConstant(u32 v)     = 0;
-    virtual u16 sanity(void) const             = 0;
-    virtual void sanity(u16 v)                 = 0;
-    virtual u16 checksum(void) const           = 0;
-    virtual void checksum(u16 v)               = 0;
-    virtual Species species(void) const        = 0;
-    virtual void species(Species v)            = 0;
-    virtual u16 heldItem(void) const           = 0;
-    virtual void heldItem(u16 v)               = 0;
-    virtual void heldItem(const Item& item) { heldItem(item.id()); }
-    virtual u16 TID(void) const               = 0;
-    virtual void TID(u16 v)                   = 0;
-    virtual u16 SID(void) const               = 0;
-    virtual void SID(u16 v)                   = 0;
-    virtual u32 experience(void) const        = 0;
-    virtual void experience(u32 v)            = 0;
-    virtual Ability ability(void) const       = 0;
-    virtual void ability(Ability v)           = 0;
-    virtual u8 abilityNumber(void) const      = 0;
-    virtual void abilityNumber(u8 v)          = 0;
-    virtual void setAbility(u8 abilityNumber) = 0;
-    virtual u16 markValue(void) const         = 0;
-    virtual void markValue(u16 v)             = 0;
-    virtual u32 PID(void) const               = 0;
-    virtual void PID(u32 v)                   = 0;
-    virtual Nature nature(void) const         = 0;
-    virtual void nature(Nature v)             = 0;
-    virtual bool fatefulEncounter(void) const = 0;
-    virtual void fatefulEncounter(bool v)     = 0;
-    virtual Gender gender(void) const         = 0;
-    virtual void gender(Gender g)             = 0;
-    virtual u16 alternativeForm(void) const   = 0;
-    virtual void alternativeForm(u16 v)       = 0;
-    virtual u8 ev(Stat ev) const              = 0;
-    virtual void ev(Stat ev, u8 v)            = 0;
-    virtual u8 contest(u8 contest) const      = 0;
-    virtual void contest(u8 contest, u8 v)    = 0;
-    virtual u8 pkrs(void) const               = 0;
-    virtual void pkrs(u8 v)                   = 0;
-    virtual u8 pkrsDays(void) const           = 0;
-    virtual void pkrsDays(u8 v)               = 0;
-    virtual u8 pkrsStrain(void) const         = 0;
-    virtual void pkrsStrain(u8 v)             = 0;
-    virtual bool hasRibbon(Ribbon rib) const  = 0;
-    virtual bool ribbon(Ribbon rib) const     = 0;
-    virtual void ribbon(Ribbon rib, bool v)   = 0;
+        static u32 getRandomPID(
+            Species species, Gender gender, GameVersion originGame, Nature nature, u8 form, u8 abilityNum, u32 oldPid, Generation gen);
+        static Gender genderFromRatio(u32 pid, u8 gt);
 
-    // BLOCK B
-    virtual std::string nickname(void) const    = 0;
-    virtual void nickname(const std::string& v) = 0;
-    virtual u16 move(u8 move) const             = 0;
-    virtual void move(u8 move, u16 v)           = 0;
-    virtual u16 relearnMove(u8 move) const      = 0;
-    virtual void relearnMove(u8 move, u16 v)    = 0;
-    virtual u8 PP(u8 move) const                = 0;
-    virtual void PP(u8 move, u8 v)              = 0;
-    virtual u8 PPUp(u8 move) const              = 0;
-    virtual void PPUp(u8 move, u8 v)            = 0;
-    virtual u8 iv(Stat iv) const                = 0;
-    virtual void iv(Stat iv, u8 v)              = 0;
-    virtual bool egg(void) const                = 0;
-    virtual void egg(bool v)                    = 0;
-    virtual bool nicknamed(void) const          = 0;
-    virtual void nicknamed(bool v)              = 0;
+        // BLOCK A
+        virtual u32 encryptionConstant(void) const = 0;
+        virtual void encryptionConstant(u32 v)     = 0;
+        virtual u16 sanity(void) const             = 0;
+        virtual void sanity(u16 v)                 = 0;
+        virtual u16 checksum(void) const           = 0;
+        virtual void checksum(u16 v)               = 0;
+        virtual Species species(void) const        = 0;
+        virtual void species(Species v)            = 0;
+        virtual u16 heldItem(void) const           = 0;
+        virtual void heldItem(u16 v)               = 0;
+        virtual void heldItem(const Item& item) { heldItem(item.id()); }
+        virtual u16 TID(void) const               = 0;
+        virtual void TID(u16 v)                   = 0;
+        virtual u16 SID(void) const               = 0;
+        virtual void SID(u16 v)                   = 0;
+        virtual u32 experience(void) const        = 0;
+        virtual void experience(u32 v)            = 0;
+        virtual Ability ability(void) const       = 0;
+        virtual void ability(Ability v)           = 0;
+        virtual u8 abilityNumber(void) const      = 0;
+        virtual void abilityNumber(u8 v)          = 0;
+        virtual void setAbility(u8 abilityNumber) = 0;
+        virtual u16 markValue(void) const         = 0;
+        virtual void markValue(u16 v)             = 0;
+        virtual u32 PID(void) const               = 0;
+        virtual void PID(u32 v)                   = 0;
+        virtual Nature nature(void) const         = 0;
+        virtual void nature(Nature v)             = 0;
+        virtual bool fatefulEncounter(void) const = 0;
+        virtual void fatefulEncounter(bool v)     = 0;
+        virtual Gender gender(void) const         = 0;
+        virtual void gender(Gender g)             = 0;
+        virtual u16 alternativeForm(void) const   = 0;
+        virtual void alternativeForm(u16 v)       = 0;
+        virtual u8 ev(Stat ev) const              = 0;
+        virtual void ev(Stat ev, u8 v)            = 0;
+        virtual u8 contest(u8 contest) const      = 0;
+        virtual void contest(u8 contest, u8 v)    = 0;
+        virtual u8 pkrs(void) const               = 0;
+        virtual void pkrs(u8 v)                   = 0;
+        virtual u8 pkrsDays(void) const           = 0;
+        virtual void pkrsDays(u8 v)               = 0;
+        virtual u8 pkrsStrain(void) const         = 0;
+        virtual void pkrsStrain(u8 v)             = 0;
+        virtual bool hasRibbon(Ribbon rib) const  = 0;
+        virtual bool ribbon(Ribbon rib) const     = 0;
+        virtual void ribbon(Ribbon rib, bool v)   = 0;
 
-    // BLOCK C
-    virtual u8 currentHandler(void) const = 0;
-    virtual void currentHandler(u8 v)     = 0;
+        // BLOCK B
+        virtual std::string nickname(void) const    = 0;
+        virtual void nickname(const std::string& v) = 0;
+        virtual u16 move(u8 move) const             = 0;
+        virtual void move(u8 move, u16 v)           = 0;
+        virtual u16 relearnMove(u8 move) const      = 0;
+        virtual void relearnMove(u8 move, u16 v)    = 0;
+        virtual u8 PP(u8 move) const                = 0;
+        virtual void PP(u8 move, u8 v)              = 0;
+        virtual u8 PPUp(u8 move) const              = 0;
+        virtual void PPUp(u8 move, u8 v)            = 0;
+        virtual u8 iv(Stat iv) const                = 0;
+        virtual void iv(Stat iv, u8 v)              = 0;
+        virtual bool egg(void) const                = 0;
+        virtual void egg(bool v)                    = 0;
+        virtual bool nicknamed(void) const          = 0;
+        virtual void nicknamed(bool v)              = 0;
 
-    // BLOCK D
-    virtual std::string otName(void) const    = 0;
-    virtual void otName(const std::string& v) = 0;
-    virtual u8 otFriendship(void) const       = 0;
-    virtual void otFriendship(u8 v)           = 0;
-    // Raw information handled in private functions
-    virtual Date eggDate(void) const { return Date{(u8)eggDay(), (u8)eggMonth(), (u32)eggYear()}; }
-    virtual void eggDate(const Date& v)
-    {
-        eggDay(v.day());
-        eggMonth(v.month());
-        eggYear(v.year());
-    }
-    virtual Date metDate(void) const { return Date{(u8)metDay(), (u8)metMonth(), (u32)metYear()}; }
-    virtual void metDate(const Date& v)
-    {
-        metDay(v.day());
-        metMonth(v.month());
-        metYear(v.year());
-    }
-    virtual u16 eggLocation(void) const     = 0;
-    virtual void eggLocation(u16 v)         = 0;
-    virtual u16 metLocation(void) const     = 0;
-    virtual void metLocation(u16 v)         = 0;
-    virtual Ball ball(void) const           = 0;
-    virtual void ball(Ball v)               = 0;
-    virtual u8 metLevel(void) const         = 0;
-    virtual void metLevel(u8 v)             = 0;
-    virtual Gender otGender(void) const     = 0;
-    virtual void otGender(Gender v)         = 0;
-    virtual GameVersion version(void) const = 0;
-    virtual void version(GameVersion v)     = 0;
-    virtual Language language(void) const   = 0;
-    virtual void language(Language v)       = 0;
+        // BLOCK C
+        virtual u8 currentHandler(void) const = 0;
+        virtual void currentHandler(u8 v)     = 0;
 
-    virtual u8 currentFriendship(void) const = 0;
-    virtual void currentFriendship(u8 v)     = 0;
-    virtual void refreshChecksum(void)       = 0;
-    virtual Type hpType(void) const          = 0;
-    virtual void hpType(Type v)              = 0;
-    virtual u16 TSV(void) const              = 0;
-    virtual u16 PSV(void) const              = 0;
-    u32 versionTID(void) const;
-    u32 versionSID(void) const;
-    u32 formatTID(void) const;
-    u32 formatSID(void) const;
-    virtual u8 level(void) const        = 0;
-    virtual void level(u8 v)            = 0;
-    virtual bool shiny(void) const      = 0;
-    virtual void shiny(bool v)          = 0;
-    virtual u16 formSpecies(void) const = 0;
-    virtual u16 stat(Stat stat) const   = 0;
+        // BLOCK D
+        virtual std::string otName(void) const    = 0;
+        virtual void otName(const std::string& v) = 0;
+        virtual u8 otFriendship(void) const       = 0;
+        virtual void otFriendship(u8 v)           = 0;
+        // Raw information handled in private functions
+        virtual Date eggDate(void) const { return Date{(u8)eggDay(), (u8)eggMonth(), (u32)eggYear()}; }
+        virtual void eggDate(const Date& v)
+        {
+            eggDay(v.day());
+            eggMonth(v.month());
+            eggYear(v.year());
+        }
+        virtual Date metDate(void) const { return Date{(u8)metDay(), (u8)metMonth(), (u32)metYear()}; }
+        virtual void metDate(const Date& v)
+        {
+            metDay(v.day());
+            metMonth(v.month());
+            metYear(v.year());
+        }
+        virtual u16 eggLocation(void) const     = 0;
+        virtual void eggLocation(u16 v)         = 0;
+        virtual u16 metLocation(void) const     = 0;
+        virtual void metLocation(u16 v)         = 0;
+        virtual Ball ball(void) const           = 0;
+        virtual void ball(Ball v)               = 0;
+        virtual u8 metLevel(void) const         = 0;
+        virtual void metLevel(u8 v)             = 0;
+        virtual Gender otGender(void) const     = 0;
+        virtual void otGender(Gender v)         = 0;
+        virtual GameVersion version(void) const = 0;
+        virtual void version(GameVersion v)     = 0;
+        virtual Language language(void) const   = 0;
+        virtual void language(Language v)       = 0;
 
-    // Hehehehe... to be done
-    // virtual u8 sleepTurns(void) const = 0;
-    // virtual void sleepTurns(u8 v) = 0;
-    // virtual bool poison(void) const = 0;
-    // virtual void poison(bool v) = 0;
-    // virtual bool burn(void) const = 0;
-    // virtual void burn(bool v) = 0;
-    // virtual bool frozen(void) const = 0;
-    // virtual void frozen(bool v) = 0;
-    // virtual bool paralyzed(void) const = 0;
-    // virtual void paralyzed(bool v) = 0;
-    // virtual bool toxic(void) const = 0;
-    // virtual void toxic(bool v) = 0;
-    // -1 means not a party pokemon
-    virtual int partyCurrHP(void) const      = 0;
-    virtual void partyCurrHP(u16 v)          = 0;
-    virtual int partyStat(Stat stat) const   = 0;
-    virtual void partyStat(Stat stat, u16 v) = 0;
-    virtual int partyLevel(void) const       = 0;
-    virtual void partyLevel(u8 v)            = 0;
-    // Takes any calculated stats and writes them into the party offsets, provided they exist
-    virtual void updatePartyData(void) = 0;
+        virtual u8 currentFriendship(void) const = 0;
+        virtual void currentFriendship(u8 v)     = 0;
+        virtual void refreshChecksum(void)       = 0;
+        virtual Type hpType(void) const          = 0;
+        virtual void hpType(Type v)              = 0;
+        virtual u16 TSV(void) const              = 0;
+        virtual u16 PSV(void) const              = 0;
+        u32 versionTID(void) const;
+        u32 versionSID(void) const;
+        u32 formatTID(void) const;
+        u32 formatSID(void) const;
+        virtual u8 level(void) const        = 0;
+        virtual void level(u8 v)            = 0;
+        virtual bool shiny(void) const      = 0;
+        virtual void shiny(bool v)          = 0;
+        virtual u16 formSpecies(void) const = 0;
+        virtual u16 stat(Stat stat) const   = 0;
 
-    // Personal interface
-    virtual u8 baseHP(void) const         = 0;
-    virtual u8 baseAtk(void) const        = 0;
-    virtual u8 baseDef(void) const        = 0;
-    virtual u8 baseSpe(void) const        = 0;
-    virtual u8 baseSpa(void) const        = 0;
-    virtual u8 baseSpd(void) const        = 0;
-    virtual Type type1(void) const        = 0;
-    virtual Type type2(void) const        = 0;
-    virtual u8 genderType(void) const     = 0;
-    virtual u8 baseFriendship(void) const = 0;
-    virtual u8 expType(void) const        = 0;
-    virtual Ability abilities(u8 n) const = 0;
-    virtual u16 formStatIndex(void) const = 0;
-};
+        // Hehehehe... to be done
+        // virtual u8 sleepTurns(void) const = 0;
+        // virtual void sleepTurns(u8 v) = 0;
+        // virtual bool poison(void) const = 0;
+        // virtual void poison(bool v) = 0;
+        // virtual bool burn(void) const = 0;
+        // virtual void burn(bool v) = 0;
+        // virtual bool frozen(void) const = 0;
+        // virtual void frozen(bool v) = 0;
+        // virtual bool paralyzed(void) const = 0;
+        // virtual void paralyzed(bool v) = 0;
+        // virtual bool toxic(void) const = 0;
+        // virtual void toxic(bool v) = 0;
+        // -1 means not a party pokemon
+        virtual int partyCurrHP(void) const      = 0;
+        virtual void partyCurrHP(u16 v)          = 0;
+        virtual int partyStat(Stat stat) const   = 0;
+        virtual void partyStat(Stat stat, u16 v) = 0;
+        virtual int partyLevel(void) const       = 0;
+        virtual void partyLevel(u8 v)            = 0;
+        // Takes any calculated stats and writes them into the party offsets, provided they exist
+        virtual void updatePartyData(void) = 0;
+
+        // Personal interface
+        virtual u8 baseHP(void) const         = 0;
+        virtual u8 baseAtk(void) const        = 0;
+        virtual u8 baseDef(void) const        = 0;
+        virtual u8 baseSpe(void) const        = 0;
+        virtual u8 baseSpa(void) const        = 0;
+        virtual u8 baseSpd(void) const        = 0;
+        virtual Type type1(void) const        = 0;
+        virtual Type type2(void) const        = 0;
+        virtual u8 genderType(void) const     = 0;
+        virtual u8 baseFriendship(void) const = 0;
+        virtual u8 expType(void) const        = 0;
+        virtual Ability abilities(u8 n) const = 0;
+        virtual u16 formStatIndex(void) const = 0;
+    };
+}
 
 #endif

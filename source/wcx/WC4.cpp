@@ -27,7 +27,7 @@
 #include "wcx/WC4.hpp"
 #include "utils/endian.hpp"
 
-WC4::WC4(u8* data) : PGT(data), name(StringUtils::getString4(data, 0x104, 0x24))
+pksm::WC4::WC4(u8* data) : PGT(data), name(StringUtils::getString4(data, 0x104, 0x24))
 {
     id = LittleEndian::convertTo<u16>(data + 0x150);
 }

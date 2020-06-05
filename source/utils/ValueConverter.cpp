@@ -26,47 +26,50 @@
 
 #include "utils/ValueConverter.hpp"
 #include "enums/Species.hpp"
-#include "utils/g3values.h"
+#include "g3values.hpp"
 #include <algorithm>
 
-Species SpeciesConverter::g3ToNational(u16 v)
+namespace pksm
 {
-    if (v < g3ToSpecies.size())
+    Species SpeciesConverter::g3ToNational(u16 v)
     {
-        return Species{g3ToSpecies[v]};
+        if (v < internal::g3ToSpecies.size())
+        {
+            return Species{internal::g3ToSpecies[v]};
+        }
+        return Species::None;
     }
-    return Species::None;
-}
 
-u16 SpeciesConverter::nationalToG3(Species v)
-{
-    if (u16(v) < speciesToG3.size())
+    u16 SpeciesConverter::nationalToG3(Species v)
     {
-        return speciesToG3[u16(v)];
-    }
-    return 0;
-}
-
-u16 ItemConverter::g3ToNational(u16 v)
-{
-    if (v < g3ToItem.size())
-    {
-        return g3ToItem[v];
-    }
-    return 0;
-}
-
-u16 ItemConverter::nationalToG3(u16 v)
-{
-    if (v == 0)
-    {
+        if (u16(v) < internal::speciesToG3.size())
+        {
+            return internal::speciesToG3[u16(v)];
+        }
         return 0;
     }
 
-    auto it = std::find(g3ToItem.begin(), g3ToItem.end(), v);
-    if (it == g3ToItem.end())
+    u16 ItemConverter::g3ToNational(u16 v)
     {
+        if (v < internal::g3ToItem.size())
+        {
+            return internal::g3ToItem[v];
+        }
         return 0;
     }
-    return std::distance(g3ToItem.begin(), it);
+
+    u16 ItemConverter::nationalToG3(u16 v)
+    {
+        if (v == 0)
+        {
+            return 0;
+        }
+
+        auto it = std::find(internal::g3ToItem.begin(), internal::g3ToItem.end(), v);
+        if (it == internal::g3ToItem.end())
+        {
+            return 0;
+        }
+        return std::distance(internal::g3ToItem.begin(), it);
+    }
 }

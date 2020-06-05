@@ -57,14 +57,14 @@ namespace i18n
     inline const std::map<u16, std::string> emptyU16Map = {};
     inline const std::map<u8, std::string> emptyU8Map   = {};
 
-    extern std::unordered_map<Language, std::atomic<LangState>> languages;
+    extern std::unordered_map<pksm::Language, std::atomic<LangState>> languages;
 
-    inline void checkInitialized(Language lang)
+    inline void checkInitialized(pksm::Language lang)
     {
         auto found = languages.find(lang);
         if (found == languages.end())
         {
-            found = languages.find(Language::ENG);
+            found = languages.find(pksm::Language::ENG);
         }
         if (found->second == LangState::UNINITIALIZED)
         {
@@ -77,14 +77,14 @@ namespace i18n
         }
     }
 
-    std::string folder(Language lang);
+    std::string folder(pksm::Language lang);
 
-    void load(Language lang, const std::string& name, std::vector<std::string>& array);
+    void load(pksm::Language lang, const std::string& name, std::vector<std::string>& array);
     template <typename T>
-    void load(Language lang, const std::string& name, std::map<T, std::string>& map)
+    void load(pksm::Language lang, const std::string& name, std::map<T, std::string>& map)
     {
         std::string path = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name) ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
-                                                                                   : _PKSMCORE_LANG_FOLDER + folder(Language::ENG) + name;
+                                                                                   : _PKSMCORE_LANG_FOLDER + folder(pksm::Language::ENG) + name;
 
         std::string tmp;
         FILE* values = fopen(path.c_str(), "rt");

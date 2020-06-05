@@ -6,12 +6,10 @@ Usage in another project:
 
 Necessary include directories:
 - memecrypto
-- swshcrypto
 - include
 
 Necessary source directories:
 - memecrypto
-- swshcrypto
 - source and all its subdirectories
 
 Special info:

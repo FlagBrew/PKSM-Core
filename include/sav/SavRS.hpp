@@ -29,12 +29,15 @@
 
 #include "sav/Sav3.hpp"
 
-class SavRS : public Sav3
+namespace pksm
 {
-public:
-    SavRS(std::shared_ptr<u8[]> dt);
+    class SavRS : public Sav3
+    {
+    public:
+        SavRS(std::shared_ptr<u8[]> dt);
 
-    std::map<Pouch, std::vector<int>> validItems(void) const override;
-};
+        std::map<Pouch, std::vector<int>> validItems(void) const override;
+    };
+}
 
 #endif

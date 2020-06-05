@@ -29,7 +29,7 @@
 
 #include "utils/coretypes.h"
 
-namespace FlagUtil
+namespace pksm::FlagUtil
 {
     // Gets a bitflag from a byte array
     bool getFlag(const u8* data, int offset, int bitIndex);

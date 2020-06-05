@@ -36,24 +36,24 @@
 #define LANGUAGES_TO_USE JPN, ENG, FRE, ITA, GER, SPA, KOR, CHS, CHT
 #endif
 
-#define MAKE_MAP(lang) ret.emplace(Language::lang, LangState::UNINITIALIZED);
+#define MAKE_MAP(lang) ret.emplace(pksm::Language::lang, LangState::UNINITIALIZED);
 #define TO_STRING_CASE(lang)                                                                                                                         \
-    case Language::lang:                                                                                                                             \
+    case pksm::Language::lang:                                                                                                                       \
     {                                                                                                                                                \
         static const std::string str = #lang;                                                                                                        \
         return str;                                                                                                                                  \
     }
 #define TO_IF_STRING(lang)                                                                                                                           \
     if (value == #lang)                                                                                                                              \
-        return Language::lang;
+        return pksm::Language::lang;
 #define TO_FOLDER_CASE(lang)                                                                                                                         \
-    case Language::lang:                                                                                                                             \
+    case pksm::Language::lang:                                                                                                                       \
         return StringUtils::toLower(#lang);
 
 namespace i18n
 {
-    std::unordered_map<Language, std::atomic<LangState>> languages = []() {
-        std::unordered_map<Language, std::atomic<LangState>> ret;
+    std::unordered_map<pksm::Language, std::atomic<LangState>> languages = []() {
+        std::unordered_map<pksm::Language, std::atomic<LangState>> ret;
         MAP(MAKE_MAP, LANGUAGES_TO_USE)
         return ret;
     }();
@@ -63,13 +63,13 @@ namespace i18n
     std::list<exitCallback> exitCallbacks = {
         exitAbility, exitBall, exitForm, exitGame, exitGeo, exitType, exitItem, exitItem3, exitLocation, exitMove, exitNature, exitSpecies};
 
-    void init(Language lang)
+    void init(pksm::Language lang)
     {
         auto found = languages.find(lang);
         // Should never happen, but might as well check
         if (found == languages.end())
         {
-            found = languages.find(Language::ENG);
+            found = languages.find(pksm::Language::ENG);
         }
         if (found->second == LangState::UNINITIALIZED)
         {
@@ -104,7 +104,7 @@ namespace i18n
         }
     }
 
-    const std::string& langString(Language l)
+    const std::string& langString(pksm::Language l)
     {
         static const std::string ENG = "ENG";
         switch (l)
@@ -115,13 +115,13 @@ namespace i18n
         }
     }
 
-    Language langFromString(const std::string& value)
+    pksm::Language langFromString(const std::string& value)
     {
         MAP(TO_IF_STRING, LANGUAGES_TO_USE)
-        return Language::ENG;
+        return pksm::Language::ENG;
     }
 
-    std::string folder(Language lang)
+    std::string folder(pksm::Language lang)
     {
         switch (lang)
         {
@@ -133,10 +133,10 @@ namespace i18n
         return "eng";
     }
 
-    void load(Language lang, const std::string& name, std::vector<std::string>& array)
+    void load(pksm::Language lang, const std::string& name, std::vector<std::string>& array)
     {
         std::string path = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name) ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
-                                                                                   : _PKSMCORE_LANG_FOLDER + folder(Language::ENG) + name;
+                                                                                   : _PKSMCORE_LANG_FOLDER + folder(pksm::Language::ENG) + name;
 
         std::string tmp;
         FILE* values = fopen(path.c_str(), "rt");

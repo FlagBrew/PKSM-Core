@@ -30,17 +30,20 @@
 #include "enums/Species.hpp"
 #include "utils/coretypes.h"
 
-namespace SpeciesConverter
+namespace pksm
 {
-    Species g3ToNational(u16 v);
-    u16 nationalToG3(Species v);
-}
+    namespace SpeciesConverter
+    {
+        Species g3ToNational(u16 v);
+        u16 nationalToG3(Species v);
+    }
 
-namespace ItemConverter
-{
-    constexpr u16 G3_NOT_CONVERTIBLE = 128;
-    u16 g3ToNational(u16 v);
-    u16 nationalToG3(u16 v);
+    namespace ItemConverter
+    {
+        constexpr u16 G3_NOT_CONVERTIBLE = 128;
+        u16 g3ToNational(u16 v);
+        u16 nationalToG3(u16 v);
+    }
 }
 
 #endif

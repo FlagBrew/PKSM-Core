@@ -52,21 +52,8 @@ private:                                                                        
     type type##name    = type();                                                                                                                     \
     bool name##Bool    = false;                                                                                                                      \
     bool name##Inverse = false
-#define MAKE_NUM_DEFN(name, type, amount)                                                                                                            \
-public:                                                                                                                                              \
-    type name(u8 which) const { return type##name[which]; }                                                                                          \
-    void name(u8 which, type v) { type##name[which] = v; }                                                                                           \
-    bool name##Enabled(u8 which) const { return name##Bool[which]; }                                                                                 \
-    void name##Enabled(u8 which, bool v) { name##Bool[which] = v; }                                                                                  \
-    bool name##Inversed(u8 which) const { return name##Inverse[which]; }                                                                             \
-    void name##Inversed(u8 which, bool v) { name##Inverse[which] = v; }                                                                              \
-                                                                                                                                                     \
-private:                                                                                                                                             \
-    std::vector<type> type##name      = std::vector<type>(amount, type());                                                                           \
-    std::bitset<amount> name##Bool    = std::bitset<amount>(0);                                                                                      \
-    std::bitset<amount> name##Inverse = std::bitset<amount>(0)
 
-#define MAKE_NUM_DEFN_INDEXTYPE(name, type, amount, indextype)                                                                                       \
+#define MAKE_NUM_DEFN(name, type, amount, indextype)                                                                                                 \
 public:                                                                                                                                              \
     type name(indextype which) const { return type##name[size_t(which)]; }                                                                           \
     void name(indextype which, type v) { type##name[size_t(which)] = v; }                                                                            \
@@ -80,25 +67,30 @@ private:                                                                        
     std::bitset<amount> name##Bool    = std::bitset<amount>(0);                                                                                      \
     std::bitset<amount> name##Inverse = std::bitset<amount>(0)
 
-class PKFilter
+namespace pksm
 {
-    MAKE_DEFN(generation, Generation);
-    MAKE_DEFN(species, Species);
-    MAKE_DEFN(alternativeForm, u8);
-    MAKE_DEFN(shiny, bool);
-    MAKE_DEFN(heldItem, u16);
-    MAKE_DEFN(level, u8);
-    MAKE_DEFN(ability, Ability);
-    MAKE_DEFN(TSV, u16);
-    MAKE_DEFN(nature, Nature);
-    MAKE_DEFN(gender, Gender);
-    MAKE_NUM_DEFN(move, u16, 4);
-    MAKE_NUM_DEFN(relearnMove, u16, 4);
-    MAKE_DEFN(ball, Ball);
-    MAKE_DEFN(language, Language);
-    MAKE_DEFN(egg, bool);
-    // In the same order as Stat
-    MAKE_NUM_DEFN_INDEXTYPE(iv, u8, 6, Stat);
-};
+    class PKFilter
+    {
+        MAKE_DEFN(generation, Generation);
+        MAKE_DEFN(species, Species);
+        MAKE_DEFN(alternativeForm, u8);
+        MAKE_DEFN(shiny, bool);
+        MAKE_DEFN(heldItem, u16);
+        MAKE_DEFN(level, u8);
+        MAKE_DEFN(ability, Ability);
+        MAKE_DEFN(TSV, u16);
+        MAKE_DEFN(nature, Nature);
+        MAKE_DEFN(gender, Gender);
+        MAKE_NUM_DEFN(move, u16, 4, u8);
+        MAKE_NUM_DEFN(relearnMove, u16, 4, u8);
+        MAKE_DEFN(ball, Ball);
+        MAKE_DEFN(language, Language);
+        MAKE_DEFN(egg, bool);
+        MAKE_NUM_DEFN(iv, u8, 6, Stat);
+    };
+}
+
+#undef MAKE_DEFN
+#undef MAKE_NUM_DEFN
 
 #endif

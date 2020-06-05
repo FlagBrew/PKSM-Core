@@ -32,120 +32,127 @@
 #include <string>
 #include <type_traits>
 
-class Type_impl
+namespace pksm
 {
-    friend class Type;
-
-private:
-    enum class TypeEnum : u8
+    class Type;
+    namespace internal
     {
-        Normal,
-        Fighting,
-        Flying,
-        Poison,
-        Ground,
-        Rock,
-        Bug,
-        Ghost,
-        Steel,
-        Fire,
-        Water,
-        Grass,
-        Electric,
-        Psychic,
-        Ice,
-        Dragon,
-        Dark,
-        Fairy,
+        class Type_impl
+        {
+            friend class pksm::Type;
 
-        INVALID = std::numeric_limits<std::underlying_type_t<TypeEnum>>::max()
-    } v;
+        private:
+            enum class TypeEnum : u8
+            {
+                Normal,
+                Fighting,
+                Flying,
+                Poison,
+                Ground,
+                Rock,
+                Bug,
+                Ghost,
+                Steel,
+                Fire,
+                Water,
+                Grass,
+                Electric,
+                Psychic,
+                Ice,
+                Dragon,
+                Dark,
+                Fairy,
 
-    constexpr explicit Type_impl(TypeEnum v) : v(v) {}
-    constexpr Type_impl(const Type_impl&) = default;
-    constexpr Type_impl(Type_impl&&)      = default;
-    constexpr Type_impl& operator=(const Type_impl&) = default;
-    constexpr Type_impl& operator=(Type_impl&&) = default;
+                INVALID = std::numeric_limits<std::underlying_type_t<TypeEnum>>::max()
+            } v;
 
-public:
-    template <typename T>
-    constexpr explicit operator T() const noexcept
-    {
-        static_assert(std::is_integral_v<T>);
-        return T(v);
+            constexpr explicit Type_impl(TypeEnum v) : v(v) {}
+            constexpr Type_impl(const Type_impl&) = default;
+            constexpr Type_impl(Type_impl&&)      = default;
+            constexpr Type_impl& operator=(const Type_impl&) = default;
+            constexpr Type_impl& operator=(Type_impl&&) = default;
+
+        public:
+            template <typename T>
+            constexpr explicit operator T() const noexcept
+            {
+                static_assert(std::is_integral_v<T>);
+                return T(v);
+            }
+            constexpr operator TypeEnum() const noexcept { return v; }
+
+            constexpr bool operator<(const Type_impl& other) const noexcept { return v < other.v; }
+            constexpr bool operator<=(const Type_impl& other) const noexcept { return v <= other.v; }
+
+            constexpr bool operator>(const Type_impl& other) const noexcept { return v > other.v; }
+            constexpr bool operator>=(const Type_impl& other) const noexcept { return v >= other.v; }
+
+            constexpr bool operator==(const Type_impl& other) const noexcept { return v == other.v; }
+            constexpr bool operator!=(const Type_impl& other) const noexcept { return v != other.v; }
+
+            const std::string& localize(Language lang) const;
+        };
     }
-    constexpr operator TypeEnum() const noexcept { return v; }
 
-    constexpr bool operator<(const Type_impl& other) const noexcept { return v < other.v; }
-    constexpr bool operator<=(const Type_impl& other) const noexcept { return v <= other.v; }
-
-    constexpr bool operator>(const Type_impl& other) const noexcept { return v > other.v; }
-    constexpr bool operator>=(const Type_impl& other) const noexcept { return v >= other.v; }
-
-    constexpr bool operator==(const Type_impl& other) const noexcept { return v == other.v; }
-    constexpr bool operator!=(const Type_impl& other) const noexcept { return v != other.v; }
-
-    const std::string& localize(Language lang) const;
-};
-
-class Type
-{
-private:
-    Type_impl impl;
-
-public:
-    using EnumType = Type_impl::TypeEnum;
-    constexpr Type() noexcept : impl(EnumType{0}) {}
-    constexpr Type(const Type_impl& impl) noexcept : impl(impl) {}
-    constexpr explicit Type(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v}) {}
-    template <typename T>
-    constexpr explicit operator T() const noexcept
+    class Type
     {
-        static_assert(std::is_integral_v<T>);
-        return T(impl);
-    }
-    constexpr operator EnumType() const noexcept { return (EnumType)impl; }
+    private:
+        internal::Type_impl impl;
 
-    constexpr bool operator<(const Type& other) const noexcept { return impl < other.impl; }
-    constexpr bool operator<=(const Type& other) const noexcept { return impl <= other.impl; }
+    public:
+        using EnumType = internal::Type_impl::TypeEnum;
+        constexpr Type() noexcept : impl(EnumType{0}) {}
+        constexpr Type(const internal::Type_impl& impl) noexcept : impl(impl) {}
+        constexpr explicit Type(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v}) {}
+        template <typename T>
+        constexpr explicit operator T() const noexcept
+        {
+            static_assert(std::is_integral_v<T>);
+            return T(impl);
+        }
+        constexpr operator EnumType() const noexcept { return (EnumType)impl; }
 
-    constexpr bool operator>(const Type& other) const noexcept { return impl > other.impl; }
-    constexpr bool operator>=(const Type& other) const noexcept { return impl >= other.impl; }
+        constexpr bool operator<(const Type& other) const noexcept { return impl < other.impl; }
+        constexpr bool operator<=(const Type& other) const noexcept { return impl <= other.impl; }
 
-    constexpr bool operator==(const Type& other) const noexcept { return impl == other.impl; }
-    constexpr bool operator!=(const Type& other) const noexcept { return impl != other.impl; }
+        constexpr bool operator>(const Type& other) const noexcept { return impl > other.impl; }
+        constexpr bool operator>=(const Type& other) const noexcept { return impl >= other.impl; }
 
-    constexpr bool operator<(const Type_impl& other) const noexcept { return impl < other; }
-    constexpr bool operator<=(const Type_impl& other) const noexcept { return impl <= other; }
+        constexpr bool operator==(const Type& other) const noexcept { return impl == other.impl; }
+        constexpr bool operator!=(const Type& other) const noexcept { return impl != other.impl; }
 
-    constexpr bool operator>(const Type_impl& other) const noexcept { return impl > other; }
-    constexpr bool operator>=(const Type_impl& other) const noexcept { return impl >= other; }
+        constexpr bool operator<(const internal::Type_impl& other) const noexcept { return impl < other; }
+        constexpr bool operator<=(const internal::Type_impl& other) const noexcept { return impl <= other; }
 
-    constexpr bool operator==(const Type_impl& other) const noexcept { return impl == other; }
-    constexpr bool operator!=(const Type_impl& other) const noexcept { return impl != other; }
+        constexpr bool operator>(const internal::Type_impl& other) const noexcept { return impl > other; }
+        constexpr bool operator>=(const internal::Type_impl& other) const noexcept { return impl >= other; }
 
-    const std::string& localize(Language lang) const { return impl.localize(lang); }
+        constexpr bool operator==(const internal::Type_impl& other) const noexcept { return impl == other; }
+        constexpr bool operator!=(const internal::Type_impl& other) const noexcept { return impl != other; }
 
-    static constexpr Type_impl Normal{EnumType::Normal};
-    static constexpr Type_impl Fighting{EnumType::Fighting};
-    static constexpr Type_impl Flying{EnumType::Flying};
-    static constexpr Type_impl Poison{EnumType::Poison};
-    static constexpr Type_impl Ground{EnumType::Ground};
-    static constexpr Type_impl Rock{EnumType::Rock};
-    static constexpr Type_impl Bug{EnumType::Bug};
-    static constexpr Type_impl Ghost{EnumType::Ghost};
-    static constexpr Type_impl Steel{EnumType::Steel};
-    static constexpr Type_impl Fire{EnumType::Fire};
-    static constexpr Type_impl Water{EnumType::Water};
-    static constexpr Type_impl Grass{EnumType::Grass};
-    static constexpr Type_impl Electric{EnumType::Electric};
-    static constexpr Type_impl Psychic{EnumType::Psychic};
-    static constexpr Type_impl Ice{EnumType::Ice};
-    static constexpr Type_impl Dragon{EnumType::Dragon};
-    static constexpr Type_impl Dark{EnumType::Dark};
-    static constexpr Type_impl Fairy{EnumType::Fairy};
+        const std::string& localize(Language lang) const { return impl.localize(lang); }
 
-    static constexpr Type_impl INVALID{EnumType::INVALID};
-};
+        static constexpr internal::Type_impl Normal{EnumType::Normal};
+        static constexpr internal::Type_impl Fighting{EnumType::Fighting};
+        static constexpr internal::Type_impl Flying{EnumType::Flying};
+        static constexpr internal::Type_impl Poison{EnumType::Poison};
+        static constexpr internal::Type_impl Ground{EnumType::Ground};
+        static constexpr internal::Type_impl Rock{EnumType::Rock};
+        static constexpr internal::Type_impl Bug{EnumType::Bug};
+        static constexpr internal::Type_impl Ghost{EnumType::Ghost};
+        static constexpr internal::Type_impl Steel{EnumType::Steel};
+        static constexpr internal::Type_impl Fire{EnumType::Fire};
+        static constexpr internal::Type_impl Water{EnumType::Water};
+        static constexpr internal::Type_impl Grass{EnumType::Grass};
+        static constexpr internal::Type_impl Electric{EnumType::Electric};
+        static constexpr internal::Type_impl Psychic{EnumType::Psychic};
+        static constexpr internal::Type_impl Ice{EnumType::Ice};
+        static constexpr internal::Type_impl Dragon{EnumType::Dragon};
+        static constexpr internal::Type_impl Dark{EnumType::Dark};
+        static constexpr internal::Type_impl Fairy{EnumType::Fairy};
+
+        static constexpr internal::Type_impl INVALID{EnumType::INVALID};
+    };
+}
 
 #endif

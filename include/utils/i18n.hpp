@@ -43,8 +43,8 @@
 
 namespace i18n
 {
-    using initCallback = void (*)(Language);
-    using exitCallback = void (*)(Language);
+    using initCallback = void (*)(pksm::Language);
+    using exitCallback = void (*)(pksm::Language);
     void addInitCallback(initCallback callback);
     void removeInitCallback(initCallback callback);
     void addExitCallback(exitCallback callback);
@@ -63,83 +63,83 @@ namespace i18n
 
     // Calls the callbacks that have been registered with addInitCallback in a thread-safe manner
     // NOTE: default callbacks include all init functions in this file
-    void init(Language lang);
+    void init(pksm::Language lang);
     // Calls the callbacks that have been registered with addExitCallback in a thread-safe manner for all languages that have been initialized
     // NOTE: default callbacks include all exit functions in this file
     void exit(void);
 
-    const std::string& langString(Language l);
-    Language langFromString(const std::string& value);
+    const std::string& langString(pksm::Language l);
+    pksm::Language langFromString(const std::string& value);
 
-    void initAbility(Language lang);
-    void exitAbility(Language lang);
-    const std::string& ability(Language lang, Ability value);
-    const std::vector<std::string>& rawAbilities(Language lang);
+    void initAbility(pksm::Language lang);
+    void exitAbility(pksm::Language lang);
+    const std::string& ability(pksm::Language lang, pksm::Ability value);
+    const std::vector<std::string>& rawAbilities(pksm::Language lang);
 
-    void initBall(Language lang);
-    void exitBall(Language lang);
-    const std::string& ball(Language lang, Ball value);
-    const std::vector<std::string>& rawBalls(Language lang);
+    void initBall(pksm::Language lang);
+    void exitBall(pksm::Language lang);
+    const std::string& ball(pksm::Language lang, pksm::Ball value);
+    const std::vector<std::string>& rawBalls(pksm::Language lang);
 
-    void initForm(Language lang);
-    void exitForm(Language lang);
-    const std::string& form(Language lang, GameVersion version, Species species, u8 form);
-    std::vector<std::string> forms(Language lang, GameVersion version, Species species);
+    void initForm(pksm::Language lang);
+    void exitForm(pksm::Language lang);
+    const std::string& form(pksm::Language lang, pksm::GameVersion version, pksm::Species species, u8 form);
+    std::vector<std::string> forms(pksm::Language lang, pksm::GameVersion version, pksm::Species species);
     // No good raw interface for this
 
-    void initGame(Language lang);
-    void exitGame(Language lang);
-    const std::string& game(Language lang, GameVersion value);
-    const std::vector<std::string>& rawGames(Language lang);
+    void initGame(pksm::Language lang);
+    void exitGame(pksm::Language lang);
+    const std::string& game(pksm::Language lang, pksm::GameVersion value);
+    const std::vector<std::string>& rawGames(pksm::Language lang);
 
-    void initItem(Language lang);
-    void exitItem(Language lang);
-    const std::string& item(Language lang, u16 value);
-    const std::vector<std::string>& rawItems(Language lang);
+    void initItem(pksm::Language lang);
+    void exitItem(pksm::Language lang);
+    const std::string& item(pksm::Language lang, u16 value);
+    const std::vector<std::string>& rawItems(pksm::Language lang);
 
-    void initItem3(Language lang);
-    void exitItem3(Language lang);
-    const std::string& item3(Language lang, u16 value);
-    const std::vector<std::string>& rawItems3(Language lang);
+    void initItem3(pksm::Language lang);
+    void exitItem3(pksm::Language lang);
+    const std::string& item3(pksm::Language lang, u16 value);
+    const std::vector<std::string>& rawItems3(pksm::Language lang);
 
-    void initMove(Language lang);
-    void exitMove(Language lang);
-    const std::string& move(Language lang, u16 value);
-    const std::vector<std::string>& rawMoves(Language lang);
+    void initMove(pksm::Language lang);
+    void exitMove(pksm::Language lang);
+    const std::string& move(pksm::Language lang, u16 value);
+    const std::vector<std::string>& rawMoves(pksm::Language lang);
 
-    void initNature(Language lang);
-    void exitNature(Language lang);
-    const std::string& nature(Language lang, Nature value);
-    const std::vector<std::string>& rawNatures(Language lang);
+    void initNature(pksm::Language lang);
+    void exitNature(pksm::Language lang);
+    const std::string& nature(pksm::Language lang, pksm::Nature value);
+    const std::vector<std::string>& rawNatures(pksm::Language lang);
 
-    void initRibbon(Language lang);
-    void exitRibbon(Language lang);
-    const std::string& ribbon(Language lang, Ribbon value);
-    const std::vector<std::string>& rawRibbons(Language lang);
+    void initRibbon(pksm::Language lang);
+    void exitRibbon(pksm::Language lang);
+    const std::string& ribbon(pksm::Language lang, pksm::Ribbon value);
+    const std::vector<std::string>& rawRibbons(pksm::Language lang);
 
     // Note: several functions require this to function properly.
     // A nonexhaustive list includes PK3::nicknamed, PK4::convertToPK3, PK5::convertToPK6, SavLGPE::mysteryGift, and SavSWSH::mysteryGift
-    void initSpecies(Language lang);
-    void exitSpecies(Language lang);
-    const std::string& species(Language lang, Species value);
-    const std::vector<std::string>& rawSpecies(Language lang);
+    void initSpecies(pksm::Language lang);
+    void exitSpecies(pksm::Language lang);
+    const std::string& species(pksm::Language lang, pksm::Species value);
+    const std::vector<std::string>& rawSpecies(pksm::Language lang);
 
-    void initType(Language lang);
-    void exitType(Language lang);
-    const std::string& type(Language lang, Type value);
-    const std::vector<std::string>& rawType(Language lang);
+    void initType(pksm::Language lang);
+    void exitType(pksm::Language lang);
+    const std::string& type(pksm::Language lang, pksm::Type value);
+    const std::vector<std::string>& rawType(pksm::Language lang);
 
-    void initLocation(Language lang);
-    void exitLocation(Language lang);
-    const std::string& location(Language lang, Generation generation, u16 value);
-    const std::map<u16, std::string>& rawLocations(Language lang, Generation g);
+    void initLocation(pksm::Language lang);
+    void exitLocation(pksm::Language lang);
+    const std::string& location(pksm::Language lang, pksm::Generation generation, u16 value);
+    const std::map<u16, std::string>& rawLocations(pksm::Language lang, pksm::Generation g);
 
-    void initGeo(Language lang);
-    void exitGeo(Language lang);
-    const std::string& subregion(Language lang, u8 country, u8 value);
-    const std::map<u8, std::string>& rawSubregions(Language lang, u8 country);
-    const std::string& country(Language lang, u8 value);
-    const std::map<u8, std::string>& rawCountries(Language lang);
+    void initGeo(pksm::Language lang);
+    void exitGeo(pksm::Language lang);
+    const std::string& subregion(pksm::Language lang, u8 country, u8 value);
+    const std::map<u8, std::string>& rawSubregions(pksm::Language lang, u8 country);
+    const std::string& country(pksm::Language lang, u8 value);
+    const std::map<u8, std::string>& rawCountries(pksm::Language lang);
 };
 
 #endif

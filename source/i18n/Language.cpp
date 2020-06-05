@@ -29,48 +29,51 @@
 #include <algorithm>
 #include <array>
 
-namespace
+namespace pksm
 {
-    constexpr std::array<Language, 6> G3Langs = {Language::JPN, Language::ENG, Language::FRE, Language::GER, Language::SPA, Language::ITA};
-    constexpr std::array<Language, 7> G4Langs = {
-        Language::JPN, Language::ENG, Language::FRE, Language::GER, Language::SPA, Language::ITA, Language::KOR};
-    constexpr std::array<Language, 9> G7Langs = {
-        Language::JPN, Language::ENG, Language::FRE, Language::GER, Language::SPA, Language::ITA, Language::KOR, Language::CHS, Language::CHT};
-}
-
-Language getSafeLanguage(Generation gen, Language orig)
-{
-    switch (gen)
+    namespace internal
     {
-        // case Generation::ONE
-        // case Generation::TWO
-        case Generation::THREE:
-            if (std::find(G3Langs.begin(), G3Langs.end(), orig) != G3Langs.end())
-            {
-                return orig;
-            }
-            return Language::ENG;
-        case Generation::FOUR:
-        case Generation::FIVE:
-        case Generation::SIX:
-            if (std::find(G4Langs.begin(), G4Langs.end(), orig) != G4Langs.end())
-            {
-                return orig;
-            }
-            return Language::ENG;
-
-        case Generation::SEVEN:
-        case Generation::LGPE:
-        case Generation::EIGHT:
-            if (std::find(G7Langs.begin(), G7Langs.end(), orig) != G7Langs.end())
-            {
-                return orig;
-            }
-            return Language::ENG;
-        case Generation::UNUSED:
-        case Generation::ONE:
-        case Generation::TWO:
-            break;
+        constexpr std::array<Language, 6> G3Langs = {Language::JPN, Language::ENG, Language::FRE, Language::GER, Language::SPA, Language::ITA};
+        constexpr std::array<Language, 7> G4Langs = {
+            Language::JPN, Language::ENG, Language::FRE, Language::GER, Language::SPA, Language::ITA, Language::KOR};
+        constexpr std::array<Language, 9> G7Langs = {
+            Language::JPN, Language::ENG, Language::FRE, Language::GER, Language::SPA, Language::ITA, Language::KOR, Language::CHS, Language::CHT};
     }
-    return Language::ENG;
+
+    Language getSafeLanguage(Generation gen, Language orig)
+    {
+        switch (gen)
+        {
+            // case Generation::ONE
+            // case Generation::TWO
+            case Generation::THREE:
+                if (std::find(internal::G3Langs.begin(), internal::G3Langs.end(), orig) != internal::G3Langs.end())
+                {
+                    return orig;
+                }
+                return Language::ENG;
+            case Generation::FOUR:
+            case Generation::FIVE:
+            case Generation::SIX:
+                if (std::find(internal::G4Langs.begin(), internal::G4Langs.end(), orig) != internal::G4Langs.end())
+                {
+                    return orig;
+                }
+                return Language::ENG;
+
+            case Generation::SEVEN:
+            case Generation::LGPE:
+            case Generation::EIGHT:
+                if (std::find(internal::G7Langs.begin(), internal::G7Langs.end(), orig) != internal::G7Langs.end())
+                {
+                    return orig;
+                }
+                return Language::ENG;
+            case Generation::UNUSED:
+            case Generation::ONE:
+            case Generation::TWO:
+                break;
+        }
+        return Language::ENG;
+    }
 }
