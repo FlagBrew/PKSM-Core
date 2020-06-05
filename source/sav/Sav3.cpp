@@ -33,6 +33,7 @@
 #include "utils/utils.hpp"
 #include "wcx/WCX.hpp"
 #include <algorithm>
+#include <stdlib.h>
 
 namespace pksm
 {
@@ -46,12 +47,12 @@ namespace pksm
 
         for (int i = 0; i < BLOCK_COUNT; i++)
         {
-            unsigned int index = std::find(blockOrder.begin(), blockOrder.end(), i) - blockOrder.begin();
+            unsigned int index = std::distance(blockOrder.begin(), std::find(blockOrder.begin(), blockOrder.end(), i));
             blockOfs[i]        = index == blockOrder.size() ? -1 /*was int.MinValue*/ : (index * SIZE_BLOCK) + ABO();
         }
     }
 
-    auto Sav3::getBlockOrder(std::shared_ptr<u8[]> dt, int ofs) -> std::array<int, BLOCK_COUNT>
+    std::array<int, Sav3::BLOCK_COUNT> Sav3::getBlockOrder(std::shared_ptr<u8[]> dt, int ofs)
     {
         std::array<int, BLOCK_COUNT> order;
         for (int i = 0; i < BLOCK_COUNT; i++)
@@ -76,11 +77,11 @@ namespace pksm
     {
         // Get block 0 offset
         std::array<int, BLOCK_COUNT> o1     = getBlockOrder(dt, 0);
-        std::array<int, BLOCK_COUNT> o2     = getBlockOrder(dt, 0xE000);
+        std::array<int, BLOCK_COUNT> o2     = getBlockOrder(dt, BLOCK_COUNT * SIZE_BLOCK);
         int activeSAV                       = getActiveSaveIndex(dt, o1, o2);
         std::array<int, BLOCK_COUNT>& order = activeSAV == 0 ? o1 : o2;
 
-        int ABO = activeSAV * SIZE_BLOCK * 0xE;
+        int ABO = activeSAV * SIZE_BLOCK * BLOCK_COUNT;
 
         int blockOfs0 = ((std::find(order.begin(), order.end(), 0) - order.begin()) * SIZE_BLOCK) + ABO;
 
@@ -121,18 +122,6 @@ namespace pksm
 
     void Sav3::initialize(void)
     {
-        // Set up PC data buffer
-        Box = std::shared_ptr<u8[]>(new u8[SIZE_RESERVED]);
-
-        // Copy chunk to the allocated location
-        for (int i = 5; i < BLOCK_COUNT; i++)
-        {
-            unsigned int blockIndex = std::find(blockOrder.begin(), blockOrder.end(), i) - blockOrder.begin();
-            if (blockIndex == blockOrder.size()) // block empty
-                continue;
-            memcpy(Box.get() + ((i - 5) * 0xF80), data.get() + (blockIndex * SIZE_BLOCK) + ABO(), chunkLength[i]);
-        }
-
         // LoadEReaderBerryData();
 
         // Sanity Check SeenFlagOffsets -- early saves may not have block 4 initialized yet
@@ -143,20 +132,6 @@ namespace pksm
                 seenFlagOffsetsTemp.push_back(seenFlagOffset);
         }
         seenFlagOffsets = seenFlagOffsetsTemp;
-    }
-
-    void Sav3::finishEditing(void)
-    {
-        // Copy Box data back
-        for (int i = 5; i < BLOCK_COUNT; i++)
-        {
-            unsigned int blockIndex = std::find(blockOrder.begin(), blockOrder.end(), i) - blockOrder.begin();
-            if (blockIndex == blockOrder.size()) // block empty
-                continue;
-            memcpy(data.get() + (blockIndex * SIZE_BLOCK) + ABO(), Box.get() + ((i - 5) * 0xF80), chunkLength[i]);
-        }
-
-        resign();
     }
 
     u16 Sav3::calculateChecksum(const u8* data, size_t len)
@@ -342,15 +317,39 @@ namespace pksm
 
     // TODO:? playedFrames, u8 at 0x12
 
-    u8 Sav3::currentBox(void) const { return Box[0]; }
-    void Sav3::currentBox(u8 v) { Box[0] = v; }
+    u8 Sav3::currentBox(void) const { return data[blockOfs[5]]; }
+    void Sav3::currentBox(u8 v) { data[blockOfs[5]] = v; }
 
-    u32 Sav3::boxOffset(u8 box, u8 slot) const { return 4 + (PK3::BOX_LENGTH * box * 30) + (PK3::BOX_LENGTH * slot); }
+    u32 Sav3::boxOffset(u8 box, u8 slot) const
+    {
+        // Offset = blockOfs[block this slot is in] + slot offset
+        int fullOffset = 4 + (PK3::BOX_LENGTH * box * 30) + (PK3::BOX_LENGTH * slot);
+        div_t d        = div(fullOffset, 0xF80);
+        // Box blocks start at 5
+        return blockOfs[d.quot + 5] + d.rem;
+    }
 
-    u32 Sav3::partyOffset(u8 slot) const { return blockOfs[1] + (game == Game::FRLG ? 0x38 : 0x238) + (PK3::PARTY_LENGTH * slot); }
+    u32 Sav3::partyOffset(u8 slot) const { return blockOfs[1] + ABO() + (game == Game::FRLG ? 0x38 : 0x238) + (PK3::PARTY_LENGTH * slot); }
 
     std::unique_ptr<PKX> Sav3::pkm(u8 slot) const { return PKX::getPKM<Generation::THREE>(&data[partyOffset(slot)], true); }
-    std::unique_ptr<PKX> Sav3::pkm(u8 box, u8 slot) const { return PKX::getPKM<Generation::THREE>(&Box[boxOffset(box, slot)]); }
+    std::unique_ptr<PKX> Sav3::pkm(u8 box, u8 slot) const
+    {
+        u32 offset = boxOffset(box, slot);
+        // Is it split?
+        if ((offset % 0x1000) + PK3::BOX_LENGTH > 0xF80)
+        {
+            // Concatenate the data if so
+            u8 pkmData[PK3::BOX_LENGTH];
+            auto nextOut   = std::copy(&data[offset], &data[(offset & 0xFFFFF000) | 0xF80], pkmData);
+            u32 nextOffset = boxOffset(box + (slot + 1) / 30, (slot + 1) % 30);
+            std::copy(&data[nextOffset & 0xFFFFF000], &data[nextOffset], nextOut);
+            return PKX::getPKM<Generation::THREE>(pkmData);
+        }
+        else
+        {
+            return PKX::getPKM<Generation::THREE>(&data[offset]);
+        }
+    }
 
     void Sav3::pkm(const PKX& pk, u8 slot)
     {
@@ -371,7 +370,20 @@ namespace pksm
                 trade(*pk3);
             }
 
-            std::copy(pk3->rawData(), pk3->rawData() + PK3::BOX_LENGTH, &Box[boxOffset(box, slot)]);
+            u32 offset = boxOffset(box, slot);
+            // Is it split?
+            if ((offset % 0x1000) + PK3::BOX_LENGTH > 0xF80)
+            {
+                // Copy into the correct positions if so
+                u32 firstSize = 0xF80 - (offset % 0x1000);
+                std::copy(pk3->rawData(), pk3->rawData() + firstSize, &data[offset]);
+                u32 nextOffset = boxOffset(box + (slot + 1) / 30, (slot + 1) % 30);
+                std::copy(pk3->rawData() + firstSize, pk3->rawData() + PK3::BOX_LENGTH, &data[nextOffset & 0xFFFFF000]);
+            }
+            else
+            {
+                std::copy(pk3->rawData(), pk3->rawData() + PK3::BOX_LENGTH, &data[offset]);
+            }
         }
     }
 
@@ -484,33 +496,48 @@ namespace pksm
         {
             for (u8 slot = 0; slot < 30; slot++)
             {
-                std::unique_ptr<PKX> pk3 = PKX::getPKM<Generation::THREE>(&Box[boxOffset(box, slot)], false, true);
+                u32 offset = boxOffset(box, slot);
+                bool split = (offset % 0x1000) + PK3::BOX_LENGTH > 0xF80;
+                // If it's split, it needs to get fully copied out and re-set in
+                // Otherwise, use the direct-modification constructor
+                std::unique_ptr<PKX> pk3;
+                if (split)
+                {
+                    pk3 = pkm(box, slot);
+                }
+                else
+                {
+                    pk3 = PKX::getPKM<Generation::THREE>(&data[offset], false, true);
+                }
                 if (!crypted)
                 {
                     pk3->encrypt();
+                }
+                if (split)
+                {
+                    pkm(*pk3, box, slot, false);
                 }
             }
         }
     }
 
-    std::string Sav3::boxName(u8 box) const { return StringUtils::getString3(Box.get(), boxOffset(maxBoxes(), 0) + (box * 9), 9, japanese); }
+    std::string Sav3::boxName(u8 box) const { return StringUtils::getString3(data.get(), boxOffset(maxBoxes(), 0) + (box * 9), 9, japanese); }
     void Sav3::boxName(u8 box, const std::string& v)
     {
-        return StringUtils::setString3(Box.get(), v, boxOffset(maxBoxes(), 0) + (box * 9), 8, japanese, 9);
+        return StringUtils::setString3(data.get(), v, boxOffset(maxBoxes(), 0) + (box * 9), 8, japanese, 9);
     }
 
-    // Note: This is needed for pkmn-chest, but not in PKSM's core currently
     u8 Sav3::boxWallpaper(u8 box) const
     {
         int offset = boxOffset(maxBoxes(), 0);
         offset += (maxBoxes() * 0x9) + box;
-        return Box[offset];
+        return data[offset];
     }
     void Sav3::boxWallpaper(u8 box, u8 v)
     {
         int offset = boxOffset(maxBoxes(), 0);
         offset += (maxBoxes() * 0x9) + box;
-        Box[offset] = v;
+        data[offset] = v;
     }
 
     u8 Sav3::partyCount(void) const { return data[blockOfs[1] + (game == Game::FRLG ? 0x34 : 0x234)]; }
