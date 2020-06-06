@@ -175,6 +175,8 @@ namespace pksm
         void item(const Item& item, Pouch pouch, u16 slot) override;
         std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
         std::vector<std::pair<Pouch, int>> pouches(void) const override;
+        // G3 item IDs
+        virtual std::map<Pouch, std::vector<int>> validItems3(void) const = 0;
 
         u16 rtcInitialDay(void) const;
         void rtcInitialDay(u16 v);
