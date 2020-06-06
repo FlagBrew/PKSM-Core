@@ -61,6 +61,14 @@ namespace pksm
         {
             case GameVersion::R:
             case GameVersion::S:
+            {
+                static std::set<int> items;
+                if (items.empty())
+                {
+                    fill_set_consecutive<int>(items, 0, 348);
+                }
+                return items;
+            }
             case GameVersion::FR:
             case GameVersion::LG:
             {
