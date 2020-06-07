@@ -106,7 +106,7 @@ namespace pksm
         }
     }
 
-    Sav3::Sav3(std::shared_ptr<u8[]> dt) : Sav(dt, 0x20000)
+    Sav3::Sav3(std::shared_ptr<u8[]> dt, const std::vector<int>& seenFlagOffsets) : Sav(dt, 0x20000), seenFlagOffsets(seenFlagOffsets)
     {
         loadBlocks();
 

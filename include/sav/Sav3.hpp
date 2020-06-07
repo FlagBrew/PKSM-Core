@@ -92,11 +92,12 @@ namespace pksm
         bool getSeen(Species species) const;
         void setSeen(Species species, bool seen);
 
+        Sav3(std::shared_ptr<u8[]> data, const std::vector<int>& seenFlagOffsets);
+
     public:
         static constexpr int SIZE_BLOCK = 0x1000;
         static Game getVersion(std::shared_ptr<u8[]> dt);
 
-        Sav3(std::shared_ptr<u8[]> data);
         virtual ~Sav3() {}
         void resign(void);
         void finishEditing(void) override { resign(); }

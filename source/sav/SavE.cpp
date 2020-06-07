@@ -28,11 +28,9 @@
 
 namespace pksm
 {
-    SavE::SavE(std::shared_ptr<u8[]> dt) : Sav3(dt)
+    SavE::SavE(std::shared_ptr<u8[]> dt) : Sav3(dt, {PokeDex + 0x44, blockOfs[1] + 0x988, blockOfs[4] + 0xCA4})
     {
         game = Game::E;
-
-        seenFlagOffsets = std::vector<int>({PokeDex + 0x44, blockOfs[1] + 0x988, blockOfs[4] + 0xCA4});
 
         OFS_PCItem        = blockOfs[1] + 0x0498;
         OFS_PouchHeldItem = blockOfs[1] + 0x0560;
