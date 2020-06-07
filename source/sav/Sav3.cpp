@@ -117,6 +117,10 @@ namespace pksm
 
         PokeDex = blockOfs[0] + 0x18;
 
+        seenFlagOffsets[0] += PokeDex;
+        seenFlagOffsets[1] += blockOfs[1];
+        seenFlagOffsets[2] += blockOfs[4];
+
         initialize();
     }
 

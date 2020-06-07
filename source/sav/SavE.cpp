@@ -28,7 +28,7 @@
 
 namespace pksm
 {
-    SavE::SavE(std::shared_ptr<u8[]> dt) : Sav3(dt, {PokeDex + 0x44, blockOfs[1] + 0x988, blockOfs[4] + 0xCA4})
+    SavE::SavE(std::shared_ptr<u8[]> dt) : Sav3(dt, {0x44, 0x988, 0xCA4})
     {
         game = Game::E;
 

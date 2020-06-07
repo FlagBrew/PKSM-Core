@@ -28,7 +28,7 @@
 
 namespace pksm
 {
-    SavFRLG::SavFRLG(std::shared_ptr<u8[]> dt) : Sav3(dt, {PokeDex + 0x44, blockOfs[1] + 0x5F8, blockOfs[4] + 0xB98})
+    SavFRLG::SavFRLG(std::shared_ptr<u8[]> dt) : Sav3(dt, {0x44, 0x5F8, 0xB98})
     {
         game = Game::FRLG;
 
