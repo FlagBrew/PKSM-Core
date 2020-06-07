@@ -174,7 +174,7 @@ namespace pksm
             }
 
             constexpr bool operator<=(const Generation_impl& other) const noexcept { return *this < other || *this == other; }
-            constexpr bool operator>=(const Generation_impl& other) const noexcept { return v >= other.v; }
+            constexpr bool operator>=(const Generation_impl& other) const noexcept { return *this > other || *this == other; }
 
             constexpr bool operator==(const Generation_impl& other) const noexcept { return v == other.v; }
             constexpr bool operator!=(const Generation_impl& other) const noexcept { return v != other.v; }
