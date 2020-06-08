@@ -33,6 +33,7 @@
 #include "utils/utils.hpp"
 #include "wcx/WCX.hpp"
 #include <algorithm>
+#include <limits>
 #include <stdlib.h>
 
 namespace pksm
@@ -48,7 +49,7 @@ namespace pksm
         for (int i = 0; i < BLOCK_COUNT; i++)
         {
             unsigned int index = std::distance(blockOrder.begin(), std::find(blockOrder.begin(), blockOrder.end(), i));
-            blockOfs[i]        = index == blockOrder.size() ? -1 /*was int.MinValue*/ : (index * SIZE_BLOCK) + ABO();
+            blockOfs[i]        = index == blockOrder.size() ? std::numeric_limits<int>::min() : (index * SIZE_BLOCK) + ABO();
         }
     }
 
