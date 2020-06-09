@@ -250,7 +250,7 @@ namespace i18n
 
     const std::vector<size_t> formIndices(pksm::GameVersion version, pksm::Species species)
     {
-        // TODO: Galarian and Gigantamax
+        // TODO: Gigantamax and Isle of Armor Galarian additions, including Slowbro
         u8 forms = pksm::VersionTables::formCount(version, species);
         if (forms == 1)
         {
@@ -312,6 +312,8 @@ namespace i18n
                 ret = {Default, Alolan};
                 break;
             case pksm::Species::Meowth:
+                ret = {Default, Alolan, Galarian};
+                break;
             case pksm::Species::Persian:
                 ret = {Default, Alolan};
                 break;
@@ -323,8 +325,18 @@ namespace i18n
             case pksm::Species::Golem:
                 ret = {Default, Alolan};
                 break;
+            case pksm::Species::Ponyta:
+            case pksm::Species::Rapidash:
+                ret = {Default, Galarian};
+                break;
+            case pksm::Species::Slowpoke:
+                ret = {Default, Galarian};
+                break;
             case pksm::Species::Slowbro:
                 ret = {Default, Mega};
+                break;
+            case pksm::Species::Farfetchd:
+                ret = {Default, Galarian};
                 break;
             case pksm::Species::Grimer:
             case pksm::Species::Muk:
@@ -338,6 +350,12 @@ namespace i18n
                 break;
             case pksm::Species::Marowak:
                 ret = {Default, Alolan, Totem};
+                break;
+            case pksm::Species::Weezing:
+                ret = {Default, Galarian};
+                break;
+            case pksm::Species::MrMime:
+                ret = {Default, Galarian};
                 break;
             case pksm::Species::Kangaskhan:
                 ret = {Default, Mega};
@@ -372,6 +390,9 @@ namespace i18n
             case pksm::Species::Heracross:
                 ret = {Default, Mega};
                 break;
+            case pksm::Species::Corsola:
+                ret = {Default, Galarian};
+                break;
             case pksm::Species::Houndoom:
                 ret = {Default, Mega};
                 break;
@@ -386,6 +407,10 @@ namespace i18n
                 break;
             case pksm::Species::Swampert:
                 ret = {Default, Mega};
+                break;
+            case pksm::Species::Zigzagoon:
+            case pksm::Species::Linoone:
+                ret = {Default, Galarian};
                 break;
             case pksm::Species::Gardevoir:
                 ret = {Default, Mega};
@@ -499,14 +524,21 @@ namespace i18n
             case pksm::Species::Basculin:
                 ret = {RedStriped, BlueStriped};
                 break;
+            case pksm::Species::Darumaka:
+                ret = {Default, Galarian};
+                break;
             case pksm::Species::Darmanitan:
-                ret = {Default, Zen};
+                ret = {Default, Zen, Galarian, Zen};
+                break;
+            case pksm::Species::Yamask:
+                ret = {Default, Galarian};
                 break;
             case pksm::Species::Deerling:
-                ret = {Spring, Summer, Autumn, Winter};
-                break;
             case pksm::Species::Sawsbuck:
                 ret = {Spring, Summer, Autumn, Winter};
+                break;
+            case pksm::Species::Stunfisk:
+                ret = {Default, Galarian};
                 break;
             case pksm::Species::Tornadus:
                 ret = {Incarnate, Therian};
