@@ -287,7 +287,7 @@ namespace i18n
                         ret = {Default, RockStar, Belle, PopStar, PhD, Libre, Cosplay};
                         break;
                     case pksm::Generation::SEVEN:
-                        ret = {Original, Hoenn, Sinnoh, Unova, Kalos, Alola, Partner};
+                        ret = {Default, Original, Hoenn, Sinnoh, Unova, Kalos, Alola, Partner};
                         break;
                     case pksm::Generation::LGPE:
                         ret = {Default, Default};
@@ -613,7 +613,7 @@ namespace i18n
                 ret = {Default, Totem};
                 break;
             case pksm::Species::Mimikyu:
-                ret = {Default, Totem, Default, Totem};
+                ret = {Default, Default, Totem, Totem};
                 break;
             case pksm::Species::Kommoo:
                 ret = {Default, Totem};
