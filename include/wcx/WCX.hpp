@@ -114,6 +114,9 @@ namespace pksm
 
         virtual int size(void) const          = 0;
         virtual const u8* rawData(void) const = 0;
+
+        u32 formatTID(void) const;
+        u32 formatSID(void) const;
     };
 }
 
