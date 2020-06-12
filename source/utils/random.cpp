@@ -47,22 +47,21 @@ u32 pksm::randomNumber()
 {
     if (!seeded)
     {
-        DateTime now = DateTime::now();
-        // Dumb, but it works
-        // clang-format off
-        seedRand(now.year() * 365 * 24 * 60 * 60 +
-                 now.month() * 31 * 24 * 60 * 60 +
-                 now.day() * 24 * 60 * 60 +
-                 now.hour() * 60 * 60 +
-                 now.minute() * 60 +
-                 now.second());
-        // clang-format on
+        DateTime now      = DateTime::now();
+        std::seed_seq seq = std::initializer_list<u32>{now.year(), now.month(), now.day(), now.hour(), now.minute(), now.second()};
+        seedRand(seq);
     }
 
     return randomNumbers();
 }
 
 void pksm::seedRand(u32 seed)
+{
+    randomNumbers.seed(seed);
+    seeded = true;
+}
+
+void pksm::seedRand(std::seed_seq& seed)
 {
     randomNumbers.seed(seed);
     seeded = true;

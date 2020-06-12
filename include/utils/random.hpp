@@ -28,9 +28,11 @@
 #define RANDOM_HPP
 
 #include "utils/coretypes.h"
+#include <random>
 
 namespace pksm
 {
+    void seedRand(std::seed_seq& seed);
     void seedRand(u32 seed);
     u32 randomNumber();
 }
