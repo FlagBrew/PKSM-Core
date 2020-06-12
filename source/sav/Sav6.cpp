@@ -190,7 +190,7 @@ namespace pksm
                 u32 bits = 0x04CBFD; // memoryBits[pk6->htMemory()];
                 while (true)
                 {
-                    u32 feel = randomNumbers() % 20;
+                    u32 feel = pksm::randomNumber() % 20;
                     if ((bits & (1 << feel)) != 0)
                     {
                         pk6->htFeeling(feel);

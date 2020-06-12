@@ -974,7 +974,7 @@ namespace pksm
         pk6->geoCountry(0, save.country());
         pk6->htIntensity(1);
         pk6->htMemory(4);
-        pk6->htFeeling(randomNumbers() % 10);
+        pk6->htFeeling(pksm::randomNumber() % 10);
         pk6->otFriendship(pk6->baseFriendship());
         pk6->htFriendship(pk6->baseFriendship());
 

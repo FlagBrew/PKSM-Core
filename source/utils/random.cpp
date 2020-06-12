@@ -24,15 +24,45 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef RANDOM_HPP
-#define RANDOM_HPP
+#include "utils/random.hpp"
+#include "utils/DateTime.hpp"
+#include <random>
 
-#include "utils/coretypes.h"
+#ifndef _PKSMCORE_CONFIGURED
+#include "PKSMCORE_CONFIG.h"
+#endif
 
-namespace pksm
+namespace
 {
-    void seedRand(u32 seed);
-    u32 randomNumber();
+#ifdef _PKSMCORE_DISABLE_THREAD_SAFE_RANDOM
+    std::mt19937 randomNumbers;
+    bool seeded = false;
+#else
+    thread_local std::mt19937 randomNumbers;
+    thread_local bool seeded = false;
+#endif
 }
 
-#endif
+u32 pksm::randomNumber()
+{
+    if (!seeded)
+    {
+        DateTime now = DateTime::now();
+        // Dumb, but it works
+        // clang-format off
+        seedRand(now.year() * 365 * 24 * 60 * 60 +
+                 now.day() * 24 * 60 * 60 +
+                 now.hour() * 60 * 60 +
+                 now.minute() * 60 +
+                 now.second());
+        // clang-format on
+    }
+
+    return pksm::randomNumber();
+}
+
+void pksm::seedRand(u32 seed)
+{
+    randomNumbers.seed(seed);
+    seeded = true;
+}

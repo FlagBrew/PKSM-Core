@@ -844,7 +844,7 @@ namespace pksm
         pk7->htMemory(4);
         pk7->htTextVar(0);
         pk7->htIntensity(1);
-        pk7->htFeeling(randomNumbers() % 10);
+        pk7->htFeeling(pksm::randomNumber() % 10);
         pk7->geoCountry(0, save.country());
         pk7->geoRegion(0, save.subRegion());
 
