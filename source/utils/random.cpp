@@ -59,7 +59,7 @@ u32 pksm::randomNumber()
         // clang-format on
     }
 
-    return pksm::randomNumber();
+    return randomNumbers();
 }
 
 void pksm::seedRand(u32 seed)
