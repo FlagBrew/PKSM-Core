@@ -51,6 +51,7 @@ u32 pksm::randomNumber()
         // Dumb, but it works
         // clang-format off
         seedRand(now.year() * 365 * 24 * 60 * 60 +
+                 now.month() * 31 * 24 * 60 * 60 +
                  now.day() * 24 * 60 * 60 +
                  now.hour() * 60 * 60 +
                  now.minute() * 60 +
