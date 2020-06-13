@@ -334,7 +334,7 @@ namespace pksm
         return blockOfs[d.quot + 5] + d.rem;
     }
 
-    u32 Sav3::partyOffset(u8 slot) const { return blockOfs[1] + ABO() + (game == Game::FRLG ? 0x38 : 0x238) + (PK3::PARTY_LENGTH * slot); }
+    u32 Sav3::partyOffset(u8 slot) const { return blockOfs[1] + (game == Game::FRLG ? 0x38 : 0x238) + (PK3::PARTY_LENGTH * slot); }
 
     std::unique_ptr<PKX> Sav3::pkm(u8 slot) const { return PKX::getPKM<Generation::THREE>(&data[partyOffset(slot)], true); }
     std::unique_ptr<PKX> Sav3::pkm(u8 box, u8 slot) const
