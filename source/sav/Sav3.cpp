@@ -71,7 +71,18 @@ namespace pksm
             return 1;
         u32 count1 = LittleEndian::convertTo<u32>(&dt[(zeroBlock1 * SIZE_BLOCK) + 0x0FFC]);
         u32 count2 = LittleEndian::convertTo<u32>(&dt[(zeroBlock2 * SIZE_BLOCK) + 0xEFFC]);
-        return count1 > count2 ? 0 : 1;
+        if (count1 == 0xFFFFFFFF && count2 == 0)
+        {
+            return 1;
+        }
+        else if (count1 == 0 && count2 == 0xFFFFFFFF)
+        {
+            return 0;
+        }
+        else
+        {
+            return count1 > count2 ? 0 : 1;
+        }
     }
 
     Sav::Game Sav3::getVersion(std::shared_ptr<u8[]> dt)
