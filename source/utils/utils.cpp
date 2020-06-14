@@ -505,12 +505,14 @@ std::vector<u16> StringUtils::stringToG4(const std::string& v)
                 charIndex += 1;
             }
             auto found = std::find(pksm::internal::G4Chars.begin(), pksm::internal::G4Chars.end(), codepoint);
-            ret.push_back(found != pksm::internal::G4Chars.end() ? *found : 0x0000);
+            ret.push_back(
+                found != pksm::internal::G4Chars.end() ? pksm::internal::G4Values[std::distance(pksm::internal::G4Chars.begin(), found)] : 0x0000);
         }
         else
         {
             auto found = std::find(pksm::internal::G4Chars.begin(), pksm::internal::G4Chars.end(), v[charIndex]);
-            ret.push_back(found != pksm::internal::G4Chars.end() ? *found : 0x0000);
+            ret.push_back(
+                found != pksm::internal::G4Chars.end() ? pksm::internal::G4Values[std::distance(pksm::internal::G4Chars.begin(), found)] : 0x0000);
         }
     }
     if (ret.back() != 0xFFFF)
@@ -542,13 +544,15 @@ void StringUtils::setString4(u8* data, const std::string& v, int ofs, int len)
                 codepoint = codepoint << 6 | (v[charIndex + 1] & 0x3F);
                 charIndex += 1;
             }
-            auto found       = std::find(pksm::internal::G4Chars.begin(), pksm::internal::G4Chars.end(), codepoint);
-            output[outIndex] = found != pksm::internal::G4Chars.end() ? *found : 0x0000;
+            auto found = std::find(pksm::internal::G4Chars.begin(), pksm::internal::G4Chars.end(), codepoint);
+            output[outIndex] =
+                found != pksm::internal::G4Chars.end() ? pksm::internal::G4Values[std::distance(pksm::internal::G4Chars.begin(), found)] : 0x0000;
         }
         else
         {
-            auto found       = std::find(pksm::internal::G4Chars.begin(), pksm::internal::G4Chars.end(), v[charIndex]);
-            output[outIndex] = found != pksm::internal::G4Chars.end() ? *found : 0x0000;
+            auto found = std::find(pksm::internal::G4Chars.begin(), pksm::internal::G4Chars.end(), v[charIndex]);
+            output[outIndex] =
+                found != pksm::internal::G4Chars.end() ? pksm::internal::G4Values[std::distance(pksm::internal::G4Chars.begin(), found)] : 0x0000;
         }
     }
     output[outIndex >= len ? len - 1 : outIndex] = 0xFFFF;
