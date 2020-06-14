@@ -356,7 +356,7 @@ namespace pksm
         while (true)
         {
             u32 possiblePID = pksm::randomNumber();
-            if (originGame <= GameVersion::CXD && possiblePID % 25 != size_t(nature))
+            if ((Generation)originGame <= Generation::FOUR && (possiblePID % 25) != size_t(nature))
             {
                 continue;
             }
