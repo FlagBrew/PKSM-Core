@@ -140,6 +140,7 @@ namespace pksm
         u16 formStatIndex(u16 formSpecies);
         u8 formCount(u16 formSpecies);
         u16 pokedexIndex(u16 formSpecies);
+        u16 armordexIndex(u16 formSpecies);
         bool canLearnTR(u16 formSpecies, u8 trID);
     }
 

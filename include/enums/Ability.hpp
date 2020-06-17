@@ -304,6 +304,8 @@ namespace pksm
                 NeutralizingGas,
                 PastelVeil,
                 HungerSwitch,
+                QuickDraw,
+                UnseenFist,
 
                 INVALID = std::numeric_limits<std::underlying_type_t<AbilityEnum>>::max()
             } v;
@@ -633,6 +635,8 @@ namespace pksm
         static constexpr internal::Ability_impl NeutralizingGas{EnumType::NeutralizingGas};
         static constexpr internal::Ability_impl PastelVeil{EnumType::PastelVeil};
         static constexpr internal::Ability_impl HungerSwitch{EnumType::HungerSwitch};
+        static constexpr internal::Ability_impl QuickDraw{EnumType::QuickDraw};
+        static constexpr internal::Ability_impl UnseenFist{EnumType::UnseenFist};
 
         static constexpr internal::Ability_impl INVALID{EnumType::INVALID};
     };

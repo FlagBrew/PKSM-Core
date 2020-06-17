@@ -247,6 +247,10 @@ namespace i18n
     static constexpr size_t VanillaCream     = 201;
     static constexpr size_t Phony            = 202;
     static constexpr size_t Antique          = 203;
+    static constexpr size_t World            = 204;
+    static constexpr size_t SingleStrike     = 205;
+    static constexpr size_t RapidStrike      = 206;
+    static constexpr size_t Dada             = 207;
 
     const std::vector<size_t> formIndices(pksm::GameVersion version, pksm::Species species)
     {
@@ -287,10 +291,8 @@ namespace i18n
                         ret = {Default, RockStar, Belle, PopStar, PhD, Libre, Cosplay};
                         break;
                     case pksm::Generation::SEVEN:
-                        ret = {Default, Original, Hoenn, Sinnoh, Unova, Kalos, Alola, Partner};
-                        break;
                     case pksm::Generation::LGPE:
-                        ret = {Default, Default};
+                        ret = {Default, Original, Hoenn, Sinnoh, Unova, Kalos, Alola, Partner, Default, World};
                         break;
                     default:
                         break;
@@ -686,6 +688,12 @@ namespace i18n
                 break;
             case pksm::Species::Eternatus:
                 ret = {Default, Eternamax};
+                break;
+            case pksm::Species::Urshifu:
+                ret = {SingleStrike, RapidStrike};
+                break;
+            case pksm::Species::Zarude:
+                ret = {Default, Dada};
                 break;
             default:
                 ret = {Default};

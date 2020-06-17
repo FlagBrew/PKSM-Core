@@ -935,6 +935,9 @@ namespace pksm
                 Zacian,
                 Zamazenta,
                 Eternatus,
+                Kubfu,
+                Urshifu,
+                Zarude,
 
                 INVALID = std::numeric_limits<std::underlying_type_t<SpeciesEnum>>::max()
             } v;
@@ -1895,6 +1898,9 @@ namespace pksm
         static constexpr internal::Species_impl Zacian{EnumType::Zacian};
         static constexpr internal::Species_impl Zamazenta{EnumType::Zamazenta};
         static constexpr internal::Species_impl Eternatus{EnumType::Eternatus};
+        static constexpr internal::Species_impl Kubfu{EnumType::Kubfu};
+        static constexpr internal::Species_impl Urshifu{EnumType::Urshifu};
+        static constexpr internal::Species_impl Zarude{EnumType::Zarude};
 
         static constexpr internal::Species_impl INVALID{EnumType::INVALID};
     };

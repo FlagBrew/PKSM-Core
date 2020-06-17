@@ -94,7 +94,7 @@ namespace pksm
         u8* data;
 
     public:
-        static constexpr Species PKSM_MAX_SPECIES = Species::Eternatus;
+        static constexpr Species PKSM_MAX_SPECIES = Species::Zarude;
 
         static std::unique_ptr<PKX> getPKM(Generation gen, u8* data, bool party = false, bool directAccess = false);
         template <Generation::EnumType g>
