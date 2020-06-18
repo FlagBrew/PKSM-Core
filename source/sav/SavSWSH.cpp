@@ -183,7 +183,7 @@ void LittleEndian::convertFrom<DexEntry>(u8* data, const DexEntry& entry)
 
 namespace pksm
 {
-    SavSWSH::SavSWSH(std::shared_ptr<u8[]> dt) : Sav8(dt, 0x17195E)
+    SavSWSH::SavSWSH(std::shared_ptr<u8[]> dt) : Sav8(dt, 0x180B19)
     {
         game = Game::SWSH;
 
@@ -191,6 +191,7 @@ namespace pksm
         WondercardData = 0x112d5141;
         Party          = 0x2985fe5d;
         PokeDex        = 0x4716c404;
+        ArmorDex       = 0x3F936BA9;
         Items          = 0x1177c2c4;
         BoxLayout      = 0x19722c89;
         Misc           = 0x1b882b09;
@@ -780,9 +781,21 @@ namespace pksm
 
     void SavSWSH::dex(const PKX& pk)
     {
-        if (u16 index = ((PK8&)pk).pokedexIndex() && !pk.egg())
+        u8* entryAddr = nullptr;
+        if (!pk.egg())
         {
-            u8* entryAddr  = getBlock(PokeDex)->decryptedData() + sizeof(DexEntry) * (index - 1);
+            if (u16 index = ((PK8&)pk).pokedexIndex())
+            {
+                entryAddr = getBlock(PokeDex)->decryptedData() + sizeof(DexEntry) * (index - 1);
+            }
+            else if (u16 index = ((PK8&)pk).armordexIndex())
+            {
+                entryAddr = getBlock(ArmorDex)->decryptedData() + sizeof(DexEntry) * (index - 1);
+            }
+        }
+
+        if (entryAddr)
+        {
             DexEntry entry = LittleEndian::convertTo<DexEntry>(entryAddr);
 
             u16 form = pk.alternativeForm();

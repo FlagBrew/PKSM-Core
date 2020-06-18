@@ -267,6 +267,7 @@ namespace pksm
         inline Ability abilities(u8 n) const override { return PersonalSWSH::ability(formSpecies(), n); }
         inline u16 formStatIndex(void) const override { return PersonalSWSH::formStatIndex(formSpecies()); }
         inline u16 pokedexIndex(void) const { return PersonalSWSH::pokedexIndex(formSpecies()); }
+        inline u16 armordexIndex(void) const { return PersonalSWSH::armordexIndex(formSpecies()); }
         inline bool canLearnTR(u8 trID) const { return PersonalSWSH::canLearnTR(formSpecies(), trID); }
     };
 }

@@ -71,7 +71,7 @@ namespace pksm
             case 0xB8800:
             case 0x100000:
                 return std::make_unique<SavLGPE>(dt);
-            case 0x17195E:
+            case 0x180B19:
                 return std::make_unique<SavSWSH>(dt);
             default:
                 return std::unique_ptr<Sav>(nullptr);
