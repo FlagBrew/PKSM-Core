@@ -470,12 +470,12 @@ namespace pksm
 
                 auto pk8 = PKX::getPKM<Generation::EIGHT>(nullptr, false);
 
-                pk8->encryptionConstant(wc8->encryptionConstant() ? wc8->encryptionConstant() : pksm::randomNumber());
+                pk8->encryptionConstant(wc8->encryptionConstant() ? wc8->encryptionConstant() : pksm::randomNumber(0, 0xFFFFFFFF));
                 pk8->TID(wc8->TID());
                 pk8->SID(wc8->SID());
                 pk8->species(wc8->species());
                 pk8->alternativeForm(wc8->alternativeForm());
-                pk8->level(wc8->level() ? wc8->level() : ((pksm::randomNumber() % 100) + 1));
+                pk8->level(wc8->level() ? wc8->level() : pksm::randomNumber(1, 100));
                 pk8->ball(wc8->ball() ? wc8->ball() : Ball::Poke);
                 pk8->metLevel(wc8->metLevel() ? wc8->metLevel() : pk8->level());
                 pk8->heldItem(wc8->heldItem());
@@ -655,12 +655,12 @@ namespace pksm
 
                 pk8->currentFriendship(pk8->baseFriendship());
 
-                pk8->height(pksm::randomNumber() % 0x81 + pksm::randomNumber() % 0x80);
-                pk8->weight(pksm::randomNumber() % 0x81 + pksm::randomNumber() % 0x80);
+                pk8->height(pksm::randomNumber(0, 0x80) + pksm::randomNumber(0, 0x7F));
+                pk8->weight(pksm::randomNumber(0, 0x80) + pksm::randomNumber(0, 0x7F));
 
-                pk8->nature(wc8->nature() == Nature::INVALID ? Nature{u8(pksm::randomNumber() % 25)} : wc8->nature());
+                pk8->nature(wc8->nature() == Nature::INVALID ? Nature{u8(pksm::randomNumber(0, 24))} : wc8->nature());
                 pk8->origNature(pk8->nature());
-                pk8->gender(PKX::genderFromRatio(pksm::randomNumber(), pk8->genderType()));
+                pk8->gender(PKX::genderFromRatio(pksm::randomNumber(0, 0xFFFFFFFF), pk8->genderType()));
 
                 // Ability
                 switch (wc8->abilityType())
@@ -672,7 +672,7 @@ namespace pksm
                         break;
                     case 3:
                     case 4:
-                        pk8->setAbility(pksm::randomNumber() % (wc8->abilityType() - 1));
+                        pk8->setAbility(pksm::randomNumber(0, wc8->abilityType() - 2));
                         break;
                 }
 
@@ -683,18 +683,18 @@ namespace pksm
                         pk8->PID(wc8->PID());
                         break;
                     case 1: // Random
-                        pk8->PID(pksm::randomNumber());
+                        pk8->PID(pksm::randomNumber(0, 0xFFFFFFFF));
                         break;
                     case 5: // Always star shiny
-                        pk8->PID(pksm::randomNumber());
+                        pk8->PID(pksm::randomNumber(0, 0xFFFFFFFF));
                         pk8->PID(((pk8->TID() ^ pk8->SID() ^ (pk8->PID() & 0xFFFF) ^ 1) << 16) | (pk8->PID() & 0xFFFF));
                         break;
                     case 6: // Always square shiny
-                        pk8->PID(pksm::randomNumber());
+                        pk8->PID(pksm::randomNumber(0, 0xFFFFFFFF));
                         pk8->PID(((pk8->TID() ^ pk8->SID() ^ (pk8->PID() & 0xFFFF) ^ 0) << 16) | (pk8->PID() & 0xFFFF));
                         break;
                     case 3: // Never shiny
-                        pk8->PID(pksm::randomNumber());
+                        pk8->PID(pksm::randomNumber(0, 0xFFFFFFFF));
                         pk8->shiny(false);
                         break;
                 }
@@ -711,10 +711,10 @@ namespace pksm
                 }
                 for (int iv = 0; iv < numPerfectIVs; iv++)
                 {
-                    Stat setMeTo31 = Stat(pksm::randomNumber() % 6);
+                    Stat setMeTo31 = Stat(pksm::randomNumber(0, 5));
                     while (pk8->iv(setMeTo31) == 31)
                     {
-                        setMeTo31 = Stat(pksm::randomNumber() % 6);
+                        setMeTo31 = Stat(pksm::randomNumber(0, 5));
                     }
                     pk8->iv(setMeTo31, 31);
                 }
@@ -722,7 +722,7 @@ namespace pksm
                 {
                     if (pk8->iv(stat) != 31)
                     {
-                        pk8->iv(stat, pksm::randomNumber() % 32);
+                        pk8->iv(stat, pksm::randomNumber(0, 31));
                     }
                 }
 

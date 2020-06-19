@@ -36,14 +36,16 @@ namespace
 {
 #ifdef _PKSMCORE_DISABLE_THREAD_SAFE_RANDOM
     std::mt19937 randomNumbers;
+    std::uniform_int_distribution<u32> distrib;
     bool seeded = false;
 #else
     thread_local std::mt19937 randomNumbers;
+    thread_local std::uniform_int_distribution<u32> distrib;
     thread_local bool seeded = false;
 #endif
 }
 
-u32 pksm::randomNumber()
+u32 pksm::randomNumber(u32 minInclusive, u32 maxInclusive)
 {
     if (!seeded)
     {
@@ -52,7 +54,7 @@ u32 pksm::randomNumber()
         seedRand(seq);
     }
 
-    return randomNumbers();
+    return distrib(randomNumbers, std::uniform_int_distribution<u32>::param_type{minInclusive, maxInclusive});
 }
 
 void pksm::seedRand(u32 seed)

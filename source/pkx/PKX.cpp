@@ -313,7 +313,7 @@ namespace pksm
     {
         if (originGame >= GameVersion::X) // Origin game over gen 5
         {
-            return pksm::randomNumber();
+            return pksm::randomNumber(0, 0xFFFFFFFF);
         }
 
         u8 (*genderTypeFinder)(u16 species) = nullptr;
@@ -355,7 +355,7 @@ namespace pksm
         u32 abilityBits = oldPid & (abilityNum == 2 ? 0x00010001 : 0);
         while (true)
         {
-            u32 possiblePID = pksm::randomNumber();
+            u32 possiblePID = pksm::randomNumber(0, 0xFFFFFFFF);
             if ((Generation)originGame <= Generation::FOUR && (possiblePID % 25) != size_t(nature))
             {
                 continue;

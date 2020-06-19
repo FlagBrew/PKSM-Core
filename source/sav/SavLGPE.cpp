@@ -567,7 +567,7 @@ namespace pksm
                 }
                 else
                 {
-                    pb7->level(pksm::randomNumber() % 100 + 1);
+                    pb7->level(pksm::randomNumber(1, 100));
                 }
                 if (wb7->metLevel() > 0)
                 {
@@ -586,7 +586,7 @@ namespace pksm
                 }
                 if (wb7->nature() == Nature::INVALID)
                 {
-                    pb7->nature(Nature{u8(pksm::randomNumber() % 25)});
+                    pb7->nature(Nature{u8(pksm::randomNumber(0, 24))});
                 }
                 else
                 {
@@ -594,7 +594,7 @@ namespace pksm
                 }
                 if (u8(wb7->gender()) == 3) // Invalid gender value
                 {
-                    pb7->gender(PKX::genderFromRatio(pksm::randomNumber(), PersonalLGPE::gender(u16(wb7->species()))));
+                    pb7->gender(PKX::genderFromRatio(pksm::randomNumber(0, 0xFFFFFFFF), PersonalLGPE::gender(u16(wb7->species()))));
                 }
                 else
                 {
@@ -658,10 +658,10 @@ namespace pksm
                 }
                 for (int iv = 0; iv < numPerfectIVs; iv++)
                 {
-                    Stat setMeTo31 = Stat(pksm::randomNumber() % 6);
+                    Stat setMeTo31 = Stat(pksm::randomNumber(0, 5));
                     while (pb7->iv(setMeTo31) == 31)
                     {
-                        setMeTo31 = Stat(pksm::randomNumber() % 6);
+                        setMeTo31 = Stat(pksm::randomNumber(0, 5));
                     }
                     pb7->iv(setMeTo31, 31);
                 }
@@ -669,7 +669,7 @@ namespace pksm
                 {
                     if (pb7->iv(stat) != 31)
                     {
-                        pb7->iv(stat, pksm::randomNumber() % 32);
+                        pb7->iv(stat, pksm::randomNumber(0, 31));
                     }
                 }
 
@@ -689,7 +689,7 @@ namespace pksm
                         break;
                     case 3:
                     case 4:
-                        pb7->setAbility(pksm::randomNumber() % (wb7->abilityType() - 1));
+                        pb7->setAbility(pksm::randomNumber(0, wb7->abilityType() - 2));
                         break;
                 }
 
@@ -699,14 +699,14 @@ namespace pksm
                         pb7->PID(wb7->PID());
                         break;
                     case 1: // Random
-                        pb7->PID((u32)pksm::randomNumber());
+                        pb7->PID(pksm::randomNumber(0, 0xFFFFFFFF));
                         break;
                     case 2: // Always shiny
-                        pb7->PID((u32)pksm::randomNumber());
+                        pb7->PID(pksm::randomNumber(0, 0xFFFFFFFF));
                         pb7->shiny(true);
                         break;
                     case 3: // Never shiny
-                        pb7->PID((u32)pksm::randomNumber());
+                        pb7->PID(pksm::randomNumber(0, 0xFFFFFFFF));
                         pb7->shiny(false);
                         break;
                 }
@@ -722,8 +722,8 @@ namespace pksm
                 pb7->metDate(wb7->date());
                 pb7->currentFriendship(PersonalLGPE::baseFriendship(pb7->formSpecies()));
 
-                pb7->height(pksm::randomNumber() % 256);
-                pb7->weight(pksm::randomNumber() % 256);
+                pb7->height(pksm::randomNumber(0, 255));
+                pb7->weight(pksm::randomNumber(0, 255));
                 pb7->fatefulEncounter(true);
 
                 pb7->refreshChecksum();

@@ -34,7 +34,7 @@ namespace pksm
 {
     void seedRand(std::seed_seq& seed);
     void seedRand(u32 seed);
-    u32 randomNumber();
+    u32 randomNumber(u32 minInclusive, u32 maxInclusive);
 }
 
 #endif
