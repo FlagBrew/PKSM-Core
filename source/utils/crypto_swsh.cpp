@@ -66,6 +66,69 @@ namespace pksm::crypto::swsh
             context.update(internal::hashEnd.data(), hashEnd.size());
             return context.finish();
         }
+
+        class XorShift32
+        {
+        private:
+            u32 mCounter = 0;
+            u32 mSeed;
+            static void advance(u32& key)
+            {
+                key ^= key << 2;
+                key ^= key >> 15;
+                key ^= key << 13;
+            }
+
+            static u32 popcount(u32 x)
+            {
+                x -= ((x >> 1) & 0x55555555u);
+                x = (x & 0x33333333u) + ((x >> 2) & 0x33333333u);
+                x = (x + (x >> 4)) & 0x0F0F0F0Fu;
+                x += (x >> 8);
+                x += (x >> 16);
+                return x & 0x0000003Fu;
+            }
+
+        public:
+            XorShift32(u32 seed)
+            {
+                u32 count = popcount(seed);
+                for (u32 i = 0; i < count; i++)
+                {
+                    advance(seed);
+                }
+
+                mSeed = seed;
+            }
+
+            u8 next()
+            {
+                u8 ret = (mSeed >> (mCounter << 3)) & 0xFF;
+                if (mCounter == 3)
+                {
+                    advance(mSeed);
+                    mCounter = 0;
+                }
+                else
+                {
+                    ++mCounter;
+                }
+                return ret;
+            }
+
+            u32 next32() { return next() | (u32(next()) << 8) | (u32(next()) << 16) | (u32(next()) << 24); }
+        };
+
+        class CryptoException : public std::exception
+        {
+        public:
+            CryptoException(const std::string& message) : mMessage("CryptoException: " + message) {}
+
+            const char* what() const noexcept override { return mMessage.c_str(); }
+
+        private:
+            std::string mMessage;
+        };
     }
 
     void applyXor(std::shared_ptr<u8[]> data, size_t length)
@@ -119,9 +182,9 @@ namespace pksm::crypto::swsh
         // Key size
         offset += 4;
 
-        XorShift32 xorShift(key());
+        internal::XorShift32 xorShift(key());
 
-        type = SCBlockType(data[offset] ^ xorShift.next());
+        type = SCBlockType(data[offset] ^= xorShift.next());
 
         switch (type)
         {
@@ -134,6 +197,7 @@ namespace pksm::crypto::swsh
             case SCBlockType::Object:
             {
                 dataLength = LittleEndian::convertTo<u32>(data.get() + offset + 1) ^ xorShift.next32();
+                LittleEndian::convertFrom<u32>(data.get() + offset + 1, dataLength);
                 for (size_t i = 0; i < dataLength; i++)
                 {
                     data[offset + 5 + i] ^= xorShift.next();
@@ -144,7 +208,8 @@ namespace pksm::crypto::swsh
             case SCBlockType::Array:
             {
                 dataLength = LittleEndian::convertTo<u32>(data.get() + offset + 1) ^ xorShift.next32();
-                subtype    = SCBlockType(data[offset + 5] ^ xorShift.next());
+                LittleEndian::convertFrom<u32>(data.get() + offset + 1, dataLength);
+                subtype = SCBlockType(data[offset + 5] ^= xorShift.next());
                 switch (subtype)
                 {
                     case SCBlockType::Bool3:
@@ -175,7 +240,7 @@ namespace pksm::crypto::swsh
                     }
                     break;
                     default:
-                        throw CryptoException("Decoding block: Key: " + std::to_string(key()));
+                        throw internal::CryptoException("Decoding block: Key: " + std::to_string(key()) + "\nSubtype: " + std::to_string(u8(type)));
                 }
             }
             break;
@@ -199,7 +264,7 @@ namespace pksm::crypto::swsh
             }
             break;
             default:
-                throw CryptoException("Decoding block: Key: " + std::to_string(key()));
+                throw internal::CryptoException("Decoding block: Key: " + std::to_string(key()) + "\nType: " + std::to_string(u8(type)));
         }
     }
 
@@ -207,7 +272,7 @@ namespace pksm::crypto::swsh
     {
         if (!currentlyEncrypted)
         {
-            XorShift32 xorShift(key());
+            internal::XorShift32 xorShift(key());
             for (size_t i = 0; i < encryptedDataSize() - 4; i++)
             {
                 data[myOffset + 4 + i] ^= xorShift.next();
@@ -221,7 +286,7 @@ namespace pksm::crypto::swsh
     {
         if (currentlyEncrypted)
         {
-            XorShift32 xorShift(key());
+            internal::XorShift32 xorShift(key());
             for (size_t i = 0; i < encryptedDataSize() - 4; i++)
             {
                 data[myOffset + 4 + i] ^= xorShift.next();
@@ -233,4 +298,84 @@ namespace pksm::crypto::swsh
 
     u32 SCBlock::key() const { return LittleEndian::convertTo<u32>(&data[myOffset]); }
     void SCBlock::key(u32 v) { LittleEndian::convertFrom<u32>(&data[myOffset], v); }
+
+    size_t SCBlock::arrayEntrySize(SCBlockType type)
+    {
+        switch (type)
+        {
+            case SCBlockType::Bool3:
+            case SCBlockType::U8:
+            case SCBlockType::S8:
+                return 1;
+            case SCBlockType::U16:
+            case SCBlockType::S16:
+                return 2;
+            case SCBlockType::U32:
+            case SCBlockType::S32:
+            case SCBlockType::Float:
+                return 4;
+            case SCBlockType::U64:
+            case SCBlockType::S64:
+            case SCBlockType::Double:
+                return 8;
+            default:
+                throw internal::CryptoException("Type size unknown: " + std::to_string(u32(type)));
+        }
+    }
+
+    size_t SCBlock::headerSize(SCBlockType type)
+    {
+        switch (type)
+        {
+            case SCBlockType::Bool1:
+            case SCBlockType::Bool2:
+            case SCBlockType::Bool3:
+            case SCBlockType::U8:
+            case SCBlockType::U16:
+            case SCBlockType::U32:
+            case SCBlockType::U64:
+            case SCBlockType::S8:
+            case SCBlockType::S16:
+            case SCBlockType::S32:
+            case SCBlockType::S64:
+            case SCBlockType::Float:
+            case SCBlockType::Double:
+                return 5; // key + type
+            case SCBlockType::Object:
+                return 9; // key + type + length
+            case SCBlockType::Array:
+                return 10; // key + type + subtype + length
+            default:
+                throw internal::CryptoException("Type size unknown: " + std::to_string(u32(type)));
+        }
+    }
+
+    size_t SCBlock::encryptedDataSize()
+    {
+        constexpr int baseSize = 4 + 1; // key + type
+        switch (type)
+        {
+            case SCBlockType::Bool1:
+            case SCBlockType::Bool2:
+            case SCBlockType::Bool3:
+                return baseSize;
+            case SCBlockType::Object:
+                return baseSize + 4 + dataLength; // + datalength variable + actual data
+            case SCBlockType::Array:
+                return baseSize + 5 + dataLength * arrayEntrySize(subtype); // + subtype + datalength variable + actual data
+            case SCBlockType::U8:
+            case SCBlockType::U16:
+            case SCBlockType::U32:
+            case SCBlockType::U64:
+            case SCBlockType::S8:
+            case SCBlockType::S16:
+            case SCBlockType::S32:
+            case SCBlockType::S64:
+            case SCBlockType::Float:
+            case SCBlockType::Double:
+                return baseSize + arrayEntrySize(type); // + actual data
+            default:
+                throw internal::CryptoException("Type size unknown: " + std::to_string(u32(type)));
+        }
+    }
 }
