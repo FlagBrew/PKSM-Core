@@ -100,6 +100,7 @@ namespace pksm
             pksm::crypto::swsh::applyXor(data, length);
             pksm::crypto::swsh::sign(data, length);
         }
+        encrypted = true;
     }
 
     void Sav8::beginEditing()
@@ -108,6 +109,7 @@ namespace pksm
         {
             pksm::crypto::swsh::applyXor(data, length);
         }
+        encrypted = false;
 
         // I could decrypt every block here, but why not just let them be done on the fly via the functions that need them?
     }
