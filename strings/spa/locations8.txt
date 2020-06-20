@@ -112,6 +112,43 @@
 0x009e|Torre Batalla
 0x00a0|Torre Rose
 0x00a2|Nido Pokémon
+0x00a3|[~ 163]
+0x00a4|Prado Reverencia
+0x00a5|Isla de la Armadura
+0x00a6|Humedal Frescor
+0x00a7|Isla de la Armadura
+0x00a8|Bosque Concentración
+0x00a9|Isla de la Armadura
+0x00aa|Playa Desafío
+0x00ab|Isla de la Armadura
+0x00ac|Cueva Contienda
+0x00ad|Isla de la Armadura
+0x00ae|Ruta Desafío
+0x00af|Isla de la Armadura
+0x00b0|Cueva Tenacidad
+0x00b1|Isla de la Armadura
+0x00b2|Bahía Circular
+0x00b3|Isla de la Armadura
+0x00b4|Llano Entrenamiento
+0x00b5|Isla de la Armadura
+0x00b6|Gruta Calentamiento
+0x00b7|Isla de la Armadura
+0x00b8|Cuenca Arenosa
+0x00b9|Isla de la Armadura
+0x00ba|Mar Gimnástico
+0x00bb|Isla de la Armadura
+0x00bc|Mar Andana
+0x00bd|Isla de la Armadura
+0x00be|Mar Islejos
+0x00bf|Isla de la Armadura
+0x00c0|Mar Meloso
+0x00c1|Isla de la Armadura
+0x00c2|Isla Melosa
+0x00c3|Isla de la Armadura
+0x00c4|Dojo Maestro
+0x00c6|Torre de las Sombras
+0x00c8|Torre de las Aguas
+0x00ca|Estación Armadura
 0x7531|Intercambio en conexión
 0x7532|Intercambio en conexión
 0x7533|Kanto

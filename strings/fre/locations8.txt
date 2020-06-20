@@ -112,6 +112,43 @@
 0x009e|à la Tour de Combat
 0x00a0|dans la Shehroz Tower
 0x00a2|dans un antre
+0x00a3|[~ 163]
+0x00a4|dans la Plaine Salutation
+0x00a5|à Isolarmure
+0x00a6|dans la Lande Boldair
+0x00a7|à Isolarmure
+0x00a8|dans la Forêt Flexion
+0x00a9|à Isolarmure
+0x00aa|sur la Plage de l’Épreuve
+0x00ab|à Isolarmure
+0x00ac|dans la Grotte du Pugilat
+0x00ad|à Isolarmure
+0x00ae|sur la Route de l’Épreuve
+0x00af|à Isolarmure
+0x00b0|dans la Caverne Pugnacité
+0x00b1|à Isolarmure
+0x00b2|dans la Lagune Circulaire
+0x00b3|à Isolarmure
+0x00b4|dans la Plaine des Efforts
+0x00b5|à Isolarmure
+0x00b6|sur la Voie des Étirements
+0x00b7|à Isolarmure
+0x00b8|aux Sables de Kudsac
+0x00b9|à Isolarmure
+0x00ba|sur la Mer Eau-Hisse
+0x00bb|à Isolarmure
+0x00bc|dans la Mer Align’Îlots
+0x00bd|à Isolarmure
+0x00be|dans la Mer Isol’Îlots
+0x00bf|à Isolarmure
+0x00c0|dans la Mer Calméole
+0x00c1|à Isolarmure
+0x00c2|sur l’Îlot Calméole
+0x00c3|à Isolarmure
+0x00c4|au Dojo de la Maîtrise
+0x00c6|à la Tour des Ténèbres
+0x00c8|à la Tour de l’Eau
+0x00ca|à la Gare d’Isolarmure
 0x7531|Échange en réseau
 0x7532|Échange en réseau
 0x7533|Kanto

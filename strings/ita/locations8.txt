@@ -112,6 +112,43 @@
 0x009e|alla Torre Lotta
 0x00a0|alla Rose Tower
 0x00a2|in una tana di Pokémon
+0x00a3|[~ 163]
+0x00a4|nella Pianura Inchino
+0x00a5|sull’Isola dell’Armatura
+0x00a6|nell’Acquitrino Fresco
+0x00a7|sull’Isola dell’Armatura
+0x00a8|nel Bosco Concentrazione
+0x00a9|sull’Isola dell’Armatura
+0x00aa|sulla Spiaggia Sfida
+0x00ab|sull’Isola dell’Armatura
+0x00ac|nell’Antro Scontro
+0x00ad|sull’Isola dell’Armatura
+0x00ae|nel Cammino Sfida
+0x00af|sull’Isola dell’Armatura
+0x00b0|nella Grotta Grinta
+0x00b1|sull’Isola dell’Armatura
+0x00b2|nella Baia Circolare
+0x00b3|sull’Isola dell’Armatura
+0x00b4|nella Piana Addestramento
+0x00b5|sull’Isola dell’Armatura
+0x00b6|nel Tunnel Riscaldamento
+0x00b7|sull’Isola dell’Armatura
+0x00b8|nel Deserto Paiolo
+0x00b9|sull’Isola dell’Armatura
+0x00ba|nel Mar Ginnico
+0x00bb|sull’Isola dell’Armatura
+0x00bc|nel Mar Lineapelago
+0x00bd|sull’Isola dell’Armatura
+0x00be|nel Mar Sperdipelago
+0x00bf|sull’Isola dell’Armatura
+0x00c0|nel Mar Quietarnia
+0x00c1|sull’Isola dell’Armatura
+0x00c2|sull’Isola Quietarnia
+0x00c3|sull’Isola dell’Armatura
+0x00c4|nel Dojo Master
+0x00c6|nella Torre Buio
+0x00c8|nella Torre Acqua
+0x00ca|nella Stazione dell’Isola dell’Armatura
 0x7531|Scambio in link
 0x7532|Scambio in link
 0x7533|Kanto

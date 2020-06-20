@@ -112,6 +112,43 @@
 0x009e|at the Battle Tower
 0x00a0|at Rose Tower
 0x00a2|in a Pokémon Den
+0x00a3|[~ 163]
+0x00a4|in the Fields of Honor
+0x00a5|on the Isle of Armor
+0x00a6|in the Soothing Wetlands
+0x00a7|on the Isle of Armor
+0x00a8|in the Forest of Focus
+0x00a9|on the Isle of Armor
+0x00aa|on Challenge Beach
+0x00ab|on the Isle of Armor
+0x00ac|in Brawlers’ Cave
+0x00ad|on the Isle of Armor
+0x00ae|on Challenge Road
+0x00af|on the Isle of Armor
+0x00b0|in Courageous Cavern
+0x00b1|on the Isle of Armor
+0x00b2|in Loop Lagoon
+0x00b3|on the Isle of Armor
+0x00b4|in the Training Lowlands
+0x00b5|on the Isle of Armor
+0x00b6|in Warm-Up Tunnel
+0x00b7|on the Isle of Armor
+0x00b8|in the Potbottom Desert
+0x00b9|on the Isle of Armor
+0x00ba|in the Workout Sea
+0x00bb|on the Isle of Armor
+0x00bc|in the Stepping-Stone Sea
+0x00bd|on the Isle of Armor
+0x00be|in the Insular Sea
+0x00bf|on the Isle of Armor
+0x00c0|in the Honeycalm Sea
+0x00c1|on the Isle of Armor
+0x00c2|on Honeycalm Island
+0x00c3|on the Isle of Armor
+0x00c4|at the Master Dojo
+0x00c6|at the Tower of Darkness
+0x00c8|at the Tower of Waters
+0x00ca|at the Armor Station
 0x7531|a Link Trade
 0x7532|a Link Trade
 0x7533|the Kanto region

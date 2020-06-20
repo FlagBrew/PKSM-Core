@@ -112,6 +112,43 @@
 0x009e|im Kampfturm
 0x00a0|am Rose Tower
 0x00a2|Ein Pokémon-Nest
+0x00a3|[~ 163]
+0x00a4|im Grußgefilde
+0x00a5|auf der Rüstungsinsel
+0x00a6|im Balsamsumpf
+0x00a7|auf der Rüstungsinsel
+0x00a8|im Fokusforst
+0x00a9|auf der Rüstungsinsel
+0x00aa|am Strand der Prüfung
+0x00ab|auf der Rüstungsinsel
+0x00ac|in der Kämpfergrotte
+0x00ad|auf der Rüstungsinsel
+0x00ae|auf dem Pfad der Prüfung
+0x00af|auf der Rüstungsinsel
+0x00b0|in der Tapferkeitshöhle
+0x00b1|auf der Rüstungsinsel
+0x00b2|bei der Ringbucht
+0x00b3|auf der Rüstungsinsel
+0x00b4|auf der Fleißebene
+0x00b5|auf der Rüstungsinsel
+0x00b6|im Aufwärmtunnel
+0x00b7|auf der Rüstungsinsel
+0x00b8|in der Wüstensenke
+0x00b9|auf der Rüstungsinsel
+0x00ba|am Fitnessmeer
+0x00bb|bei der Rüstungsinsel
+0x00bc|am Inselkettenmeer
+0x00bd|bei der Rüstungsinsel
+0x00be|beim Fernarchipel
+0x00bf|bei der Rüstungsinsel
+0x00c0|am Wabenmeer
+0x00c1|bei der Rüstungsinsel
+0x00c2|auf der Wabeninsel
+0x00c3|bei der Rüstungsinsel
+0x00c4|im Master-Dojo
+0x00c6|am Turm des Unlichts
+0x00c8|am Turm des Wassers
+0x00ca|in der Rüstungs-Station
 0x7531|Link-Tausch
 0x7532|Link-Tausch
 0x7533|Kanto-Region
