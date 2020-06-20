@@ -192,6 +192,7 @@ namespace pksm
         Party          = 0x2985fe5d;
         PokeDex        = 0x4716c404;
         ArmorDex       = 0x3F936BA9;
+        CrownDex       = 0x3C9366F0;
         Items          = 0x1177c2c4;
         BoxLayout      = 0x19722c89;
         Misc           = 0x1b882b09;
@@ -380,12 +381,14 @@ namespace pksm
 
     u8 SavSWSH::boxWallpaper(u8 box) const
     {
+        auto block = getBlock(0x017C3CBB);
         // TODO: Make this actually get the wallpaper
         (void)box;
         return 0;
     }
     void SavSWSH::boxWallpaper(u8 box, u8 v)
     {
+        auto block = getBlock(0x017C3CBB);
         // TODO: Make this actually set the wallpaper
         (void)box;
         (void)v;
@@ -791,6 +794,10 @@ namespace pksm
             else if (u16 index = ((PK8&)pk).armordexIndex())
             {
                 entryAddr = getBlock(ArmorDex)->decryptedData() + sizeof(DexEntry) * (index - 1);
+            }
+            else if (u16 index = ((PK8&)pk).crowndexIndex())
+            {
+                entryAddr = getBlock(CrownDex)->decryptedData() + sizeof(DexEntry) * (index - 1);
             }
         }
 

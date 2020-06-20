@@ -181,9 +181,10 @@ namespace pksm
         u16 formStatIndex(u16 species) { return LittleEndian::convertTo<u16>((u8*)personal_swsh + species * personal_swsh_entrysize + 0x12); }
         u16 pokedexIndex(u16 species) { return LittleEndian::convertTo<u16>((u8*)personal_swsh + species * personal_swsh_entrysize + 0x14); }
         u16 armordexIndex(u16 species) { return LittleEndian::convertTo<u16>((u8*)personal_swsh + species * personal_swsh_entrysize + 0x16); }
+        u16 crowndexIndex(u16 species) { return LittleEndian::convertTo<u16>((u8*)personal_swsh + species + personal_swsh_entrysize + 0x18); }
         bool canLearnTR(u16 species, u8 trID)
         {
-            return (personal_swsh[species * personal_swsh_entrysize + 0x18 + (trID >> 3)] & (1 << (trID & 7))) != 0 ? true : false;
+            return (personal_swsh[species * personal_swsh_entrysize + 0x1A + (trID >> 3)] & (1 << (trID & 7))) != 0 ? true : false;
         }
     }
 

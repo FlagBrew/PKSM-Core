@@ -34,7 +34,7 @@ namespace pksm
     class SavSWSH : public Sav8
     {
     private:
-        int ArmorDex;
+        int ArmorDex, CrownDex;
         static constexpr std::array<u16, 25> gigaSpecies = {
             6, 12, 25, 52, 68, 94, 99, 131, 133, 143, 569, 823, 826, 834, 839, 841, 842, 844, 851, 858, 861, 869, 879, 884, 890};
 
@@ -85,8 +85,8 @@ namespace pksm
         u8 boxWallpaper(u8 box) const override;
         void boxWallpaper(u8 box, u8 v) override;
 
-        u8 currentBox(void) const override { return 0; } // TODO: confirm that this is not stored
-        void currentBox(u8) override {}
+        u8 currentBox(void) const override;
+        void currentBox(u8) override;
         u32 boxOffset(u8 box, u8 slot) const override;
         u32 partyOffset(u8 slot) const override;
         u8 partyCount(void) const override;
