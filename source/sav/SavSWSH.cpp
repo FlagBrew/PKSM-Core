@@ -376,19 +376,22 @@ namespace pksm
                                  1271, 1278}}};
     }
 
+    u8 SavSWSH::currentBox() const { return LittleEndian::convertTo<u32>(getBlock(0x017C3CBB)->decryptedData()); }
+    void SavSWSH::currentBox(u8 box) { return LittleEndian::convertFrom<u32>(getBlock(0x017C3CBB)->decryptedData(), box); }
+
     std::string SavSWSH::boxName(u8 box) const { return StringUtils::getString(getBlock(BoxLayout)->decryptedData(), box * 0x22, 17); }
     void SavSWSH::boxName(u8 box, const std::string& name) { StringUtils::setString(getBlock(BoxLayout)->decryptedData(), name, box * 0x22, 17); }
 
     u8 SavSWSH::boxWallpaper(u8 box) const
     {
-        auto block = getBlock(0x017C3CBB);
+        auto block = getBlock(0x2EB1B190);
         // TODO: Make this actually get the wallpaper
         (void)box;
         return 0;
     }
     void SavSWSH::boxWallpaper(u8 box, u8 v)
     {
-        auto block = getBlock(0x017C3CBB);
+        auto block = getBlock(0x2EB1B190);
         // TODO: Make this actually set the wallpaper
         (void)box;
         (void)v;
