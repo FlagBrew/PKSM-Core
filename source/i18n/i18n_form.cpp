@@ -335,7 +335,7 @@ namespace i18n
                 ret = {Default, Galarian};
                 break;
             case pksm::Species::Slowbro:
-                ret = {Default, Mega};
+                ret = {Default, Mega, Galarian};
                 break;
             case pksm::Species::Farfetchd:
                 ret = {Default, Galarian};
