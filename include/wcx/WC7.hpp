@@ -73,6 +73,7 @@ namespace pksm
         bool multiObtainable(void) const override;
         u8 flags(void) const override;
         u8 cardLocation(void) const override;
+        bool repeatable(void) const;
         bool used(void) const override;
         bool oncePerDay(void) const;
 

@@ -252,10 +252,19 @@ namespace pksm
         }
     }
 
+    bool Sav4::giftsMenuActivated(void) const { return (data[gbo + 72] & 1) == 1; }
+
+    void Sav4::giftsMenuActivated(bool v)
+    {
+        data[gbo + 72] &= 0xFE;
+        data[gbo + 72] |= v ? 1 : 0;
+    }
+
     void Sav4::mysteryGift(WCX& wc, int& pos)
     {
         if (wc.generation() == Generation::FOUR)
         {
+            giftsMenuActivated(true);
             PGT* pgt                            = (PGT*)&wc;
             data[WondercardFlags + (2047 >> 3)] = 0x80;
             std::copy(pgt->rawData(), pgt->rawData() + PGT::length, &data[WondercardData + pos * PGT::length]);

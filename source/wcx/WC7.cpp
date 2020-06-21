@@ -253,6 +253,8 @@ namespace pksm
 
     u8 WC7::cardLocation(void) const { return data[0x50]; }
 
+    bool WC7::repeatable(void) const { return (flags() & 1) == 1; }
+
     bool WC7::used(void) const { return (flags() & 2) == 2; }
 
     bool WC7::oncePerDay(void) const { return (flags() & 4) == 4; }
