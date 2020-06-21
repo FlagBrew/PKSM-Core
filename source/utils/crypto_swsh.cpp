@@ -171,7 +171,7 @@ namespace pksm::crypto::swsh
         size_t offset = 0;
         while (offset < length - 32)
         {
-            ret.emplace_back(std::shared_ptr<SCBlock>(new SCBlock(data, offset)));
+            ret.emplace_back(new SCBlock(data, offset));
         }
 
         return ret;
