@@ -71,7 +71,7 @@ namespace BigEndian
             T normalized = std::frexp(orig, &exponent); // gets biased exponent, which isn't what I want
             if constexpr (std::is_same_v<T, float>)
             {
-                u32 write = negative ? (1 << 31) : 0;
+                u32 write = negative ? (1u << 31) : 0;
                 switch (std::fpclassify(orig))
                 {
                     case FP_INFINITE:
@@ -275,17 +275,9 @@ namespace BigEndian
             bool negative = (data & 0x8000000000000000) != 0;
             int exponent  = (data & 0x7FF0000000000000) >> 52;
             int fraction  = data & ~0xFFF0000000000000;
-            if (exponent == 0)
+            if (exponent == 0 && fraction == 0)
             {
-                if (fraction == 0)
-                {
-                    return std::copysign(T(0), negative ? -1 : 1);
-                }
-                else
-                {
-                    // Denormal number, figure out how to handle it later
-                    return 0;
-                }
+                return std::copysign(T(0), negative ? -1 : 1);
             }
             else if (exponent == 0x7FF)
             {
@@ -367,7 +359,7 @@ namespace LittleEndian
             T normalized = std::frexp(orig, &exponent); // gets biased exponent
             if constexpr (std::is_same_v<T, float>)
             {
-                u32 write = negative ? (1 << 31) : 0;
+                u32 write = negative ? (1u << 31) : 0;
                 switch (std::fpclassify(orig))
                 {
                     case FP_INFINITE:

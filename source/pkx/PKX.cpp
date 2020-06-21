@@ -92,6 +92,10 @@ namespace pksm
 
     PKX& PKX::operator=(const PKX& pk)
     {
+        if (&pk == this)
+        {
+            return *this;
+        }
         if (!directAccess && data)
         {
             delete[] data;
@@ -104,6 +108,10 @@ namespace pksm
 
     PKX& PKX::operator=(PKX&& pk)
     {
+        if (&pk == this)
+        {
+            return *this;
+        }
         if (!directAccess && data)
         {
             delete[] data;
