@@ -50,11 +50,11 @@ namespace pksm
         Gender gender(void) const override;
         void gender(Gender v) override;
         std::string otName(void) const override;
-        void otName(const std::string& v) override;
+        void otName(const std::string_view& v) override;
         Language language(void) const override;
         void language(Language v) override;
         std::string jerseyNum(void) const;
-        void jerseyNum(const std::string& v);
+        void jerseyNum(const std::string_view& v);
         u32 money(void) const override;
         void money(u32 v) override;
         u32 BP(void) const override;
@@ -81,7 +81,7 @@ namespace pksm
         void consoleRegion(u8) override {}                  // Not applicable
 
         std::string boxName(u8 box) const override;
-        void boxName(u8 box, const std::string& name) override;
+        void boxName(u8 box, const std::string_view& name) override;
         u8 boxWallpaper(u8 box) const override;
         void boxWallpaper(u8 box, u8 v) override;
 

@@ -364,7 +364,7 @@ namespace
     }
 }
 
-std::u16string StringUtils::UTF8toUTF16(const std::string& src)
+std::u16string StringUtils::UTF8toUTF16(const std::string_view& src)
 {
     std::u16string ret;
     ret.reserve(src.size());
@@ -396,7 +396,7 @@ std::u16string StringUtils::UTF8toUTF16(const std::string& src)
     return ret;
 }
 
-std::string StringUtils::UTF16toUTF8(const std::u16string& src)
+std::string StringUtils::UTF16toUTF8(const std::u16string_view& src)
 {
     return utf16DataToUtf8(src.data(), src.size());
 }
@@ -422,7 +422,7 @@ std::string StringUtils::getString(const u8* data, int ofs, int len, char16_t te
     return utf16DataToUtf8((char16_t*)(data + ofs), len, term);
 }
 
-void StringUtils::setString(u8* data, const std::u16string& v, int ofs, int len, char16_t terminator, char16_t padding)
+void StringUtils::setString(u8* data, const std::u16string_view& v, int ofs, int len, char16_t terminator, char16_t padding)
 {
     int i = 0;
     for (; i < std::min(len - 1, (int)v.size()); i++) // len includes terminator
@@ -436,7 +436,7 @@ void StringUtils::setString(u8* data, const std::u16string& v, int ofs, int len,
     }
 }
 
-void StringUtils::setString(u8* data, const std::string& v, int ofs, int len, char16_t terminator, char16_t padding)
+void StringUtils::setString(u8* data, const std::string_view& v, int ofs, int len, char16_t terminator, char16_t padding)
 {
     setString(data, UTF8toUTF16(v), ofs, len, terminator, padding);
 }
@@ -483,7 +483,7 @@ std::string StringUtils::getString4(const u8* data, int ofs, int len)
     return output;
 }
 
-std::vector<u16> StringUtils::stringToG4(const std::string& v)
+std::vector<u16> StringUtils::stringToG4(const std::string_view& v)
 {
     std::vector<u16> ret;
     for (size_t charIndex = 0; charIndex < v.length(); charIndex++)
@@ -522,7 +522,7 @@ std::vector<u16> StringUtils::stringToG4(const std::string& v)
     return ret;
 }
 
-void StringUtils::setString4(u8* data, const std::string& v, int ofs, int len)
+void StringUtils::setString4(u8* data, const std::string_view& v, int ofs, int len)
 {
     u16 output[len] = {0};
     u16 outIndex = 0, charIndex = 0;
@@ -576,9 +576,9 @@ std::string& StringUtils::toUpper(std::string& in)
     return in;
 }
 
-std::string StringUtils::toUpper(const std::string& in)
+std::string StringUtils::toUpper(const std::string_view& in)
 {
-    std::string ret = in;
+    std::string ret = std::string(in);
     return toUpper(ret);
 }
 
@@ -599,9 +599,9 @@ std::string& StringUtils::toLower(std::string& in)
     return in;
 }
 
-std::string StringUtils::toLower(const std::string& in)
+std::string StringUtils::toLower(const std::string_view& in)
 {
-    std::string ret = in;
+    std::string ret = std::string(in);
     return toLower(ret);
 }
 
@@ -621,26 +621,26 @@ std::u16string& StringUtils::toFullWidth(std::u16string& in)
     return in;
 }
 
-std::string StringUtils::transString45(const std::string& str)
+std::string StringUtils::transString45(const std::string_view& str)
 {
     return UTF16toUTF8(transString45(UTF8toUTF16(str)));
 }
 
-std::u16string StringUtils::transString45(const std::u16string& str)
+std::u16string StringUtils::transString45(const std::u16string_view& str)
 {
-    std::u16string ret = str;
+    std::u16string ret = std::u16string(str);
     std::transform(str.begin(), str.end(), ret.begin(), [](const char16_t& chr) { return (char16_t)swapCodepoints45(chr); });
     return ret;
 }
 
-std::string StringUtils::transString67(const std::string& str)
+std::string StringUtils::transString67(const std::string_view& str)
 {
     return UTF16toUTF8(transString67(UTF8toUTF16(str)));
 }
 
-std::u16string StringUtils::transString67(const std::u16string& str)
+std::u16string StringUtils::transString67(const std::u16string_view& str)
 {
-    std::u16string ret = str;
+    std::u16string ret = std::u16string(str);
     std::transform(str.begin(), str.end(), ret.begin(), [](const char16_t& chr) { return (char16_t)swapCodepoints67(chr); });
     return ret;
 }
@@ -665,7 +665,7 @@ std::string StringUtils::getString3(const u8* data, int ofs, int len, bool jp)
     return StringUtils::UTF16toUTF8(outString);
 }
 
-void StringUtils::setString3(u8* data, const std::string& v, int ofs, int len, bool jp, int padTo, u8 padWith)
+void StringUtils::setString3(u8* data, const std::string_view& v, int ofs, int len, bool jp, int padTo, u8 padWith)
 {
     auto& characters   = jp ? pksm::internal::G3_JP : pksm::internal::G3_EN;
     std::u16string str = StringUtils::UTF8toUTF16(v);

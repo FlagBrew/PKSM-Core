@@ -82,7 +82,7 @@ namespace pksm
         Language language(void) const override;
         void language(Language v) override;
         std::string otName(void) const override;
-        void otName(const std::string& v) override;
+        void otName(const std::string_view& v) override;
         u32 money(void) const override;
         void money(u32 v) override;
         u32 BP(void) const override { return 0; }
@@ -121,7 +121,7 @@ namespace pksm
         std::unique_ptr<WCX> mysteryGift(int pos) const override; // Always returns null: Data not stored
         void cryptBoxData(bool crypted) override;
         std::string boxName(u8) const override { return ""; } // There are no actual boxes. They are emulated for interface compatibility
-        void boxName(u8, const std::string&) override {}
+        void boxName(u8, const std::string_view&) override {}
         u8 boxWallpaper(u8) const override { return 0; }
         void boxWallpaper(u8, u8) override {}
         u8 partyCount(void) const override;

@@ -527,13 +527,13 @@ namespace pksm
     void PK5::nPokemon(bool v) { data[0x42] = (u8)((data[0x42] & ~0x02) | (v ? 2 : 0)); }
 
     std::string PK5::nickname(void) const { return StringUtils::transString45(StringUtils::getString(data, 0x48, 11, u'\uFFFF')); }
-    void PK5::nickname(const std::string& v) { StringUtils::setString(data, StringUtils::transString45(v), 0x48, 11, u'\uFFFF', 0); }
+    void PK5::nickname(const std::string_view& v) { StringUtils::setString(data, StringUtils::transString45(v), 0x48, 11, u'\uFFFF', 0); }
 
     GameVersion PK5::version(void) const { return GameVersion(data[0x5F]); }
     void PK5::version(GameVersion v) { data[0x5F] = u8(v); }
 
     std::string PK5::otName(void) const { return StringUtils::transString45(StringUtils::getString(data, 0x68, 8, u'\uFFFF')); }
-    void PK5::otName(const std::string& v) { StringUtils::setString(data, StringUtils::transString45(v), 0x68, 8, u'\uFFFF', 0); }
+    void PK5::otName(const std::string_view& v) { StringUtils::setString(data, StringUtils::transString45(v), 0x68, 8, u'\uFFFF', 0); }
 
     int PK5::eggYear(void) const { return 2000 + data[0x78]; }
     void PK5::eggYear(int v) { data[0x78] = v - 2000; }

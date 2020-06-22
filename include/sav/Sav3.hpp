@@ -122,7 +122,7 @@ namespace pksm
         Language language(void) const override;
         void language(Language v) override;
         std::string otName(void) const override;
-        void otName(const std::string& v) override;
+        void otName(const std::string_view& v) override;
         u32 money(void) const override;
         void money(u32 v) override;
         u32 BP(void) const override;
@@ -163,7 +163,7 @@ namespace pksm
         std::unique_ptr<WCX> mysteryGift(int pos) const override;
         void cryptBoxData(bool crypted) override;
         std::string boxName(u8 box) const override;
-        void boxName(u8 box, const std::string& name) override;
+        void boxName(u8 box, const std::string_view& name) override;
         u8 boxWallpaper(u8 box) const override;
         void boxWallpaper(u8 box, u8 v) override;
         u8 partyCount(void) const override;

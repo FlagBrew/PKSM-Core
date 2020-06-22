@@ -146,7 +146,7 @@ namespace pksm
     void Sav4::language(Language v) { data[Trainer1 + 0x19] = u8(v); }
 
     std::string Sav4::otName(void) const { return StringUtils::transString45(StringUtils::getString4(data.get(), Trainer1, 8)); }
-    void Sav4::otName(const std::string& v) { StringUtils::setString4(data.get(), StringUtils::transString45(v), Trainer1, 8); }
+    void Sav4::otName(const std::string_view& v) { StringUtils::setString4(data.get(), StringUtils::transString45(v), Trainer1, 8); }
 
     u32 Sav4::money(void) const { return LittleEndian::convertTo<u32>(&data[Trainer1 + 0x14]); }
     void Sav4::money(u32 v) { LittleEndian::convertFrom<u32>(&data[Trainer1 + 0x14], v); }
@@ -282,8 +282,7 @@ namespace pksm
     {
         return StringUtils::transString45(StringUtils::getString4(data.get(), boxOffset(18, 0) + box * 0x28 + (game == Game::HGSS ? 0x8 : 0), 9));
     }
-
-    void Sav4::boxName(u8 box, const std::string& name)
+    void Sav4::boxName(u8 box, const std::string_view& name)
     {
         StringUtils::setString4(data.get(), StringUtils::transString45(name), boxOffset(18, 0) + box * 0x28 + (game == Game::HGSS ? 0x8 : 0), 9);
     }

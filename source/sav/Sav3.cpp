@@ -205,7 +205,7 @@ namespace pksm
     }
 
     std::string Sav3::otName(void) const { return StringUtils::getString3(data.get(), blockOfs[0], japanese ? 5 : 7, japanese); }
-    void Sav3::otName(const std::string& v)
+    void Sav3::otName(const std::string_view& v)
     {
         StringUtils::setString3(data.get(), v, blockOfs[0], japanese ? 5 : 7, japanese, japanese ? 5 : 7, 0xFF);
     }
@@ -527,7 +527,7 @@ namespace pksm
     }
 
     std::string Sav3::boxName(u8 box) const { return StringUtils::getString3(data.get(), boxOffset(maxBoxes(), 0) + (box * 9), 9, japanese); }
-    void Sav3::boxName(u8 box, const std::string& v)
+    void Sav3::boxName(u8 box, const std::string_view& v)
     {
         return StringUtils::setString3(data.get(), v, boxOffset(maxBoxes(), 0) + (box * 9), 8, japanese, 9);
     }

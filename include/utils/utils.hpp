@@ -39,21 +39,21 @@
 
 namespace StringUtils
 {
-    std::u16string UTF8toUTF16(const std::string& src);
-    std::string UTF16toUTF8(const std::u16string& src);
+    std::u16string UTF8toUTF16(const std::string_view& src);
+    std::string UTF16toUTF8(const std::u16string_view& src);
     std::u16string getU16String(const u8* data, int ofs, int len, char16_t term);
     std::string getString(const u8* data, int ofs, int len, char16_t term = 0);
-    void setString(u8* data, const std::u16string& v, int ofs, int len, char16_t terminator = 0, char16_t padding = 0);
-    void setString(u8* data, const std::string& v, int ofs, int len, char16_t terminator = 0, char16_t padding = 0);
+    void setString(u8* data, const std::u16string_view& v, int ofs, int len, char16_t terminator = 0, char16_t padding = 0);
+    void setString(u8* data, const std::string_view& v, int ofs, int len, char16_t terminator = 0, char16_t padding = 0);
     std::string getString4(const u8* data, int ofs, int len);
-    void setString4(u8* data, const std::string& v, int ofs, int len);
+    void setString4(u8* data, const std::string_view& v, int ofs, int len);
     std::string getString3(const u8* data, int ofs, int len, bool jp);
-    void setString3(u8* data, const std::string& v, int ofs, int len, bool jp, int padTo = 0, u8 padWith = 0xFF);
-    std::vector<u16> stringToG4(const std::string& v);
+    void setString3(u8* data, const std::string_view& v, int ofs, int len, bool jp, int padTo = 0, u8 padWith = 0xFF);
+    std::vector<u16> stringToG4(const std::string_view& v);
     std::string& toLower(std::string& in);
-    std::string toLower(const std::string& in);
+    std::string toLower(const std::string_view& in);
     std::string& toUpper(std::string& in);
-    std::string toUpper(const std::string& in);
+    std::string toUpper(const std::string_view& in);
     std::u16string& toFullWidth(std::u16string& in);
     /** Swaps and reswaps Pokemon specific characters, namely:
      * 0x2227, 0x2228, 0x2460, 0x2461, 0x2462,
@@ -65,13 +65,13 @@ namespace StringUtils
      * 0x247E, 0x247F, 0x2480, 0x2481, 0x2482,
      * 0x2483, 0x2484, 0x2485, 0x2486, and 0x2487
      */
-    std::string transString45(const std::string& str);
-    std::u16string transString45(const std::u16string& str);
+    std::string transString45(const std::string_view& str);
+    std::u16string transString45(const std::u16string_view& str);
     /** Swaps and reswaps Pokemon specific characters, namely:
      * 0xE088, 0xE089, 0xE08A, 0xE08B, 0xE08C, 0xE0A6
      */
-    std::string transString67(const std::string& str);
-    std::u16string transString67(const std::u16string& str);
+    std::string transString67(const std::string_view& str);
+    std::u16string transString67(const std::u16string_view& str);
 }
 
 #endif

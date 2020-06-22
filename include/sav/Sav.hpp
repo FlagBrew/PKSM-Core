@@ -140,7 +140,7 @@ namespace pksm
         virtual Language language(void) const     = 0;
         virtual void language(Language v)         = 0;
         virtual std::string otName(void) const    = 0;
-        virtual void otName(const std::string& v) = 0;
+        virtual void otName(const std::string_view& v) = 0;
         virtual u32 money(void) const             = 0;
         virtual void money(u32 v)                 = 0;
         virtual u32 BP(void) const                = 0;
@@ -176,7 +176,7 @@ namespace pksm
         virtual void mysteryGift(WCX& wc, int& pos)             = 0;
         virtual void cryptBoxData(bool crypted)                 = 0;
         virtual std::string boxName(u8 box) const               = 0;
-        virtual void boxName(u8 box, const std::string& name)   = 0;
+        virtual void boxName(u8 box, const std::string_view& name)   = 0;
         virtual u8 boxWallpaper(u8 box) const                   = 0;
         virtual void boxWallpaper(u8 box, const u8 v)           = 0;
         virtual u8 partyCount(void) const                       = 0;

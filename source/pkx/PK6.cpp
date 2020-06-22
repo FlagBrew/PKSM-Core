@@ -308,7 +308,7 @@ namespace pksm
     void PK6::ribbonBattleCount(u8 v) { data[0x39] = v; }
 
     std::string PK6::nickname(void) const { return StringUtils::transString67(StringUtils::getString(data, 0x40, 12)); }
-    void PK6::nickname(const std::string& v) { StringUtils::setString(data, StringUtils::transString67(v), 0x40, 12); }
+    void PK6::nickname(const std::string_view& v) { StringUtils::setString(data, StringUtils::transString67(v), 0x40, 12); }
 
     u16 PK6::move(u8 m) const { return LittleEndian::convertTo<u16>(data + 0x5A + m * 2); }
     void PK6::move(u8 m, u16 v) { LittleEndian::convertFrom<u16>(data + 0x5A + m * 2, v); }
@@ -355,7 +355,7 @@ namespace pksm
     }
 
     std::string PK6::htName(void) const { return StringUtils::transString67(StringUtils::getString(data, 0x78, 12)); }
-    void PK6::htName(const std::string& v) { StringUtils::setString(data, StringUtils::transString67(v), 0x78, 12); }
+    void PK6::htName(const std::string_view& v) { StringUtils::setString(data, StringUtils::transString67(v), 0x78, 12); }
 
     Gender PK6::htGender(void) const { return Gender{data[0x92]}; }
     void PK6::htGender(Gender v) { data[0x92] = u8(v); }
@@ -394,7 +394,7 @@ namespace pksm
     void PK6::enjoyment(u8 v) { data[0xAF] = v; }
 
     std::string PK6::otName(void) const { return StringUtils::transString67(StringUtils::getString(data, 0xB0, 13)); }
-    void PK6::otName(const std::string& v) { StringUtils::setString(data, StringUtils::transString67(v), 0xB0, 13); }
+    void PK6::otName(const std::string_view& v) { StringUtils::setString(data, StringUtils::transString67(v), 0xB0, 13); }
 
     u8 PK6::otFriendship(void) const { return data[0xCA]; }
     void PK6::otFriendship(u8 v) { data[0xCA] = v; }

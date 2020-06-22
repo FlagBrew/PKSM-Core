@@ -69,7 +69,7 @@ namespace i18n
     void exit(void);
 
     const std::string& langString(pksm::Language l);
-    pksm::Language langFromString(const std::string& value);
+    pksm::Language langFromString(const std::string_view& value);
 
     void initAbility(pksm::Language lang);
     void exitAbility(pksm::Language lang);

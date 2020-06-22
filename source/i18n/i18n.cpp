@@ -115,7 +115,7 @@ namespace i18n
         }
     }
 
-    pksm::Language langFromString(const std::string& value)
+    pksm::Language langFromString(const std::string_view& value)
     {
         MAP(TO_IF_STRING, LANGUAGES_TO_USE)
         return pksm::Language::ENG;

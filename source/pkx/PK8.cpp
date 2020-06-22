@@ -447,7 +447,7 @@ namespace pksm
     void PK8::weight(u8 v) { data[0x51] = v; }
 
     std::string PK8::nickname(void) const { return StringUtils::transString67(StringUtils::getString(data, 0x58, 13)); }
-    void PK8::nickname(const std::string& v) { StringUtils::setString(data, StringUtils::transString67(v), 0x58, 13); }
+    void PK8::nickname(const std::string_view& v) { StringUtils::setString(data, StringUtils::transString67(v), 0x58, 13); }
 
     u16 PK8::move(u8 m) const { return LittleEndian::convertTo<u16>(data + 0x72 + m * 2); }
     void PK8::move(u8 m, u16 v) { LittleEndian::convertFrom<u16>(data + 0x72 + m * 2, v); }
@@ -493,7 +493,7 @@ namespace pksm
     void PK8::dynamaxLevel(u8 v) { data[0x90] = v; }
 
     std::string PK8::htName(void) const { return StringUtils::transString67(StringUtils::getString(data, 0xA8, 13)); }
-    void PK8::htName(const std::string& v) { StringUtils::setString(data, StringUtils::transString67(v), 0xA8, 13); }
+    void PK8::htName(const std::string_view& v) { StringUtils::setString(data, StringUtils::transString67(v), 0xA8, 13); }
 
     Gender PK8::htGender(void) const { return Gender{data[0xC2]}; }
     void PK8::htGender(Gender v) { data[0xC2] = u8(v); }
@@ -550,7 +550,7 @@ namespace pksm
     void PK8::favRibbon(s8 v) { data[0xE8] = v; }
 
     std::string PK8::otName(void) const { return StringUtils::transString67(StringUtils::getString(data, 0xF8, 13)); }
-    void PK8::otName(const std::string& v) { StringUtils::setString(data, StringUtils::transString67(v), 0xF8, 13); }
+    void PK8::otName(const std::string_view& v) { StringUtils::setString(data, StringUtils::transString67(v), 0xF8, 13); }
 
     u8 PK8::otFriendship(void) const { return data[0x112]; }
     void PK8::otFriendship(u8 v) { data[0x112] = v; }

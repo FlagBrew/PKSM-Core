@@ -206,32 +206,32 @@ namespace pksm
         virtual void ribbon(Ribbon rib, bool v)   = 0;
 
         // BLOCK B
-        virtual std::string nickname(void) const    = 0;
-        virtual void nickname(const std::string& v) = 0;
-        virtual u16 move(u8 move) const             = 0;
-        virtual void move(u8 move, u16 v)           = 0;
-        virtual u16 relearnMove(u8 move) const      = 0;
-        virtual void relearnMove(u8 move, u16 v)    = 0;
-        virtual u8 PP(u8 move) const                = 0;
-        virtual void PP(u8 move, u8 v)              = 0;
-        virtual u8 PPUp(u8 move) const              = 0;
-        virtual void PPUp(u8 move, u8 v)            = 0;
-        virtual u8 iv(Stat iv) const                = 0;
-        virtual void iv(Stat iv, u8 v)              = 0;
-        virtual bool egg(void) const                = 0;
-        virtual void egg(bool v)                    = 0;
-        virtual bool nicknamed(void) const          = 0;
-        virtual void nicknamed(bool v)              = 0;
+        virtual std::string nickname(void) const         = 0;
+        virtual void nickname(const std::string_view& v) = 0;
+        virtual u16 move(u8 move) const                  = 0;
+        virtual void move(u8 move, u16 v)                = 0;
+        virtual u16 relearnMove(u8 move) const           = 0;
+        virtual void relearnMove(u8 move, u16 v)         = 0;
+        virtual u8 PP(u8 move) const                     = 0;
+        virtual void PP(u8 move, u8 v)                   = 0;
+        virtual u8 PPUp(u8 move) const                   = 0;
+        virtual void PPUp(u8 move, u8 v)                 = 0;
+        virtual u8 iv(Stat iv) const                     = 0;
+        virtual void iv(Stat iv, u8 v)                   = 0;
+        virtual bool egg(void) const                     = 0;
+        virtual void egg(bool v)                         = 0;
+        virtual bool nicknamed(void) const               = 0;
+        virtual void nicknamed(bool v)                   = 0;
 
         // BLOCK C
         virtual u8 currentHandler(void) const = 0;
         virtual void currentHandler(u8 v)     = 0;
 
         // BLOCK D
-        virtual std::string otName(void) const    = 0;
-        virtual void otName(const std::string& v) = 0;
-        virtual u8 otFriendship(void) const       = 0;
-        virtual void otFriendship(u8 v)           = 0;
+        virtual std::string otName(void) const         = 0;
+        virtual void otName(const std::string_view& v) = 0;
+        virtual u8 otFriendship(void) const            = 0;
+        virtual void otFriendship(u8 v)                = 0;
         // Raw information handled in private functions
         virtual Date eggDate(void) const { return Date{(u8)eggDay(), (u8)eggMonth(), (u32)eggYear()}; }
         virtual void eggDate(const Date& v)

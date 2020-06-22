@@ -446,13 +446,13 @@ namespace pksm
     void PK4::shinyLeaf(u8 v) { data[0x41] = v; }
 
     std::string PK4::nickname(void) const { return StringUtils::transString45(StringUtils::getString4(data, 0x48, 11)); }
-    void PK4::nickname(const std::string& v) { StringUtils::setString4(data, StringUtils::transString45(v), 0x48, 11); }
+    void PK4::nickname(const std::string_view& v) { StringUtils::setString4(data, StringUtils::transString45(v), 0x48, 11); }
 
     GameVersion PK4::version(void) const { return GameVersion(data[0x5F]); }
     void PK4::version(GameVersion v) { data[0x5F] = u8(v); }
 
     std::string PK4::otName(void) const { return StringUtils::transString45(StringUtils::getString4(data, 0x68, 8)); }
-    void PK4::otName(const std::string& v) { StringUtils::setString4(data, StringUtils::transString45(v), 0x68, 8); }
+    void PK4::otName(const std::string_view& v) { StringUtils::setString4(data, StringUtils::transString45(v), 0x68, 8); }
 
     int PK4::eggYear(void) const { return 2000 + data[0x78]; }
     void PK4::eggYear(int v) { data[0x78] = v - 2000; }

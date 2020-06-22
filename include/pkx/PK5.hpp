@@ -143,12 +143,12 @@ namespace pksm
         void nPokemon(bool v);
 
         std::string nickname(void) const override;
-        void nickname(const std::string& v) override;
+        void nickname(const std::string_view& v) override;
         GameVersion version(void) const override;
         void version(GameVersion v) override;
 
         std::string otName(void) const override;
-        void otName(const std::string& v) override;
+        void otName(const std::string_view& v) override;
         u16 eggLocation(void) const override;
         void eggLocation(u16 v) override;
         u16 metLocation(void) const override;

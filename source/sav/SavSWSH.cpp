@@ -225,14 +225,14 @@ namespace pksm
     void SavSWSH::language(Language v) { getBlock(Status)->decryptedData()[0xA7] = u8(v); }
 
     std::string SavSWSH::otName(void) const { return StringUtils::getString(getBlock(Status)->decryptedData(), 0xB0, 13); }
-    void SavSWSH::otName(const std::string& v)
+    void SavSWSH::otName(const std::string_view& v)
     {
         StringUtils::setString(getBlock(Status)->decryptedData(), v, 0xB0, 13);
         StringUtils::setString(getBlock(TrainerCard)->decryptedData(), v, 0, 13);
     }
 
     std::string SavSWSH::jerseyNum(void) const { return std::string((char*)getBlock(TrainerCard)->decryptedData() + 0x39, 3); }
-    void SavSWSH::jerseyNum(const std::string& v)
+    void SavSWSH::jerseyNum(const std::string_view& v)
     {
         for (size_t i = 0; i < std::min(v.size(), (size_t)3); i++)
         {
@@ -389,7 +389,10 @@ namespace pksm
     void SavSWSH::currentBox(u8 box) { LittleEndian::convertFrom<u32>(getBlock(0x017C3CBB)->decryptedData(), box); }
 
     std::string SavSWSH::boxName(u8 box) const { return StringUtils::getString(getBlock(BoxLayout)->decryptedData(), box * 0x22, 17); }
-    void SavSWSH::boxName(u8 box, const std::string& name) { StringUtils::setString(getBlock(BoxLayout)->decryptedData(), name, box * 0x22, 17); }
+    void SavSWSH::boxName(u8 box, const std::string_view& name)
+    {
+        StringUtils::setString(getBlock(BoxLayout)->decryptedData(), name, box * 0x22, 17);
+    }
 
     u8 SavSWSH::boxWallpaper(u8 box) const { return LittleEndian::convertTo<u32>(getBlock(0x017C3CBB)->decryptedData() + box * 4); }
     void SavSWSH::boxWallpaper(u8 box, u8 v) { LittleEndian::convertFrom<u32>(getBlock(0x2EB1B190)->decryptedData() + box * 4, v); }

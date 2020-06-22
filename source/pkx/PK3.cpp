@@ -192,7 +192,7 @@ namespace pksm
     void PK3::SID(u16 v) { LittleEndian::convertFrom<u16>(data + 0x06, v); }
 
     std::string PK3::nickname(void) const { return StringUtils::getString3(data, 0x08, 10, japanese()); }
-    void PK3::nickname(const std::string& v) { StringUtils::setString3(data, v, 0x08, 10, japanese()); }
+    void PK3::nickname(const std::string_view& v) { StringUtils::setString3(data, v, 0x08, 10, japanese()); }
 
     Language PK3::language(void) const { return Language(data[0x12]); }
     void PK3::language(Language v) { data[0x12] = u8(v); }
@@ -207,7 +207,7 @@ namespace pksm
     void PK3::flagIsEgg(bool v) { data[0x13] = (u8)((data[0x13] & ~4) | (v ? 4 : 0)); }
 
     std::string PK3::otName(void) const { return StringUtils::getString3(data, 0x14, 7, japanese()); }
-    void PK3::otName(const std::string& v) { StringUtils::setString3(data, v, 0x14, 7, japanese()); }
+    void PK3::otName(const std::string_view& v) { StringUtils::setString3(data, v, 0x14, 7, japanese()); }
 
     u16 PK3::markValue(void) const { return swapBits(data[0x1B], 1, 2); }
     void PK3::markValue(u16 v) { data[0x1B] = swapBits(v, 1, 2); }

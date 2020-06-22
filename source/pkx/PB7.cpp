@@ -162,7 +162,7 @@ namespace pksm
     void PB7::pkrsStrain(u8 v) { data[0x2B] = (u8)((data[0x2B] & 0xF) | v << 4); }
 
     std::string PB7::nickname(void) const { return StringUtils::getString(data, 0x40, 12); }
-    void PB7::nickname(const std::string& v) { StringUtils::setString(data, v, 0x40, 12); }
+    void PB7::nickname(const std::string_view& v) { StringUtils::setString(data, v, 0x40, 12); }
 
     u16 PB7::move(u8 m) const { return LittleEndian::convertTo<u16>(data + 0x5A + m * 2); }
     void PB7::move(u8 m, u16 v) { LittleEndian::convertFrom<u16>(data + 0x5A + m * 2, v); }
@@ -203,7 +203,7 @@ namespace pksm
     }
 
     std::string PB7::htName(void) const { return StringUtils::getString(data, 0x78, 12); }
-    void PB7::htName(const std::string& v) { StringUtils::setString(data, v, 0x78, 12); }
+    void PB7::htName(const std::string_view& v) { StringUtils::setString(data, v, 0x78, 12); }
 
     Gender PB7::htGender(void) const { return Gender{data[0x92]}; }
     void PB7::htGender(Gender v) { data[0x92] = u8(v); }
@@ -242,7 +242,7 @@ namespace pksm
     void PB7::enjoyment(u8 v) { data[0xAF] = v; }
 
     std::string PB7::otName(void) const { return StringUtils::getString(data, 0xB0, 12); }
-    void PB7::otName(const std::string& v) { StringUtils::setString(data, v, 0xB0, 12); }
+    void PB7::otName(const std::string_view& v) { StringUtils::setString(data, v, 0xB0, 12); }
 
     u8 PB7::otFriendship(void) const { return data[0xCA]; }
     void PB7::otFriendship(u8 v) { data[0xCA] = v; }

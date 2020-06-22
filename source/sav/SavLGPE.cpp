@@ -175,7 +175,7 @@ namespace pksm
 
     std::string SavLGPE::otName() const { return StringUtils::getString(data.get(), 0x1000 + 0x38, 13); }
 
-    void SavLGPE::otName(const std::string& v) { StringUtils::setString(data.get(), v, 0x1000 + 0x38, 13); }
+    void SavLGPE::otName(const std::string_view& v) { StringUtils::setString(data.get(), v, 0x1000 + 0x38, 13); }
 
     u32 SavLGPE::money() const { return LittleEndian::convertTo<u32>(&data[0x4C04]); }
 

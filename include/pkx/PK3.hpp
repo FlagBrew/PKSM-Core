@@ -97,7 +97,7 @@ namespace pksm
         u16 SID(void) const override;
         void SID(u16 v) override;
         std::string nickname(void) const override;
-        void nickname(const std::string& v) override;
+        void nickname(const std::string_view& v) override;
         Language language(void) const override;
         void language(Language v) override;
         bool flagIsBadEgg(void) const;
@@ -107,7 +107,7 @@ namespace pksm
         bool flagIsEgg(void) const;
         void flagIsEgg(bool v);
         std::string otName(void) const override;
-        void otName(const std::string& v) override;
+        void otName(const std::string_view& v) override;
         u16 markValue(void) const override;
         void markValue(u16 v) override;
         u16 checksum(void) const override;

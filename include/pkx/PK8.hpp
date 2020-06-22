@@ -138,7 +138,7 @@ namespace pksm
         void weight(u8 v);
 
         std::string nickname(void) const override;
-        void nickname(const std::string& v) override;
+        void nickname(const std::string_view& v) override;
         u16 move(u8 move) const override;
         void move(u8 move, u16 v) override;
         u8 PP(u8 move) const override;
@@ -160,7 +160,7 @@ namespace pksm
         void nicknamed(bool v) override;
 
         std::string htName(void) const;
-        void htName(const std::string& v);
+        void htName(const std::string_view& v);
         Gender htGender(void) const;
         void htGender(Gender v);
         Language htLanguage(void) const;
@@ -200,7 +200,7 @@ namespace pksm
         void favRibbon(s8 v);
 
         std::string otName(void) const override;
-        void otName(const std::string& v) override;
+        void otName(const std::string_view& v) override;
         u8 otFriendship(void) const override;
         void otFriendship(u8 v) override;
         u8 otAffection(void) const;
