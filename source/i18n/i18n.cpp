@@ -58,10 +58,10 @@ namespace i18n
         return ret;
     }();
 
-    std::list<initCallback> initCallbacks = {
-        initAbility, initBall, initForm, initGame, initGeo, initType, initItem, initItem3, initLocation, initMove, initNature, initSpecies};
-    std::list<exitCallback> exitCallbacks = {
-        exitAbility, exitBall, exitForm, exitGame, exitGeo, exitType, exitItem, exitItem3, exitLocation, exitMove, exitNature, exitSpecies};
+    std::list<initCallback> initCallbacks = {initAbility, initBall, initForm, initGame, initGeo, initType, initItem, initItem3, initLocation,
+        initMove, initNature, initRibbon, initSpecies};
+    std::list<exitCallback> exitCallbacks = {exitAbility, exitBall, exitForm, exitGame, exitGeo, exitType, exitItem, exitItem3, exitLocation,
+        exitMove, exitNature, exitRibbon, exitSpecies};
 
     void init(pksm::Language lang)
     {
