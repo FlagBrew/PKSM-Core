@@ -40,7 +40,7 @@ namespace i18n
 
     void exitRibbon(pksm::Language lang) { ribbons.erase(lang); }
 
-    const std::string& species(pksm::Language lang, pksm::Ribbon val)
+    const std::string& ribbon(pksm::Language lang, pksm::Ribbon val)
     {
         checkInitialized(lang);
         if (ribbons.count(lang) > 0)
@@ -66,5 +66,5 @@ namespace i18n
 
 const std::string& pksm::internal::Ribbon_impl::localize(pksm::Language lang) const
 {
-    return i18n::species(lang, *this);
+    return i18n::ribbon(lang, *this);
 }
