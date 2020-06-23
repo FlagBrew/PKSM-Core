@@ -1,146 +1,146 @@
-RibbonChampionKalos	Maître Kalos
-RibbonChampionG3Hoenn	Maître Hoenn (RSE)
-RibbonChampionSinnoh	Maître Sinnoh
-RibbonBestFriends	Affection
-RibbonTraining	Perfectionnement
-RibbonBattlerSkillful	Élite
-RibbonBattlerExpert	Génie
-RibbonEffort	Effort
-RibbonAlert	Alerte
-RibbonShock	Choc
-RibbonDowncast	Déprime
-RibbonCareless	Négligence
-RibbonRelax	Détente
-RibbonSnooze	Sieste
-RibbonSmile	Sourire
-RibbonGorgeous	Sublime
-RibbonRoyal	Royal
-RibbonGorgeousRoyal	Royal Sublime
-RibbonArtist	Artiste
-RibbonFootprint	Empreinte
-RibbonRecord	Record
-RibbonLegend	Légende
-RibbonCountry	Pays
-RibbonNational	National
-RibbonEarth	Terre
-RibbonWorld	Monde
-RibbonClassic	Classique
-RibbonPremier	Premier
-RibbonEvent	Événement
-RibbonBirthday	Anniversaire
-RibbonSpecial	Spécial
-RibbonSouvenir	Souvenir
-RibbonWishing	Souhait
-RibbonChampionBattle	Vainqueur Championnat
-RibbonChampionRegional	Champion Régional
-RibbonChampionNational	Champion National
-RibbonChampionWorld	Champion du Monde
-RibbonCountMemoryContest	Souvenir Concours
-RibbonCountMemoryBattle	Souvenir Combat
-RibbonChampionG6Hoenn	Hoenn Champion (ORAS)
-RibbonContestStar	Contest Star
-RibbonMasterCoolness	Coolness Master
-RibbonMasterBeauty	Beauty Master
-RibbonMasterCuteness	Cuteness Master
-RibbonMasterCleverness	Cleverness Master
-RibbonMasterToughness	Toughness Master
-RibbonChampionAlola	Alola Champion
-RibbonBattleRoyale	Battle Royal Champion
-RibbonBattleTreeGreat	Battle Tree Great
-RibbonBattleTreeMaster	Battle Tree Master
-RibbonG3Cool	Cool (G3)
-RibbonG3CoolSuper	Cool Super
-RibbonG3CoolHyper	Cool Hyper
-RibbonG3CoolMaster	Cool Master
-RibbonG3Beauty	Beauty (G3)
-RibbonG3BeautySuper	Beauty Super
-RibbonG3BeautyHyper	Beauty Hyper
-RibbonG3BeautyMaster	Beauty Master
-RibbonG3Cute	Cute (G3)
-RibbonG3CuteSuper	Cute Super
-RibbonG3CuteHyper	Cute Hyper
-RibbonG3CuteMaster	Cute Master
-RibbonG3Smart	Smart (G3)
-RibbonG3SmartSuper	Smart Super
-RibbonG3SmartHyper	Smart Hyper
-RibbonG3SmartMaster	Smart Master
-RibbonG3Tough	Tough (G3)
-RibbonG3ToughSuper	Tough Super
-RibbonG3ToughHyper	Tough Hyper
-RibbonG3ToughMaster	Tough Master
-RibbonG4Cool	Cool (G4)
-RibbonG4CoolGreat	Cool Great
-RibbonG4CoolUltra	Cool Ultra
-RibbonG4CoolMaster	Cool Master
-RibbonG4Beauty	Beauty (G4)
-RibbonG4BeautyGreat	Beauty Great
-RibbonG4BeautyUltra	Beauty Ultra
-RibbonG4BeautyMaster	Beauty Master
-RibbonG4Cute	Cute (G4)
-RibbonG4CuteGreat	Cute Great
-RibbonG4CuteUltra	Cute Ultra
-RibbonG4CuteMaster	Cute Master
-RibbonG4Smart	Smart (G4)
-RibbonG4SmartGreat	Smart Great
-RibbonG4SmartUltra	Smart Ultra
-RibbonG4SmartMaster	Smart Master
-RibbonG4Tough	Tough (G4)
-RibbonG4ToughGreat	Tough Great
-RibbonG4ToughUltra	Tough Ultra
-RibbonG4ToughMaster	Tough Master
-RibbonWinning	Winning
-RibbonVictory	Victory
-RibbonAbility	Ability
-RibbonAbilityGreat	Great Ability
-RibbonCountG3Beauty	Beauty
-RibbonCountG3Cute	Cute
-RibbonCountG3Smart	Smart
-RibbonCountG3Tough	Tough
-RibbonChampionGalar	Maître de Galar
-RibbonTowerMaster	Maître de la Tour
-RibbonMasterRank	Top du Classement
-RibbonMarkLunchtime	Insigne Appétit
-RibbonMarkSleepyTime	Insigne Minuit
-RibbonMarkDusk	Insigne Crépuscule
-RibbonMarkDawn	Insigne Aube
-RibbonMarkCloudy	Insigne Nuages
-RibbonMarkRainy	Insigne Pluie
-RibbonMarkStormy	Insigne Tonnerre
-RibbonMarkSnowy	Insigne Neige
-RibbonMarkBlizzard	Insigne Blizzard
-RibbonMarkDry	Insigne Sécheresse
-RibbonMarkSandstorm	Insigne Tempête de Sable
-RibbonMarkMisty	Insigne Brume
-RibbonMarkDestiny	Insigne Destin
-RibbonMarkFishing	Insigne Pêche
-RibbonMarkCurry	Insigne Curry
-RibbonMarkUncommon	Insigne Sociabilité
-RibbonMarkRare	Insigne Rareté
-RibbonMarkRowdy	Insigne Espièglerie
-RibbonMarkAbsentMinded	Insigne Insouciance
-RibbonMarkJittery	Insigne Nervosité
-RibbonMarkExcited	Insigne Enthousiasme
-RibbonMarkCharismatic	Insigne Charisme
-RibbonMarkCalmness	Insigne Sang-Froid
-RibbonMarkIntense	Insigne Sang Chaud
-RibbonMarkZonedOut	Insigne Inattention
-RibbonMarkJoyful	Insigne Bonheur
-RibbonMarkAngry	Insigne Colère
-RibbonMarkSmiley	Insigne Rire
-RibbonMarkTeary	Insigne Pleurs
-RibbonMarkUpbeat	Insigne Bonne Humeur
-RibbonMarkPeeved	Insigne Saute d’Humeur
-RibbonMarkIntellectual	Insigne Réflexion
-RibbonMarkFerocious	Insigne Impulsivité
-RibbonMarkCrafty	Insigne Ruse
-RibbonMarkScowling	Insigne Menace
-RibbonMarkKindly	Insigne Gentillesse
-RibbonMarkFlustered	Insigne Panique
-RibbonMarkPumpedUp	Insigne Entrain
-RibbonMarkZeroEnergy	Insigne Nonchalance
-RibbonMarkPrideful	Insigne Fierté
-RibbonMarkUnsure	Insigne Abattement
-RibbonMarkHumble	Insigne Discrétion
-RibbonMarkThorny	Insigne Frime
-RibbonMarkVigor	Insigne Énergie
-RibbonMarkSlump	Insigne Blessure
+Maître Kalos
+Maître Hoenn (RSE)
+Maître Sinnoh
+Affection
+Perfectionnement
+Élite
+Génie
+Effort
+Alerte
+Choc
+Déprime
+Négligence
+Détente
+Sieste
+Sourire
+Sublime
+Royal
+Royal Sublime
+Artiste
+Empreinte
+Record
+Légende
+Pays
+National
+Terre
+Monde
+Classique
+Premier
+Événement
+Anniversaire
+Spécial
+Souvenir
+Souhait
+Vainqueur Championnat
+Champion Régional
+Champion National
+Champion du Monde
+Souvenir Concours
+Souvenir Combat
+Hoenn Champion (ORAS)
+Contest Star
+Coolness Master
+Beauty Master
+Cuteness Master
+Cleverness Master
+Toughness Master
+Alola Champion
+Battle Royal Champion
+Battle Tree Great
+Battle Tree Master
+Cool (G3)
+Cool Super
+Cool Hyper
+Cool Master
+Beauty (G3)
+Beauty Super
+Beauty Hyper
+Beauty Master
+Cute (G3)
+Cute Super
+Cute Hyper
+Cute Master
+Smart (G3)
+Smart Super
+Smart Hyper
+Smart Master
+Tough (G3)
+Tough Super
+Tough Hyper
+Tough Master
+Cool (G4)
+Cool Great
+Cool Ultra
+Cool Master
+Beauty (G4)
+Beauty Great
+Beauty Ultra
+Beauty Master
+Cute (G4)
+Cute Great
+Cute Ultra
+Cute Master
+Smart (G4)
+Smart Great
+Smart Ultra
+Smart Master
+Tough (G4)
+Tough Great
+Tough Ultra
+Tough Master
+Winning
+Victory
+Ability
+Great Ability
+Beauty
+Cute
+Smart
+Tough
+Maître de Galar
+Maître de la Tour
+Top du Classement
+Insigne Appétit
+Insigne Minuit
+Insigne Crépuscule
+Insigne Aube
+Insigne Nuages
+Insigne Pluie
+Insigne Tonnerre
+Insigne Neige
+Insigne Blizzard
+Insigne Sécheresse
+Insigne Tempête de Sable
+Insigne Brume
+Insigne Destin
+Insigne Pêche
+Insigne Curry
+Insigne Sociabilité
+Insigne Rareté
+Insigne Espièglerie
+Insigne Insouciance
+Insigne Nervosité
+Insigne Enthousiasme
+Insigne Charisme
+Insigne Sang-Froid
+Insigne Sang Chaud
+Insigne Inattention
+Insigne Bonheur
+Insigne Colère
+Insigne Rire
+Insigne Pleurs
+Insigne Bonne Humeur
+Insigne Saute d’Humeur
+Insigne Réflexion
+Insigne Impulsivité
+Insigne Ruse
+Insigne Menace
+Insigne Gentillesse
+Insigne Panique
+Insigne Entrain
+Insigne Nonchalance
+Insigne Fierté
+Insigne Abattement
+Insigne Discrétion
+Insigne Frime
+Insigne Énergie
+Insigne Blessure
