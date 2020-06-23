@@ -186,12 +186,14 @@ namespace pksm
         void enjoyment(u8 v);
         GameVersion version(void) const override;
         void version(GameVersion v) override;
-        u8 country(void) const;
-        void country(u8 v);
-        u8 region(void) const;
-        void region(u8 v);
-        u8 consoleRegion(void) const;
-        void consoleRegion(u8 v);
+        u8 battleVersion(void) const;
+        void battleVersion(u8 v);
+        u8 country(void) const { return 0; }
+        void country(u8) {}
+        u8 region(void) const { return 0; }
+        void region(u8) {}
+        u8 consoleRegion(void) const { return 0; }
+        void consoleRegion(u8) {}
         Language language(void) const override;
         void language(Language v) override;
         u32 formDuration(void) const;
@@ -228,6 +230,8 @@ namespace pksm
         void hyperTrain(Stat stat, bool v);
         bool moveRecordFlag(u8 index) const;
         void moveRecordFlag(u8 index, bool v);
+        u64 homeTracker(void) const;
+        void homeTracker(u64 v);
 
         int partyStat(Stat stat) const override;
         void partyStat(Stat stat, u16 v) override;

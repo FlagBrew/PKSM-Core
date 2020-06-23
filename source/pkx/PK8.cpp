@@ -531,14 +531,8 @@ namespace pksm
     GameVersion PK8::version(void) const { return GameVersion(data[0xDE]); }
     void PK8::version(GameVersion v) { data[0xDE] = u8(v); }
 
-    u8 PK8::country(void) const { return data[0xDF]; }
-    void PK8::country(u8 v) { data[0xDF] = v; }
-
-    u8 PK8::region(void) const { return data[0xE0]; }
-    void PK8::region(u8 v) { data[0xE0] = v; }
-
-    u8 PK8::consoleRegion(void) const { return data[0xE1]; }
-    void PK8::consoleRegion(u8 v) { data[0xE1] = v; }
+    u8 PK8::battleVersion(void) const { return data[0xDF]; }
+    void PK8::battleVersion(u8 v) { data[0xDF] = v; }
 
     Language PK8::language(void) const { return Language(data[0xE2]); }
     void PK8::language(Language v) { data[0xE2] = u8(v); }
@@ -608,6 +602,9 @@ namespace pksm
 
     bool PK8::moveRecordFlag(u8 index) const { return (*(data + (index >> 3)) & (index & 7)) == 1; }
     void PK8::moveRecordFlag(u8 index, bool v) { *(data + (index >> 3)) = (*(data + (index >> 3)) & ~(index & 7)) | ((v ? 1 : 0) << (index & 7)); }
+
+    u64 PK8::homeTracker(void) const { return LittleEndian::convertTo<u64>(data + 0x135); }
+    void PK8::homeTracker(u64 v) { LittleEndian::convertFrom<u64>(data + 0x135, v); }
 
     int PK8::partyStat(Stat stat) const
     {
