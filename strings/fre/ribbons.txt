@@ -1,4 +1,4 @@
-﻿RibbonChampionKalos	Maître Kalos
+RibbonChampionKalos	Maître Kalos
 RibbonChampionG3Hoenn	Maître Hoenn (RSE)
 RibbonChampionSinnoh	Maître Sinnoh
 RibbonBestFriends	Affection

@@ -1,4 +1,4 @@
-﻿RibbonChampionKalos	卡洛斯冠军
+RibbonChampionKalos	卡洛斯冠军
 RibbonChampionG3Hoenn	冠军 (3代)
 RibbonChampionSinnoh	神奥冠军
 RibbonBestFriends	好友

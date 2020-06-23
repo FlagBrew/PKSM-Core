@@ -1,4 +1,4 @@
-﻿RibbonChampionKalos	Campeón de Kalos
+RibbonChampionKalos	Campeón de Kalos
 RibbonChampionG3Hoenn	Campeón de Hoenn (RSE)
 RibbonChampionSinnoh	Campeón de Sinnoh
 RibbonBestFriends	Afecto

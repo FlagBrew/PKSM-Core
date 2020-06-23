@@ -1,4 +1,4 @@
-﻿RibbonChampionKalos	カロス チャンプ
+RibbonChampionKalos	カロス チャンプ
 RibbonChampionG3Hoenn	ホウエン チャンプ (RSE)
 RibbonChampionSinnoh	シンオウ チャンプ
 RibbonBestFriends	なかよし
