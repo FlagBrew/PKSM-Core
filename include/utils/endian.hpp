@@ -290,17 +290,9 @@ namespace BigEndian
             bool negative = (data & 0x8000000000000000) != 0;
             int exponent  = (data & 0x7FF0000000000000) >> 52;
             int fraction  = data & ~0xFFF0000000000000;
-            if (exponent == 0)
+            if (exponent == 0 && fraction == 0)
             {
-                if (fraction == 0)
-                {
-                    return std::copysign(T(0), negative ? -1 : 1);
-                }
-                else
-                {
-                    // Denormal number, figure out how to handle it later
-                    return 0;
-                }
+                return std::copysign(T(0), negative ? -1 : 1);
             }
             else if (exponent == 0x7FF)
             {
