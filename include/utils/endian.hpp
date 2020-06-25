@@ -95,7 +95,7 @@ namespace BigEndian
             T normalized = std::frexp(orig, &exponent); // gets biased exponent, which isn't what I want
             if constexpr (std::is_same_v<T, float>)
             {
-                u32 write = negative ? (1 << 31) : 0;
+                u32 write = negative ? (1u << 31) : 0;
                 switch (std::fpclassify(orig))
                 {
                     case FP_INFINITE:
@@ -111,7 +111,7 @@ namespace BigEndian
                         write |= u32(exponent + 127) << 23;
                         // falls through
                     case FP_SUBNORMAL:
-                        normalized *= 1 << 23;
+                        normalized *= 1u << 23;
                         write |= u32(normalized);
                         break;
                 }
@@ -373,7 +373,7 @@ namespace LittleEndian
             T normalized = std::frexp(orig, &exponent); // gets biased exponent
             if constexpr (std::is_same_v<T, float>)
             {
-                u32 write = negative ? (1 << 31) : 0;
+                u32 write = negative ? (1u << 31) : 0;
                 switch (std::fpclassify(orig))
                 {
                     case FP_INFINITE:
@@ -389,7 +389,7 @@ namespace LittleEndian
                         write |= u32(exponent + 127) << 23; // Bias the exponent
                         // falls through
                     case FP_SUBNORMAL:
-                        normalized *= 1 << 23; // Get the fraction value as an integer
+                        normalized *= 1u << 23; // Get the fraction value as an integer
                         write |= u32(normalized);
                         break;
                 }

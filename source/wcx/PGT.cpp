@@ -62,8 +62,6 @@ namespace pksm
         pokemonData->decrypt(); // encrypt Pokemon data if it isn't already
     }
 
-    PGT::~PGT() {}
-
     u16 PGT::ID(void) const { return 0; }
 
     std::string PGT::title(void) const { return "Wondercard"; }

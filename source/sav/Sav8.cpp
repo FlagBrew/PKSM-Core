@@ -38,25 +38,14 @@ namespace pksm
 
     std::shared_ptr<pksm::crypto::swsh::SCBlock> Sav8::getBlock(u32 key) const
     {
-        int min = 0, mid = 0, max = blocks.size();
-        while (min <= max)
+        // binary search
+        auto found = std::lower_bound(
+            blocks.begin(), blocks.end(), key, [](const std::shared_ptr<pksm::crypto::swsh::SCBlock>& block, u32 key) { return block->key() < key; });
+        if ((*found)->key() != key)
         {
-            mid = min + (max - min) / 2;
-            if (blocks[mid]->key() == key)
-            {
-                return blocks[mid];
-            }
-            if (blocks[mid]->key() < key)
-            {
-                min = mid + 1;
-            }
-            else
-            {
-                max = mid - 1;
-            }
+            return nullptr;
         }
-
-        return nullptr;
+        return *found;
     }
 
     std::unique_ptr<PKX> Sav8::emptyPkm() const { return PKX::getPKM<Generation::EIGHT>(nullptr); }

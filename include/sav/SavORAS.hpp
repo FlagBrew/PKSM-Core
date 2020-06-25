@@ -47,7 +47,7 @@ namespace pksm
             0x0E058};
 
     public:
-        SavORAS(std::shared_ptr<u8[]> dt);
+        explicit SavORAS(std::shared_ptr<u8[]> dt);
 
         void resign(void) override;
 

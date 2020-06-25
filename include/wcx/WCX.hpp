@@ -56,7 +56,7 @@ namespace pksm
         WCX() {}
         WCX(const WCX&) = delete;
         WCX& operator=(const WCX&) = delete;
-        virtual ~WCX(void) {}
+        virtual ~WCX(void) = default;
 
         virtual std::string extension() const { return ".wc" + (std::string)generation(); }
 

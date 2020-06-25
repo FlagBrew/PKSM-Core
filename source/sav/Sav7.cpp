@@ -426,11 +426,10 @@ namespace pksm
     int Sav7::currentGiftAmount(void) const
     {
         u8 t;
-        bool empty;
         // 48 max wonder cards
         for (t = 0; t < 48; t++)
         {
-            empty = true;
+            bool empty = true;
             for (u32 j = 0; j < WC7::length; j++)
             {
                 if (data[WondercardData + t * WC7::length + j] != 0)

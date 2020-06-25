@@ -50,8 +50,7 @@ namespace pksm
     public:
         static constexpr u16 length = 260;
 
-        PGT(u8* pgt);
-        virtual ~PGT();
+        explicit PGT(u8* pgt);
 
         virtual std::string extension() const override { return ".pgt"; }
 

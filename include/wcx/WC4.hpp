@@ -35,7 +35,7 @@ namespace pksm
     class WC4 : public PGT
     {
     public:
-        WC4(u8* wc4);
+        explicit WC4(u8* wc4);
 
         std::string extension() const override { return ".wc4"; }
 

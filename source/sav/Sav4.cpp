@@ -698,10 +698,9 @@ namespace pksm
     int Sav4::currentGiftAmount(void) const
     {
         u8 t;
-        bool empty;
         for (t = 0; t < maxWondercards(); t++)
         {
-            empty = true;
+            bool empty = true;
             for (u32 j = 0; j < PGT::length; j++)
             {
                 if (data[WondercardData + t * PGT::length + j] != 0)

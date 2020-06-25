@@ -52,8 +52,7 @@ namespace pksm
         static constexpr u16 length     = 264;
         static constexpr u16 lengthFull = 784;
 
-        WC7(u8* dt, bool full = false);
-        virtual ~WC7(){};
+        explicit WC7(u8* dt, bool full = false);
 
         Generation generation(void) const override;
         bool bean(void) const override;

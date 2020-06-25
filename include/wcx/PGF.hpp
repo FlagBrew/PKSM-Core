@@ -47,8 +47,7 @@ namespace pksm
     public:
         static constexpr u16 length = 204;
 
-        PGF(u8* pgf);
-        virtual ~PGF(){};
+        explicit PGF(u8* pgf);
 
         std::string extension() const override { return ".pgf"; }
 

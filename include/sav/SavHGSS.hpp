@@ -34,7 +34,7 @@ namespace pksm
     class SavHGSS : public Sav4
     {
     public:
-        SavHGSS(std::shared_ptr<u8[]> dt);
+        explicit SavHGSS(std::shared_ptr<u8[]> dt);
 
         std::map<Pouch, std::vector<int>> validItems(void) const override;
     };

@@ -49,8 +49,7 @@ namespace pksm
     public:
         static constexpr u16 length = 0x2D0;
 
-        WC8(u8* dt);
-        virtual ~WC8() {}
+        explicit WC8(u8* dt);
 
         Generation generation(void) const override;
         bool bean(void) const override { return false; }

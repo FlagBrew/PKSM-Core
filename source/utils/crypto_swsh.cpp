@@ -90,7 +90,7 @@ namespace pksm::crypto::swsh
             }
 
         public:
-            XorShift32(u32 seed)
+            explicit XorShift32(u32 seed)
             {
                 u32 count = popcount(seed);
                 for (u32 i = 0; i < count; i++)
@@ -122,7 +122,7 @@ namespace pksm::crypto::swsh
         class CryptoException : public std::exception
         {
         public:
-            CryptoException(const std::string& message) : mMessage("CryptoException: " + message) {}
+            explicit CryptoException(const std::string& message) : mMessage("CryptoException: " + message) {}
 
             const char* what() const noexcept override { return mMessage.c_str(); }
 

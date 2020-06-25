@@ -209,7 +209,7 @@ namespace pksm
         bool newFlag(void) const { return (itemData >> 30) & 1; }
         void newFlag(bool v) { itemData = (itemData & ~(1 << 30)) | (v ? 1 << 30 : 0); }
         bool reserved(void) const { return (itemData >> 31) & 1; }
-        void reserved(bool v) { itemData = (itemData & ~(1 << 31)) | (v ? 1 << 31 : 0); }
+        void reserved(bool v) { itemData = (itemData & ~(1u << 31)) | (v ? 1u << 31 : 0); }
         std::vector<u8> bytes(void) const override
         {
             std::vector<u8> ret = {0, 0, 0, 0};
@@ -250,7 +250,7 @@ namespace pksm
         bool newFlag(void) const { return (itemData >> 30) & 1; }
         void newFlag(bool v) { itemData = (itemData & ~(1 << 30)) | (v ? 1 << 30 : 0); }
         bool reserved(void) const { return (itemData >> 31) & 1; }
-        void reserved(bool v) { itemData = (itemData & ~(1 << 31)) | (v ? 1 << 31 : 0); }
+        void reserved(bool v) { itemData = (itemData & ~(1u << 31)) | (v ? 1u << 31 : 0); }
         std::vector<u8> bytes(void) const override
         {
             std::vector<u8> ret = {0, 0, 0, 0};
@@ -291,7 +291,7 @@ namespace pksm
         bool newFlag(void) const { return (itemData >> 30) & 1; }
         void newFlag(bool v) { itemData = (itemData & ~(1 << 30)) | (v ? 1 << 30 : 0); }
         bool reserved(void) const { return (itemData >> 31) & 1; }
-        void reserved(bool v) { itemData = (itemData & ~(1 << 31)) | (v ? 1 << 31 : 0); }
+        void reserved(bool v) { itemData = (itemData & ~(1u << 31)) | (v ? 1u << 31 : 0); }
         std::vector<u8> bytes(void) const override
         {
             std::vector<u8> ret = {0, 0, 0, 0};

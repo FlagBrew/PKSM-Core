@@ -35,7 +35,7 @@ namespace pksm
     class PCD : public PGT
     {
     public:
-        PCD(u8* pcd);
+        explicit PCD(u8* pcd);
 
         std::string extension() const override { return ".pcd"; }
 

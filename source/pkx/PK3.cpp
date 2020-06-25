@@ -365,7 +365,7 @@ namespace pksm
     bool PK3::fatefulEncounter(void) const { return (LittleEndian::convertTo<u32>(data + 0x4C) >> 31) == 1; }
     void PK3::fatefulEncounter(bool v)
     {
-        LittleEndian::convertFrom<u32>(data + 0x4C, (LittleEndian::convertTo<u32>(data + 0x4C) & ~(1 << 31)) | (u32)(v ? 1 << 31 : 0));
+        LittleEndian::convertFrom<u32>(data + 0x4C, (LittleEndian::convertTo<u32>(data + 0x4C) & ~(1u << 31)) | (u32)(v ? 1u << 31 : 0));
     }
 
     int PK3::partyLevel() const
