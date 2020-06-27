@@ -671,7 +671,7 @@ namespace i18n
             case pksm::Species::Polteageist:
                 ret = {Phony, Antique};
                 break;
-            case pksm::Species::Falinks:
+            case pksm::Species::Alcremie:
                 ret = {VanillaCream, RubyCream, MatchaCream, MintCream, LemonCream, SaltedCream, RubySwirl, CaramelSwirl, RainbowSwirl};
                 break;
             case pksm::Species::Morpeko:
