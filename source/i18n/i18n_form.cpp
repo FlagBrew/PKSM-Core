@@ -241,7 +241,7 @@ namespace i18n
     static constexpr size_t RainbowSwirl     = 195;
     static constexpr size_t NoiceFace        = 196;
     static constexpr size_t HangryMode       = 197;
-    static constexpr size_t CrownedSword     = 198;
+    static constexpr size_t Crowned          = 198;
     static constexpr size_t Eternamax        = 199;
     static constexpr size_t AmpedForm        = 200;
     static constexpr size_t VanillaCream     = 201;
@@ -681,10 +681,10 @@ namespace i18n
                 ret = {Default, NoiceFace};
                 break;
             case pksm::Species::Zacian:
-                ret = {Default, CrownedSword};
+                ret = {Default, Crowned};
                 break;
             case pksm::Species::Zamazenta:
-                ret = {Default, CrownedSword};
+                ret = {Default, Crowned};
                 break;
             case pksm::Species::Eternatus:
                 ret = {Default, Eternamax};
