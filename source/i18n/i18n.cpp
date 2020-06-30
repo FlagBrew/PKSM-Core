@@ -54,7 +54,7 @@ namespace i18n
 {
     std::unordered_map<pksm::Language, std::atomic<LangState>> languages = []() {
         std::unordered_map<pksm::Language, std::atomic<LangState>> ret;
-        MAP(MAKE_MAP, LANGUAGES_TO_USE)
+        MAP(MAKE_MAP, LANGUAGES_TO_USE);
         return ret;
     }();
 
@@ -71,9 +71,9 @@ namespace i18n
         {
             found = languages.find(pksm::Language::ENG);
         }
-        if (found->second == LangState::UNINITIALIZED)
+        LangState expected = LangState::UNINITIALIZED;
+        if (found->second.compare_exchange_strong(expected, LangState::INITIALIZING))
         {
-            found->second = LangState::INITIALIZING;
             for (auto& callback : initCallbacks)
             {
                 callback(lang);
