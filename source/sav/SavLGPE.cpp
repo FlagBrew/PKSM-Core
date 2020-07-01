@@ -48,7 +48,7 @@ namespace
 
 namespace pksm
 {
-    SavLGPE::SavLGPE(std::shared_ptr<u8[]> dt) : Sav(dt, 0x100000)
+    SavLGPE::SavLGPE(std::shared_ptr<u8[]> dt, size_t length) : Sav(dt, length)
     {
         game    = Game::LGPE;
         PokeDex = 0x2A00;

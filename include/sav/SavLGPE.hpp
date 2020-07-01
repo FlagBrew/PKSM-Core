@@ -51,7 +51,7 @@ namespace pksm
         bool sanitizeFormsToIterate(Species species, int& fs, int& fe, int formIn) const;
 
     public:
-        explicit SavLGPE(std::shared_ptr<u8[]> dt);
+        SavLGPE(std::shared_ptr<u8[]> dt, size_t length);
         void resign(void);
         void finishEditing(void) override { resign(); }
         void beginEditing(void) override {}

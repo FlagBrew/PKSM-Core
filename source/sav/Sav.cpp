@@ -70,9 +70,10 @@ namespace pksm
                 return checkGBAType(dt);
             case 0xB8800:
             case 0x100000:
-                return std::make_unique<SavLGPE>(dt);
-            case 0x180B19:
-                return std::make_unique<SavSWSH>(dt);
+                return std::make_unique<SavLGPE>(dt, length);
+            case 0x180B19: // 1.0->1.1->1.2
+            case 0x180AD0: // 1.0->1.2
+                return std::make_unique<SavSWSH>(dt, length);
             default:
                 return std::unique_ptr<Sav>(nullptr);
         }

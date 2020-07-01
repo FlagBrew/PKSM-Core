@@ -183,7 +183,7 @@ void LittleEndian::convertFrom<DexEntry>(u8* data, const DexEntry& entry)
 
 namespace pksm
 {
-    SavSWSH::SavSWSH(std::shared_ptr<u8[]> dt) : Sav8(dt, 0x180B19)
+    SavSWSH::SavSWSH(std::shared_ptr<u8[]> dt, size_t length) : Sav8(dt, length)
     {
         game = Game::SWSH;
 

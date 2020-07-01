@@ -39,7 +39,7 @@ namespace pksm
             6, 12, 25, 52, 68, 94, 99, 131, 133, 143, 569, 823, 826, 834, 839, 841, 842, 844, 851, 858, 861, 869, 879, 884, 890};
 
     public:
-        explicit SavSWSH(std::shared_ptr<u8[]> dt);
+        SavSWSH(std::shared_ptr<u8[]> dt, size_t length);
 
         u16 TID(void) const override;
         void TID(u16 v) override;
