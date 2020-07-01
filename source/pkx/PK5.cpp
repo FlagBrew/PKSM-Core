@@ -926,7 +926,7 @@ namespace pksm
         pk6->ribbonContestCount(contestRibbon);
         pk6->ribbonBattleCount(battleRibbon);
 
-        pk6->ribbon(Ribbon::ChampionG6Hoenn, ribbon(Ribbon::ChampionG6Hoenn));
+        pk6->ribbon(Ribbon::ChampionG3Hoenn, ribbon(Ribbon::ChampionG3Hoenn));
         pk6->ribbon(Ribbon::ChampionSinnoh, ribbon(Ribbon::ChampionSinnoh));
         pk6->ribbon(Ribbon::Effort, ribbon(Ribbon::Effort));
 
