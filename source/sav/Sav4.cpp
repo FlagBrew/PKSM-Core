@@ -36,9 +36,13 @@ namespace pksm
 {
     Sav4::CountType Sav4::compareCounters(u32 c1, u32 c2)
     {
-        if (c1 == 0xFFFFFFFF && c2 == 0)
+        if (c1 == 0xFFFFFFFF && c2 != 0xFFFFFFFE)
         {
             return CountType::SECOND;
+        }
+        else if (c2 == 0xFFFFFFFF && c1 != 0xFFFFFFFE)
+        {
+            return CountType::FIRST;
         }
         else if (c1 > c2)
         {
