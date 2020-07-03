@@ -248,4 +248,97 @@ public:
     static DateTime now() { return DateTime{time(nullptr)}; }
 };
 
+inline bool operator==(const time_t& tThis, const DateTime& other)
+{
+    DateTime This{tThis};
+    return This == other;
+}
+inline bool operator!=(const time_t& tThis, const DateTime& other)
+{
+    DateTime This{tThis};
+    return This != other;
+}
+inline bool operator<(const time_t& tThis, const DateTime& other)
+{
+    DateTime This{tThis};
+    return This < other;
+}
+inline bool operator<=(const time_t& tThis, const DateTime& other)
+{
+    DateTime This{tThis};
+    return This <= other;
+}
+inline bool operator>(const time_t& tThis, const DateTime& other)
+{
+    DateTime This{tThis};
+    return This > other;
+}
+inline bool operator>=(const time_t& tThis, const DateTime& other)
+{
+    DateTime This{tThis};
+    return This >= other;
+}
+
+inline bool operator==(const time_t& tThis, const Date& other)
+{
+    Date This{tThis};
+    return This == other;
+}
+inline bool operator!=(const time_t& tThis, const Date& other)
+{
+    Date This{tThis};
+    return This != other;
+}
+inline bool operator<(const time_t& tThis, const Date& other)
+{
+    Date This{tThis};
+    return This < other;
+}
+inline bool operator<=(const time_t& tThis, const Date& other)
+{
+    Date This{tThis};
+    return This <= other;
+}
+inline bool operator>(const time_t& tThis, const Date& other)
+{
+    Date This{tThis};
+    return This > other;
+}
+inline bool operator>=(const time_t& tThis, const Date& other)
+{
+    Date This{tThis};
+    return This >= other;
+}
+
+inline bool operator==(const time_t& tThis, const Time& other)
+{
+    Time This{tThis};
+    return This == other;
+}
+inline bool operator!=(const time_t& tThis, const Time& other)
+{
+    Time This{tThis};
+    return This != other;
+}
+inline bool operator<(const time_t& tThis, const Time& other)
+{
+    Time This{tThis};
+    return This < other;
+}
+inline bool operator<=(const time_t& tThis, const Time& other)
+{
+    Time This{tThis};
+    return This <= other;
+}
+inline bool operator>(const time_t& tThis, const Time& other)
+{
+    Time This{tThis};
+    return This > other;
+}
+inline bool operator>=(const time_t& tThis, const Time& other)
+{
+    Time This{tThis};
+    return This >= other;
+}
+
 #endif
