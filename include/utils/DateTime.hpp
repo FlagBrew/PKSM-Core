@@ -54,6 +54,45 @@ public:
     constexpr void month(u8 v) { mMonth = v; }
     constexpr void year(u32 v) { mYear = v; }
 
+    constexpr bool operator==(const Date& other) const { return mDay == other.mDay && mMonth == other.mMonth && mYear == other.mYear; }
+    constexpr bool operator!=(const Date& other) const { return !(*this == other); }
+
+    constexpr bool operator<(const Date& other) const
+    {
+        if (mYear < other.mYear)
+        {
+            return true;
+        }
+        else if (mYear == other.mYear && mMonth < other.mMonth)
+        {
+            return true;
+        }
+        else if (mYear == other.mYear && mMonth == other.mMonth && mDay < other.mDay)
+        {
+            return true;
+        }
+        return false;
+    }
+    constexpr bool operator<=(const Date& other) const { return *this == other || *this < other; }
+
+    constexpr bool operator>(const Date& other) const
+    {
+        if (mYear > other.mYear)
+        {
+            return true;
+        }
+        else if (mYear == other.mYear && mMonth > other.mMonth)
+        {
+            return true;
+        }
+        else if (mYear == other.mYear && mMonth == other.mMonth && mDay > other.mDay)
+        {
+            return true;
+        }
+        return false;
+    }
+    constexpr bool operator>=(const Date& other) const { return *this == other || *this > other; }
+
 private:
     u32 mYear;
     u8 mDay;
@@ -83,6 +122,45 @@ public:
     constexpr void hour(u8 v) { mHour = v; }
     constexpr void minute(u8 v) { mMinute = v; }
     constexpr void second(u8 v) { mSecond = v; }
+
+    constexpr bool operator==(const Time& other) const { return mSecond == other.mSecond && mMinute == other.mMinute && mHour == other.mHour; }
+    constexpr bool operator!=(const Time& other) const { return !(*this == other); }
+
+    constexpr bool operator<(const Time& other) const
+    {
+        if (mHour < other.mHour)
+        {
+            return true;
+        }
+        else if (mHour == other.mHour && mMinute < other.mMinute)
+        {
+            return true;
+        }
+        else if (mHour == other.mHour && mMinute == other.mMinute && mSecond < other.mSecond)
+        {
+            return true;
+        }
+        return false;
+    }
+    constexpr bool operator<=(const Time& other) const { return *this == other || *this < other; }
+
+    constexpr bool operator>(const Time& other) const
+    {
+        if (mHour > other.mHour)
+        {
+            return true;
+        }
+        else if (mHour == other.mHour && mMinute > other.mMinute)
+        {
+            return true;
+        }
+        else if (mHour == other.mHour && mMinute == other.mMinute && mSecond > other.mSecond)
+        {
+            return true;
+        }
+        return false;
+    }
+    constexpr bool operator>=(const Time& other) const { return *this == other || *this > other; }
 
 private:
     u8 mHour;
@@ -114,6 +192,58 @@ public:
         return *this;
     }
     constexpr DateTime& operator=(const DateTime& other) = default;
+
+    using Date::operator==;
+    using Time::operator==;
+    using Date::operator!=;
+    using Time::operator!=;
+    using Date::operator<;
+    using Time::operator<;
+    using Date::operator>;
+    using Time::operator>;
+    using Date::operator<=;
+    using Time::operator<=;
+    using Date::operator>=;
+    using Time::operator>=;
+
+    constexpr bool operator==(const DateTime& other) const { return Date::operator==(other) && Time::operator==(other); }
+    constexpr bool operator!=(const DateTime& other) const { return Date::operator!=(other) || Time::operator!=(other); }
+    constexpr bool operator<(const DateTime& other) const { return Date::operator<(other) || (Date::operator==(other) && Time::operator<(other)); }
+    constexpr bool operator<=(const DateTime& other) const { return Date::operator<=(other) || (Date::operator==(other) && Time::operator<=(other)); }
+    constexpr bool operator>(const DateTime& other) const { return Date::operator>(other) || (Date::operator==(other) && Time::operator>(other)); }
+    constexpr bool operator>=(const DateTime& other) const { return Date::operator>(other) || (Date::operator==(other) && Time::operator>=(other)); }
+
+    // Remove overload ambiguity
+    bool operator==(const time_t& tOther) const
+    {
+        DateTime other{tOther};
+        return Date::operator==(other) && Time::operator==(other);
+    }
+    bool operator!=(const time_t& tOther) const
+    {
+        DateTime other{tOther};
+        return Date::operator!=(other) || Time::operator!=(other);
+    }
+    bool operator<(const time_t& tOther) const
+    {
+        DateTime other{tOther};
+        return Date::operator<(other) || (Date::operator==(other) && Time::operator<(other));
+    }
+    bool operator<=(const time_t& tOther) const
+    {
+        DateTime other{tOther};
+        return Date::operator<=(other) || (Date::operator==(other) && Time::operator<=(other));
+    }
+    bool operator>(const time_t& tOther) const
+    {
+        DateTime other{tOther};
+        return Date::operator>(other) || (Date::operator==(other) && Time::operator>(other));
+    }
+    bool operator>=(const time_t& tOther) const
+    {
+        DateTime other{tOther};
+        return Date::operator>(other) || (Date::operator==(other) && Time::operator>=(other));
+    }
 
     static DateTime now() { return DateTime{time(nullptr)}; }
 };
