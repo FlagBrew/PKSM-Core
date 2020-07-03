@@ -40,19 +40,19 @@ public:
         mMonth         = now->tm_mon + 1;
         mYear          = now->tm_year + 1900;
     }
-    Date(u8 day, u8 month, u32 year) : mYear(year), mDay(day), mMonth(month) {}
+    constexpr Date(u8 day, u8 month, u32 year) : mYear(year), mDay(day), mMonth(month) {}
 
     static Date today() { return Date{time(nullptr)}; }
 
     // 1-31
-    u8 day() const { return mDay; }
+    constexpr u8 day() const { return mDay; }
     // 1-12
-    u8 month() const { return mMonth; }
+    constexpr u8 month() const { return mMonth; }
     // full year, ex 2015
-    u32 year() const { return mYear; }
-    void day(u8 v) { mDay = v; }
-    void month(u8 v) { mMonth = v; }
-    void year(u32 v) { mYear = v; }
+    constexpr u32 year() const { return mYear; }
+    constexpr void day(u8 v) { mDay = v; }
+    constexpr void month(u8 v) { mMonth = v; }
+    constexpr void year(u32 v) { mYear = v; }
 
 private:
     u32 mYear;
@@ -70,19 +70,19 @@ public:
         mMinute        = now->tm_min;
         mHour          = now->tm_hour;
     }
-    Time(u8 hour, u8 minute, u8 second) : mHour(hour), mMinute(minute), mSecond(second) {}
+    constexpr Time(u8 hour, u8 minute, u8 second) : mHour(hour), mMinute(minute), mSecond(second) {}
 
     static Time now() { return Time{time(nullptr)}; }
 
     // 0-23
-    u8 hour() const { return mHour; }
+    constexpr u8 hour() const { return mHour; }
     // 0-59
-    u8 minute() const { return mMinute; }
+    constexpr u8 minute() const { return mMinute; }
     // 0-60. 60 is possible because of leap seconds (https://en.wikipedia.org/wiki/Leap_second)
-    u8 second() const { return mSecond; }
-    void hour(u8 v) { mHour = v; }
-    void minute(u8 v) { mMinute = v; }
-    void second(u8 v) { mSecond = v; }
+    constexpr u8 second() const { return mSecond; }
+    constexpr void hour(u8 v) { mHour = v; }
+    constexpr void minute(u8 v) { mMinute = v; }
+    constexpr void second(u8 v) { mSecond = v; }
 
 private:
     u8 mHour;
@@ -94,26 +94,26 @@ class DateTime : public Date, public Time
 {
 public:
     DateTime(const time_t& time) : Date(time), Time(time) {}
-    DateTime(const Date& date) : Date(date), Time(0, 0, 0) {}
-    DateTime(const Time& time) : Date(1, 1, 1900), Time(time) {}
-    DateTime(const Date& date, const Time& time) : Date(date), Time(time) {}
-    DateTime(const Time& time, const Date& date) : Date(date), Time(time) {}
+    constexpr DateTime(const Date& date) : Date(date), Time(0, 0, 0) {}
+    constexpr DateTime(const Time& time) : Date(1, 1, 1900), Time(time) {}
+    constexpr DateTime(const Date& date, const Time& time) : Date(date), Time(time) {}
+    constexpr DateTime(const Time& time, const Date& date) : Date(date), Time(time) {}
 
-    DateTime& operator=(const Date& date)
+    constexpr DateTime& operator=(const Date& date)
     {
         day(date.day());
         month(date.month());
         year(date.year());
         return *this;
     }
-    DateTime& operator=(const Time& time)
+    constexpr DateTime& operator=(const Time& time)
     {
         hour(time.hour());
         minute(time.minute());
         second(time.second());
         return *this;
     }
-    DateTime& operator=(const DateTime& other) = default;
+    constexpr DateTime& operator=(const DateTime& other) = default;
 
     static DateTime now() { return DateTime{time(nullptr)}; }
 };
