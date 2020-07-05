@@ -97,7 +97,10 @@ namespace pksm
         Ball ball(void) const override;
         u32 encryptionConstant(void) const;
         u16 heldItem(void) const override;
-        Language language(void) const override { return Language::UNUSED; } // Apparently all WCs are now multi-language?
+        Language language(void) const override
+        {
+            return Language::UNUSED;
+        } // Apparently all WCs are now multi-language?
         std::string nickname(void) const override;
         std::string nickname(Language lang) const;
         Language nicknameLanguage(Language orig) const;

@@ -292,7 +292,8 @@ namespace i18n
                         break;
                     case pksm::Generation::SEVEN:
                     case pksm::Generation::LGPE:
-                        ret = {Default, Original, Hoenn, Sinnoh, Unova, Kalos, Alola, Partner, Default, World};
+                        ret = {Default, Original, Hoenn, Sinnoh, Unova, Kalos, Alola, Partner,
+                            Default, World};
                         break;
                     default:
                         break;
@@ -381,7 +382,8 @@ namespace i18n
                 ret = {Default, Mega};
                 break;
             case pksm::Species::Unown:
-                ret = {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, ExclamationPoint, QuestionMark};
+                ret = {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
+                    ExclamationPoint, QuestionMark};
                 break;
             case pksm::Species::Steelix:
                 ret = {Default, Mega};
@@ -517,8 +519,8 @@ namespace i18n
                 ret = {Land, Sky};
                 break;
             case pksm::Species::Arceus:
-                ret = {Default, Fighting, Flying, Poison, Ground, Rock, Bug, Ghost, Steel, Fire, Water, Grass, Electric, Psychic, Ice, Dragon, Dark,
-                    Fairy};
+                ret = {Default, Fighting, Flying, Poison, Ground, Rock, Bug, Ghost, Steel, Fire,
+                    Water, Grass, Electric, Psychic, Ice, Dragon, Dark, Fairy};
                 break;
             case pksm::Species::Audino:
                 ret = {Default, Mega};
@@ -569,20 +571,23 @@ namespace i18n
             case pksm::Species::Scatterbug:
             case pksm::Species::Spewpa:
             case pksm::Species::Vivillon:
-                ret = {IcySnow, Polar, Tundra, Continental, Garden, Elegant, Meadow, Modern, Marine, Archipelago, HighPlains, Sandstorm, River,
-                    Monsoon, Savanna, Sun, Ocean, Jungle, Fancy, PokeBall};
+                ret = {IcySnow, Polar, Tundra, Continental, Garden, Elegant, Meadow, Modern, Marine,
+                    Archipelago, HighPlains, Sandstorm, River, Monsoon, Savanna, Sun, Ocean, Jungle,
+                    Fancy, PokeBall};
                 break;
             case pksm::Species::Flabebe:
                 ret = {RedFlower, YellowFlower, OrangeFlower, BlueFlower, WhiteFlower};
                 break;
             case pksm::Species::Floette:
-                ret = {RedFlower, YellowFlower, OrangeFlower, BlueFlower, WhiteFlower, EternalFlower};
+                ret = {
+                    RedFlower, YellowFlower, OrangeFlower, BlueFlower, WhiteFlower, EternalFlower};
                 break;
             case pksm::Species::Florges:
                 ret = {RedFlower, YellowFlower, OrangeFlower, BlueFlower, WhiteFlower};
                 break;
             case pksm::Species::Furfrou:
-                ret = {Natural, Heart, Star, Diamond, Debutante, Matron, Dandy, LaReine, Kabuki, Pharaoh};
+                ret = {Natural, Heart, Star, Diamond, Debutante, Matron, Dandy, LaReine, Kabuki,
+                    Pharaoh};
                 break;
             case pksm::Species::Meowstic:
                 ret = {Default, Female};
@@ -636,12 +641,12 @@ namespace i18n
                 ret = {Default, Totem};
                 break;
             case pksm::Species::Silvally:
-                ret = {Default, Fighting, Flying, Poison, Ground, Rock, Bug, Ghost, Steel, Fire, Water, Grass, Electric, Psychic, Ice, Dragon, Dark,
-                    Fairy};
+                ret = {Default, Fighting, Flying, Poison, Ground, Rock, Bug, Ghost, Steel, Fire,
+                    Water, Grass, Electric, Psychic, Ice, Dragon, Dark, Fairy};
                 break;
             case pksm::Species::Minior:
-                ret = {CoveredRed, CoveredOrange, CoveredYellow, CoveredGreen, CoveredBlue, CoveredIndigo, CoveredViolet, Red, Orange, Yellow, Green,
-                    Blue, Indigo, Violet};
+                ret = {CoveredRed, CoveredOrange, CoveredYellow, CoveredGreen, CoveredBlue,
+                    CoveredIndigo, CoveredViolet, Red, Orange, Yellow, Green, Blue, Indigo, Violet};
                 break;
             case pksm::Species::Togedemaru:
                 ret = {Default, Totem};
@@ -672,7 +677,8 @@ namespace i18n
                 ret = {Phony, Antique};
                 break;
             case pksm::Species::Alcremie:
-                ret = {VanillaCream, RubyCream, MatchaCream, MintCream, LemonCream, SaltedCream, RubySwirl, CaramelSwirl, RainbowSwirl};
+                ret = {VanillaCream, RubyCream, MatchaCream, MintCream, LemonCream, SaltedCream,
+                    RubySwirl, CaramelSwirl, RainbowSwirl};
                 break;
             case pksm::Species::Morpeko:
                 ret = {Default, HangryMode};
@@ -708,7 +714,8 @@ namespace i18n
         return ret;
     }
 
-    const std::string& form(pksm::Language lang, pksm::GameVersion version, pksm::Species species, u8 form)
+    const std::string& form(
+        pksm::Language lang, pksm::GameVersion version, pksm::Species species, u8 form)
     {
         checkInitialized(lang);
         if (formss.count(lang) > 0)
@@ -726,7 +733,8 @@ namespace i18n
         return emptyString;
     }
 
-    std::vector<std::string> forms(pksm::Language lang, pksm::GameVersion version, pksm::Species species)
+    std::vector<std::string> forms(
+        pksm::Language lang, pksm::GameVersion version, pksm::Species species)
     {
         checkInitialized(lang);
         std::vector<std::string> ret;

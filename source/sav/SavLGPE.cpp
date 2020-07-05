@@ -54,11 +54,20 @@ namespace pksm
         PokeDex = 0x2A00;
     }
 
-    u32 SavLGPE::boxOffset(u8 box, u8 slot) const { return 0x5C00 + box * 30 * PB7::BOX_LENGTH + slot * PB7::BOX_LENGTH; }
+    u32 SavLGPE::boxOffset(u8 box, u8 slot) const
+    {
+        return 0x5C00 + box * 30 * PB7::BOX_LENGTH + slot * PB7::BOX_LENGTH;
+    }
 
-    u16 SavLGPE::partyBoxSlot(u8 slot) const { return LittleEndian::convertTo<u16>(&data[0x5A00 + slot * 2]); }
+    u16 SavLGPE::partyBoxSlot(u8 slot) const
+    {
+        return LittleEndian::convertTo<u16>(&data[0x5A00 + slot * 2]);
+    }
 
-    void SavLGPE::partyBoxSlot(u8 slot, u16 v) { LittleEndian::convertFrom<u16>(&data[0x5A00 + slot * 2], v); }
+    void SavLGPE::partyBoxSlot(u8 slot, u16 v)
+    {
+        LittleEndian::convertFrom<u16>(&data[0x5A00 + slot * 2], v);
+    }
 
     u32 SavLGPE::partyOffset(u8 slot) const
     {
@@ -122,7 +131,8 @@ namespace pksm
                 {
                     u32 emptyOffset = boxOffset(emptyIndex / 30, emptyIndex % 30);
                     // Swap the two slots
-                    std::copy(&data[emptyOffset], &data[emptyOffset + PB7::PARTY_LENGTH], emptyData);
+                    std::copy(
+                        &data[emptyOffset], &data[emptyOffset + PB7::PARTY_LENGTH], emptyData);
                     std::copy(&data[offset], &data[offset + PB7::PARTY_LENGTH], &data[emptyOffset]);
                     std::copy(emptyData, emptyData + PB7::PARTY_LENGTH, &data[offset]);
                     for (int j = 0; j < partyCount(); j++)
@@ -149,7 +159,8 @@ namespace pksm
 
         for (u8 i = 0; i < blockCount; i++)
         {
-            LittleEndian::convertFrom<u16>(&data[csoff + i * 8], pksm::crypto::crc16_noinvert(&data[chkofs[i]], chklen[i]));
+            LittleEndian::convertFrom<u16>(
+                &data[csoff + i * 8], pksm::crypto::crc16_noinvert(&data[chkofs[i]], chklen[i]));
         }
     }
 
@@ -173,9 +184,15 @@ namespace pksm
 
     void SavLGPE::language(Language v) { data[0x1035] = u8(v); }
 
-    std::string SavLGPE::otName() const { return StringUtils::getString(data.get(), 0x1000 + 0x38, 13); }
+    std::string SavLGPE::otName() const
+    {
+        return StringUtils::getString(data.get(), 0x1000 + 0x38, 13);
+    }
 
-    void SavLGPE::otName(const std::string_view& v) { StringUtils::setString(data.get(), v, 0x1000 + 0x38, 13); }
+    void SavLGPE::otName(const std::string_view& v)
+    {
+        StringUtils::setString(data.get(), v, 0x1000 + 0x38, 13);
+    }
 
     u32 SavLGPE::money() const { return LittleEndian::convertTo<u32>(&data[0x4C04]); }
 
@@ -197,7 +214,8 @@ namespace pksm
             u8 unimportant2 : 4;
         } badgeBits;
         std::copy(&data[0x21b1], &data[0x21b1 + 2], (u8*)&badgeBits);
-        return badgeBits.b1 + badgeBits.b2 + badgeBits.b3 + badgeBits.b4 + badgeBits.b5 + badgeBits.b6 + badgeBits.b7 + badgeBits.b8;
+        return badgeBits.b1 + badgeBits.b2 + badgeBits.b3 + badgeBits.b4 + badgeBits.b5 +
+               badgeBits.b6 + badgeBits.b7 + badgeBits.b8;
     }
 
     u16 SavLGPE::playedHours(void) const { return LittleEndian::convertTo<u16>(&data[0x45400]); }
@@ -225,7 +243,10 @@ namespace pksm
         }
     }
 
-    std::unique_ptr<PKX> SavLGPE::pkm(u8 box, u8 slot) const { return PKX::getPKM<Generation::LGPE>(&data[boxOffset(box, slot)], true); }
+    std::unique_ptr<PKX> SavLGPE::pkm(u8 box, u8 slot) const
+    {
+        return PKX::getPKM<Generation::LGPE>(&data[boxOffset(box, slot)], true);
+    }
 
     void SavLGPE::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)
     {
@@ -237,7 +258,8 @@ namespace pksm
                 trade(*pb7);
             }
 
-            std::copy(pb7->rawData(), pb7->rawData() + PB7::PARTY_LENGTH, &data[boxOffset(box, slot)]);
+            std::copy(
+                pb7->rawData(), pb7->rawData() + PB7::PARTY_LENGTH, &data[boxOffset(box, slot)]);
         }
     }
 
@@ -282,12 +304,14 @@ namespace pksm
     void SavLGPE::trade(PKX& pk, const Date& date) const
     {
         PB7* pb7 = (PB7*)&pk;
-        if (pb7->egg() && !(otName() == pb7->otName() && TID() == pb7->TID() && SID() == pb7->SID() && gender() == pb7->otGender()))
+        if (pb7->egg() && !(otName() == pb7->otName() && TID() == pb7->TID() &&
+                              SID() == pb7->SID() && gender() == pb7->otGender()))
         {
             pb7->metLocation(30002);
             pb7->metDate(date);
         }
-        else if (!(otName() == pb7->otName() && TID() == pb7->TID() && SID() == pb7->SID() && gender() == pb7->otGender()))
+        else if (!(otName() == pb7->otName() && TID() == pb7->TID() && SID() == pb7->SID() &&
+                     gender() == pb7->otGender()))
         {
             pb7->currentHandler(0);
         }
@@ -295,7 +319,8 @@ namespace pksm
         {
             if (pb7->htName() != otName())
             {
-                pb7->htFriendship(pb7->currentFriendship()); // copy friendship instead of resetting (don't alter CP)
+                pb7->htFriendship(pb7->currentFriendship()); // copy friendship instead of resetting
+                                                             // (don't alter CP)
                 pb7->htAffection(0);
             }
             pb7->currentHandler(1);
@@ -304,7 +329,10 @@ namespace pksm
         }
     }
 
-    std::unique_ptr<PKX> SavLGPE::emptyPkm() const { return PKX::getPKM<Generation::LGPE>(nullptr, true); }
+    std::unique_ptr<PKX> SavLGPE::emptyPkm() const
+    {
+        return PKX::getPKM<Generation::LGPE>(nullptr, true);
+    }
 
     int SavLGPE::dexFormCount(int species) const
     {
@@ -436,7 +464,8 @@ namespace pksm
         {
             if ((data[PokeDex + 0x84] & (1 << (shift + 4))) != 0)
             { // Already 2
-                LittleEndian::convertFrom<u32>(&data[PokeDex + 0x8E8 + shift * 4], pk.encryptionConstant());
+                LittleEndian::convertFrom<u32>(
+                    &data[PokeDex + 0x8E8 + shift * 4], pk.encryptionConstant());
                 data[PokeDex + 0x84] |= (u8)(1 << shift);
             }
             else if ((data[PokeDex + 0x84] & (1 << shift)) == 0)
@@ -497,7 +526,9 @@ namespace pksm
             int forms = formCount(species);
             for (int form = 0; form < forms; form++)
             {
-                int dexForms = form == 0 ? -1 : dexFormIndex(u16(species), forms, u16(VersionTables::maxSpecies(version())) - 1);
+                int dexForms = form == 0 ? -1
+                                         : dexFormIndex(u16(species), forms,
+                                               u16(VersionTables::maxSpecies(version())) - 1);
 
                 int index = u16(species) - 1;
                 if (dexForms >= 0)
@@ -538,7 +569,8 @@ namespace pksm
                 {
                     return;
                 }
-                std::unique_ptr<PKX> pb7 = PKX::getPKM<Generation::LGPE>(&data[boxOffset(box, slot)], true, true);
+                std::unique_ptr<PKX> pb7 =
+                    PKX::getPKM<Generation::LGPE>(&data[boxOffset(box, slot)], true, true);
                 if (!crypted)
                 {
                     pb7->encrypt();
@@ -594,7 +626,8 @@ namespace pksm
                 }
                 if (u8(wb7->gender()) == 3) // Invalid gender value
                 {
-                    pb7->gender(PKX::genderFromRatio(pksm::randomNumber(0, 0xFFFFFFFF), PersonalLGPE::gender(u16(wb7->species()))));
+                    pb7->gender(PKX::genderFromRatio(pksm::randomNumber(0, 0xFFFFFFFF),
+                        PersonalLGPE::gender(u16(wb7->species()))));
                 }
                 else
                 {
@@ -648,7 +681,8 @@ namespace pksm
                 }
 
                 int numPerfectIVs = 0;
-                for (Stat stat : {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF})
+                for (Stat stat :
+                    {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF})
                 {
                     if (wb7->iv(stat) - 0xFC < 3)
                     {
@@ -665,7 +699,8 @@ namespace pksm
                     }
                     pb7->iv(setMeTo31, 31);
                 }
-                for (Stat stat : {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF})
+                for (Stat stat :
+                    {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF})
                 {
                     if (pb7->iv(stat) != 31)
                     {
@@ -679,7 +714,8 @@ namespace pksm
                     pb7->SID(SID());
                 }
 
-                // Sets the ability to the one specific to the formSpecies and sets abilitynumber (Why? Don't quite understand that)
+                // Sets the ability to the one specific to the formSpecies and sets abilitynumber
+                // (Why? Don't quite understand that)
                 switch (wb7->abilityType())
                 {
                     case 0:
@@ -741,7 +777,8 @@ namespace pksm
                     {
                         // Check this is the correct pouch
                         if (!currentSet &&
-                            std::binary_search(valid[limits[pouch].first].begin(), valid[limits[pouch].first].end(), wb7->object(itemNum)))
+                            std::binary_search(valid[limits[pouch].first].begin(),
+                                valid[limits[pouch].first].end(), wb7->object(itemNum)))
                         {
                             for (int slot = 0; slot < limits[pouch].second; slot++)
                             {
@@ -755,7 +792,8 @@ namespace pksm
                                     currentSet = true;
                                     break;
                                 }
-                                else if (occupying->id() == wb7->object(itemNum) && limits[pouch].first != Pouch::TM)
+                                else if (occupying->id() == wb7->object(itemNum) &&
+                                         limits[pouch].first != Pouch::TM)
                                 {
                                     occupying->count(occupying->count() + 1);
                                     item(*occupying, limits[pouch].first, slot);
@@ -852,26 +890,35 @@ namespace pksm
 
     std::vector<std::pair<Sav::Pouch, int>> SavLGPE::pouches() const
     {
-        return {{Pouch::Medicine, 60}, {Pouch::TM, 108}, {Pouch::Candy, 200}, {Pouch::ZCrystals, 150}, {Pouch::CatchingItem, 50},
-            {Pouch::Battle, 150}, {Pouch::NormalItem, 150}};
+        return {{Pouch::Medicine, 60}, {Pouch::TM, 108}, {Pouch::Candy, 200},
+            {Pouch::ZCrystals, 150}, {Pouch::CatchingItem, 50}, {Pouch::Battle, 150},
+            {Pouch::NormalItem, 150}};
     }
 
     std::map<Sav::Pouch, std::vector<int>> SavLGPE::validItems() const
     {
-        return {{Pouch::Medicine, {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 38, 39, 40, 41, 709, 903}},
-            {Pouch::TM, {328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352,
-                            353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376,
-                            377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387}},
-            {Pouch::Candy, {50, 960, 961, 962, 963, 964, 965, 966, 967, 968, 969, 970, 971, 972, 973, 974, 975, 976, 977, 978, 979, 980, 981, 982,
-                               983, 984, 985, 986, 987, 988, 989, 990, 991, 992, 993, 994, 995, 996, 997, 998, 999, 1000, 1001, 1002, 1003, 1004,
-                               1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 1016, 1017, 1018, 1019, 1020, 1021, 1022, 1023, 1024,
-                               1025, 1026, 1027, 1028, 1029, 1030, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038, 1039, 1040, 1041, 1042, 1043, 1044,
-                               1045, 1046, 1047, 1048, 1049, 1050, 1051, 1052, 1053, 1054, 1055, 1056, 1057}},
+        return {{Pouch::Medicine, {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32,
+                                      38, 39, 40, 41, 709, 903}},
+            {Pouch::TM,
+                {328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343,
+                    344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359,
+                    360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375,
+                    376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387}},
+            {Pouch::Candy,
+                {50, 960, 961, 962, 963, 964, 965, 966, 967, 968, 969, 970, 971, 972, 973, 974, 975,
+                    976, 977, 978, 979, 980, 981, 982, 983, 984, 985, 986, 987, 988, 989, 990, 991,
+                    992, 993, 994, 995, 996, 997, 998, 999, 1000, 1001, 1002, 1003, 1004, 1005,
+                    1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 1016, 1017, 1018,
+                    1019, 1020, 1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1029, 1030, 1031,
+                    1032, 1033, 1034, 1035, 1036, 1037, 1038, 1039, 1040, 1041, 1042, 1043, 1044,
+                    1045, 1046, 1047, 1048, 1049, 1050, 1051, 1052, 1053, 1054, 1055, 1056, 1057}},
             {Pouch::ZCrystals, {51, 53, 81, 82, 83, 84, 85, 849}},
             {Pouch::CatchingItem, {1, 2, 3, 4, 12, 164, 166, 168, 861, 862, 863, 864, 865, 866}},
-            {Pouch::Battle, {55, 56, 57, 58, 59, 60, 61, 62, 656, 659, 660, 661, 662, 663, 671, 672, 675, 676, 678, 679, 760, 762, 770, 773}},
-            {Pouch::NormalItem,
-                {76, 77, 78, 79, 86, 87, 88, 89, 90, 91, 92, 93, 101, 102, 103, 113, 115, 121, 122, 123, 124, 125, 126, 127, 128, 442, 571, 632, 651,
-                    795, 796, 872, 873, 874, 875, 876, 877, 878, 885, 886, 887, 888, 889, 890, 891, 892, 893, 894, 895, 896, 900, 901, 902}}};
+            {Pouch::Battle, {55, 56, 57, 58, 59, 60, 61, 62, 656, 659, 660, 661, 662, 663, 671, 672,
+                                675, 676, 678, 679, 760, 762, 770, 773}},
+            {Pouch::NormalItem, {76, 77, 78, 79, 86, 87, 88, 89, 90, 91, 92, 93, 101, 102, 103, 113,
+                                    115, 121, 122, 123, 124, 125, 126, 127, 128, 442, 571, 632, 651,
+                                    795, 796, 872, 873, 874, 875, 876, 877, 878, 885, 886, 887, 888,
+                                    889, 890, 891, 892, 893, 894, 895, 896, 900, 901, 902}}};
     }
 }

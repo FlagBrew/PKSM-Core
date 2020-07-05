@@ -88,7 +88,10 @@ namespace pksm
         u8 alternativeForm(void) const override;
         Gender gender(void) const override;
         u16 heldItem(void) const override;
-        Language language(void) const override { return Language::UNUSED; } // Apparently all WCs are now multi-language?
+        Language language(void) const override
+        {
+            return Language::UNUSED;
+        } // Apparently all WCs are now multi-language?
         u8 level(void) const override;
         u8 metLevel(void) const override;
         u16 move(u8 index) const override;

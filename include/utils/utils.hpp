@@ -43,12 +43,15 @@ namespace StringUtils
     std::string UTF16toUTF8(const std::u16string_view& src);
     std::u16string getU16String(const u8* data, int ofs, int len, char16_t term);
     std::string getString(const u8* data, int ofs, int len, char16_t term = 0);
-    void setString(u8* data, const std::u16string_view& v, int ofs, int len, char16_t terminator = 0, char16_t padding = 0);
-    void setString(u8* data, const std::string_view& v, int ofs, int len, char16_t terminator = 0, char16_t padding = 0);
+    void setString(u8* data, const std::u16string_view& v, int ofs, int len,
+        char16_t terminator = 0, char16_t padding = 0);
+    void setString(u8* data, const std::string_view& v, int ofs, int len, char16_t terminator = 0,
+        char16_t padding = 0);
     std::string getString4(const u8* data, int ofs, int len);
     void setString4(u8* data, const std::string_view& v, int ofs, int len);
     std::string getString3(const u8* data, int ofs, int len, bool jp);
-    void setString3(u8* data, const std::string_view& v, int ofs, int len, bool jp, int padTo = 0, u8 padWith = 0xFF);
+    void setString3(u8* data, const std::string_view& v, int ofs, int len, bool jp, int padTo = 0,
+        u8 padWith = 0xFF);
     std::vector<u16> stringToG4(const std::string_view& v);
     std::string& toLower(std::string& in);
     std::string toLower(const std::string_view& in);

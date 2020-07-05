@@ -124,13 +124,19 @@ namespace pksm
 
     u16 WB7::object(void) const { return object(0); }
 
-    u16 WB7::object(int index) const { return LittleEndian::convertTo<u16>(data + 0x68 + index * 4); }
+    u16 WB7::object(int index) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x68 + index * 4);
+    }
 
     int WB7::items(void) const { return numItems; }
 
     u16 WB7::objectQuantity(void) const { return objectQuantity(0); }
 
-    u16 WB7::objectQuantity(int index) const { return LittleEndian::convertTo<u16>(data + 0x6A + index * 4); }
+    u16 WB7::objectQuantity(int index) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x6A + index * 4);
+    }
 
     bool WB7::pokemon(void) const { return type() == 0; }
 
@@ -196,7 +202,10 @@ namespace pksm
 
     u32 WB7::PID(void) const { return LittleEndian::convertTo<u32>(data + 0xD4); }
 
-    u16 WB7::relearnMove(u8 index) const { return LittleEndian::convertTo<u16>(data + 0xD8 + index * 2); }
+    u16 WB7::relearnMove(u8 index) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0xD8 + index * 2);
+    }
 
     u8 WB7::otIntensity(void) const { return data[0xE0]; }
 
@@ -208,9 +217,15 @@ namespace pksm
 
     u8 WB7::ev(Stat index) const { return data[0xE5 + u8(index)]; }
 
-    std::string WB7::nickname(Language lang) const { return StringUtils::getString(data, 0x4 + langIndex(lang) * 0x1A, 13); }
+    std::string WB7::nickname(Language lang) const
+    {
+        return StringUtils::getString(data, 0x4 + langIndex(lang) * 0x1A, 13);
+    }
 
-    std::string WB7::otName(Language lang) const { return StringUtils::getString(data, 0xEE + langIndex(lang) * 0x1A, 13); }
+    std::string WB7::otName(Language lang) const
+    {
+        return StringUtils::getString(data, 0xEE + langIndex(lang) * 0x1A, 13);
+    }
 
     std::string WB7::nickname() const { return nickname(Language::ENG); }
 

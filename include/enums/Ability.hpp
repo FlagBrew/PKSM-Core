@@ -307,7 +307,8 @@ namespace pksm
                 QuickDraw,
                 UnseenFist,
 
-                INVALID[[maybe_unused]] = std::numeric_limits<std::underlying_type_t<AbilityEnum>>::max()
+                INVALID[[maybe_unused]] =
+                    std::numeric_limits<std::underlying_type_t<AbilityEnum>>::max()
             } v;
 
             constexpr explicit Ability_impl(AbilityEnum v) : v(v) {}
@@ -325,14 +326,32 @@ namespace pksm
             }
             constexpr operator AbilityEnum() const noexcept { return v; }
 
-            constexpr bool operator<(const Ability_impl& other) const noexcept { return v < other.v; }
-            constexpr bool operator<=(const Ability_impl& other) const noexcept { return v <= other.v; }
+            constexpr bool operator<(const Ability_impl& other) const noexcept
+            {
+                return v < other.v;
+            }
+            constexpr bool operator<=(const Ability_impl& other) const noexcept
+            {
+                return v <= other.v;
+            }
 
-            constexpr bool operator>(const Ability_impl& other) const noexcept { return v > other.v; }
-            constexpr bool operator>=(const Ability_impl& other) const noexcept { return v >= other.v; }
+            constexpr bool operator>(const Ability_impl& other) const noexcept
+            {
+                return v > other.v;
+            }
+            constexpr bool operator>=(const Ability_impl& other) const noexcept
+            {
+                return v >= other.v;
+            }
 
-            constexpr bool operator==(const Ability_impl& other) const noexcept { return v == other.v; }
-            constexpr bool operator!=(const Ability_impl& other) const noexcept { return v != other.v; }
+            constexpr bool operator==(const Ability_impl& other) const noexcept
+            {
+                return v == other.v;
+            }
+            constexpr bool operator!=(const Ability_impl& other) const noexcept
+            {
+                return v != other.v;
+            }
 
             const std::string& localize(Language lang) const;
         };
@@ -347,7 +366,9 @@ namespace pksm
         using EnumType = internal::Ability_impl::AbilityEnum;
         constexpr Ability() noexcept : impl(EnumType::INVALID) {}
         constexpr Ability(const internal::Ability_impl& impl) noexcept : impl(impl) {}
-        constexpr explicit Ability(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v}) {}
+        constexpr explicit Ability(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v})
+        {
+        }
         template <typename T>
         constexpr explicit operator T() const noexcept
         {
@@ -357,22 +378,52 @@ namespace pksm
         constexpr operator EnumType() const noexcept { return (EnumType)impl; }
 
         constexpr bool operator<(const Ability& other) const noexcept { return impl < other.impl; }
-        constexpr bool operator<=(const Ability& other) const noexcept { return impl <= other.impl; }
+        constexpr bool operator<=(const Ability& other) const noexcept
+        {
+            return impl <= other.impl;
+        }
 
         constexpr bool operator>(const Ability& other) const noexcept { return impl > other.impl; }
-        constexpr bool operator>=(const Ability& other) const noexcept { return impl >= other.impl; }
+        constexpr bool operator>=(const Ability& other) const noexcept
+        {
+            return impl >= other.impl;
+        }
 
-        constexpr bool operator==(const Ability& other) const noexcept { return impl == other.impl; }
-        constexpr bool operator!=(const Ability& other) const noexcept { return impl != other.impl; }
+        constexpr bool operator==(const Ability& other) const noexcept
+        {
+            return impl == other.impl;
+        }
+        constexpr bool operator!=(const Ability& other) const noexcept
+        {
+            return impl != other.impl;
+        }
 
-        constexpr bool operator<(const internal::Ability_impl& other) const noexcept { return impl < other; }
-        constexpr bool operator<=(const internal::Ability_impl& other) const noexcept { return impl <= other; }
+        constexpr bool operator<(const internal::Ability_impl& other) const noexcept
+        {
+            return impl < other;
+        }
+        constexpr bool operator<=(const internal::Ability_impl& other) const noexcept
+        {
+            return impl <= other;
+        }
 
-        constexpr bool operator>(const internal::Ability_impl& other) const noexcept { return impl > other; }
-        constexpr bool operator>=(const internal::Ability_impl& other) const noexcept { return impl >= other; }
+        constexpr bool operator>(const internal::Ability_impl& other) const noexcept
+        {
+            return impl > other;
+        }
+        constexpr bool operator>=(const internal::Ability_impl& other) const noexcept
+        {
+            return impl >= other;
+        }
 
-        constexpr bool operator==(const internal::Ability_impl& other) const noexcept { return impl == other; }
-        constexpr bool operator!=(const internal::Ability_impl& other) const noexcept { return impl != other; }
+        constexpr bool operator==(const internal::Ability_impl& other) const noexcept
+        {
+            return impl == other;
+        }
+        constexpr bool operator!=(const internal::Ability_impl& other) const noexcept
+        {
+            return impl != other;
+        }
 
         const std::string& localize(Language lang) const { return impl.localize(lang); }
 

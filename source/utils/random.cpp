@@ -50,11 +50,13 @@ u32 pksm::randomNumber(u32 minInclusive, u32 maxInclusive)
     if (!seeded)
     {
         DateTime now      = DateTime::now();
-        std::seed_seq seq = std::initializer_list<u32>{now.year(), now.month(), now.day(), now.hour(), now.minute(), now.second()};
+        std::seed_seq seq = std::initializer_list<u32>{
+            now.year(), now.month(), now.day(), now.hour(), now.minute(), now.second()};
         seedRand(seq);
     }
 
-    return distrib(randomNumbers, std::uniform_int_distribution<u32>::param_type{minInclusive, maxInclusive});
+    return distrib(
+        randomNumbers, std::uniform_int_distribution<u32>::param_type{minInclusive, maxInclusive});
 }
 
 void pksm::seedRand(u32 seed)

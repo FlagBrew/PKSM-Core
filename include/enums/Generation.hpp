@@ -98,7 +98,10 @@ namespace pksm
                 }
                 return "INVALID";
             }
-            constexpr explicit operator std::string_view() const { return std::string_view{(const char*)*this}; }
+            constexpr explicit operator std::string_view() const
+            {
+                return std::string_view{(const char*)*this};
+            }
             explicit operator std::string() const { return std::string{(const char*)*this}; }
             constexpr operator GenerationEnum() const noexcept { return v; }
 
@@ -174,11 +177,23 @@ namespace pksm
                 return !(*this < other);
             }
 
-            constexpr bool operator<=(const Generation_impl& other) const noexcept { return *this < other || *this == other; }
-            constexpr bool operator>=(const Generation_impl& other) const noexcept { return *this > other || *this == other; }
+            constexpr bool operator<=(const Generation_impl& other) const noexcept
+            {
+                return *this < other || *this == other;
+            }
+            constexpr bool operator>=(const Generation_impl& other) const noexcept
+            {
+                return *this > other || *this == other;
+            }
 
-            constexpr bool operator==(const Generation_impl& other) const noexcept { return v == other.v; }
-            constexpr bool operator!=(const Generation_impl& other) const noexcept { return v != other.v; }
+            constexpr bool operator==(const Generation_impl& other) const noexcept
+            {
+                return v == other.v;
+            }
+            constexpr bool operator!=(const Generation_impl& other) const noexcept
+            {
+                return v != other.v;
+            }
         };
     }
 
@@ -191,7 +206,10 @@ namespace pksm
         using EnumType = internal::Generation_impl::GenerationEnum;
         constexpr Generation() noexcept : impl(EnumType::UNUSED) {}
         constexpr Generation(const internal::Generation_impl& impl) noexcept : impl(impl) {}
-        constexpr explicit Generation(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v}) {}
+        constexpr explicit Generation(std::underlying_type_t<EnumType> v) noexcept
+            : impl(EnumType{v})
+        {
+        }
         template <typename T>
         constexpr explicit operator T() const noexcept
         {
@@ -236,23 +254,59 @@ namespace pksm
             return Generation::UNUSED;
         }
 
-        constexpr bool operator<(const Generation& other) const noexcept { return impl < other.impl; }
-        constexpr bool operator<=(const Generation& other) const noexcept { return impl <= other.impl; }
+        constexpr bool operator<(const Generation& other) const noexcept
+        {
+            return impl < other.impl;
+        }
+        constexpr bool operator<=(const Generation& other) const noexcept
+        {
+            return impl <= other.impl;
+        }
 
-        constexpr bool operator>(const Generation& other) const noexcept { return impl > other.impl; }
-        constexpr bool operator>=(const Generation& other) const noexcept { return impl >= other.impl; }
+        constexpr bool operator>(const Generation& other) const noexcept
+        {
+            return impl > other.impl;
+        }
+        constexpr bool operator>=(const Generation& other) const noexcept
+        {
+            return impl >= other.impl;
+        }
 
-        constexpr bool operator==(const Generation& other) const noexcept { return impl == other.impl; }
-        constexpr bool operator!=(const Generation& other) const noexcept { return impl != other.impl; }
+        constexpr bool operator==(const Generation& other) const noexcept
+        {
+            return impl == other.impl;
+        }
+        constexpr bool operator!=(const Generation& other) const noexcept
+        {
+            return impl != other.impl;
+        }
 
-        constexpr bool operator<(const internal::Generation_impl& other) const noexcept { return impl < other; }
-        constexpr bool operator<=(const internal::Generation_impl& other) const noexcept { return impl <= other; }
+        constexpr bool operator<(const internal::Generation_impl& other) const noexcept
+        {
+            return impl < other;
+        }
+        constexpr bool operator<=(const internal::Generation_impl& other) const noexcept
+        {
+            return impl <= other;
+        }
 
-        constexpr bool operator>(const internal::Generation_impl& other) const noexcept { return impl > other; }
-        constexpr bool operator>=(const internal::Generation_impl& other) const noexcept { return impl >= other; }
+        constexpr bool operator>(const internal::Generation_impl& other) const noexcept
+        {
+            return impl > other;
+        }
+        constexpr bool operator>=(const internal::Generation_impl& other) const noexcept
+        {
+            return impl >= other;
+        }
 
-        constexpr bool operator==(const internal::Generation_impl& other) const noexcept { return impl == other; }
-        constexpr bool operator!=(const internal::Generation_impl& other) const noexcept { return impl != other; }
+        constexpr bool operator==(const internal::Generation_impl& other) const noexcept
+        {
+            return impl == other;
+        }
+        constexpr bool operator!=(const internal::Generation_impl& other) const noexcept
+        {
+            return impl != other;
+        }
 
         static constexpr internal::Generation_impl ONE{EnumType::ONE};
         static constexpr internal::Generation_impl TWO{EnumType::TWO};

@@ -39,8 +39,10 @@ namespace pksm
     std::shared_ptr<pksm::crypto::swsh::SCBlock> Sav8::getBlock(u32 key) const
     {
         // binary search
-        auto found = std::lower_bound(
-            blocks.begin(), blocks.end(), key, [](const std::shared_ptr<pksm::crypto::swsh::SCBlock>& block, u32 key) { return block->key() < key; });
+        auto found = std::lower_bound(blocks.begin(), blocks.end(), key,
+            [](const std::shared_ptr<pksm::crypto::swsh::SCBlock>& block, u32 key) {
+                return block->key() < key;
+            });
         if ((*found)->key() != key)
         {
             return nullptr;
@@ -54,7 +56,8 @@ namespace pksm
     {
         if (pk.egg())
         {
-            if (pk.otName() != otName() || pk.TID() != TID() || pk.SID() != SID() || pk.gender() != gender())
+            if (pk.otName() != otName() || pk.TID() != TID() || pk.SID() != SID() ||
+                pk.gender() != gender())
             {
                 pk.metLocation(30002);
                 pk.metDate(date);
@@ -62,7 +65,8 @@ namespace pksm
         }
         else
         {
-            if (pk.otName() != otName() || pk.TID() != TID() || pk.SID() != SID() || pk.gender() != gender())
+            if (pk.otName() != otName() || pk.TID() != TID() || pk.SID() != SID() ||
+                pk.gender() != gender())
             {
                 pk.currentHandler(0);
             }
@@ -100,6 +104,7 @@ namespace pksm
         }
         encrypted = false;
 
-        // I could decrypt every block here, but why not just let them be done on the fly via the functions that need them?
+        // I could decrypt every block here, but why not just let them be done on the fly via the
+        // functions that need them?
     }
 }

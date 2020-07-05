@@ -116,13 +116,19 @@ namespace pksm::crypto::swsh
                 return ret;
             }
 
-            u32 next32() { return next() | (u32(next()) << 8) | (u32(next()) << 16) | (u32(next()) << 24); }
+            u32 next32()
+            {
+                return next() | (u32(next()) << 8) | (u32(next()) << 16) | (u32(next()) << 24);
+            }
         };
 
         class CryptoException : public std::exception
         {
         public:
-            explicit CryptoException(const std::string& message) : mMessage("CryptoException: " + message) {}
+            explicit CryptoException(const std::string& message)
+                : mMessage("CryptoException: " + message)
+            {
+            }
 
             const char* what() const noexcept override { return mMessage.c_str(); }
 
@@ -196,7 +202,8 @@ namespace pksm::crypto::swsh
                 break;
             case SCBlockType::Object:
             {
-                dataLength = LittleEndian::convertTo<u32>(data.get() + offset + 1) ^ xorShift.next32();
+                dataLength =
+                    LittleEndian::convertTo<u32>(data.get() + offset + 1) ^ xorShift.next32();
                 LittleEndian::convertFrom<u32>(data.get() + offset + 1, dataLength);
                 for (size_t i = 0; i < dataLength; i++)
                 {
@@ -207,7 +214,8 @@ namespace pksm::crypto::swsh
             break;
             case SCBlockType::Array:
             {
-                dataLength = LittleEndian::convertTo<u32>(data.get() + offset + 1) ^ xorShift.next32();
+                dataLength =
+                    LittleEndian::convertTo<u32>(data.get() + offset + 1) ^ xorShift.next32();
                 LittleEndian::convertFrom<u32>(data.get() + offset + 1, dataLength);
                 subtype = SCBlockType(data[offset + 5] ^= xorShift.next());
                 switch (subtype)
@@ -240,7 +248,9 @@ namespace pksm::crypto::swsh
                     }
                     break;
                     default:
-                        throw internal::CryptoException("Decoding block: Key: " + std::to_string(key()) + "\nSubtype: " + std::to_string(u8(type)));
+                        throw internal::CryptoException(
+                            "Decoding block: Key: " + std::to_string(key()) +
+                            "\nSubtype: " + std::to_string(u8(type)));
                 }
             }
             break;
@@ -264,7 +274,8 @@ namespace pksm::crypto::swsh
             }
             break;
             default:
-                throw internal::CryptoException("Decoding block: Key: " + std::to_string(key()) + "\nType: " + std::to_string(u8(type)));
+                throw internal::CryptoException("Decoding block: Key: " + std::to_string(key()) +
+                                                "\nType: " + std::to_string(u8(type)));
         }
     }
 
@@ -362,7 +373,9 @@ namespace pksm::crypto::swsh
             case SCBlockType::Object:
                 return baseSize + 4 + dataLength; // + datalength variable + actual data
             case SCBlockType::Array:
-                return baseSize + 5 + dataLength * arrayEntrySize(subtype); // + subtype + datalength variable + actual data
+                return baseSize + 5 +
+                       dataLength *
+                           arrayEntrySize(subtype); // + subtype + datalength variable + actual data
             case SCBlockType::U8:
             case SCBlockType::U16:
             case SCBlockType::U32:

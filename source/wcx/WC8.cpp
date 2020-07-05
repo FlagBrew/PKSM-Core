@@ -304,13 +304,19 @@ namespace pksm
 
     u16 WC8::object(void) const { return object(0); }
 
-    u16 WC8::object(int index) const { return LittleEndian::convertTo<u16>(data + 0x20 + index * 4); }
+    u16 WC8::object(int index) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x20 + index * 4);
+    }
 
     int WC8::items(void) const { return numItems; }
 
     u16 WC8::objectQuantity(void) const { return objectQuantity(0); }
 
-    u16 WC8::objectQuantity(int index) const { return LittleEndian::convertTo<u16>(data + 0x22 + index * 4); }
+    u16 WC8::objectQuantity(int index) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x22 + index * 4);
+    }
 
     u8 WC8::PIDType(void) const { return data[0x248]; }
 
@@ -320,7 +326,10 @@ namespace pksm
 
     u16 WC8::SID(void) const { return LittleEndian::convertTo<u16>(data + 0x22); }
 
-    GameVersion WC8::version(void) const { return GameVersion(LittleEndian::convertTo<u32>(data + 0x24)); }
+    GameVersion WC8::version(void) const
+    {
+        return GameVersion(LittleEndian::convertTo<u32>(data + 0x24));
+    }
 
     u32 WC8::encryptionConstant(void) const { return LittleEndian::convertTo<u32>(data + 0x28); }
 
@@ -332,7 +341,10 @@ namespace pksm
 
     u16 WC8::move(u8 m) const { return LittleEndian::convertTo<u16>(data + 0x230 + m * 2); }
 
-    u16 WC8::relearnMove(u8 index) const { return LittleEndian::convertTo<u16>(data + 0x238 + index * 2); }
+    u16 WC8::relearnMove(u8 index) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x238 + index * 2);
+    }
 
     Species WC8::species(void) const { return Species{LittleEndian::convertTo<u16>(data + 0x240)}; }
 
@@ -393,16 +405,26 @@ namespace pksm
     bool WC8::ribbon(Ribbon rib) const
     {
         auto offset = OFFSET_OF(rib);
-        return offset.first != RIBBON_ABSENT ? FlagUtil::getFlag(data, offset.first, offset.second) : false;
+        return offset.first != RIBBON_ABSENT ? FlagUtil::getFlag(data, offset.first, offset.second)
+                                             : false;
     }
 
     bool WC8::nicknamed(Language lang) const { return nickname(lang)[0] != 0; }
 
-    std::string WC8::nickname(Language lang) const { return StringUtils::getString(data, 0x30 + langIndex(lang) * 0x1C, 13); }
+    std::string WC8::nickname(Language lang) const
+    {
+        return StringUtils::getString(data, 0x30 + langIndex(lang) * 0x1C, 13);
+    }
 
-    Language WC8::nicknameLanguage(Language orig) const { return Language(data[0x30 + langIndex(orig) * 0x1C + 0x1A]); }
+    Language WC8::nicknameLanguage(Language orig) const
+    {
+        return Language(data[0x30 + langIndex(orig) * 0x1C + 0x1A]);
+    }
 
-    std::string WC8::otName(Language lang) const { return StringUtils::getString(data, 0x12C + langIndex(lang) * 0x1C, 13); }
+    std::string WC8::otName(Language lang) const
+    {
+        return StringUtils::getString(data, 0x12C + langIndex(lang) * 0x1C, 13);
+    }
 
     std::string WC8::nickname() const { return nickname(Language::ENG); }
 

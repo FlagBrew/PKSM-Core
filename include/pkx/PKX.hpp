@@ -96,17 +96,23 @@ namespace pksm
     public:
         static constexpr Species PKSM_MAX_SPECIES = Species::Zarude;
 
-        static std::unique_ptr<PKX> getPKM(Generation gen, u8* data, bool party = false, bool directAccess = false);
+        static std::unique_ptr<PKX> getPKM(
+            Generation gen, u8* data, bool party = false, bool directAccess = false);
         template <Generation::EnumType g>
-        static std::unique_ptr<typename GenToPkx<g>::PKX> getPKM(u8* data, bool party = false, bool directAccess = false)
+        static std::unique_ptr<typename GenToPkx<g>::PKX> getPKM(
+            u8* data, bool party = false, bool directAccess = false)
         {
-            return std::make_unique<typename GenToPkx<g>::PKX>(PrivateConstructor{}, data, party, directAccess);
+            return std::make_unique<typename GenToPkx<g>::PKX>(
+                PrivateConstructor{}, data, party, directAccess);
         }
 
-        // Returns null if length is not valid for that generation, and a party Pokemon depending on length
-        static std::unique_ptr<PKX> getPKM(Generation gen, u8* data, size_t length, bool directAccess = false);
+        // Returns null if length is not valid for that generation, and a party Pokemon depending on
+        // length
+        static std::unique_ptr<PKX> getPKM(
+            Generation gen, u8* data, size_t length, bool directAccess = false);
         template <Generation::EnumType g>
-        static std::unique_ptr<typename GenToPkx<g>::PKX> getPKM(u8* data, size_t length, bool directAccess = false)
+        static std::unique_ptr<typename GenToPkx<g>::PKX> getPKM(
+            u8* data, size_t length, bool directAccess = false)
         {
             if (GenToPkx<g>::PKX::PARTY_LENGTH == length || GenToPkx<g>::PKX::BOX_LENGTH == length)
             {
@@ -152,8 +158,8 @@ namespace pksm
         Generation originGen(void) const;
         void fixMoves(void);
 
-        static u32 getRandomPID(
-            Species species, Gender gender, GameVersion originGame, Nature nature, u8 form, u8 abilityNum, u32 oldPid, Generation gen);
+        static u32 getRandomPID(Species species, Gender gender, GameVersion originGame,
+            Nature nature, u8 form, u8 abilityNum, u32 oldPid, Generation gen);
         static Gender genderFromRatio(u32 pid, u8 gt);
 
         // BLOCK A
@@ -233,14 +239,20 @@ namespace pksm
         virtual u8 otFriendship(void) const            = 0;
         virtual void otFriendship(u8 v)                = 0;
         // Raw information handled in private functions
-        virtual Date eggDate(void) const { return Date{(u8)eggDay(), (u8)eggMonth(), (u32)eggYear()}; }
+        virtual Date eggDate(void) const
+        {
+            return Date{(u8)eggDay(), (u8)eggMonth(), (u32)eggYear()};
+        }
         virtual void eggDate(const Date& v)
         {
             eggDay(v.day());
             eggMonth(v.month());
             eggYear(v.year());
         }
-        virtual Date metDate(void) const { return Date{(u8)metDay(), (u8)metMonth(), (u32)metYear()}; }
+        virtual Date metDate(void) const
+        {
+            return Date{(u8)metDay(), (u8)metMonth(), (u32)metYear()};
+        }
         virtual void metDate(const Date& v)
         {
             metDay(v.day());

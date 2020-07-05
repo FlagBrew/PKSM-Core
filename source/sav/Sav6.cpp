@@ -58,14 +58,27 @@ namespace pksm
     Language Sav6::language(void) const { return Language(data[TrainerCard + 0x2D]); }
     void Sav6::language(Language v) { data[TrainerCard + 0x2D] = u8(v); }
 
-    std::string Sav6::otName(void) const { return StringUtils::transString67(StringUtils::getString(data.get(), TrainerCard + 0x48, 13)); }
-    void Sav6::otName(const std::string_view& v) { StringUtils::setString(data.get(), StringUtils::transString67(v), TrainerCard + 0x48, 13); }
+    std::string Sav6::otName(void) const
+    {
+        return StringUtils::transString67(
+            StringUtils::getString(data.get(), TrainerCard + 0x48, 13));
+    }
+    void Sav6::otName(const std::string_view& v)
+    {
+        StringUtils::setString(data.get(), StringUtils::transString67(v), TrainerCard + 0x48, 13);
+    }
 
     u32 Sav6::money(void) const { return LittleEndian::convertTo<u32>(&data[Trainer2 + 0x8]); }
     void Sav6::money(u32 v) { LittleEndian::convertFrom<u32>(&data[Trainer2 + 0x8], v); }
 
-    u32 Sav6::BP(void) const { return LittleEndian::convertTo<u32>(&data[Trainer2 + (game == Game::XY ? 0x3C : 0x30)]); }
-    void Sav6::BP(u32 v) { LittleEndian::convertFrom<u32>(&data[Trainer2 + (game == Game::XY ? 0x3C : 0x30)], v); }
+    u32 Sav6::BP(void) const
+    {
+        return LittleEndian::convertTo<u32>(&data[Trainer2 + (game == Game::XY ? 0x3C : 0x30)]);
+    }
+    void Sav6::BP(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(&data[Trainer2 + (game == Game::XY ? 0x3C : 0x30)], v);
+    }
 
     u8 Sav6::badges(void) const
     {
@@ -90,11 +103,17 @@ namespace pksm
     u8 Sav6::currentBox(void) const { return data[LastViewedBox]; }
     void Sav6::currentBox(u8 v) { data[LastViewedBox] = v; }
 
-    u32 Sav6::boxOffset(u8 box, u8 slot) const { return Box + PK6::BOX_LENGTH * 30 * box + PK6::BOX_LENGTH * slot; }
+    u32 Sav6::boxOffset(u8 box, u8 slot) const
+    {
+        return Box + PK6::BOX_LENGTH * 30 * box + PK6::BOX_LENGTH * slot;
+    }
 
     u32 Sav6::partyOffset(u8 slot) const { return Party + PK6::PARTY_LENGTH * slot; }
 
-    std::unique_ptr<PKX> Sav6::pkm(u8 slot) const { return PKX::getPKM<Generation::SIX>(&data[partyOffset(slot)], true); }
+    std::unique_ptr<PKX> Sav6::pkm(u8 slot) const
+    {
+        return PKX::getPKM<Generation::SIX>(&data[partyOffset(slot)], true);
+    }
 
     void Sav6::pkm(const PKX& pk, u8 slot)
     {
@@ -106,7 +125,10 @@ namespace pksm
         }
     }
 
-    std::unique_ptr<PKX> Sav6::pkm(u8 box, u8 slot) const { return PKX::getPKM<Generation::SIX>(&data[boxOffset(box, slot)]); }
+    std::unique_ptr<PKX> Sav6::pkm(u8 box, u8 slot) const
+    {
+        return PKX::getPKM<Generation::SIX>(&data[boxOffset(box, slot)]);
+    }
 
     void Sav6::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)
     {
@@ -118,7 +140,8 @@ namespace pksm
                 trade(*pkm);
             }
 
-            std::copy(pkm->rawData(), pkm->rawData() + PK6::BOX_LENGTH, &data[boxOffset(box, slot)]);
+            std::copy(
+                pkm->rawData(), pkm->rawData() + PK6::BOX_LENGTH, &data[boxOffset(box, slot)]);
         }
     }
 
@@ -127,17 +150,20 @@ namespace pksm
         PK6* pk6 = (PK6*)&pk;
         if (pk6->egg())
         {
-            if (otName() != pk6->otName() || TID() != pk6->TID() || SID() != pk6->SID() || gender() != pk6->otGender())
+            if (otName() != pk6->otName() || TID() != pk6->TID() || SID() != pk6->SID() ||
+                gender() != pk6->otGender())
             {
                 pk6->metLocation(30002);
                 pk6->metDate(date);
             }
         }
-        else if (otName() == pk6->otName() && TID() == pk6->TID() && SID() == pk6->SID() && gender() == pk6->otGender())
+        else if (otName() == pk6->otName() && TID() == pk6->TID() && SID() == pk6->SID() &&
+                 gender() == pk6->otGender())
         {
             pk6->currentHandler(0);
 
-            if (!pk6->untraded() && (country() != pk6->geoCountry(0) || subRegion() != pk6->geoRegion(0)))
+            if (!pk6->untraded() &&
+                (country() != pk6->geoCountry(0) || subRegion() != pk6->geoRegion(0)))
             {
                 for (int i = 4; i > 0; i--)
                 {
@@ -178,13 +204,15 @@ namespace pksm
                 pk6->htIntensity(1);
 
                 /*static constexpr u32 memoryBits[70] = {
-                    0x000000, 0x04CBFD, 0x004BFD, 0x04CBFD, 0x04CBFD, 0xFFFBFB, 0x84FFF9, 0x47FFFF, 0xBF7FFA, 0x7660B0,
-                    0x80BDF9, 0x88FB7A, 0x083F79, 0x0001FE, 0xCFEFFF, 0x84EBAF, 0xB368B0, 0x091F7E, 0x0320A0, 0x080DDD,
-                    0x081A7B, 0x404030, 0x0FFFFF, 0x9A08BC, 0x089A7B, 0x0032AA, 0x80FF7A, 0x0FFFFF, 0x0805FD, 0x098278,
-                    0x0B3FFF, 0x8BBFFA, 0x8BBFFE, 0x81A97C, 0x8BB97C, 0x8BBF7F, 0x8BBF7F, 0x8BBF7F, 0x8BBF7F, 0xAC3ABE,
-                    0xBFFFFF, 0x8B837C, 0x848AFA, 0x88FFFE, 0x8B0B7C, 0xB76AB2, 0x8B1FFF, 0xBE7AB8, 0xB77EB8, 0x8C9FFD,
-                    0xBF9BFF, 0xF408B0, 0xBCFE7A, 0x8F3F72, 0x90DB7A, 0xBCEBFF, 0xBC5838, 0x9C3FFE, 0x9CFFFF, 0x96D83A,
-                    0xB770B0, 0x881F7A, 0x839F7A, 0x839F7A, 0x839F7A, 0x53897F, 0x41BB6F, 0x0C35FF, 0x8BBF7F, 0x8BBF7F
+                    0x000000, 0x04CBFD, 0x004BFD, 0x04CBFD, 0x04CBFD, 0xFFFBFB, 0x84FFF9, 0x47FFFF,
+                0xBF7FFA, 0x7660B0, 0x80BDF9, 0x88FB7A, 0x083F79, 0x0001FE, 0xCFEFFF, 0x84EBAF,
+                0xB368B0, 0x091F7E, 0x0320A0, 0x080DDD, 0x081A7B, 0x404030, 0x0FFFFF, 0x9A08BC,
+                0x089A7B, 0x0032AA, 0x80FF7A, 0x0FFFFF, 0x0805FD, 0x098278, 0x0B3FFF, 0x8BBFFA,
+                0x8BBFFE, 0x81A97C, 0x8BB97C, 0x8BBF7F, 0x8BBF7F, 0x8BBF7F, 0x8BBF7F, 0xAC3ABE,
+                    0xBFFFFF, 0x8B837C, 0x848AFA, 0x88FFFE, 0x8B0B7C, 0xB76AB2, 0x8B1FFF, 0xBE7AB8,
+                0xB77EB8, 0x8C9FFD, 0xBF9BFF, 0xF408B0, 0xBCFE7A, 0x8F3F72, 0x90DB7A, 0xBCEBFF,
+                0xBC5838, 0x9C3FFE, 0x9CFFFF, 0x96D83A, 0xB770B0, 0x881F7A, 0x839F7A, 0x839F7A,
+                0x839F7A, 0x53897F, 0x41BB6F, 0x0C35FF, 0x8BBF7F, 0x8BBF7F
                 };*/
 
                 u32 bits = 0x04CBFD; // memoryBits[pk6->htMemory()];
@@ -207,7 +235,8 @@ namespace pksm
         {
             for (u8 slot = 0; slot < 30; slot++)
             {
-                std::unique_ptr<PKX> pk6 = PKX::getPKM<Generation::SIX>(&data[boxOffset(box, slot)], false, true);
+                std::unique_ptr<PKX> pk6 =
+                    PKX::getPKM<Generation::SIX>(&data[boxOffset(box, slot)], false, true);
                 if (!crypted)
                 {
                     pk6->encrypt();
@@ -418,9 +447,12 @@ namespace pksm
         int ofs      = PokeDex + 0x8 + bd;
 
         // Owned quality flag
-        if (pk.version() < GameVersion::X && bit < 649 && game != Game::ORAS) // Species: 1-649 for X/Y, and not for ORAS; Set the Foreign Owned Flag
+        if (pk.version() < GameVersion::X && bit < 649 &&
+            game !=
+                Game::ORAS) // Species: 1-649 for X/Y, and not for ORAS; Set the Foreign Owned Flag
             data[ofs + 0x644] |= mask;
-        else if (pk.version() >= GameVersion::X || game == Game::ORAS) // Set Native Owned Flag (should always happen)
+        else if (pk.version() >= GameVersion::X ||
+                 game == Game::ORAS) // Set Native Owned Flag (should always happen)
             data[ofs + (brSize * 0)] |= mask;
 
         // Set the [Species/Gender/Shiny] Seen Flag
@@ -432,7 +464,8 @@ namespace pksm
         displayed |= (data[ofs + brSize * 6] & mask) != 0;
         displayed |= (data[ofs + brSize * 7] & mask) != 0;
         displayed |= (data[ofs + brSize * 8] & mask) != 0;
-        if (!displayed) // offset is already biased by brSize, reuse shiftoff but for the display flags.
+        if (!displayed) // offset is already biased by brSize, reuse shiftoff but for the display
+                        // flags.
             data[ofs + brSize * 4 + shiftoff] |= mask;
 
         // Set the Language
@@ -441,7 +474,8 @@ namespace pksm
         data[PokeDexLanguageFlags + (bit * 7 + lang) / 8] |= (u8)(1 << ((bit * 7 + lang) % 8));
 
         // Set DexNav count (only if not encountered previously)
-        if (game == Game::ORAS && LittleEndian::convertTo<u16>(&data[EncounterCount + (u16(pk.species()) - 1) * 2]) == 0)
+        if (game == Game::ORAS &&
+            LittleEndian::convertTo<u16>(&data[EncounterCount + (u16(pk.species()) - 1) * 2]) == 0)
             LittleEndian::convertFrom<u16>(&data[EncounterCount + (u16(pk.species()) - 1) * 2], 1);
 
         // Set Form flags
@@ -512,7 +546,8 @@ namespace pksm
         {
             WC6* wc6 = (WC6*)&wc;
             data[WondercardFlags + wc6->ID() / 8] |= 0x1 << (wc6->ID() % 8);
-            std::copy(wc6->rawData(), wc6->rawData() + WC6::length, &data[WondercardData + WC6::length * pos]);
+            std::copy(wc6->rawData(), wc6->rawData() + WC6::length,
+                &data[WondercardData + WC6::length * pos]);
             if (game == Game::ORAS && wc6->ID() == 2048 && wc6->object() == 726)
             {
                 static constexpr u32 EON_MAGIC = 0x225D73C2;
@@ -523,10 +558,15 @@ namespace pksm
         }
     }
 
-    std::string Sav6::boxName(u8 box) const { return StringUtils::transString67(StringUtils::getString(data.get(), PCLayout + 0x22 * box, 17)); }
+    std::string Sav6::boxName(u8 box) const
+    {
+        return StringUtils::transString67(
+            StringUtils::getString(data.get(), PCLayout + 0x22 * box, 17));
+    }
     void Sav6::boxName(u8 box, const std::string_view& name)
     {
-        StringUtils::setString(data.get(), StringUtils::transString67(name), PCLayout + 0x22 * box, 17);
+        StringUtils::setString(
+            data.get(), StringUtils::transString67(name), PCLayout + 0x22 * box, 17);
     }
 
     u8 Sav6::boxWallpaper(u8 box) const { return data[0x4400 + 1054 + box]; }
@@ -562,7 +602,10 @@ namespace pksm
         return t;
     }
 
-    std::unique_ptr<WCX> Sav6::mysteryGift(int pos) const { return std::make_unique<WC6>(&data[WondercardData + pos * WC6::length]); }
+    std::unique_ptr<WCX> Sav6::mysteryGift(int pos) const
+    {
+        return std::make_unique<WC6>(&data[WondercardData + pos * WC6::length]);
+    }
 
     void Sav6::item(const Item& item, Pouch pouch, u16 slot)
     {
@@ -611,7 +654,8 @@ namespace pksm
 
     std::vector<std::pair<Sav::Pouch, int>> Sav6::pouches(void) const
     {
-        return {{Pouch::NormalItem, game == Game::XY ? 286 : 305}, {Pouch::KeyItem, game == Game::XY ? 31 : 47},
-            {Pouch::TM, game == Game::XY ? 105 : 107}, {Pouch::Medicine, game == Game::XY ? 51 : 54}, {Pouch::Berry, 67}};
+        return {{Pouch::NormalItem, game == Game::XY ? 286 : 305},
+            {Pouch::KeyItem, game == Game::XY ? 31 : 47}, {Pouch::TM, game == Game::XY ? 105 : 107},
+            {Pouch::Medicine, game == Game::XY ? 51 : 54}, {Pouch::Berry, 67}};
     }
 }

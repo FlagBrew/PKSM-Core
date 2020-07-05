@@ -309,7 +309,8 @@ namespace pksm
         for (u8 block = 0; block < 4; block++)
         {
             u8 ofs = blockPosition(index + block);
-            std::copy(cdata + 8 + blockLength * ofs, cdata + 8 + blockLength * ofs + blockLength, data + 8 + blockLength * block);
+            std::copy(cdata + 8 + blockLength * ofs, cdata + 8 + blockLength * ofs + blockLength,
+                data + 8 + blockLength * block);
         }
     }
 
@@ -335,7 +336,8 @@ namespace pksm
 
     bool PK5::isEncrypted() const { return LittleEndian::convertTo<u32>(data + 0x64) != 0; }
 
-    PK5::PK5(PrivateConstructor, u8* dt, bool party, bool direct) : PKX(dt, party ? PARTY_LENGTH : BOX_LENGTH, direct)
+    PK5::PK5(PrivateConstructor, u8* dt, bool party, bool direct)
+        : PKX(dt, party ? PARTY_LENGTH : BOX_LENGTH, direct)
     {
         if (isEncrypted())
         {
@@ -343,7 +345,10 @@ namespace pksm
         }
     }
 
-    std::unique_ptr<PKX> PK5::clone(void) const { return PKX::getPKM<Generation::FIVE>(const_cast<u8*>(data), isParty()); }
+    std::unique_ptr<PKX> PK5::clone(void) const
+    {
+        return PKX::getPKM<Generation::FIVE>(const_cast<u8*>(data), isParty());
+    }
 
     Generation PK5::generation(void) const { return Generation::FIVE; }
 
@@ -362,14 +367,16 @@ namespace pksm
             {
                 do
                 {
-                    PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), v, PID(), generation()));
+                    PID(PKX::getRandomPID(species(), gender(), version(), nature(),
+                        alternativeForm(), v, PID(), generation()));
                 } while (!shiny());
             }
             else
             {
                 do
                 {
-                    PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), v, PID(), generation()));
+                    PID(PKX::getRandomPID(species(), gender(), version(), nature(),
+                        alternativeForm(), v, PID(), generation()));
                 } while (shiny());
             }
             hiddenAbility(false);
@@ -479,16 +486,25 @@ namespace pksm
         LittleEndian::convertFrom<u32>(data + 0x38, buffer);
     }
 
-    bool PK5::egg(void) const { return ((LittleEndian::convertTo<u32>(data + 0x38) >> 30) & 0x1) == 1; }
+    bool PK5::egg(void) const
+    {
+        return ((LittleEndian::convertTo<u32>(data + 0x38) >> 30) & 0x1) == 1;
+    }
     void PK5::egg(bool v)
     {
-        LittleEndian::convertFrom<u32>(data + 0x38, (u32)((LittleEndian::convertTo<u32>(data + 0x38) & ~0x40000000) | (u32)(v ? 0x40000000 : 0)));
+        LittleEndian::convertFrom<u32>(
+            data + 0x38, (u32)((LittleEndian::convertTo<u32>(data + 0x38) & ~0x40000000) |
+                               (u32)(v ? 0x40000000 : 0)));
     }
 
-    bool PK5::nicknamed(void) const { return ((LittleEndian::convertTo<u32>(data + 0x38) >> 31) & 0x1) == 1; }
+    bool PK5::nicknamed(void) const
+    {
+        return ((LittleEndian::convertTo<u32>(data + 0x38) >> 31) & 0x1) == 1;
+    }
     void PK5::nicknamed(bool v)
     {
-        LittleEndian::convertFrom<u32>(data + 0x38, (LittleEndian::convertTo<u32>(data + 0x38) & 0x7FFFFFFF) | (v ? 0x80000000 : 0));
+        LittleEndian::convertFrom<u32>(data + 0x38,
+            (LittleEndian::convertTo<u32>(data + 0x38) & 0x7FFFFFFF) | (v ? 0x80000000 : 0));
     }
 
     bool PK5::fatefulEncounter(void) const { return (data[0x40] & 1) == 1; }
@@ -502,14 +518,16 @@ namespace pksm
         {
             do
             {
-                PID(PKX::getRandomPID(species(), g, version(), nature(), alternativeForm(), abilityNumber(), PID(), generation()));
+                PID(PKX::getRandomPID(species(), g, version(), nature(), alternativeForm(),
+                    abilityNumber(), PID(), generation()));
             } while (!shiny());
         }
         else
         {
             do
             {
-                PID(PKX::getRandomPID(species(), g, version(), nature(), alternativeForm(), abilityNumber(), PID(), generation()));
+                PID(PKX::getRandomPID(species(), g, version(), nature(), alternativeForm(),
+                    abilityNumber(), PID(), generation()));
             } while (shiny());
         }
     }
@@ -526,14 +544,26 @@ namespace pksm
     bool PK5::nPokemon(void) const { return (data[0x42] & 2) == 2; }
     void PK5::nPokemon(bool v) { data[0x42] = (u8)((data[0x42] & ~0x02) | (v ? 2 : 0)); }
 
-    std::string PK5::nickname(void) const { return StringUtils::transString45(StringUtils::getString(data, 0x48, 11, u'\uFFFF')); }
-    void PK5::nickname(const std::string_view& v) { StringUtils::setString(data, StringUtils::transString45(v), 0x48, 11, u'\uFFFF', 0); }
+    std::string PK5::nickname(void) const
+    {
+        return StringUtils::transString45(StringUtils::getString(data, 0x48, 11, u'\uFFFF'));
+    }
+    void PK5::nickname(const std::string_view& v)
+    {
+        StringUtils::setString(data, StringUtils::transString45(v), 0x48, 11, u'\uFFFF', 0);
+    }
 
     GameVersion PK5::version(void) const { return GameVersion(data[0x5F]); }
     void PK5::version(GameVersion v) { data[0x5F] = u8(v); }
 
-    std::string PK5::otName(void) const { return StringUtils::transString45(StringUtils::getString(data, 0x68, 8, u'\uFFFF')); }
-    void PK5::otName(const std::string_view& v) { StringUtils::setString(data, StringUtils::transString45(v), 0x68, 8, u'\uFFFF', 0); }
+    std::string PK5::otName(void) const
+    {
+        return StringUtils::transString45(StringUtils::getString(data, 0x68, 8, u'\uFFFF'));
+    }
+    void PK5::otName(const std::string_view& v)
+    {
+        StringUtils::setString(data, StringUtils::transString45(v), 0x68, 8, u'\uFFFF', 0);
+    }
 
     int PK5::eggYear(void) const { return 2000 + data[0x78]; }
     void PK5::eggYear(int v) { data[0x78] = v - 2000; }
@@ -593,8 +623,9 @@ namespace pksm
     Type PK5::hpType(void) const
     {
         return Type{u8((15 *
-                           ((iv(Stat::HP) & 1) + 2 * (iv(Stat::ATK) & 1) + 4 * (iv(Stat::DEF) & 1) + 8 * (iv(Stat::SPD) & 1) +
-                               16 * (iv(Stat::SPATK) & 1) + 32 * (iv(Stat::SPDEF) & 1)) /
+                           ((iv(Stat::HP) & 1) + 2 * (iv(Stat::ATK) & 1) + 4 * (iv(Stat::DEF) & 1) +
+                               8 * (iv(Stat::SPD) & 1) + 16 * (iv(Stat::SPATK) & 1) +
+                               32 * (iv(Stat::SPDEF) & 1)) /
                            63) +
                        1)};
     }
@@ -650,14 +681,16 @@ namespace pksm
         {
             while (!shiny())
             {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), abilityNumber(), PID(), generation()));
+                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
+                    abilityNumber(), PID(), generation()));
             }
         }
         else
         {
             while (shiny())
             {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), abilityNumber(), PID(), generation()));
+                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
+                    abilityNumber(), PID(), generation()));
             }
         }
     }
@@ -821,7 +854,8 @@ namespace pksm
         pk6->ability(ability());
 
         Ability pkmAbilities[3] = {abilities(0), abilities(1), abilities(2)};
-        u8 abilVal              = std::distance(pkmAbilities, std::find(pkmAbilities, pkmAbilities + 3, ability()));
+        u8 abilVal =
+            std::distance(pkmAbilities, std::find(pkmAbilities, pkmAbilities + 3, ability()));
         if (abilVal < 3 && pkmAbilities[abilVal] == pkmAbilities[2] && hiddenAbility())
         {
             abilVal = 2; // HA shared by normal ability
@@ -1031,7 +1065,8 @@ namespace pksm
 
     void PK5::updatePartyData()
     {
-        constexpr Stat stats[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
+        constexpr Stat stats[] = {
+            Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
         for (size_t i = 0; i < 6; i++)
         {
             partyStat(stats[i], stat(stats[i]));

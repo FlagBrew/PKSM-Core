@@ -35,8 +35,8 @@ namespace pksm
     {
     private:
         int ArmorDex, CrownDex;
-        static constexpr std::array<u16, 25> gigaSpecies = {
-            6, 12, 25, 52, 68, 94, 99, 131, 133, 143, 569, 823, 826, 834, 839, 841, 842, 844, 851, 858, 861, 869, 879, 884, 890};
+        static constexpr std::array<u16, 25> gigaSpecies = {6, 12, 25, 52, 68, 94, 99, 131, 133,
+            143, 569, 823, 826, 834, 839, 841, 842, 844, 851, 858, 861, 869, 879, 884, 890};
 
     public:
         SavSWSH(std::shared_ptr<u8[]> dt, size_t length);

@@ -255,10 +255,19 @@ namespace pksm
         inline Type type1(void) const override { return PersonalXYORAS::type1(formSpecies()); }
         inline Type type2(void) const override { return PersonalXYORAS::type2(formSpecies()); }
         inline u8 genderType(void) const override { return PersonalXYORAS::gender(formSpecies()); }
-        inline u8 baseFriendship(void) const override { return PersonalXYORAS::baseFriendship(formSpecies()); }
+        inline u8 baseFriendship(void) const override
+        {
+            return PersonalXYORAS::baseFriendship(formSpecies());
+        }
         inline u8 expType(void) const override { return PersonalXYORAS::expType(formSpecies()); }
-        inline Ability abilities(u8 n) const override { return PersonalXYORAS::ability(formSpecies(), n); }
-        inline u16 formStatIndex(void) const override { return PersonalXYORAS::formStatIndex(formSpecies()); }
+        inline Ability abilities(u8 n) const override
+        {
+            return PersonalXYORAS::ability(formSpecies(), n);
+        }
+        inline u16 formStatIndex(void) const override
+        {
+            return PersonalXYORAS::formStatIndex(formSpecies());
+        }
     };
 }
 

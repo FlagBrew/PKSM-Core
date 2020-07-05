@@ -54,7 +54,10 @@ public:
     constexpr void month(u8 v) { mMonth = v; }
     constexpr void year(u32 v) { mYear = v; }
 
-    constexpr bool operator==(const Date& other) const { return mDay == other.mDay && mMonth == other.mMonth && mYear == other.mYear; }
+    constexpr bool operator==(const Date& other) const
+    {
+        return mDay == other.mDay && mMonth == other.mMonth && mYear == other.mYear;
+    }
     constexpr bool operator!=(const Date& other) const { return !(*this == other); }
 
     constexpr bool operator<(const Date& other) const
@@ -123,7 +126,10 @@ public:
     constexpr void minute(u8 v) { mMinute = v; }
     constexpr void second(u8 v) { mSecond = v; }
 
-    constexpr bool operator==(const Time& other) const { return mSecond == other.mSecond && mMinute == other.mMinute && mHour == other.mHour; }
+    constexpr bool operator==(const Time& other) const
+    {
+        return mSecond == other.mSecond && mMinute == other.mMinute && mHour == other.mHour;
+    }
     constexpr bool operator!=(const Time& other) const { return !(*this == other); }
 
     constexpr bool operator<(const Time& other) const
@@ -206,12 +212,30 @@ public:
     using Date::operator>=;
     using Time::operator>=;
 
-    constexpr bool operator==(const DateTime& other) const { return Date::operator==(other) && Time::operator==(other); }
-    constexpr bool operator!=(const DateTime& other) const { return Date::operator!=(other) || Time::operator!=(other); }
-    constexpr bool operator<(const DateTime& other) const { return Date::operator<(other) || (Date::operator==(other) && Time::operator<(other)); }
-    constexpr bool operator<=(const DateTime& other) const { return Date::operator<=(other) || (Date::operator==(other) && Time::operator<=(other)); }
-    constexpr bool operator>(const DateTime& other) const { return Date::operator>(other) || (Date::operator==(other) && Time::operator>(other)); }
-    constexpr bool operator>=(const DateTime& other) const { return Date::operator>(other) || (Date::operator==(other) && Time::operator>=(other)); }
+    constexpr bool operator==(const DateTime& other) const
+    {
+        return Date::operator==(other) && Time::operator==(other);
+    }
+    constexpr bool operator!=(const DateTime& other) const
+    {
+        return Date::operator!=(other) || Time::operator!=(other);
+    }
+    constexpr bool operator<(const DateTime& other) const
+    {
+        return Date::operator<(other) || (Date::operator==(other) && Time::operator<(other));
+    }
+    constexpr bool operator<=(const DateTime& other) const
+    {
+        return Date::operator<=(other) || (Date::operator==(other) && Time::operator<=(other));
+    }
+    constexpr bool operator>(const DateTime& other) const
+    {
+        return Date::operator>(other) || (Date::operator==(other) && Time::operator>(other));
+    }
+    constexpr bool operator>=(const DateTime& other) const
+    {
+        return Date::operator>(other) || (Date::operator==(other) && Time::operator>=(other));
+    }
 
     // Remove overload ambiguity
     bool operator==(const time_t& tOther) const

@@ -41,7 +41,8 @@ namespace pksm::crypto
     // Length must be a multiple of 4
     u32 sum32(const u8* buf, size_t len);
 
-    // This SHA256 implementation is Brad Conte's. It has been modified to have a C++-style interface.
+    // This SHA256 implementation is Brad Conte's. It has been modified to have a C++-style
+    // interface.
     class SHA256
     {
     private:
@@ -59,7 +60,8 @@ namespace pksm::crypto
         {
             dataLength = 0;
             bitLength  = 0;
-            state      = {0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19};
+            state      = {0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c,
+                0x1f83d9ab, 0x5be0cd19};
         }
         void update(const u8* data, size_t len);
         std::array<u8, 32> finish();
@@ -70,7 +72,8 @@ namespace pksm::crypto
     {
         class SCBlock
         {
-            friend std::vector<std::shared_ptr<SCBlock>> getBlockList(std::shared_ptr<u8[]> data, size_t length);
+            friend std::vector<std::shared_ptr<SCBlock>> getBlockList(
+                std::shared_ptr<u8[]> data, size_t length);
 
         public:
             enum class SCBlockType : u8
@@ -112,10 +115,12 @@ namespace pksm::crypto
             SCBlock(const SCBlock&) = delete;
             SCBlock& operator=(const SCBlock&) = delete;
 
-            // Returns pointer to data at the beginning of the block's data region, skipping block identifying information
+            // Returns pointer to data at the beginning of the block's data region, skipping block
+            // identifying information
             u8* rawData() const { return data.get() + myOffset + headerSize(type); }
             void key(u32 v);
-            // data.get() + myOffset points to the beginning of the block data: *(u32*)(data.get() + myOffset) == key
+            // data.get() + myOffset points to the beginning of the block data: *(u32*)(data.get() +
+            // myOffset) == key
             std::shared_ptr<u8[]> data = nullptr;
             size_t myOffset;
             size_t dataLength;
@@ -131,7 +136,8 @@ namespace pksm::crypto
         void applyXor(std::shared_ptr<u8[]> data, size_t length);
         void sign(std::shared_ptr<u8[]> data, size_t length);
         bool verify(std::shared_ptr<u8[]> data, size_t length);
-        std::vector<std::shared_ptr<SCBlock>> getBlockList(std::shared_ptr<u8[]> data, size_t length);
+        std::vector<std::shared_ptr<SCBlock>> getBlockList(
+            std::shared_ptr<u8[]> data, size_t length);
     }
 }
 

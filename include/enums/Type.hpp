@@ -63,7 +63,8 @@ namespace pksm
                 Dark,
                 Fairy,
 
-                INVALID[[maybe_unused]] = std::numeric_limits<std::underlying_type_t<TypeEnum>>::max()
+                INVALID[[maybe_unused]] =
+                    std::numeric_limits<std::underlying_type_t<TypeEnum>>::max()
             } v;
 
             constexpr explicit Type_impl(TypeEnum v) : v(v) {}
@@ -82,13 +83,25 @@ namespace pksm
             constexpr operator TypeEnum() const noexcept { return v; }
 
             constexpr bool operator<(const Type_impl& other) const noexcept { return v < other.v; }
-            constexpr bool operator<=(const Type_impl& other) const noexcept { return v <= other.v; }
+            constexpr bool operator<=(const Type_impl& other) const noexcept
+            {
+                return v <= other.v;
+            }
 
             constexpr bool operator>(const Type_impl& other) const noexcept { return v > other.v; }
-            constexpr bool operator>=(const Type_impl& other) const noexcept { return v >= other.v; }
+            constexpr bool operator>=(const Type_impl& other) const noexcept
+            {
+                return v >= other.v;
+            }
 
-            constexpr bool operator==(const Type_impl& other) const noexcept { return v == other.v; }
-            constexpr bool operator!=(const Type_impl& other) const noexcept { return v != other.v; }
+            constexpr bool operator==(const Type_impl& other) const noexcept
+            {
+                return v == other.v;
+            }
+            constexpr bool operator!=(const Type_impl& other) const noexcept
+            {
+                return v != other.v;
+            }
 
             const std::string& localize(Language lang) const;
         };
@@ -121,14 +134,32 @@ namespace pksm
         constexpr bool operator==(const Type& other) const noexcept { return impl == other.impl; }
         constexpr bool operator!=(const Type& other) const noexcept { return impl != other.impl; }
 
-        constexpr bool operator<(const internal::Type_impl& other) const noexcept { return impl < other; }
-        constexpr bool operator<=(const internal::Type_impl& other) const noexcept { return impl <= other; }
+        constexpr bool operator<(const internal::Type_impl& other) const noexcept
+        {
+            return impl < other;
+        }
+        constexpr bool operator<=(const internal::Type_impl& other) const noexcept
+        {
+            return impl <= other;
+        }
 
-        constexpr bool operator>(const internal::Type_impl& other) const noexcept { return impl > other; }
-        constexpr bool operator>=(const internal::Type_impl& other) const noexcept { return impl >= other; }
+        constexpr bool operator>(const internal::Type_impl& other) const noexcept
+        {
+            return impl > other;
+        }
+        constexpr bool operator>=(const internal::Type_impl& other) const noexcept
+        {
+            return impl >= other;
+        }
 
-        constexpr bool operator==(const internal::Type_impl& other) const noexcept { return impl == other; }
-        constexpr bool operator!=(const internal::Type_impl& other) const noexcept { return impl != other; }
+        constexpr bool operator==(const internal::Type_impl& other) const noexcept
+        {
+            return impl == other;
+        }
+        constexpr bool operator!=(const internal::Type_impl& other) const noexcept
+        {
+            return impl != other;
+        }
 
         const std::string& localize(Language lang) const { return impl.localize(lang); }
 

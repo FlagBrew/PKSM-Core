@@ -64,8 +64,9 @@ namespace i18n
     // Calls the callbacks that have been registered with addInitCallback in a thread-safe manner
     // NOTE: default callbacks include all init functions in this file
     void init(pksm::Language lang);
-    // Calls the callbacks that have been registered with addExitCallback in a thread-safe manner for all languages that have been initialized
-    // NOTE: default callbacks include all exit functions in this file
+    // Calls the callbacks that have been registered with addExitCallback in a thread-safe manner
+    // for all languages that have been initialized NOTE: default callbacks include all exit
+    // functions in this file
     void exit(void);
 
     const std::string& langString(pksm::Language l);
@@ -83,8 +84,10 @@ namespace i18n
 
     void initForm(pksm::Language lang);
     void exitForm(pksm::Language lang);
-    const std::string& form(pksm::Language lang, pksm::GameVersion version, pksm::Species species, u8 form);
-    std::vector<std::string> forms(pksm::Language lang, pksm::GameVersion version, pksm::Species species);
+    const std::string& form(
+        pksm::Language lang, pksm::GameVersion version, pksm::Species species, u8 form);
+    std::vector<std::string> forms(
+        pksm::Language lang, pksm::GameVersion version, pksm::Species species);
     // No good raw interface for this
 
     void initGame(pksm::Language lang);
@@ -118,7 +121,8 @@ namespace i18n
     const std::vector<std::string>& rawRibbons(pksm::Language lang);
 
     // Note: several functions require this to function properly.
-    // A nonexhaustive list includes PK3::nicknamed, PK4::convertToPK3, PK5::convertToPK6, SavLGPE::mysteryGift, and SavSWSH::mysteryGift
+    // A nonexhaustive list includes PK3::nicknamed, PK4::convertToPK3, PK5::convertToPK6,
+    // SavLGPE::mysteryGift, and SavSWSH::mysteryGift
     void initSpecies(pksm::Language lang);
     void exitSpecies(pksm::Language lang);
     const std::string& species(pksm::Language lang, pksm::Species value);

@@ -33,11 +33,13 @@ namespace pksm
 {
     namespace internal
     {
-        constexpr std::array<Language, 6> G3Langs = {Language::JPN, Language::ENG, Language::FRE, Language::GER, Language::SPA, Language::ITA};
-        constexpr std::array<Language, 7> G4Langs = {
-            Language::JPN, Language::ENG, Language::FRE, Language::GER, Language::SPA, Language::ITA, Language::KOR};
-        constexpr std::array<Language, 9> G7Langs = {
-            Language::JPN, Language::ENG, Language::FRE, Language::GER, Language::SPA, Language::ITA, Language::KOR, Language::CHS, Language::CHT};
+        constexpr std::array<Language, 6> G3Langs = {Language::JPN, Language::ENG, Language::FRE,
+            Language::GER, Language::SPA, Language::ITA};
+        constexpr std::array<Language, 7> G4Langs = {Language::JPN, Language::ENG, Language::FRE,
+            Language::GER, Language::SPA, Language::ITA, Language::KOR};
+        constexpr std::array<Language, 9> G7Langs = {Language::JPN, Language::ENG, Language::FRE,
+            Language::GER, Language::SPA, Language::ITA, Language::KOR, Language::CHS,
+            Language::CHT};
     }
 
     Language getSafeLanguage(Generation gen, Language orig)
@@ -47,7 +49,8 @@ namespace pksm
             // case Generation::ONE
             // case Generation::TWO
             case Generation::THREE:
-                if (std::find(internal::G3Langs.begin(), internal::G3Langs.end(), orig) != internal::G3Langs.end())
+                if (std::find(internal::G3Langs.begin(), internal::G3Langs.end(), orig) !=
+                    internal::G3Langs.end())
                 {
                     return orig;
                 }
@@ -55,7 +58,8 @@ namespace pksm
             case Generation::FOUR:
             case Generation::FIVE:
             case Generation::SIX:
-                if (std::find(internal::G4Langs.begin(), internal::G4Langs.end(), orig) != internal::G4Langs.end())
+                if (std::find(internal::G4Langs.begin(), internal::G4Langs.end(), orig) !=
+                    internal::G4Langs.end())
                 {
                     return orig;
                 }
@@ -64,7 +68,8 @@ namespace pksm
             case Generation::SEVEN:
             case Generation::LGPE:
             case Generation::EIGHT:
-                if (std::find(internal::G7Langs.begin(), internal::G7Langs.end(), orig) != internal::G7Langs.end())
+                if (std::find(internal::G7Langs.begin(), internal::G7Langs.end(), orig) !=
+                    internal::G7Langs.end())
                 {
                     return orig;
                 }

@@ -150,13 +150,19 @@ namespace pksm
 
     u16 WC7::object(void) const { return object(0); }
 
-    u16 WC7::object(int index) const { return LittleEndian::convertTo<u16>(data + 0x68 + index * 4); }
+    u16 WC7::object(int index) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x68 + index * 4);
+    }
 
     int WC7::items(void) const { return numItems; }
 
     u16 WC7::objectQuantity(void) const { return objectQuantity(0); }
 
-    u16 WC7::objectQuantity(int index) const { return LittleEndian::convertTo<u16>(data + 0x6A + index * 4); }
+    u16 WC7::objectQuantity(int index) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x6A + index * 4);
+    }
 
     bool WC7::pokemon(void) const { return type() == 0; }
 
@@ -186,7 +192,9 @@ namespace pksm
 
     std::string WC7::nickname(void) const
     {
-        return LittleEndian::convertTo<u16>(data + 0x86) != 0 ? StringUtils::getString(data, 0x86, 12) : "Pokemon Name";
+        return LittleEndian::convertTo<u16>(data + 0x86) != 0
+                   ? StringUtils::getString(data, 0x86, 12)
+                   : "Pokemon Name";
     } // Localization::speciesName(species()); }
 
     Nature WC7::nature(void) const { return Nature{data[0xA0]}; }
@@ -231,7 +239,10 @@ namespace pksm
 
     u32 WC7::PID(void) const { return LittleEndian::convertTo<u32>(data + 0xD4); }
 
-    u16 WC7::relearnMove(u8 index) const { return LittleEndian::convertTo<u16>(data + 0xD8 + index * 2); }
+    u16 WC7::relearnMove(u8 index) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0xD8 + index * 2);
+    }
 
     u8 WC7::otIntensity(void) const { return data[0xE0]; }
 
@@ -248,7 +259,8 @@ namespace pksm
     bool WC7::ribbon(Ribbon rib) const
     {
         auto offset = OFFSET_OF(rib);
-        return offset.first != RIBBON_ABSENT ? FlagUtil::getFlag(data, offset.first, offset.second) : false;
+        return offset.first != RIBBON_ABSENT ? FlagUtil::getFlag(data, offset.first, offset.second)
+                                             : false;
     }
 
     u8 WC7::cardLocation(void) const { return data[0x50]; }

@@ -37,14 +37,16 @@ namespace pksm
     {
     protected:
         bool japanese;
-        int OFS_PCItem, OFS_PouchHeldItem, OFS_PouchKeyItem, OFS_PouchBalls, OFS_PouchTMHM, OFS_PouchBerry, eventFlag;
+        int OFS_PCItem, OFS_PouchHeldItem, OFS_PouchKeyItem, OFS_PouchBalls, OFS_PouchTMHM,
+            OFS_PouchBerry, eventFlag;
 
         void initialize();
 
         static u16 calculateChecksum(const u8* data, size_t len);
 
-        static constexpr int BLOCK_COUNT     = 14;
-        static constexpr int SIZE_RESERVED   = 0x10000; // unpacked box data will start after the save data
+        static constexpr int BLOCK_COUNT = 14;
+        static constexpr int SIZE_RESERVED =
+            0x10000; // unpacked box data will start after the save data
         static constexpr int SIZE_BLOCK_USED = 0xF80;
 
         std::array<int, BLOCK_COUNT> blockOrder, blockOfs;
@@ -52,7 +54,8 @@ namespace pksm
 
         void loadBlocks();
         static std::array<int, BLOCK_COUNT> getBlockOrder(std::shared_ptr<u8[]> dt, int ofs);
-        static int getActiveSaveIndex(std::shared_ptr<u8[]> dt, std::array<int, BLOCK_COUNT>& blockOrder1, std::array<int, BLOCK_COUNT>& blockOrder2);
+        static int getActiveSaveIndex(std::shared_ptr<u8[]> dt,
+            std::array<int, BLOCK_COUNT>& blockOrder1, std::array<int, BLOCK_COUNT>& blockOrder2);
 
         static constexpr u16 chunkLength[BLOCK_COUNT] = {
             0xf2c, // 0 | Small Block (Trainer Info)
@@ -137,9 +140,10 @@ namespace pksm
 
         u8 currentBox(void) const override;
         void currentBox(u8 v) override;
-        // Note: a Pokemon may be split up into two pieces! That will happen if RETURNVALUE % 0x1000 + PK3::BOX_LENGTH > 0xF80
-        // In this case, the first 0xF80 - RETURNVALUE bytes of a Pokemon should be written to the returned offset, with the
-        // remainder written to offset boxOffset(box + (slot + 1) / 30, (slot + 1) % 30) & 0xFFFFF000
+        // Note: a Pokemon may be split up into two pieces! That will happen if RETURNVALUE % 0x1000
+        // + PK3::BOX_LENGTH > 0xF80 In this case, the first 0xF80 - RETURNVALUE bytes of a Pokemon
+        // should be written to the returned offset, with the remainder written to offset
+        // boxOffset(box + (slot + 1) / 30, (slot + 1) % 30) & 0xFFFFF000
         u32 boxOffset(u8 box, u8 slot) const override;
         u32 partyOffset(u8 slot) const override;
 

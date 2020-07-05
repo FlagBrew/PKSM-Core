@@ -37,17 +37,17 @@
 #endif
 
 #define MAKE_MAP(lang) ret.emplace(pksm::Language::lang, LangState::UNINITIALIZED);
-#define TO_STRING_CASE(lang)                                                                                                                         \
-    case pksm::Language::lang:                                                                                                                       \
-    {                                                                                                                                                \
-        static const std::string str = #lang;                                                                                                        \
-        return str;                                                                                                                                  \
+#define TO_STRING_CASE(lang)                                                                       \
+    case pksm::Language::lang:                                                                     \
+    {                                                                                              \
+        static const std::string str = #lang;                                                      \
+        return str;                                                                                \
     }
-#define TO_IF_STRING(lang)                                                                                                                           \
-    if (value == #lang)                                                                                                                              \
+#define TO_IF_STRING(lang)                                                                         \
+    if (value == #lang)                                                                            \
         return pksm::Language::lang;
-#define TO_FOLDER_CASE(lang)                                                                                                                         \
-    case pksm::Language::lang:                                                                                                                       \
+#define TO_FOLDER_CASE(lang)                                                                       \
+    case pksm::Language::lang:                                                                     \
         return StringUtils::toLower(#lang);
 
 namespace i18n
@@ -58,10 +58,10 @@ namespace i18n
         return ret;
     }();
 
-    std::list<initCallback> initCallbacks = {initAbility, initBall, initForm, initGame, initGeo, initType, initItem, initItem3, initLocation,
-        initMove, initNature, initRibbon, initSpecies};
-    std::list<exitCallback> exitCallbacks = {exitAbility, exitBall, exitForm, exitGame, exitGeo, exitType, exitItem, exitItem3, exitLocation,
-        exitMove, exitNature, exitRibbon, exitSpecies};
+    std::list<initCallback> initCallbacks = {initAbility, initBall, initForm, initGame, initGeo,
+        initType, initItem, initItem3, initLocation, initMove, initNature, initRibbon, initSpecies};
+    std::list<exitCallback> exitCallbacks = {exitAbility, exitBall, exitForm, exitGame, exitGeo,
+        exitType, exitItem, exitItem3, exitLocation, exitMove, exitNature, exitRibbon, exitSpecies};
 
     void init(pksm::Language lang)
     {
@@ -135,8 +135,9 @@ namespace i18n
 
     void load(pksm::Language lang, const std::string& name, std::vector<std::string>& array)
     {
-        std::string path = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name) ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
-                                                                                   : _PKSMCORE_LANG_FOLDER + folder(pksm::Language::ENG) + name;
+        std::string path = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name)
+                               ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
+                               : _PKSMCORE_LANG_FOLDER + folder(pksm::Language::ENG) + name;
 
         std::string tmp;
         FILE* values = fopen(path.c_str(), "rt");

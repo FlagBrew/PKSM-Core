@@ -34,15 +34,19 @@
 
 namespace BigEndian
 {
-    // Converts arithmetic types into big-endian byte representations. Integer types and IEEE 754 compliant single and double-precision floating-point
-    // types are supported.
+    // Converts arithmetic types into big-endian byte representations. Integer types and IEEE 754
+    // compliant single and double-precision floating-point types are supported.
     template <typename T>
     constexpr void convertFrom(u8* dest, const T& orig)
     {
-        constexpr bool easyArch = (std::endian::big == std::endian::native) || (std::endian::little == std::endian::native);
+        constexpr bool easyArch = (std::endian::big == std::endian::native) ||
+                                  (std::endian::little == std::endian::native);
 
-        static_assert((std::is_same_v<T, float> && sizeof(float) == 4 && std::numeric_limits<T>::is_iec559) ||
-                      (std::is_same_v<T, double> && sizeof(double) == 8 && std::numeric_limits<T>::is_iec559) || std::is_integral_v<T>);
+        static_assert(
+            (std::is_same_v<T, float> && sizeof(float) == 4 && std::numeric_limits<T>::is_iec559) ||
+            (std::is_same_v<T, double> && sizeof(double) == 8 &&
+                std::numeric_limits<T>::is_iec559) ||
+            std::is_integral_v<T>);
 
         if (easyArch && !std::is_constant_evaluated())
         {
@@ -68,7 +72,8 @@ namespace BigEndian
         {
             bool negative = std::signbit(orig);
             int exponent;
-            T normalized = std::frexp(orig, &exponent); // gets biased exponent, which isn't what I want
+            T normalized =
+                std::frexp(orig, &exponent); // gets biased exponent, which isn't what I want
             if constexpr (std::is_same_v<T, float>)
             {
                 u32 write = negative ? (1u << 31) : 0;
@@ -99,13 +104,16 @@ namespace BigEndian
                 switch (std::fpclassify(orig))
                 {
                     case FP_INFINITE:
-                        write |= u64(0x7FF) << 52; // should be written as 0x7FF0000000000000 or 0xFFF0000000000000
+                        write |=
+                            u64(0x7FF)
+                            << 52; // should be written as 0x7FF0000000000000 or 0xFFF0000000000000
                         break;
                     case FP_NAN:
                         write = 0xFFFFFFFFFFFFFFFF; // might as well just use a constant NaN number
                         break;
                     case FP_ZERO:
-                        // do nothing; it should be written as either 0x8000000000000000 or 0x0000000000000000
+                        // do nothing; it should be written as either 0x8000000000000000 or
+                        // 0x0000000000000000
                         break;
                     case FP_NORMAL:
                         write |= u64(exponent + 1023) << 52;
@@ -194,15 +202,19 @@ namespace BigEndian
         return ret;
     }
 
-    // Converts big-endian byte representations into arithmetic types. Integer types and IEEE 754 compliant single and double-precision floating-point
-    // types are supported.
+    // Converts big-endian byte representations into arithmetic types. Integer types and IEEE 754
+    // compliant single and double-precision floating-point types are supported.
     template <typename T>
     constexpr T convertTo(const u8* from)
     {
-        constexpr bool easyArch = (std::endian::big == std::endian::native) || (std::endian::little == std::endian::native);
+        constexpr bool easyArch = (std::endian::big == std::endian::native) ||
+                                  (std::endian::little == std::endian::native);
 
-        static_assert((std::is_same_v<T, float> && sizeof(float) == 4 && std::numeric_limits<T>::is_iec559) ||
-                      (std::is_same_v<T, double> && sizeof(double) == 8 && std::numeric_limits<T>::is_iec559) || std::is_integral_v<T>);
+        static_assert(
+            (std::is_same_v<T, float> && sizeof(float) == 4 && std::numeric_limits<T>::is_iec559) ||
+            (std::is_same_v<T, double> && sizeof(double) == 8 &&
+                std::numeric_limits<T>::is_iec559) ||
+            std::is_integral_v<T>);
 
         if (easyArch && !std::is_constant_evaluated())
         {
@@ -246,16 +258,20 @@ namespace BigEndian
             {
                 if (fraction == 0)
                 {
-                    return negative ? -std::numeric_limits<T>::infinity() : std::numeric_limits<T>::infinity();
+                    return negative ? -std::numeric_limits<T>::infinity()
+                                    : std::numeric_limits<T>::infinity();
                 }
                 else
                 {
-                    return std::numeric_limits<T>::signaling_NaN(); // Going to ignore the difference between quiet and signaling NaN
+                    return std::numeric_limits<T>::signaling_NaN(); // Going to ignore the
+                                                                    // difference between quiet and
+                                                                    // signaling NaN
                 }
             }
             else
             {
-                // fraction is currently shifted 23 bits from where it should be, so fix that and set the proper exponent
+                // fraction is currently shifted 23 bits from where it should be, so fix that and
+                // set the proper exponent
                 T ret = std::ldexp(fraction, -23);
                 if (exponent == 0) // Denormal number
                 {
@@ -263,7 +279,8 @@ namespace BigEndian
                 }
                 else
                 {
-                    // Unbias the exponent & add the one necessary because it's not a denormal number
+                    // Unbias the exponent & add the one necessary because it's not a denormal
+                    // number
                     ret = std::ldexp(ret + 1, exponent - 127);
                 }
                 return std::copysign(ret, negative ? -1 : 1);
@@ -283,16 +300,20 @@ namespace BigEndian
             {
                 if (fraction == 0)
                 {
-                    return negative ? -std::numeric_limits<T>::infinity() : std::numeric_limits<T>::infinity();
+                    return negative ? -std::numeric_limits<T>::infinity()
+                                    : std::numeric_limits<T>::infinity();
                 }
                 else
                 {
-                    return std::numeric_limits<T>::signaling_NaN(); // Going to ignore the difference between quiet and signaling NaN
+                    return std::numeric_limits<T>::signaling_NaN(); // Going to ignore the
+                                                                    // difference between quiet and
+                                                                    // signaling NaN
                 }
             }
             else
             {
-                // fraction is currently shifted 52 bits from where it should be, so fix that and set the proper exponent
+                // fraction is currently shifted 52 bits from where it should be, so fix that and
+                // set the proper exponent
                 T ret = std::ldexp(fraction, -52);
                 if (exponent == 0) // Denormal number
                 {
@@ -300,7 +321,8 @@ namespace BigEndian
                 }
                 else
                 {
-                    // Unbias the exponent & add the one necessary because it's not a denormal number
+                    // Unbias the exponent & add the one necessary because it's not a denormal
+                    // number
                     ret = std::ldexp(ret + 1, exponent - 1023);
                 }
                 return std::copysign(ret, negative ? -1 : 1);
@@ -322,15 +344,19 @@ namespace BigEndian
 
 namespace LittleEndian
 {
-    // Converts arithmetic types into little-endian byte representations. Integer types and IEEE 754 compliant single and double-precision
-    // floating-point types are supported.
+    // Converts arithmetic types into little-endian byte representations. Integer types and IEEE 754
+    // compliant single and double-precision floating-point types are supported.
     template <typename T>
     constexpr void convertFrom(u8* dest, const T& orig)
     {
-        constexpr bool easyArch = (std::endian::big == std::endian::native) || (std::endian::little == std::endian::native);
+        constexpr bool easyArch = (std::endian::big == std::endian::native) ||
+                                  (std::endian::little == std::endian::native);
 
-        static_assert((std::is_same_v<T, float> && sizeof(float) == 4 && std::numeric_limits<T>::is_iec559) ||
-                      (std::is_same_v<T, double> && sizeof(double) == 8 && std::numeric_limits<T>::is_iec559) || std::is_integral_v<T>);
+        static_assert(
+            (std::is_same_v<T, float> && sizeof(float) == 4 && std::numeric_limits<T>::is_iec559) ||
+            (std::is_same_v<T, double> && sizeof(double) == 8 &&
+                std::numeric_limits<T>::is_iec559) ||
+            std::is_integral_v<T>);
 
         if (easyArch && !std::is_constant_evaluated())
         {
@@ -387,13 +413,16 @@ namespace LittleEndian
                 switch (std::fpclassify(orig))
                 {
                     case FP_INFINITE:
-                        write |= u64(0x7FF) << 52; // should be written as 0x7FF0000000000000 or 0xFFF0000000000000
+                        write |=
+                            u64(0x7FF)
+                            << 52; // should be written as 0x7FF0000000000000 or 0xFFF0000000000000
                         break;
                     case FP_NAN:
                         write = 0xFFFFFFFFFFFFFFFF; // might as well just use a constant NaN number
                         break;
                     case FP_ZERO:
-                        // do nothing; it should be written as either 0x8000000000000000 or 0x0000000000000000
+                        // do nothing; it should be written as either 0x8000000000000000 or
+                        // 0x0000000000000000
                         break;
                     case FP_NORMAL:
                         write |= u64(exponent + 1023) << 52; // Bias the exponent
@@ -481,15 +510,19 @@ namespace LittleEndian
         return ret;
     }
 
-    // Converts little-endian byte representations into arithmetic types. Integer types and IEEE 754 compliant single and double-precision
-    // floating-point types are supported.
+    // Converts little-endian byte representations into arithmetic types. Integer types and IEEE 754
+    // compliant single and double-precision floating-point types are supported.
     template <typename T>
     constexpr T convertTo(const u8* from)
     {
-        constexpr bool easyArch = (std::endian::big == std::endian::native) || (std::endian::little == std::endian::native);
+        constexpr bool easyArch = (std::endian::big == std::endian::native) ||
+                                  (std::endian::little == std::endian::native);
 
-        static_assert((std::is_same_v<T, float> && sizeof(float) == 4 && std::numeric_limits<T>::is_iec559) ||
-                      (std::is_same_v<T, double> && sizeof(double) == 8 && std::numeric_limits<T>::is_iec559) || std::is_integral_v<T>);
+        static_assert(
+            (std::is_same_v<T, float> && sizeof(float) == 4 && std::numeric_limits<T>::is_iec559) ||
+            (std::is_same_v<T, double> && sizeof(double) == 8 &&
+                std::numeric_limits<T>::is_iec559) ||
+            std::is_integral_v<T>);
 
         if (easyArch && !std::is_constant_evaluated())
         {
@@ -533,16 +566,20 @@ namespace LittleEndian
             {
                 if (fraction == 0)
                 {
-                    return negative ? -std::numeric_limits<T>::infinity() : std::numeric_limits<T>::infinity();
+                    return negative ? -std::numeric_limits<T>::infinity()
+                                    : std::numeric_limits<T>::infinity();
                 }
                 else
                 {
-                    return std::numeric_limits<T>::signaling_NaN(); // Going to ignore the difference between quiet and signaling NaN
+                    return std::numeric_limits<T>::signaling_NaN(); // Going to ignore the
+                                                                    // difference between quiet and
+                                                                    // signaling NaN
                 }
             }
             else
             {
-                // fraction is currently shifted 23 bits from where it should be, so fix that and set the proper exponent
+                // fraction is currently shifted 23 bits from where it should be, so fix that and
+                // set the proper exponent
                 T ret = std::ldexp(fraction, -23);
                 if (exponent == 0) // Denormal number
                 {
@@ -550,7 +587,8 @@ namespace LittleEndian
                 }
                 else
                 {
-                    // Unbias the exponent & add the one necessary because it's not a denormal number
+                    // Unbias the exponent & add the one necessary because it's not a denormal
+                    // number
                     ret = std::ldexp(ret + 1, exponent - 127);
                 }
                 return std::copysign(ret, negative ? -1 : 1);
@@ -570,16 +608,20 @@ namespace LittleEndian
             {
                 if (fraction == 0)
                 {
-                    return negative ? -std::numeric_limits<T>::infinity() : std::numeric_limits<T>::infinity();
+                    return negative ? -std::numeric_limits<T>::infinity()
+                                    : std::numeric_limits<T>::infinity();
                 }
                 else
                 {
-                    return std::numeric_limits<T>::signaling_NaN(); // Going to ignore the difference between quiet and signaling NaN
+                    return std::numeric_limits<T>::signaling_NaN(); // Going to ignore the
+                                                                    // difference between quiet and
+                                                                    // signaling NaN
                 }
             }
             else
             {
-                // fraction is currently shifted 52 bits from where it should be, so fix that and set the proper exponent
+                // fraction is currently shifted 52 bits from where it should be, so fix that and
+                // set the proper exponent
                 T ret = std::ldexp(fraction, -52);
                 if (exponent == 0) // Denormal number
                 {
@@ -587,7 +629,8 @@ namespace LittleEndian
                 }
                 else
                 {
-                    // Unbias the exponent & add the one necessary because it's not a denormal number
+                    // Unbias the exponent & add the one necessary because it's not a denormal
+                    // number
                     ret = std::ldexp(ret + 1, exponent - 1023);
                 }
                 return std::copysign(ret, negative ? -1 : 1);

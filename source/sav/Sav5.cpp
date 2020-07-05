@@ -48,8 +48,16 @@ namespace pksm
     Language Sav5::language(void) const { return Language(data[Trainer1 + 0x1E]); }
     void Sav5::language(Language v) { data[Trainer1 + 0x1E] = u8(v); }
 
-    std::string Sav5::otName(void) const { return StringUtils::transString45(StringUtils::getString(data.get(), Trainer1 + 0x4, 8, u'\uFFFF')); }
-    void Sav5::otName(const std::string_view& v) { StringUtils::setString(data.get(), StringUtils::transString45(v), Trainer1 + 0x4, 8, u'\uFFFF', 0); }
+    std::string Sav5::otName(void) const
+    {
+        return StringUtils::transString45(
+            StringUtils::getString(data.get(), Trainer1 + 0x4, 8, u'\uFFFF'));
+    }
+    void Sav5::otName(const std::string_view& v)
+    {
+        StringUtils::setString(
+            data.get(), StringUtils::transString45(v), Trainer1 + 0x4, 8, u'\uFFFF', 0);
+    }
 
     u32 Sav5::money(void) const { return LittleEndian::convertTo<u32>(&data[Trainer2]); }
     void Sav5::money(u32 v) { LittleEndian::convertFrom<u32>(&data[Trainer2], v); }
@@ -68,7 +76,10 @@ namespace pksm
         return ret;
     }
 
-    u16 Sav5::playedHours(void) const { return LittleEndian::convertTo<u16>(&data[Trainer1 + 0x24]); }
+    u16 Sav5::playedHours(void) const
+    {
+        return LittleEndian::convertTo<u16>(&data[Trainer1 + 0x24]);
+    }
     void Sav5::playedHours(u16 v) { LittleEndian::convertFrom<u16>(&data[Trainer1 + 0x24], v); }
 
     u8 Sav5::playedMinutes(void) const { return data[Trainer1 + 0x26]; }
@@ -80,10 +91,16 @@ namespace pksm
     u8 Sav5::currentBox(void) const { return data[PCLayout]; }
     void Sav5::currentBox(u8 v) { data[PCLayout] = v; }
 
-    u32 Sav5::boxOffset(u8 box, u8 slot) const { return Box + PK5::BOX_LENGTH * box * 30 + 0x10 * box + PK5::BOX_LENGTH * slot; }
+    u32 Sav5::boxOffset(u8 box, u8 slot) const
+    {
+        return Box + PK5::BOX_LENGTH * box * 30 + 0x10 * box + PK5::BOX_LENGTH * slot;
+    }
     u32 Sav5::partyOffset(u8 slot) const { return Party + 8 + PK5::PARTY_LENGTH * slot; }
 
-    std::unique_ptr<PKX> Sav5::pkm(u8 slot) const { return PKX::getPKM<Generation::FIVE>(&data[partyOffset(slot)], true); }
+    std::unique_ptr<PKX> Sav5::pkm(u8 slot) const
+    {
+        return PKX::getPKM<Generation::FIVE>(&data[partyOffset(slot)], true);
+    }
 
     void Sav5::pkm(const PKX& pk, u8 slot)
     {
@@ -95,7 +112,10 @@ namespace pksm
         }
     }
 
-    std::unique_ptr<PKX> Sav5::pkm(u8 box, u8 slot) const { return PKX::getPKM<Generation::FIVE>(&data[boxOffset(box, slot)]); }
+    std::unique_ptr<PKX> Sav5::pkm(u8 box, u8 slot) const
+    {
+        return PKX::getPKM<Generation::FIVE>(&data[boxOffset(box, slot)]);
+    }
 
     void Sav5::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)
     {
@@ -107,13 +127,15 @@ namespace pksm
                 trade(*pk5);
             }
 
-            std::copy(pk5->rawData(), pk5->rawData() + PK5::BOX_LENGTH, &data[boxOffset(box, slot)]);
+            std::copy(
+                pk5->rawData(), pk5->rawData() + PK5::BOX_LENGTH, &data[boxOffset(box, slot)]);
         }
     }
 
     void Sav5::trade(PKX& pk, const Date& date) const
     {
-        if (pk.egg() && (otName() != pk.otName() || TID() != pk.TID() || SID() != pk.SID() || gender() != pk.otGender()))
+        if (pk.egg() && (otName() != pk.otName() || TID() != pk.TID() || SID() != pk.SID() ||
+                            gender() != pk.otGender()))
         {
             pk.metLocation(30003);
             pk.metDate(date);
@@ -126,7 +148,8 @@ namespace pksm
         {
             for (u8 slot = 0; slot < 30; slot++)
             {
-                std::unique_ptr<PKX> pk5 = PKX::getPKM<Generation::FIVE>(&data[boxOffset(box, slot)], false, true);
+                std::unique_ptr<PKX> pk5 =
+                    PKX::getPKM<Generation::FIVE>(&data[boxOffset(box, slot)], false, true);
                 if (!crypted)
                 {
                     pk5->encrypt();
@@ -221,7 +244,8 @@ namespace pksm
         displayed |= (data[ofs + brSize * 6] & (u8)(1 << (bit & 7))) != 0;
         displayed |= (data[ofs + brSize * 7] & (u8)(1 << (bit & 7))) != 0;
         displayed |= (data[ofs + brSize * 8] & (u8)(1 << (bit & 7))) != 0;
-        if (!displayed) // offset is already biased by brSize, reuse shiftoff but for the display flags.
+        if (!displayed) // offset is already biased by brSize, reuse shiftoff but for the display
+                        // flags.
             data[ofs + brSize * (shift + 4)] |= (u8)(1 << (bit & 7));
 
         // Set the Language
@@ -232,7 +256,8 @@ namespace pksm
                 lang--; // 0-6 language vals
             if (lang < 0)
                 lang = 1;
-            data[PokeDexLanguageFlags + ((bit * 7 + lang) >> 3)] |= (u8)(1 << ((bit * 7 + lang) & 7));
+            data[PokeDexLanguageFlags + ((bit * 7 + lang) >> 3)] |=
+                (u8)(1 << ((bit * 7 + lang) & 7));
         }
 
         // Formes
@@ -253,9 +278,9 @@ namespace pksm
         {
             bit = f + i;
             if ((data[formDex + formLen * 2 + (bit >> 3)] & (u8)(1 << (bit & 7))) != 0) // Nonshiny
-                return;                                                                 // already set
+                return; // already set
             if ((data[formDex + formLen * 3 + (bit >> 3)] & (u8)(1 << (bit & 7))) != 0) // Shiny
-                return;                                                                 // already set
+                return; // already set
         }
         bit = f + pk.alternativeForm();
         data[formDex + formLen * (2 + shiny) + (bit >> 3)] |= (u8)(1 << (bit & 7));
@@ -304,18 +329,21 @@ namespace pksm
             PGF* pgf = (PGF*)&wc;
 
             data[WondercardFlags + (pgf->ID() / 8)] |= 0x1 << (pgf->ID() & 7);
-            std::copy(pgf->rawData(), pgf->rawData() + PGF::length, &data[WondercardData + pos * PGF::length]);
+            std::copy(pgf->rawData(), pgf->rawData() + PGF::length,
+                &data[WondercardData + pos * PGF::length]);
             pos = (pos + 1) % 12;
         }
     }
 
     std::string Sav5::boxName(u8 box) const
     {
-        return StringUtils::transString45(StringUtils::getString(data.get(), PCLayout + 0x28 * box + 4, 9, u'\uFFFF'));
+        return StringUtils::transString45(
+            StringUtils::getString(data.get(), PCLayout + 0x28 * box + 4, 9, u'\uFFFF'));
     }
     void Sav5::boxName(u8 box, const std::string_view& name)
     {
-        StringUtils::setString(data.get(), StringUtils::transString45(name), PCLayout + 0x28 * box + 4, 9, u'\uFFFF', 0);
+        StringUtils::setString(data.get(), StringUtils::transString45(name),
+            PCLayout + 0x28 * box + 4, 9, u'\uFFFF', 0);
     }
 
     u8 Sav5::boxWallpaper(u8 box) const { return data[PCLayout + 0x3C4 + box]; }
@@ -357,11 +385,15 @@ namespace pksm
         for (int i = 0; i < 0xA90; i += 2)
         {
             seed = seed * 0x41C64E6D + 0x6073; // Replace with seedStep?
-            LittleEndian::convertFrom<u16>(&data[WondercardFlags + i], LittleEndian::convertTo<u16>(&data[WondercardFlags + i]) ^ (seed >> 16));
+            LittleEndian::convertFrom<u16>(&data[WondercardFlags + i],
+                LittleEndian::convertTo<u16>(&data[WondercardFlags + i]) ^ (seed >> 16));
         }
     }
 
-    std::unique_ptr<WCX> Sav5::mysteryGift(int pos) const { return std::make_unique<PGF>(&data[WondercardData + pos * PGF::length]); }
+    std::unique_ptr<WCX> Sav5::mysteryGift(int pos) const
+    {
+        return std::make_unique<PGF>(&data[WondercardData + pos * PGF::length]);
+    }
 
     void Sav5::item(const Item& item, Pouch pouch, u16 slot)
     {
@@ -410,6 +442,7 @@ namespace pksm
 
     std::vector<std::pair<Sav::Pouch, int>> Sav5::pouches() const
     {
-        return {{Pouch::NormalItem, 261}, {Pouch::KeyItem, game == Game::BW ? 19 : 27}, {Pouch::TM, 101}, {Pouch::Medicine, 47}, {Pouch::Berry, 64}};
+        return {{Pouch::NormalItem, 261}, {Pouch::KeyItem, game == Game::BW ? 19 : 27},
+            {Pouch::TM, 101}, {Pouch::Medicine, 47}, {Pouch::Berry, 64}};
     }
 }

@@ -70,7 +70,8 @@ namespace pksm
                 Careful,
                 Quirky,
 
-                INVALID[[maybe_unused]] = std::numeric_limits<std::underlying_type_t<NatureEnum>>::max()
+                INVALID[[maybe_unused]] =
+                    std::numeric_limits<std::underlying_type_t<NatureEnum>>::max()
             } v;
 
             constexpr explicit Nature_impl(NatureEnum v) : v(v) {}
@@ -88,14 +89,32 @@ namespace pksm
             }
             constexpr operator NatureEnum() const noexcept { return v; }
 
-            constexpr bool operator<(const Nature_impl& other) const noexcept { return v < other.v; }
-            constexpr bool operator<=(const Nature_impl& other) const noexcept { return v <= other.v; }
+            constexpr bool operator<(const Nature_impl& other) const noexcept
+            {
+                return v < other.v;
+            }
+            constexpr bool operator<=(const Nature_impl& other) const noexcept
+            {
+                return v <= other.v;
+            }
 
-            constexpr bool operator>(const Nature_impl& other) const noexcept { return v > other.v; }
-            constexpr bool operator>=(const Nature_impl& other) const noexcept { return v >= other.v; }
+            constexpr bool operator>(const Nature_impl& other) const noexcept
+            {
+                return v > other.v;
+            }
+            constexpr bool operator>=(const Nature_impl& other) const noexcept
+            {
+                return v >= other.v;
+            }
 
-            constexpr bool operator==(const Nature_impl& other) const noexcept { return v == other.v; }
-            constexpr bool operator!=(const Nature_impl& other) const noexcept { return v != other.v; }
+            constexpr bool operator==(const Nature_impl& other) const noexcept
+            {
+                return v == other.v;
+            }
+            constexpr bool operator!=(const Nature_impl& other) const noexcept
+            {
+                return v != other.v;
+            }
 
             const std::string& localize(Language lang) const;
         };
@@ -110,7 +129,9 @@ namespace pksm
         using EnumType = internal::Nature_impl::NatureEnum;
         constexpr Nature() noexcept : impl(EnumType{0}) {}
         constexpr Nature(const internal::Nature_impl& impl) noexcept : impl(impl) {}
-        constexpr explicit Nature(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v}) {}
+        constexpr explicit Nature(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v})
+        {
+        }
         template <typename T>
         constexpr explicit operator T() const noexcept
         {
@@ -128,14 +149,32 @@ namespace pksm
         constexpr bool operator==(const Nature& other) const noexcept { return impl == other.impl; }
         constexpr bool operator!=(const Nature& other) const noexcept { return impl != other.impl; }
 
-        constexpr bool operator<(const internal::Nature_impl& other) const noexcept { return impl < other; }
-        constexpr bool operator<=(const internal::Nature_impl& other) const noexcept { return impl <= other; }
+        constexpr bool operator<(const internal::Nature_impl& other) const noexcept
+        {
+            return impl < other;
+        }
+        constexpr bool operator<=(const internal::Nature_impl& other) const noexcept
+        {
+            return impl <= other;
+        }
 
-        constexpr bool operator>(const internal::Nature_impl& other) const noexcept { return impl > other; }
-        constexpr bool operator>=(const internal::Nature_impl& other) const noexcept { return impl >= other; }
+        constexpr bool operator>(const internal::Nature_impl& other) const noexcept
+        {
+            return impl > other;
+        }
+        constexpr bool operator>=(const internal::Nature_impl& other) const noexcept
+        {
+            return impl >= other;
+        }
 
-        constexpr bool operator==(const internal::Nature_impl& other) const noexcept { return impl == other; }
-        constexpr bool operator!=(const internal::Nature_impl& other) const noexcept { return impl != other; }
+        constexpr bool operator==(const internal::Nature_impl& other) const noexcept
+        {
+            return impl == other;
+        }
+        constexpr bool operator!=(const internal::Nature_impl& other) const noexcept
+        {
+            return impl != other;
+        }
 
         const std::string& localize(Language lang) const { return impl.localize(lang); }
 

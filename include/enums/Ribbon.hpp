@@ -194,7 +194,8 @@ namespace pksm
                 MarkVigor,
                 MarkSlump,
 
-                INVALID[[maybe_unused]] = std::numeric_limits<std::underlying_type_t<RibbonEnum>>::max()
+                INVALID[[maybe_unused]] =
+                    std::numeric_limits<std::underlying_type_t<RibbonEnum>>::max()
             } v;
 
             constexpr explicit Ribbon_impl(RibbonEnum v) : v(v) {}
@@ -212,14 +213,32 @@ namespace pksm
             }
             constexpr operator RibbonEnum() const noexcept { return v; }
 
-            constexpr bool operator<(const Ribbon_impl& other) const noexcept { return v < other.v; }
-            constexpr bool operator<=(const Ribbon_impl& other) const noexcept { return v <= other.v; }
+            constexpr bool operator<(const Ribbon_impl& other) const noexcept
+            {
+                return v < other.v;
+            }
+            constexpr bool operator<=(const Ribbon_impl& other) const noexcept
+            {
+                return v <= other.v;
+            }
 
-            constexpr bool operator>(const Ribbon_impl& other) const noexcept { return v > other.v; }
-            constexpr bool operator>=(const Ribbon_impl& other) const noexcept { return v >= other.v; }
+            constexpr bool operator>(const Ribbon_impl& other) const noexcept
+            {
+                return v > other.v;
+            }
+            constexpr bool operator>=(const Ribbon_impl& other) const noexcept
+            {
+                return v >= other.v;
+            }
 
-            constexpr bool operator==(const Ribbon_impl& other) const noexcept { return v == other.v; }
-            constexpr bool operator!=(const Ribbon_impl& other) const noexcept { return v != other.v; }
+            constexpr bool operator==(const Ribbon_impl& other) const noexcept
+            {
+                return v == other.v;
+            }
+            constexpr bool operator!=(const Ribbon_impl& other) const noexcept
+            {
+                return v != other.v;
+            }
 
             const std::string& localize(Language lang) const;
         };
@@ -234,7 +253,9 @@ namespace pksm
         using EnumType = internal::Ribbon_impl::RibbonEnum;
         constexpr Ribbon() noexcept : impl(EnumType{0}) {}
         constexpr Ribbon(const internal::Ribbon_impl& impl) noexcept : impl(impl) {}
-        constexpr explicit Ribbon(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v}) {}
+        constexpr explicit Ribbon(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v})
+        {
+        }
         template <typename T>
         constexpr explicit operator T() const noexcept
         {
@@ -252,14 +273,32 @@ namespace pksm
         constexpr bool operator==(const Ribbon& other) const noexcept { return impl == other.impl; }
         constexpr bool operator!=(const Ribbon& other) const noexcept { return impl != other.impl; }
 
-        constexpr bool operator<(const internal::Ribbon_impl& other) const noexcept { return impl < other; }
-        constexpr bool operator<=(const internal::Ribbon_impl& other) const noexcept { return impl <= other; }
+        constexpr bool operator<(const internal::Ribbon_impl& other) const noexcept
+        {
+            return impl < other;
+        }
+        constexpr bool operator<=(const internal::Ribbon_impl& other) const noexcept
+        {
+            return impl <= other;
+        }
 
-        constexpr bool operator>(const internal::Ribbon_impl& other) const noexcept { return impl > other; }
-        constexpr bool operator>=(const internal::Ribbon_impl& other) const noexcept { return impl >= other; }
+        constexpr bool operator>(const internal::Ribbon_impl& other) const noexcept
+        {
+            return impl > other;
+        }
+        constexpr bool operator>=(const internal::Ribbon_impl& other) const noexcept
+        {
+            return impl >= other;
+        }
 
-        constexpr bool operator==(const internal::Ribbon_impl& other) const noexcept { return impl == other; }
-        constexpr bool operator!=(const internal::Ribbon_impl& other) const noexcept { return impl != other; }
+        constexpr bool operator==(const internal::Ribbon_impl& other) const noexcept
+        {
+            return impl == other;
+        }
+        constexpr bool operator!=(const internal::Ribbon_impl& other) const noexcept
+        {
+            return impl != other;
+        }
 
         const std::string& localize(Language lang) const { return impl.localize(lang); }
 

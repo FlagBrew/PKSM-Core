@@ -372,7 +372,8 @@ std::u16string StringUtils::UTF8toUTF16(const std::string_view& src)
     {
         u16 codepoint = 0xFFFD;
         int iMod      = 0;
-        if (src[i] & 0x80 && src[i] & 0x40 && src[i] & 0x20 && !(src[i] & 0x10) && i + 2 < src.size())
+        if (src[i] & 0x80 && src[i] & 0x40 && src[i] & 0x20 && !(src[i] & 0x10) &&
+            i + 2 < src.size())
         {
             codepoint = src[i] & 0x0F;
             codepoint = codepoint << 6 | (src[i + 1] & 0x3F);
@@ -422,7 +423,8 @@ std::string StringUtils::getString(const u8* data, int ofs, int len, char16_t te
     return utf16DataToUtf8((char16_t*)(data + ofs), len, term);
 }
 
-void StringUtils::setString(u8* data, const std::u16string_view& v, int ofs, int len, char16_t terminator, char16_t padding)
+void StringUtils::setString(
+    u8* data, const std::u16string_view& v, int ofs, int len, char16_t terminator, char16_t padding)
 {
     int i = 0;
     for (; i < std::min(len - 1, (int)v.size()); i++) // len includes terminator
@@ -436,7 +438,8 @@ void StringUtils::setString(u8* data, const std::u16string_view& v, int ofs, int
     }
 }
 
-void StringUtils::setString(u8* data, const std::string_view& v, int ofs, int len, char16_t terminator, char16_t padding)
+void StringUtils::setString(
+    u8* data, const std::string_view& v, int ofs, int len, char16_t terminator, char16_t padding)
 {
     setString(data, UTF8toUTF16(v), ofs, len, terminator, padding);
 }
@@ -451,13 +454,15 @@ std::string StringUtils::getString4(const u8* data, int ofs, int len)
         u16 temp = LittleEndian::convertTo<u16>(data + ofs + i);
         if (temp == 0xFFFF)
             break;
-        auto found = std::find(pksm::internal::G4Values.begin(), pksm::internal::G4Values.end(), temp);
+        auto found =
+            std::find(pksm::internal::G4Values.begin(), pksm::internal::G4Values.end(), temp);
         // Treat an invalid value as a terminator
         if (found == pksm::internal::G4Values.end())
         {
             break;
         }
-        u16 codepoint = pksm::internal::G4Chars[std::distance(pksm::internal::G4Values.begin(), found)];
+        u16 codepoint =
+            pksm::internal::G4Chars[std::distance(pksm::internal::G4Values.begin(), found)];
         if (codepoint == 0xFFFF)
             break;
         if (codepoint < 0x0080)
@@ -504,15 +509,21 @@ std::vector<u16> StringUtils::stringToG4(const std::string_view& v)
                 codepoint = codepoint << 6 | (v[charIndex + 1] & 0x3F);
                 charIndex += 1;
             }
-            auto found = std::find(pksm::internal::G4Chars.begin(), pksm::internal::G4Chars.end(), codepoint);
-            ret.push_back(
-                found != pksm::internal::G4Chars.end() ? pksm::internal::G4Values[std::distance(pksm::internal::G4Chars.begin(), found)] : 0x0000);
+            auto found = std::find(
+                pksm::internal::G4Chars.begin(), pksm::internal::G4Chars.end(), codepoint);
+            ret.push_back(found != pksm::internal::G4Chars.end()
+                              ? pksm::internal::G4Values[std::distance(
+                                    pksm::internal::G4Chars.begin(), found)]
+                              : 0x0000);
         }
         else
         {
-            auto found = std::find(pksm::internal::G4Chars.begin(), pksm::internal::G4Chars.end(), v[charIndex]);
-            ret.push_back(
-                found != pksm::internal::G4Chars.end() ? pksm::internal::G4Values[std::distance(pksm::internal::G4Chars.begin(), found)] : 0x0000);
+            auto found = std::find(
+                pksm::internal::G4Chars.begin(), pksm::internal::G4Chars.end(), v[charIndex]);
+            ret.push_back(found != pksm::internal::G4Chars.end()
+                              ? pksm::internal::G4Values[std::distance(
+                                    pksm::internal::G4Chars.begin(), found)]
+                              : 0x0000);
         }
     }
     if (ret.back() != 0xFFFF)
@@ -544,15 +555,21 @@ void StringUtils::setString4(u8* data, const std::string_view& v, int ofs, int l
                 codepoint = codepoint << 6 | (v[charIndex + 1] & 0x3F);
                 charIndex += 1;
             }
-            auto found = std::find(pksm::internal::G4Chars.begin(), pksm::internal::G4Chars.end(), codepoint);
-            output[outIndex] =
-                found != pksm::internal::G4Chars.end() ? pksm::internal::G4Values[std::distance(pksm::internal::G4Chars.begin(), found)] : 0x0000;
+            auto found = std::find(
+                pksm::internal::G4Chars.begin(), pksm::internal::G4Chars.end(), codepoint);
+            output[outIndex] = found != pksm::internal::G4Chars.end()
+                                   ? pksm::internal::G4Values[std::distance(
+                                         pksm::internal::G4Chars.begin(), found)]
+                                   : 0x0000;
         }
         else
         {
-            auto found = std::find(pksm::internal::G4Chars.begin(), pksm::internal::G4Chars.end(), v[charIndex]);
-            output[outIndex] =
-                found != pksm::internal::G4Chars.end() ? pksm::internal::G4Values[std::distance(pksm::internal::G4Chars.begin(), found)] : 0x0000;
+            auto found = std::find(
+                pksm::internal::G4Chars.begin(), pksm::internal::G4Chars.end(), v[charIndex]);
+            output[outIndex] = found != pksm::internal::G4Chars.end()
+                                   ? pksm::internal::G4Values[std::distance(
+                                         pksm::internal::G4Chars.begin(), found)]
+                                   : 0x0000;
         }
     }
     output[outIndex >= len ? len - 1 : outIndex] = 0xFFFF;
@@ -563,8 +580,9 @@ std::string& StringUtils::toUpper(std::string& in)
 {
     std::transform(in.begin(), in.end(), in.begin(), ::toupper);
     // Just saying, I have NO clue why two outer braces levels are necessary
-    static constexpr std::array<std::pair<std::string_view, std::string_view>, 12> transStrings = {{{"í", "Í"}, {"ó", "Ó"}, {"ú", "Ú"}, {"é", "É"},
-        {"á", "Á"}, {"ì", "Ì"}, {"ò", "Ò"}, {"ù", "Ù"}, {"è", "È"}, {"à", "À"}, {"ñ", "Ñ"}, {"æ", "Æ"}}};
+    static constexpr std::array<std::pair<std::string_view, std::string_view>, 12> transStrings = {
+        {{"í", "Í"}, {"ó", "Ó"}, {"ú", "Ú"}, {"é", "É"}, {"á", "Á"}, {"ì", "Ì"}, {"ò", "Ò"},
+            {"ù", "Ù"}, {"è", "È"}, {"à", "À"}, {"ñ", "Ñ"}, {"æ", "Æ"}}};
     for (auto& str : transStrings)
     {
         size_t found;
@@ -586,8 +604,9 @@ std::string& StringUtils::toLower(std::string& in)
 {
     std::transform(in.begin(), in.end(), in.begin(), ::tolower);
     // Just saying, I have NO clue why two outer braces levels are necessary
-    static constexpr std::array<std::pair<std::string_view, std::string_view>, 12> transStrings = {{{"Í", "í"}, {"Ó", "ó"}, {"Ú", "ú"}, {"É", "é"},
-        {"Á", "á"}, {"Ì", "ì"}, {"Ò", "ò"}, {"Ù", "ù"}, {"È", "è"}, {"À", "à"}, {"Ñ", "ñ"}, {"Æ", "æ"}}};
+    static constexpr std::array<std::pair<std::string_view, std::string_view>, 12> transStrings = {
+        {{"Í", "í"}, {"Ó", "ó"}, {"Ú", "ú"}, {"É", "é"}, {"Á", "á"}, {"Ì", "ì"}, {"Ò", "ò"},
+            {"Ù", "ù"}, {"È", "è"}, {"À", "à"}, {"Ñ", "ñ"}, {"Æ", "æ"}}};
     for (auto& str : transStrings)
     {
         size_t found;
@@ -629,7 +648,8 @@ std::string StringUtils::transString45(const std::string_view& str)
 std::u16string StringUtils::transString45(const std::u16string_view& str)
 {
     std::u16string ret = std::u16string(str);
-    std::transform(str.begin(), str.end(), ret.begin(), [](const char16_t& chr) { return (char16_t)swapCodepoints45(chr); });
+    std::transform(str.begin(), str.end(), ret.begin(),
+        [](const char16_t& chr) { return (char16_t)swapCodepoints45(chr); });
     return ret;
 }
 
@@ -641,7 +661,8 @@ std::string StringUtils::transString67(const std::string_view& str)
 std::u16string StringUtils::transString67(const std::u16string_view& str)
 {
     std::u16string ret = std::u16string(str);
-    std::transform(str.begin(), str.end(), ret.begin(), [](const char16_t& chr) { return (char16_t)swapCodepoints67(chr); });
+    std::transform(str.begin(), str.end(), ret.begin(),
+        [](const char16_t& chr) { return (char16_t)swapCodepoints67(chr); });
     return ret;
 }
 
@@ -665,7 +686,8 @@ std::string StringUtils::getString3(const u8* data, int ofs, int len, bool jp)
     return StringUtils::UTF16toUTF8(outString);
 }
 
-void StringUtils::setString3(u8* data, const std::string_view& v, int ofs, int len, bool jp, int padTo, u8 padWith)
+void StringUtils::setString3(
+    u8* data, const std::string_view& v, int ofs, int len, bool jp, int padTo, u8 padWith)
 {
     auto& characters   = jp ? pksm::internal::G3_JP : pksm::internal::G3_EN;
     std::u16string str = StringUtils::UTF8toUTF16(v);

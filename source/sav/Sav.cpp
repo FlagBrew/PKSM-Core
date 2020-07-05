@@ -298,7 +298,8 @@ namespace pksm
             return BadTransferReason::SPECIES;
         }
         else if (pk.alternativeForm() >= formCount(pk.species()) &&
-                 !((pk.species() == Species::Scatterbug || pk.species() == Species::Spewpa) && pk.alternativeForm() <= formCount(Species::Vivillon)))
+                 !((pk.species() == Species::Scatterbug || pk.species() == Species::Spewpa) &&
+                     pk.alternativeForm() <= formCount(Species::Vivillon)))
         {
             return BadTransferReason::FORM;
         }

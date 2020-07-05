@@ -116,7 +116,8 @@ namespace pksm
                 /// Pokémon Shield (NX)
                 SH = 45,
 
-                INVALID[[maybe_unused]] = std::numeric_limits<std::underlying_type_t<GameVersionEnum>>::max()
+                INVALID[[maybe_unused]] =
+                    std::numeric_limits<std::underlying_type_t<GameVersionEnum>>::max()
             } v;
 
             constexpr explicit GameVersion_impl(GameVersionEnum v) : v(v) {}
@@ -222,8 +223,14 @@ namespace pksm
                 return (Generation) * this >= (Generation)other;
             }
 
-            constexpr bool operator==(const GameVersion_impl& other) const noexcept { return v == other.v; }
-            constexpr bool operator!=(const GameVersion_impl& other) const noexcept { return v != other.v; }
+            constexpr bool operator==(const GameVersion_impl& other) const noexcept
+            {
+                return v == other.v;
+            }
+            constexpr bool operator!=(const GameVersion_impl& other) const noexcept
+            {
+                return v != other.v;
+            }
         };
     }
 
@@ -236,7 +243,10 @@ namespace pksm
         using EnumType = internal::GameVersion_impl::GameVersionEnum;
         constexpr GameVersion() noexcept : impl(EnumType::INVALID) {}
         constexpr GameVersion(const internal::GameVersion_impl& impl) noexcept : impl(impl) {}
-        constexpr explicit GameVersion(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v}) {}
+        constexpr explicit GameVersion(std::underlying_type_t<EnumType> v) noexcept
+            : impl(EnumType{v})
+        {
+        }
         template <typename T>
         constexpr explicit operator T() const noexcept
         {
@@ -300,23 +310,59 @@ namespace pksm
             }
         }
 
-        constexpr bool operator<(const GameVersion& other) const noexcept { return impl < other.impl; }
-        constexpr bool operator<=(const GameVersion& other) const noexcept { return impl <= other.impl; }
+        constexpr bool operator<(const GameVersion& other) const noexcept
+        {
+            return impl < other.impl;
+        }
+        constexpr bool operator<=(const GameVersion& other) const noexcept
+        {
+            return impl <= other.impl;
+        }
 
-        constexpr bool operator>(const GameVersion& other) const noexcept { return impl > other.impl; }
-        constexpr bool operator>=(const GameVersion& other) const noexcept { return impl >= other.impl; }
+        constexpr bool operator>(const GameVersion& other) const noexcept
+        {
+            return impl > other.impl;
+        }
+        constexpr bool operator>=(const GameVersion& other) const noexcept
+        {
+            return impl >= other.impl;
+        }
 
-        constexpr bool operator==(const GameVersion& other) const noexcept { return impl == other.impl; }
-        constexpr bool operator!=(const GameVersion& other) const noexcept { return impl != other.impl; }
+        constexpr bool operator==(const GameVersion& other) const noexcept
+        {
+            return impl == other.impl;
+        }
+        constexpr bool operator!=(const GameVersion& other) const noexcept
+        {
+            return impl != other.impl;
+        }
 
-        constexpr bool operator<(const internal::GameVersion_impl& other) const noexcept { return impl < other; }
-        constexpr bool operator<=(const internal::GameVersion_impl& other) const noexcept { return impl <= other; }
+        constexpr bool operator<(const internal::GameVersion_impl& other) const noexcept
+        {
+            return impl < other;
+        }
+        constexpr bool operator<=(const internal::GameVersion_impl& other) const noexcept
+        {
+            return impl <= other;
+        }
 
-        constexpr bool operator>(const internal::GameVersion_impl& other) const noexcept { return impl > other; }
-        constexpr bool operator>=(const internal::GameVersion_impl& other) const noexcept { return impl >= other; }
+        constexpr bool operator>(const internal::GameVersion_impl& other) const noexcept
+        {
+            return impl > other;
+        }
+        constexpr bool operator>=(const internal::GameVersion_impl& other) const noexcept
+        {
+            return impl >= other;
+        }
 
-        constexpr bool operator==(const internal::GameVersion_impl& other) const noexcept { return impl == other; }
-        constexpr bool operator!=(const internal::GameVersion_impl& other) const noexcept { return impl != other; }
+        constexpr bool operator==(const internal::GameVersion_impl& other) const noexcept
+        {
+            return impl == other;
+        }
+        constexpr bool operator!=(const internal::GameVersion_impl& other) const noexcept
+        {
+            return impl != other;
+        }
 
         static constexpr internal::GameVersion_impl None{EnumType::None};
         /// Pokémon Sapphire (GBA)

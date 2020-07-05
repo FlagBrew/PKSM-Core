@@ -223,9 +223,15 @@ namespace pksm
         inline Type type1(void) const override { return PersonalRSFRLGE::type1(formSpecies()); }
         inline Type type2(void) const override { return PersonalRSFRLGE::type2(formSpecies()); }
         inline u8 genderType(void) const override { return PersonalRSFRLGE::gender(formSpecies()); }
-        inline u8 baseFriendship(void) const override { return PersonalRSFRLGE::baseFriendship(formSpecies()); }
+        inline u8 baseFriendship(void) const override
+        {
+            return PersonalRSFRLGE::baseFriendship(formSpecies());
+        }
         inline u8 expType(void) const override { return PersonalRSFRLGE::expType(formSpecies()); }
-        inline Ability abilities(u8 n) const override { return PersonalRSFRLGE::ability(formSpecies(), n); }
+        inline Ability abilities(u8 n) const override
+        {
+            return PersonalRSFRLGE::ability(formSpecies(), n);
+        }
         inline u16 formStatIndex(void) const override { return 0; }
     };
 }

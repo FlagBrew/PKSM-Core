@@ -74,7 +74,8 @@ namespace pksm
             if (data)
             {
                 std::copy(data, data + 4, itemData.data());
-                LittleEndian::convertFrom<u16>(itemData.data() + 2, LittleEndian::convertTo<u16>(itemData.data() + 2) ^ securityKey);
+                LittleEndian::convertFrom<u16>(itemData.data() + 2,
+                    LittleEndian::convertTo<u16>(itemData.data() + 2) ^ securityKey);
                 key = securityKey;
             }
             else
@@ -84,8 +85,14 @@ namespace pksm
         }
         Generation generation(void) const override { return Generation::THREE; }
         u16 maxCount(void) const override { return 0xFFFF; }
-        u16 id(void) const override { return ItemConverter::g3ToNational(LittleEndian::convertTo<u16>(itemData.data())); }
-        void id(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data(), ItemConverter::nationalToG3(v)); }
+        u16 id(void) const override
+        {
+            return ItemConverter::g3ToNational(LittleEndian::convertTo<u16>(itemData.data()));
+        }
+        void id(u16 v) override
+        {
+            LittleEndian::convertFrom<u16>(itemData.data(), ItemConverter::nationalToG3(v));
+        }
         u16 id3(void) const { return LittleEndian::convertTo<u16>(itemData.data()); }
         void id3(u16 v) { LittleEndian::convertFrom<u16>(itemData.data(), v); }
         u16 count(void) const override { return LittleEndian::convertTo<u16>(itemData.data() + 2); }
@@ -93,7 +100,8 @@ namespace pksm
         std::vector<u8> bytes(void) const override
         {
             std::vector<u8> data{itemData.begin(), itemData.end()};
-            LittleEndian::convertFrom<u16>(data.data() + 2, LittleEndian::convertTo<u16>(data.data() + 2) ^ key);
+            LittleEndian::convertFrom<u16>(
+                data.data() + 2, LittleEndian::convertTo<u16>(data.data() + 2) ^ key);
             return data;
         }
     };
@@ -121,7 +129,10 @@ namespace pksm
         void id(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data(), v); }
         u16 count(void) const override { return LittleEndian::convertTo<u16>(itemData.data() + 2); }
         void count(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data() + 2, v); }
-        std::vector<u8> bytes(void) const override { return std::vector<u8>{itemData.begin(), itemData.end()}; }
+        std::vector<u8> bytes(void) const override
+        {
+            return std::vector<u8>{itemData.begin(), itemData.end()};
+        }
     };
 
     class Item5 : public Item
@@ -147,7 +158,10 @@ namespace pksm
         void id(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data(), v); }
         u16 count(void) const override { return LittleEndian::convertTo<u16>(itemData.data() + 2); }
         void count(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data() + 2, v); }
-        std::vector<u8> bytes(void) const override { return std::vector<u8>{itemData.begin(), itemData.end()}; }
+        std::vector<u8> bytes(void) const override
+        {
+            return std::vector<u8>{itemData.begin(), itemData.end()};
+        }
     };
 
     class Item6 : public Item
@@ -173,7 +187,10 @@ namespace pksm
         void id(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data(), v); }
         u16 count(void) const override { return LittleEndian::convertTo<u16>(itemData.data() + 2); }
         void count(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data() + 2, v); }
-        std::vector<u8> bytes(void) const override { return std::vector<u8>{itemData.begin(), itemData.end()}; }
+        std::vector<u8> bytes(void) const override
+        {
+            return std::vector<u8>{itemData.begin(), itemData.end()};
+        }
     };
 
     class Item7 : public Item
@@ -203,9 +220,15 @@ namespace pksm
         u16 id(void) const override { return itemData & 0x3FF; }
         void id(u16 v) override { itemData = ((itemData & ~0x3FF) | std::min((u32)v, (u32)0x3FF)); }
         u16 count(void) const override { return (itemData >> 10) & 0x3FF; }
-        void count(u16 v) override { itemData = (itemData & ~(0x3FF << 10)) | (std::min((u32)v, (u32)0x3FF) << 10); }
+        void count(u16 v) override
+        {
+            itemData = (itemData & ~(0x3FF << 10)) | (std::min((u32)v, (u32)0x3FF) << 10);
+        }
         u16 freeSpaceIndex(void) const { return (itemData >> 20) & 0x3FF; }
-        void freeSpaceIndex(u16 v) { itemData = (itemData & ~(0x3FF << 20)) | (std::min((u32)v, (u32)0x3FF) << 20); }
+        void freeSpaceIndex(u16 v)
+        {
+            itemData = (itemData & ~(0x3FF << 20)) | (std::min((u32)v, (u32)0x3FF) << 20);
+        }
         bool newFlag(void) const { return (itemData >> 30) & 1; }
         void newFlag(bool v) { itemData = (itemData & ~(1 << 30)) | (v ? 1 << 30 : 0); }
         bool reserved(void) const { return (itemData >> 31) & 1; }
@@ -244,9 +267,15 @@ namespace pksm
         Generation generation(void) const override { return Generation::LGPE; }
         u16 maxCount(void) const override { return 0x7FFF; }
         u16 id(void) const override { return itemData & 0x7FFF; }
-        void id(u16 v) override { itemData = ((itemData & ~0x7FFF) | std::min((u32)v, (u32)0x7FFF)); }
+        void id(u16 v) override
+        {
+            itemData = ((itemData & ~0x7FFF) | std::min((u32)v, (u32)0x7FFF));
+        }
         u16 count(void) const override { return (itemData >> 15) & 0x7FFF; }
-        void count(u16 v) override { itemData = (itemData & ~(0x7FFF << 15)) | (std::min((u32)v, (u32)0x7FFF) << 15); }
+        void count(u16 v) override
+        {
+            itemData = (itemData & ~(0x7FFF << 15)) | (std::min((u32)v, (u32)0x7FFF) << 15);
+        }
         bool newFlag(void) const { return (itemData >> 30) & 1; }
         void newFlag(bool v) { itemData = (itemData & ~(1 << 30)) | (v ? 1 << 30 : 0); }
         bool reserved(void) const { return (itemData >> 31) & 1; }
@@ -285,9 +314,15 @@ namespace pksm
         Generation generation(void) const override { return Generation::SEVEN; }
         u16 maxCount(void) const override { return 0x7FFF; }
         u16 id(void) const override { return itemData & 0x7FFF; }
-        void id(u16 v) override { itemData = ((itemData & ~0x7FFF) | std::min((u32)v, (u32)0x7FFF)); }
+        void id(u16 v) override
+        {
+            itemData = ((itemData & ~0x7FFF) | std::min((u32)v, (u32)0x7FFF));
+        }
         u16 count(void) const override { return (itemData >> 15) & 0x7FFF; }
-        void count(u16 v) override { itemData = (itemData & ~(0x7FFF << 15)) | (std::min((u32)v, (u32)0x7FFF) << 15); }
+        void count(u16 v) override
+        {
+            itemData = (itemData & ~(0x7FFF << 15)) | (std::min((u32)v, (u32)0x7FFF) << 15);
+        }
         bool newFlag(void) const { return (itemData >> 30) & 1; }
         void newFlag(bool v) { itemData = (itemData & ~(1 << 30)) | (v ? 1 << 30 : 0); }
         bool reserved(void) const { return (itemData >> 31) & 1; }

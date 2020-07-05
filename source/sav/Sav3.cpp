@@ -48,8 +48,10 @@ namespace pksm
 
         for (int i = 0; i < BLOCK_COUNT; i++)
         {
-            unsigned int index = std::distance(blockOrder.begin(), std::find(blockOrder.begin(), blockOrder.end(), i));
-            blockOfs[i]        = index == blockOrder.size() ? std::numeric_limits<int>::min() : (index * SIZE_BLOCK) + ABO();
+            unsigned int index = std::distance(
+                blockOrder.begin(), std::find(blockOrder.begin(), blockOrder.end(), i));
+            blockOfs[i] = index == blockOrder.size() ? std::numeric_limits<int>::min()
+                                                     : (index * SIZE_BLOCK) + ABO();
         }
     }
 
@@ -61,7 +63,8 @@ namespace pksm
         return order;
     }
 
-    int Sav3::getActiveSaveIndex(std::shared_ptr<u8[]> dt, std::array<int, BLOCK_COUNT>& blockOrder1, std::array<int, BLOCK_COUNT>& blockOrder2)
+    int Sav3::getActiveSaveIndex(std::shared_ptr<u8[]> dt,
+        std::array<int, BLOCK_COUNT>& blockOrder1, std::array<int, BLOCK_COUNT>& blockOrder2)
     {
         int zeroBlock1 = std::find(blockOrder1.begin(), blockOrder1.end(), 0) - blockOrder1.begin();
         int zeroBlock2 = std::find(blockOrder2.begin(), blockOrder2.end(), 0) - blockOrder2.begin();
@@ -84,7 +87,8 @@ namespace pksm
 
         int ABO = activeSAV * SIZE_BLOCK * BLOCK_COUNT;
 
-        int blockOfs0 = ((std::find(order.begin(), order.end(), 0) - order.begin()) * SIZE_BLOCK) + ABO;
+        int blockOfs0 =
+            ((std::find(order.begin(), order.end(), 0) - order.begin()) * SIZE_BLOCK) + ABO;
 
         // Get version
         u32 gameCode = LittleEndian::convertTo<u32>(&dt[blockOfs0 + 0xAC]);
@@ -97,8 +101,8 @@ namespace pksm
             default:
                 // Ruby doesn't set data as far down as Emerald.
                 // 00 FF 00 00 00 00 00 00 00 FF 00 00 00 00 00 00
-                // ^ byte pattern in Emerald saves, is all zero in Ruby/Sapphire as far as I can tell.
-                // Some saves have had data @ 0x550
+                // ^ byte pattern in Emerald saves, is all zero in Ruby/Sapphire as far as I can
+                // tell. Some saves have had data @ 0x550
                 if (LittleEndian::convertTo<u64>(&dt[blockOfs0 + 0xEE0]) != 0)
                     return Game::E;
                 if (LittleEndian::convertTo<u64>(&dt[blockOfs0 + 0xEE8]) != 0)
@@ -107,13 +111,14 @@ namespace pksm
         }
     }
 
-    Sav3::Sav3(std::shared_ptr<u8[]> dt, const std::vector<int>& flagOffsets) : Sav(dt, 0x20000), seenFlagOffsets(flagOffsets)
+    Sav3::Sav3(std::shared_ptr<u8[]> dt, const std::vector<int>& flagOffsets)
+        : Sav(dt, 0x20000), seenFlagOffsets(flagOffsets)
     {
         loadBlocks();
 
         // Japanese games are limited to 5 character OT names; any unused characters are 0xFF.
-        // 5 for JP, 7 for INT. There's always 1 terminator, thus we can check 0x6-0x7 being 0xFFFF = INT
-        // OT name is stored at the top of the first block.
+        // 5 for JP, 7 for INT. There's always 1 terminator, thus we can check 0x6-0x7 being 0xFFFF
+        // = INT OT name is stored at the top of the first block.
         japanese = LittleEndian::convertTo<s16>(&data[blockOfs[0] + 0x6]) == 0;
 
         PokeDex = blockOfs[0] + 0x18;
@@ -188,7 +193,11 @@ namespace pksm
     u16 Sav3::SID(void) const { return LittleEndian::convertTo<u16>(&data[blockOfs[0] + 0xC]); }
     void Sav3::SID(u16 v) { LittleEndian::convertFrom<u16>(&data[blockOfs[0] + 0xC], v); }
 
-    GameVersion Sav3::version(void) const { return game == Game::RS ? GameVersion::S : game == Game::E ? GameVersion::E : GameVersion::FR; }
+    GameVersion Sav3::version(void) const
+    {
+        return game == Game::RS ? GameVersion::S
+                                : game == Game::E ? GameVersion::E : GameVersion::FR;
+    }
     void Sav3::version(GameVersion) {}
 
     Gender Sav3::gender(void) const { return Gender{data[blockOfs[0] + 8]}; }
@@ -204,10 +213,14 @@ namespace pksm
         // TODO: Unused?
     }
 
-    std::string Sav3::otName(void) const { return StringUtils::getString3(data.get(), blockOfs[0], japanese ? 5 : 7, japanese); }
+    std::string Sav3::otName(void) const
+    {
+        return StringUtils::getString3(data.get(), blockOfs[0], japanese ? 5 : 7, japanese);
+    }
     void Sav3::otName(const std::string_view& v)
     {
-        StringUtils::setString3(data.get(), v, blockOfs[0], japanese ? 5 : 7, japanese, japanese ? 5 : 7, 0xFF);
+        StringUtils::setString3(
+            data.get(), v, blockOfs[0], japanese ? 5 : 7, japanese, japanese ? 5 : 7, 0xFF);
     }
 
     u32 Sav3::money(void) const
@@ -311,7 +324,10 @@ namespace pksm
         return ret;
     }
 
-    u16 Sav3::playedHours(void) const { return LittleEndian::convertTo<u16>(&data[blockOfs[0] + 0xE]); }
+    u16 Sav3::playedHours(void) const
+    {
+        return LittleEndian::convertTo<u16>(&data[blockOfs[0] + 0xE]);
+    }
     void Sav3::playedHours(u16 v) { LittleEndian::convertFrom<u16>(&data[blockOfs[0] + 0xE], v); }
 
     u8 Sav3::playedMinutes(void) const { return data[blockOfs[0] + 0x10]; }
@@ -334,9 +350,15 @@ namespace pksm
         return blockOfs[d.quot + 5] + d.rem;
     }
 
-    u32 Sav3::partyOffset(u8 slot) const { return blockOfs[1] + (game == Game::FRLG ? 0x38 : 0x238) + (PK3::PARTY_LENGTH * slot); }
+    u32 Sav3::partyOffset(u8 slot) const
+    {
+        return blockOfs[1] + (game == Game::FRLG ? 0x38 : 0x238) + (PK3::PARTY_LENGTH * slot);
+    }
 
-    std::unique_ptr<PKX> Sav3::pkm(u8 slot) const { return PKX::getPKM<Generation::THREE>(&data[partyOffset(slot)], true); }
+    std::unique_ptr<PKX> Sav3::pkm(u8 slot) const
+    {
+        return PKX::getPKM<Generation::THREE>(&data[partyOffset(slot)], true);
+    }
     std::unique_ptr<PKX> Sav3::pkm(u8 box, u8 slot) const
     {
         u32 offset = boxOffset(box, slot);
@@ -345,7 +367,7 @@ namespace pksm
         {
             // Concatenate the data if so
             u8 pkmData[PK3::BOX_LENGTH];
-            auto nextOut   = std::copy(&data[offset], &data[(offset & 0xFFFFF000) | 0xF80], pkmData);
+            auto nextOut = std::copy(&data[offset], &data[(offset & 0xFFFFF000) | 0xF80], pkmData);
             u32 nextOffset = boxOffset(box + (slot + 1) / 30, (slot + 1) % 30);
             std::copy(&data[nextOffset & 0xFFFFF000], &data[nextOffset], nextOut);
             return PKX::getPKM<Generation::THREE>(pkmData);
@@ -383,7 +405,8 @@ namespace pksm
                 u32 firstSize = 0xF80 - (offset % 0x1000);
                 std::copy(pk3->rawData(), pk3->rawData() + firstSize, &data[offset]);
                 u32 nextOffset = boxOffset(box + (slot + 1) / 30, (slot + 1) % 30);
-                std::copy(pk3->rawData() + firstSize, pk3->rawData() + PK3::BOX_LENGTH, &data[nextOffset & 0xFFFFF000]);
+                std::copy(pk3->rawData() + firstSize, pk3->rawData() + PK3::BOX_LENGTH,
+                    &data[nextOffset & 0xFFFFF000]);
             }
             else
             {
@@ -402,7 +425,8 @@ namespace pksm
             return false;
         if (species > Species::Deoxys)
             return false;
-        if (std::find_if(blockOfs.begin(), blockOfs.end(), [](const int& val) { return val < 0; }) != blockOfs.end())
+        if (std::find_if(blockOfs.begin(), blockOfs.end(),
+                [](const int& val) { return val < 0; }) != blockOfs.end())
             return false;
         return true;
     }
@@ -526,10 +550,15 @@ namespace pksm
         }
     }
 
-    std::string Sav3::boxName(u8 box) const { return StringUtils::getString3(data.get(), boxOffset(maxBoxes(), 0) + (box * 9), 9, japanese); }
+    std::string Sav3::boxName(u8 box) const
+    {
+        return StringUtils::getString3(
+            data.get(), boxOffset(maxBoxes(), 0) + (box * 9), 9, japanese);
+    }
     void Sav3::boxName(u8 box, const std::string_view& v)
     {
-        return StringUtils::setString3(data.get(), v, boxOffset(maxBoxes(), 0) + (box * 9), 8, japanese, 9);
+        return StringUtils::setString3(
+            data.get(), v, boxOffset(maxBoxes(), 0) + (box * 9), 8, japanese, 9);
     }
 
     u8 Sav3::boxWallpaper(u8 box) const
@@ -545,7 +574,10 @@ namespace pksm
         data[offset] = v;
     }
 
-    u8 Sav3::partyCount(void) const { return data[blockOfs[1] + (game == Game::FRLG ? 0x34 : 0x234)]; }
+    u8 Sav3::partyCount(void) const
+    {
+        return data[blockOfs[1] + (game == Game::FRLG ? 0x34 : 0x234)];
+    }
     void Sav3::partyCount(u8 v) { data[blockOfs[1] + (game == Game::FRLG ? 0x34 : 0x234)] = v; }
 
     void Sav3::item(const Item& item, Pouch pouch, u16 slot)
@@ -580,7 +612,8 @@ namespace pksm
         switch (pouch)
         {
             case Pouch::NormalItem:
-                return std::make_unique<Item3>(&data[OFS_PouchHeldItem + (slot * 4)], securityKey());
+                return std::make_unique<Item3>(
+                    &data[OFS_PouchHeldItem + (slot * 4)], securityKey());
             case Pouch::KeyItem:
                 return std::make_unique<Item3>(&data[OFS_PouchKeyItem + (slot * 4)], securityKey());
             case Pouch::Ball:
@@ -598,9 +631,12 @@ namespace pksm
 
     std::vector<std::pair<Sav::Pouch, int>> Sav3::pouches(void) const
     {
-        return {{Pouch::NormalItem, (OFS_PouchKeyItem - OFS_PouchHeldItem) / 4}, {Pouch::KeyItem, (OFS_PouchBalls - OFS_PouchKeyItem) / 4},
-            {Pouch::Ball, (OFS_PouchTMHM - OFS_PouchBalls) / 4}, {Pouch::TM, (OFS_PouchBerry - OFS_PouchTMHM) / 4},
-            {Pouch::Berry, game == Game::FRLG ? 43 : 46}, {Pouch::PCItem, (OFS_PouchHeldItem - OFS_PCItem) / 4}};
+        return {{Pouch::NormalItem, (OFS_PouchKeyItem - OFS_PouchHeldItem) / 4},
+            {Pouch::KeyItem, (OFS_PouchBalls - OFS_PouchKeyItem) / 4},
+            {Pouch::Ball, (OFS_PouchTMHM - OFS_PouchBalls) / 4},
+            {Pouch::TM, (OFS_PouchBerry - OFS_PouchTMHM) / 4},
+            {Pouch::Berry, game == Game::FRLG ? 43 : 46},
+            {Pouch::PCItem, (OFS_PouchHeldItem - OFS_PCItem) / 4}};
     }
 
     u16 Sav3::rtcInitialDay(void) const

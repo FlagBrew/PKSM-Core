@@ -84,7 +84,10 @@ namespace pksm
 
     u16 PGF::ID(void) const { return LittleEndian::convertTo<u16>(data + 0xB0); }
 
-    std::string PGF::title(void) const { return StringUtils::transString45(StringUtils::getString(data, 0x60, 37, u'\uFFFF')); }
+    std::string PGF::title(void) const
+    {
+        return StringUtils::transString45(StringUtils::getString(data, 0x60, 37, u'\uFFFF'));
+    }
 
     u8 PGF::type(void) const { return data[0xB3]; }
 
@@ -149,7 +152,8 @@ namespace pksm
     bool PGF::ribbon(Ribbon rib) const
     {
         auto offset = OFFSET_OF(rib);
-        return offset.first != RIBBON_ABSENT ? FlagUtil::getFlag(data, offset.first, offset.second) : false;
+        return offset.first != RIBBON_ABSENT ? FlagUtil::getFlag(data, offset.first, offset.second)
+                                             : false;
     }
 
     u8 PGF::alternativeForm(void) const { return data[0x1C]; }
@@ -159,7 +163,8 @@ namespace pksm
     std::string PGF::nickname(void) const
     {
         char16_t firstChar = LittleEndian::convertTo<char16_t>(data + 0x1E);
-        return firstChar != 0xFFFF ? StringUtils::getString(data, 0x1E, 11, u'\uFFFF') : "Pokemon Name";
+        return firstChar != 0xFFFF ? StringUtils::getString(data, 0x1E, 11, u'\uFFFF')
+                                   : "Pokemon Name";
     }
 
     Nature PGF::nature(void) const { return Nature{data[0x34]}; }

@@ -47,7 +47,8 @@ namespace pksm
                 Female     = 1,
                 Genderless = 2,
 
-                INVALID[[maybe_unused]] = std::numeric_limits<std::underlying_type_t<GenderEnum>>::max()
+                INVALID[[maybe_unused]] =
+                    std::numeric_limits<std::underlying_type_t<GenderEnum>>::max()
             } v;
 
             constexpr explicit Gender_impl(GenderEnum v) : v(v) {}
@@ -65,14 +66,32 @@ namespace pksm
             }
             constexpr operator GenderEnum() const noexcept { return v; }
 
-            constexpr bool operator<(const Gender_impl& other) const noexcept { return v < other.v; }
-            constexpr bool operator<=(const Gender_impl& other) const noexcept { return v <= other.v; }
+            constexpr bool operator<(const Gender_impl& other) const noexcept
+            {
+                return v < other.v;
+            }
+            constexpr bool operator<=(const Gender_impl& other) const noexcept
+            {
+                return v <= other.v;
+            }
 
-            constexpr bool operator>(const Gender_impl& other) const noexcept { return v > other.v; }
-            constexpr bool operator>=(const Gender_impl& other) const noexcept { return v >= other.v; }
+            constexpr bool operator>(const Gender_impl& other) const noexcept
+            {
+                return v > other.v;
+            }
+            constexpr bool operator>=(const Gender_impl& other) const noexcept
+            {
+                return v >= other.v;
+            }
 
-            constexpr bool operator==(const Gender_impl& other) const noexcept { return v == other.v; }
-            constexpr bool operator!=(const Gender_impl& other) const noexcept { return v != other.v; }
+            constexpr bool operator==(const Gender_impl& other) const noexcept
+            {
+                return v == other.v;
+            }
+            constexpr bool operator!=(const Gender_impl& other) const noexcept
+            {
+                return v != other.v;
+            }
         };
     }
 
@@ -85,7 +104,9 @@ namespace pksm
         using EnumType = internal::Gender_impl::GenderEnum;
         constexpr Gender() noexcept : impl(EnumType::INVALID) {}
         constexpr Gender(const internal::Gender_impl& impl) noexcept : impl(impl) {}
-        constexpr explicit Gender(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v}) {}
+        constexpr explicit Gender(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v})
+        {
+        }
         template <typename T>
         constexpr explicit operator T() const noexcept
         {
@@ -103,14 +124,32 @@ namespace pksm
         constexpr bool operator==(const Gender& other) const noexcept { return impl == other.impl; }
         constexpr bool operator!=(const Gender& other) const noexcept { return impl != other.impl; }
 
-        constexpr bool operator<(const internal::Gender_impl& other) const noexcept { return impl < other; }
-        constexpr bool operator<=(const internal::Gender_impl& other) const noexcept { return impl <= other; }
+        constexpr bool operator<(const internal::Gender_impl& other) const noexcept
+        {
+            return impl < other;
+        }
+        constexpr bool operator<=(const internal::Gender_impl& other) const noexcept
+        {
+            return impl <= other;
+        }
 
-        constexpr bool operator>(const internal::Gender_impl& other) const noexcept { return impl > other; }
-        constexpr bool operator>=(const internal::Gender_impl& other) const noexcept { return impl >= other; }
+        constexpr bool operator>(const internal::Gender_impl& other) const noexcept
+        {
+            return impl > other;
+        }
+        constexpr bool operator>=(const internal::Gender_impl& other) const noexcept
+        {
+            return impl >= other;
+        }
 
-        constexpr bool operator==(const internal::Gender_impl& other) const noexcept { return impl == other; }
-        constexpr bool operator!=(const internal::Gender_impl& other) const noexcept { return impl != other; }
+        constexpr bool operator==(const internal::Gender_impl& other) const noexcept
+        {
+            return impl == other;
+        }
+        constexpr bool operator!=(const internal::Gender_impl& other) const noexcept
+        {
+            return impl != other;
+        }
 
         static constexpr internal::Gender_impl Male{EnumType::Male};
         static constexpr internal::Gender_impl Female{EnumType::Female};

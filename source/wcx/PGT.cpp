@@ -76,7 +76,10 @@ namespace pksm
 
     bool PGT::BP(void) const { return false; }
 
-    bool PGT::item(void) const { return type() == 3 || type() == 8 || type() == 9 || type() == 10 || type() == 12; }
+    bool PGT::item(void) const
+    {
+        return type() == 3 || type() == 8 || type() == 9 || type() == 10 || type() == 12;
+    }
 
     // Pokemon, egg, or Manaphy egg
     bool PGT::pokemon(void) const { return type() == 1 || type() == 2 || type() == 7; }
@@ -106,11 +109,20 @@ namespace pksm
 
     bool PGT::multiObtainable(void) const { return false; }
 
-    int PGT::year(void) const { return (pokemonData->egg() ? pokemonData->eggDate() : pokemonData->metDate()).year(); }
+    int PGT::year(void) const
+    {
+        return (pokemonData->egg() ? pokemonData->eggDate() : pokemonData->metDate()).year();
+    }
 
-    int PGT::month(void) const { return (pokemonData->egg() ? pokemonData->eggDate() : pokemonData->metDate()).month(); }
+    int PGT::month(void) const
+    {
+        return (pokemonData->egg() ? pokemonData->eggDate() : pokemonData->metDate()).month();
+    }
 
-    int PGT::day(void) const { return (pokemonData->egg() ? pokemonData->eggDate() : pokemonData->metDate()).day(); }
+    int PGT::day(void) const
+    {
+        return (pokemonData->egg() ? pokemonData->eggDate() : pokemonData->metDate()).day();
+    }
 
     void PGT::year(int v)
     {
@@ -119,7 +131,8 @@ namespace pksm
         pokemonData->egg() ? pokemonData->eggDate(newDate) : pokemonData->metDate(newDate);
         pokemonData->refreshChecksum();
         pokemonData->encrypt();
-        std::copy(pokemonData->rawData(), pokemonData->rawData() + 236, data + 0x8); // Actually set the data
+        std::copy(pokemonData->rawData(), pokemonData->rawData() + 236,
+            data + 0x8); // Actually set the data
         pokemonData->decrypt();
     }
 
@@ -130,7 +143,8 @@ namespace pksm
         pokemonData->egg() ? pokemonData->eggDate(newDate) : pokemonData->metDate(newDate);
         pokemonData->refreshChecksum();
         pokemonData->encrypt();
-        std::copy(pokemonData->rawData(), pokemonData->rawData() + 236, data + 0x8); // Actually set the data
+        std::copy(pokemonData->rawData(), pokemonData->rawData() + 236,
+            data + 0x8); // Actually set the data
         pokemonData->decrypt();
     }
 
@@ -141,7 +155,8 @@ namespace pksm
         pokemonData->egg() ? pokemonData->eggDate(newDate) : pokemonData->metDate(newDate);
         pokemonData->refreshChecksum();
         pokemonData->encrypt();
-        std::copy(pokemonData->rawData(), pokemonData->rawData() + 236, data + 0x8); // Actually set the data
+        std::copy(pokemonData->rawData(), pokemonData->rawData() + 236,
+            data + 0x8); // Actually set the data
         pokemonData->decrypt();
     }
 
@@ -167,7 +182,10 @@ namespace pksm
 
     Gender PGT::gender(void) const { return pokemonData->gender(); }
 
-    std::string PGT::otName(void) const { return !(flags() == 0 && type() != 1) ? pokemonData->otName() : ""; }
+    std::string PGT::otName(void) const
+    {
+        return !(flags() == 0 && type() != 1) ? pokemonData->otName() : "";
+    }
 
     u8 PGT::level(void) const { return pokemonData->level(); }
 

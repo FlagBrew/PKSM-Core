@@ -225,7 +225,8 @@ namespace pksm
         for (u8 block = 0; block < 4; block++)
         {
             u8 ofs = blockPosition(index + block);
-            std::copy(cdata + 8 + blockLength * ofs, cdata + 8 + blockLength * ofs + blockLength, data + 8 + blockLength * block);
+            std::copy(cdata + 8 + blockLength * ofs, cdata + 8 + blockLength * ofs + blockLength,
+                data + 8 + blockLength * block);
         }
     }
 
@@ -251,7 +252,8 @@ namespace pksm
 
     bool PK4::isEncrypted() const { return LittleEndian::convertTo<u32>(data + 0x64) != 0; }
 
-    PK4::PK4(PrivateConstructor, u8* dt, bool party, bool direct) : PKX(dt, party ? PARTY_LENGTH : BOX_LENGTH, direct)
+    PK4::PK4(PrivateConstructor, u8* dt, bool party, bool direct)
+        : PKX(dt, party ? PARTY_LENGTH : BOX_LENGTH, direct)
     {
         if (isEncrypted())
         {
@@ -259,7 +261,10 @@ namespace pksm
         }
     }
 
-    std::unique_ptr<PKX> PK4::clone(void) const { return PKX::getPKM<Generation::FOUR>(const_cast<u8*>(data), isParty()); }
+    std::unique_ptr<PKX> PK4::clone(void) const
+    {
+        return PKX::getPKM<Generation::FOUR>(const_cast<u8*>(data), isParty());
+    }
 
     Generation PK4::generation(void) const { return Generation::FOUR; }
 
@@ -276,14 +281,16 @@ namespace pksm
         {
             do
             {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), v, PID(), generation()));
+                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
+                    v, PID(), generation()));
             } while (!shiny());
         }
         else
         {
             do
             {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), v, PID(), generation()));
+                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
+                    v, PID(), generation()));
             } while (shiny());
         }
     }
@@ -385,16 +392,25 @@ namespace pksm
         LittleEndian::convertFrom<u32>(data + 0x38, buffer);
     }
 
-    bool PK4::egg(void) const { return ((LittleEndian::convertTo<u32>(data + 0x38) >> 30) & 0x1) == 1; }
+    bool PK4::egg(void) const
+    {
+        return ((LittleEndian::convertTo<u32>(data + 0x38) >> 30) & 0x1) == 1;
+    }
     void PK4::egg(bool v)
     {
-        LittleEndian::convertFrom<u32>(data + 0x38, (u32)((LittleEndian::convertTo<u32>(data + 0x38) & ~0x40000000) | (u32)(v ? 0x40000000 : 0)));
+        LittleEndian::convertFrom<u32>(
+            data + 0x38, (u32)((LittleEndian::convertTo<u32>(data + 0x38) & ~0x40000000) |
+                               (u32)(v ? 0x40000000 : 0)));
     }
 
-    bool PK4::nicknamed(void) const { return ((LittleEndian::convertTo<u32>(data + 0x38) >> 31) & 0x1) == 1; }
+    bool PK4::nicknamed(void) const
+    {
+        return ((LittleEndian::convertTo<u32>(data + 0x38) >> 31) & 0x1) == 1;
+    }
     void PK4::nicknamed(bool v)
     {
-        LittleEndian::convertFrom<u32>(data + 0x38, (LittleEndian::convertTo<u32>(data + 0x38) & 0x7FFFFFFF) | (v ? 0x80000000 : 0));
+        LittleEndian::convertFrom<u32>(data + 0x38,
+            (LittleEndian::convertTo<u32>(data + 0x38) & 0x7FFFFFFF) | (v ? 0x80000000 : 0));
     }
 
     bool PK4::fatefulEncounter(void) const { return (data[0x40] & 1) == 1; }
@@ -408,14 +424,16 @@ namespace pksm
         {
             do
             {
-                PID(PKX::getRandomPID(species(), g, version(), nature(), alternativeForm(), abilityNumber(), PID(), generation()));
+                PID(PKX::getRandomPID(species(), g, version(), nature(), alternativeForm(),
+                    abilityNumber(), PID(), generation()));
             } while (!shiny());
         }
         else
         {
             do
             {
-                PID(PKX::getRandomPID(species(), g, version(), nature(), alternativeForm(), abilityNumber(), PID(), generation()));
+                PID(PKX::getRandomPID(species(), g, version(), nature(), alternativeForm(),
+                    abilityNumber(), PID(), generation()));
             } while (shiny());
         }
     }
@@ -430,14 +448,16 @@ namespace pksm
         {
             do
             {
-                PID(PKX::getRandomPID(species(), gender(), version(), v, alternativeForm(), abilityNumber(), PID(), generation()));
+                PID(PKX::getRandomPID(species(), gender(), version(), v, alternativeForm(),
+                    abilityNumber(), PID(), generation()));
             } while (!shiny());
         }
         else
         {
             do
             {
-                PID(PKX::getRandomPID(species(), gender(), version(), v, alternativeForm(), abilityNumber(), PID(), generation()));
+                PID(PKX::getRandomPID(species(), gender(), version(), v, alternativeForm(),
+                    abilityNumber(), PID(), generation()));
             } while (shiny());
         }
     }
@@ -445,14 +465,26 @@ namespace pksm
     u8 PK4::shinyLeaf(void) const { return data[0x41]; }
     void PK4::shinyLeaf(u8 v) { data[0x41] = v; }
 
-    std::string PK4::nickname(void) const { return StringUtils::transString45(StringUtils::getString4(data, 0x48, 11)); }
-    void PK4::nickname(const std::string_view& v) { StringUtils::setString4(data, StringUtils::transString45(v), 0x48, 11); }
+    std::string PK4::nickname(void) const
+    {
+        return StringUtils::transString45(StringUtils::getString4(data, 0x48, 11));
+    }
+    void PK4::nickname(const std::string_view& v)
+    {
+        StringUtils::setString4(data, StringUtils::transString45(v), 0x48, 11);
+    }
 
     GameVersion PK4::version(void) const { return GameVersion(data[0x5F]); }
     void PK4::version(GameVersion v) { data[0x5F] = u8(v); }
 
-    std::string PK4::otName(void) const { return StringUtils::transString45(StringUtils::getString4(data, 0x68, 8)); }
-    void PK4::otName(const std::string_view& v) { StringUtils::setString4(data, StringUtils::transString45(v), 0x68, 8); }
+    std::string PK4::otName(void) const
+    {
+        return StringUtils::transString45(StringUtils::getString4(data, 0x68, 8));
+    }
+    void PK4::otName(const std::string_view& v)
+    {
+        StringUtils::setString4(data, StringUtils::transString45(v), 0x68, 8);
+    }
 
     int PK4::eggYear(void) const { return 2000 + data[0x78]; }
     void PK4::eggYear(int v) { data[0x78] = v - 2000; }
@@ -495,7 +527,10 @@ namespace pksm
         {
             // If this pokemon is from Platinum, HeartGold, or SoulSilver
             LittleEndian::convertFrom<u16>(
-                data + 0x44, (version() == GameVersion::Pt || version() == GameVersion::HG || version() == GameVersion::SS) ? v : 0);
+                data + 0x44, (version() == GameVersion::Pt || version() == GameVersion::HG ||
+                                 version() == GameVersion::SS)
+                                 ? v
+                                 : 0);
             LittleEndian::convertFrom<u16>(data + 0x7E, v);
         }
     }
@@ -523,7 +558,10 @@ namespace pksm
         {
             // If this pokemon is from Platinum, HeartGold, or SoulSilver
             LittleEndian::convertFrom<u16>(
-                data + 0x46, (version() == GameVersion::Pt || version() == GameVersion::HG || version() == GameVersion::SS) ? v : 0);
+                data + 0x46, (version() == GameVersion::Pt || version() == GameVersion::HG ||
+                                 version() == GameVersion::SS)
+                                 ? v
+                                 : 0);
             LittleEndian::convertFrom<u16>(data + 0x80, v);
         }
     }
@@ -537,11 +575,15 @@ namespace pksm
     u8 PK4::pkrsStrain(void) const { return data[0x82] >> 4; };
     void PK4::pkrsStrain(u8 v) { data[0x82] = (u8)((data[0x82] & 0xF) | v << 4); }
 
-    Ball PK4::ball(void) const { return data[0x83] > data[0x86] ? Ball{data[0x83]} : Ball{data[0x86]}; }
+    Ball PK4::ball(void) const
+    {
+        return data[0x83] > data[0x86] ? Ball{data[0x83]} : Ball{data[0x86]};
+    }
     void PK4::ball(Ball v)
     {
         data[0x83] = u8(v <= Ball::Cherish ? v : Ball::Poke);
-        if (v > Ball::Cherish || ((version() == GameVersion::HG || version() == GameVersion::SS) && !fatefulEncounter()))
+        if (v > Ball::Cherish ||
+            ((version() == GameVersion::HG || version() == GameVersion::SS) && !fatefulEncounter()))
             data[0x86] = u8(v <= Ball::Sport ? v : Ball::Poke);
         else
             data[0x86] = 0;
@@ -584,8 +626,9 @@ namespace pksm
     Type PK4::hpType(void) const
     {
         return Type{u8((15 *
-                           ((iv(Stat::HP) & 1) + 2 * (iv(Stat::ATK) & 1) + 4 * (iv(Stat::DEF) & 1) + 8 * (iv(Stat::SPD) & 1) +
-                               16 * (iv(Stat::SPATK) & 1) + 32 * (iv(Stat::SPDEF) & 1)) /
+                           ((iv(Stat::HP) & 1) + 2 * (iv(Stat::ATK) & 1) + 4 * (iv(Stat::DEF) & 1) +
+                               8 * (iv(Stat::SPD) & 1) + 16 * (iv(Stat::SPATK) & 1) +
+                               32 * (iv(Stat::SPDEF) & 1)) /
                            63) +
                        1)};
     }
@@ -641,14 +684,16 @@ namespace pksm
         {
             while (!shiny())
             {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), abilityNumber(), PID(), generation()));
+                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
+                    abilityNumber(), PID(), generation()));
             }
         }
         else
         {
             while (shiny())
             {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), abilityNumber(), PID(), generation()));
+                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
+                    abilityNumber(), PID(), generation()));
             }
         }
     }
@@ -815,7 +860,8 @@ namespace pksm
         pk3->otGender(otGender());
         // met date isn't a thing in PK3
         pk3->metLevel(level());
-        pk3->metLocation(0xFD); // (gift egg) // Not sure if this is the best, it seemed the most generic
+        pk3->metLocation(
+            0xFD); // (gift egg) // Not sure if this is the best, it seemed the most generic
         pk3->fatefulEncounter(fatefulEncounter());
 
         pk3->ribbon(Ribbon::ChampionG3Hoenn, ribbon(Ribbon::ChampionG3Hoenn));
@@ -832,10 +878,12 @@ namespace pksm
         pk3->ribbon(Ribbon::World, ribbon(Ribbon::World));
 
         // Contest ribbons
-        constexpr std::array<Ribbon, 20> contestRibbons = {Ribbon::G3Cool, Ribbon::G3CoolSuper, Ribbon::G3CoolHyper, Ribbon::G3CoolMaster,
-            Ribbon::G3Beauty, Ribbon::G3BeautySuper, Ribbon::G3BeautyHyper, Ribbon::G3BeautyMaster, Ribbon::G3Cute, Ribbon::G3CuteSuper,
-            Ribbon::G3CuteHyper, Ribbon::G3CuteMaster, Ribbon::G3Smart, Ribbon::G3SmartSuper, Ribbon::G3SmartHyper, Ribbon::G3SmartMaster,
-            Ribbon::G3Tough, Ribbon::G3ToughSuper, Ribbon::G3ToughHyper, Ribbon::G3ToughMaster};
+        constexpr std::array<Ribbon, 20> contestRibbons = {Ribbon::G3Cool, Ribbon::G3CoolSuper,
+            Ribbon::G3CoolHyper, Ribbon::G3CoolMaster, Ribbon::G3Beauty, Ribbon::G3BeautySuper,
+            Ribbon::G3BeautyHyper, Ribbon::G3BeautyMaster, Ribbon::G3Cute, Ribbon::G3CuteSuper,
+            Ribbon::G3CuteHyper, Ribbon::G3CuteMaster, Ribbon::G3Smart, Ribbon::G3SmartSuper,
+            Ribbon::G3SmartHyper, Ribbon::G3SmartMaster, Ribbon::G3Tough, Ribbon::G3ToughSuper,
+            Ribbon::G3ToughHyper, Ribbon::G3ToughMaster};
         for (size_t i = 0; i < contestRibbons.size(); i++)
         {
             if (ribbon(contestRibbons[i]))
@@ -892,9 +940,10 @@ namespace pksm
         pk5->nature(nature());
 
         // Check met location
-        pk5->metLocation(pk5->originGen4() && pk5->fatefulEncounter() && std::find(beasts, beasts + 4, pk5->species()) != beasts + 4
+        pk5->metLocation(pk5->originGen4() && pk5->fatefulEncounter() &&
+                                 std::find(beasts, beasts + 4, pk5->species()) != beasts + 4
                              ? (pk5->species() == Species::Celebi ? 30010 : 30012) // Celebi : Beast
-                             : 30001);                                             // Pokétransfer (not Crown)
+                             : 30001); // Pokétransfer (not Crown)
 
         pk5->ball(ball());
 
@@ -962,7 +1011,8 @@ namespace pksm
 
     void PK4::updatePartyData()
     {
-        constexpr Stat stats[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
+        constexpr Stat stats[] = {
+            Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
         for (size_t i = 0; i < 6; i++)
         {
             partyStat(stats[i], stat(stats[i]));

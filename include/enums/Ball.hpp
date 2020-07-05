@@ -72,7 +72,8 @@ namespace pksm
                 Dream,
                 Beast,
 
-                INVALID[[maybe_unused]] = std::numeric_limits<std::underlying_type_t<BallEnum>>::max()
+                INVALID[[maybe_unused]] =
+                    std::numeric_limits<std::underlying_type_t<BallEnum>>::max()
             } v;
 
             constexpr explicit Ball_impl(BallEnum v) : v(v) {}
@@ -91,13 +92,25 @@ namespace pksm
             constexpr operator BallEnum() const noexcept { return v; }
 
             constexpr bool operator<(const Ball_impl& other) const noexcept { return v < other.v; }
-            constexpr bool operator<=(const Ball_impl& other) const noexcept { return v <= other.v; }
+            constexpr bool operator<=(const Ball_impl& other) const noexcept
+            {
+                return v <= other.v;
+            }
 
             constexpr bool operator>(const Ball_impl& other) const noexcept { return v > other.v; }
-            constexpr bool operator>=(const Ball_impl& other) const noexcept { return v >= other.v; }
+            constexpr bool operator>=(const Ball_impl& other) const noexcept
+            {
+                return v >= other.v;
+            }
 
-            constexpr bool operator==(const Ball_impl& other) const noexcept { return v == other.v; }
-            constexpr bool operator!=(const Ball_impl& other) const noexcept { return v != other.v; }
+            constexpr bool operator==(const Ball_impl& other) const noexcept
+            {
+                return v == other.v;
+            }
+            constexpr bool operator!=(const Ball_impl& other) const noexcept
+            {
+                return v != other.v;
+            }
 
             const std::string& localize(Language lang) const;
         };
@@ -130,14 +143,32 @@ namespace pksm
         constexpr bool operator==(const Ball& other) const noexcept { return impl == other.impl; }
         constexpr bool operator!=(const Ball& other) const noexcept { return impl != other.impl; }
 
-        constexpr bool operator<(const internal::Ball_impl& other) const noexcept { return impl < other; }
-        constexpr bool operator<=(const internal::Ball_impl& other) const noexcept { return impl <= other; }
+        constexpr bool operator<(const internal::Ball_impl& other) const noexcept
+        {
+            return impl < other;
+        }
+        constexpr bool operator<=(const internal::Ball_impl& other) const noexcept
+        {
+            return impl <= other;
+        }
 
-        constexpr bool operator>(const internal::Ball_impl& other) const noexcept { return impl > other; }
-        constexpr bool operator>=(const internal::Ball_impl& other) const noexcept { return impl >= other; }
+        constexpr bool operator>(const internal::Ball_impl& other) const noexcept
+        {
+            return impl > other;
+        }
+        constexpr bool operator>=(const internal::Ball_impl& other) const noexcept
+        {
+            return impl >= other;
+        }
 
-        constexpr bool operator==(const internal::Ball_impl& other) const noexcept { return impl == other; }
-        constexpr bool operator!=(const internal::Ball_impl& other) const noexcept { return impl != other; }
+        constexpr bool operator==(const internal::Ball_impl& other) const noexcept
+        {
+            return impl == other;
+        }
+        constexpr bool operator!=(const internal::Ball_impl& other) const noexcept
+        {
+            return impl != other;
+        }
 
         const std::string& localize(Language lang) const { return impl.localize(lang); }
 

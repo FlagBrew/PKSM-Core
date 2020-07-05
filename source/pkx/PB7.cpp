@@ -42,7 +42,8 @@ namespace pksm
         for (u8 block = 0; block < 4; block++)
         {
             u8 ofs = blockPosition(index + block);
-            std::copy(cdata + 8 + blockLength * ofs, cdata + 8 + blockLength * ofs + blockLength, data + 8 + blockLength * block);
+            std::copy(cdata + 8 + blockLength * ofs, cdata + 8 + blockLength * ofs + blockLength,
+                data + 8 + blockLength * block);
         }
     }
 
@@ -66,9 +67,14 @@ namespace pksm
         }
     }
 
-    bool PB7::isEncrypted() const { return LittleEndian::convertTo<u16>(data + 0xC8) != 0 && LittleEndian::convertTo<u16>(data + 0x58) != 0; }
+    bool PB7::isEncrypted() const
+    {
+        return LittleEndian::convertTo<u16>(data + 0xC8) != 0 &&
+               LittleEndian::convertTo<u16>(data + 0x58) != 0;
+    }
 
-    PB7::PB7(PrivateConstructor, u8* dt, bool party, bool direct) : PKX(dt, party ? PARTY_LENGTH : BOX_LENGTH, direct)
+    PB7::PB7(PrivateConstructor, u8* dt, bool party, bool direct)
+        : PKX(dt, party ? PARTY_LENGTH : BOX_LENGTH, direct)
     {
         if (isEncrypted())
         {
@@ -76,7 +82,10 @@ namespace pksm
         }
     }
 
-    std::unique_ptr<PKX> PB7::clone(void) const { return PKX::getPKM<Generation::LGPE>(const_cast<u8*>(data), isParty()); }
+    std::unique_ptr<PKX> PB7::clone(void) const
+    {
+        return PKX::getPKM<Generation::LGPE>(const_cast<u8*>(data), isParty());
+    }
 
     Generation PB7::generation(void) const { return Generation::LGPE; }
 
@@ -190,16 +199,24 @@ namespace pksm
         LittleEndian::convertFrom<u32>(data + 0x74, buffer);
     }
 
-    bool PB7::egg(void) const { return ((LittleEndian::convertTo<u32>(data + 0x74) >> 30) & 0x1) == 1; }
+    bool PB7::egg(void) const
+    {
+        return ((LittleEndian::convertTo<u32>(data + 0x74) >> 30) & 0x1) == 1;
+    }
     void PB7::egg(bool v)
     {
-        LittleEndian::convertFrom<u32>(data + 0x74, (LittleEndian::convertTo<u32>(data + 0x74) & ~0x40000000) | (u32)(v ? 0x40000000 : 0));
+        LittleEndian::convertFrom<u32>(data + 0x74,
+            (LittleEndian::convertTo<u32>(data + 0x74) & ~0x40000000) | (u32)(v ? 0x40000000 : 0));
     }
 
-    bool PB7::nicknamed(void) const { return ((LittleEndian::convertTo<u32>(data + 0x74) >> 31) & 0x1) == 1; }
+    bool PB7::nicknamed(void) const
+    {
+        return ((LittleEndian::convertTo<u32>(data + 0x74) >> 31) & 0x1) == 1;
+    }
     void PB7::nicknamed(bool v)
     {
-        LittleEndian::convertFrom<u32>(data + 0x74, (LittleEndian::convertTo<u32>(data + 0x74) & 0x7FFFFFFF) | (v ? 0x80000000 : 0));
+        LittleEndian::convertFrom<u32>(data + 0x74,
+            (LittleEndian::convertTo<u32>(data + 0x74) & 0x7FFFFFFF) | (v ? 0x80000000 : 0));
     }
 
     std::string PB7::htName(void) const { return StringUtils::getString(data, 0x78, 12); }
@@ -295,10 +312,15 @@ namespace pksm
     Gender PB7::otGender(void) const { return Gender{u8(data[0xDD] >> 7)}; }
     void PB7::otGender(Gender v) { data[0xDD] = (data[0xDD] & ~0x80) | (u8(v) << 7); }
 
-    bool PB7::hyperTrain(Stat stat) const { return (data[0xDE] & (1 << hyperTrainLookup[size_t(stat)])) == 1 << hyperTrainLookup[size_t(stat)]; }
+    bool PB7::hyperTrain(Stat stat) const
+    {
+        return (data[0xDE] & (1 << hyperTrainLookup[size_t(stat)])) ==
+               1 << hyperTrainLookup[size_t(stat)];
+    }
     void PB7::hyperTrain(Stat stat, bool v)
     {
-        data[0xDE] = (u8)((data[0xDE] & ~(1 << hyperTrainLookup[size_t(stat)])) | (v ? 1 << hyperTrainLookup[size_t(stat)] : 0));
+        data[0xDE] = (u8)((data[0xDE] & ~(1 << hyperTrainLookup[size_t(stat)])) |
+                          (v ? 1 << hyperTrainLookup[size_t(stat)] : 0));
     }
 
     GameVersion PB7::version(void) const { return GameVersion(data[0xDF]); }
@@ -316,7 +338,10 @@ namespace pksm
     Language PB7::language(void) const { return Language(data[0xE3]); }
     void PB7::language(Language v) { data[0xE3] = u8(v); }
 
-    u8 PB7::currentFriendship(void) const { return currentHandler() == 0 ? otFriendship() : htFriendship(); }
+    u8 PB7::currentFriendship(void) const
+    {
+        return currentHandler() == 0 ? otFriendship() : htFriendship();
+    }
     void PB7::currentFriendship(u8 v)
     {
         if (currentHandler() == 0)
@@ -325,7 +350,10 @@ namespace pksm
             htFriendship(v);
     }
 
-    u8 PB7::oppositeFriendship(void) const { return currentHandler() == 1 ? otFriendship() : htFriendship(); }
+    u8 PB7::oppositeFriendship(void) const
+    {
+        return currentHandler() == 1 ? otFriendship() : htFriendship();
+    }
     void PB7::oppositeFriendship(u8 v)
     {
         if (currentHandler() == 1)
@@ -347,8 +375,9 @@ namespace pksm
     Type PB7::hpType(void) const
     {
         return Type{u8((15 *
-                           ((iv(Stat::HP) & 1) + 2 * (iv(Stat::ATK) & 1) + 4 * (iv(Stat::DEF) & 1) + 8 * (iv(Stat::SPD) & 1) +
-                               16 * (iv(Stat::SPATK) & 1) + 32 * (iv(Stat::SPDEF) & 1)) /
+                           ((iv(Stat::HP) & 1) + 2 * (iv(Stat::ATK) & 1) + 4 * (iv(Stat::DEF) & 1) +
+                               8 * (iv(Stat::SPD) & 1) + 16 * (iv(Stat::SPATK) & 1) +
+                               32 * (iv(Stat::SPDEF) & 1)) /
                            63) +
                        1)};
     }
@@ -404,14 +433,16 @@ namespace pksm
         {
             while (!shiny())
             {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), abilityNumber(), PID(), generation()));
+                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
+                    abilityNumber(), PID(), generation()));
             }
         }
         else
         {
             while (shiny())
             {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), abilityNumber(), PID(), generation()));
+                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
+                    abilityNumber(), PID(), generation()));
             }
         }
     }
@@ -467,10 +498,17 @@ namespace pksm
         }
 
         if (stat == Stat::HP)
-            calc = 10 +
-                   ((2 * basestat) + ((((data[0xDE] >> hyperTrainLookup[u8(stat)]) & 1) == 1) ? 31 : iv(stat)) + ev(stat) / 4 + 100) * level() / 100;
+            calc =
+                10 + ((2 * basestat) +
+                         ((((data[0xDE] >> hyperTrainLookup[u8(stat)]) & 1) == 1) ? 31 : iv(stat)) +
+                         ev(stat) / 4 + 100) *
+                         level() / 100;
         else
-            calc = 5 + (2 * basestat + ((((data[0xDE] >> hyperTrainLookup[u8(stat)]) & 1) == 1) ? 31 : iv(stat)) + ev(stat) / 4) * level() / 100;
+            calc =
+                5 + (2 * basestat +
+                        ((((data[0xDE] >> hyperTrainLookup[u8(stat)]) & 1) == 1) ? 31 : iv(stat)) +
+                        ev(stat) / 4) *
+                        level() / 100;
         if (u8(nature()) / 5 + 1 == u8(stat))
             mult++;
         if (u8(nature()) % 5 + 1 == u8(stat))
@@ -575,7 +613,8 @@ namespace pksm
 
     void PB7::updatePartyData()
     {
-        constexpr Stat stats[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
+        constexpr Stat stats[] = {
+            Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
         for (size_t i = 0; i < 6; i++)
         {
             partyStat(stats[i], stat(stats[i]));

@@ -81,7 +81,8 @@ namespace pksm
 {
     u8 PK3::getUnownForm(u32 pid)
     {
-        u32 val = (pid & 0x3000000) >> 18 | (pid & 0x30000) >> 12 | (pid & 0x300) >> 6 | (pid & 0x3);
+        u32 val =
+            (pid & 0x3000000) >> 18 | (pid & 0x30000) >> 12 | (pid & 0x300) >> 6 | (pid & 0x3);
         return val % 28;
     }
 
@@ -96,7 +97,8 @@ namespace pksm
         for (u8 block = 0; block < 4; block++)
         {
             u8 ofs = blockPosition(index + block);
-            std::copy(cdata + 32 + blockLength * ofs, cdata + 32 + blockLength * ofs + blockLength, data + 32 + blockLength * block);
+            std::copy(cdata + 32 + blockLength * ofs, cdata + 32 + blockLength * ofs + blockLength,
+                data + 32 + blockLength * block);
         }
     }
 
@@ -155,7 +157,8 @@ namespace pksm
 
     bool PK3::isEncrypted() const { return calcChecksum() != checksum(); }
 
-    PK3::PK3(PrivateConstructor, u8* dt, bool party, bool directAccess) : PKX(dt, party ? PARTY_LENGTH : BOX_LENGTH, directAccess)
+    PK3::PK3(PrivateConstructor, u8* dt, bool party, bool directAccess)
+        : PKX(dt, party ? PARTY_LENGTH : BOX_LENGTH, directAccess)
     {
         if (isEncrypted())
         {
@@ -191,8 +194,14 @@ namespace pksm
     u16 PK3::SID(void) const { return LittleEndian::convertTo<u16>(data + 0x06); }
     void PK3::SID(u16 v) { LittleEndian::convertFrom<u16>(data + 0x06, v); }
 
-    std::string PK3::nickname(void) const { return StringUtils::getString3(data, 0x08, 10, japanese()); }
-    void PK3::nickname(const std::string_view& v) { StringUtils::setString3(data, v, 0x08, 10, japanese()); }
+    std::string PK3::nickname(void) const
+    {
+        return StringUtils::getString3(data, 0x08, 10, japanese());
+    }
+    void PK3::nickname(const std::string_view& v)
+    {
+        StringUtils::setString3(data, v, 0x08, 10, japanese());
+    }
 
     Language PK3::language(void) const { return Language(data[0x12]); }
     void PK3::language(Language v) { data[0x12] = u8(v); }
@@ -206,8 +215,14 @@ namespace pksm
     bool PK3::flagIsEgg(void) const { return (data[0x13] & 4) == 4; }
     void PK3::flagIsEgg(bool v) { data[0x13] = (u8)((data[0x13] & ~4) | (v ? 4 : 0)); }
 
-    std::string PK3::otName(void) const { return StringUtils::getString3(data, 0x14, 7, japanese()); }
-    void PK3::otName(const std::string_view& v) { StringUtils::setString3(data, v, 0x14, 7, japanese()); }
+    std::string PK3::otName(void) const
+    {
+        return StringUtils::getString3(data, 0x14, 7, japanese());
+    }
+    void PK3::otName(const std::string_view& v)
+    {
+        StringUtils::setString3(data, v, 0x14, 7, japanese());
+    }
 
     u16 PK3::markValue(void) const { return swapBits(data[0x1B], 1, 2); }
     void PK3::markValue(u16 v) { data[0x1B] = swapBits(v, 1, 2); }
@@ -250,7 +265,10 @@ namespace pksm
     void PK3::experience(u32 v) { LittleEndian::convertFrom<u32>(data + 0x24, v); }
 
     u8 PK3::PPUp(u8 move) const { return (data[0x28] >> (move * 2) & 3); }
-    void PK3::PPUp(u8 move, u8 v) { data[0x28] = (u8)((data[0x28] & ~(3 << (move * 2))) | (v & 3) << (move * 2)); }
+    void PK3::PPUp(u8 move, u8 v)
+    {
+        data[0x28] = (u8)((data[0x28] & ~(3 << (move * 2))) | (v & 3) << (move * 2));
+    }
 
     u8 PK3::otFriendship(void) const { return data[0x29]; }
     void PK3::otFriendship(u8 v) { data[0x29] = v; }
@@ -280,24 +298,40 @@ namespace pksm
     void PK3::metLocation(u16 v) { data[0x45] = (u8)v; }
 
     u8 PK3::metLevel(void) const { return LittleEndian::convertTo<u16>(data + 0x46) & 0x7F; }
-    void PK3::metLevel(u8 v) { LittleEndian::convertFrom<u16>(data + 0x46, (u16)((LittleEndian::convertTo<u16>(data + 0x46) & ~0x7F) | v)); }
+    void PK3::metLevel(u8 v)
+    {
+        LittleEndian::convertFrom<u16>(
+            data + 0x46, (u16)((LittleEndian::convertTo<u16>(data + 0x46) & ~0x7F) | v));
+    }
 
-    GameVersion PK3::version(void) const { return GameVersion((LittleEndian::convertTo<u16>(data + 0x46) >> 7) & 0xF); }
+    GameVersion PK3::version(void) const
+    {
+        return GameVersion((LittleEndian::convertTo<u16>(data + 0x46) >> 7) & 0xF);
+    }
     void PK3::version(GameVersion v)
     {
-        LittleEndian::convertFrom<u16>(data + 0x46, (u16)((LittleEndian::convertTo<u16>(data + 0x46) & ~0x780) | ((u8(v) & 0xF) << 7)));
+        LittleEndian::convertFrom<u16>(data + 0x46,
+            (u16)((LittleEndian::convertTo<u16>(data + 0x46) & ~0x780) | ((u8(v) & 0xF) << 7)));
     }
 
-    Ball PK3::ball(void) const { return Ball{u8((LittleEndian::convertTo<u16>(data + 0x46) >> 11) & 0xF)}; }
+    Ball PK3::ball(void) const
+    {
+        return Ball{u8((LittleEndian::convertTo<u16>(data + 0x46) >> 11) & 0xF)};
+    }
     void PK3::ball(Ball v)
     {
-        LittleEndian::convertFrom<u16>(data + 0x46, (u16)((LittleEndian::convertTo<u16>(data + 0x46) & ~0x7800) | ((u16(v) & 0xF) << 11)));
+        LittleEndian::convertFrom<u16>(data + 0x46,
+            (u16)((LittleEndian::convertTo<u16>(data + 0x46) & ~0x7800) | ((u16(v) & 0xF) << 11)));
     }
 
-    Gender PK3::otGender(void) const { return Gender{u8((LittleEndian::convertTo<u16>(data + 0x46) >> 15) & 1)}; }
+    Gender PK3::otGender(void) const
+    {
+        return Gender{u8((LittleEndian::convertTo<u16>(data + 0x46) >> 15) & 1)};
+    }
     void PK3::otGender(Gender v)
     {
-        LittleEndian::convertFrom<u16>(data + 0x46, (u16)((LittleEndian::convertTo<u16>(data + 0x46) & ~(1 << 15)) | ((u8(v) & 1) << 15)));
+        LittleEndian::convertFrom<u16>(data + 0x46,
+            (u16)((LittleEndian::convertTo<u16>(data + 0x46) & ~(1 << 15)) | ((u8(v) & 1) << 15)));
     }
 
     u8 PK3::iv(Stat stat) const
@@ -316,7 +350,9 @@ namespace pksm
     bool PK3::egg() const { return ((LittleEndian::convertTo<u32>(data + 0x48) >> 30) & 1) == 1; }
     void PK3::egg(bool v)
     {
-        LittleEndian::convertFrom<u32>(data + 0x48, (u32)((LittleEndian::convertTo<u32>(data + 0x48) & ~0x40000000) | (u32)(v ? 0x40000000 : 0)));
+        LittleEndian::convertFrom<u32>(
+            data + 0x48, (u32)((LittleEndian::convertTo<u32>(data + 0x48) & ~0x40000000) |
+                               (u32)(v ? 0x40000000 : 0)));
         flagIsEgg(v);
         if (v)
         {
@@ -325,10 +361,14 @@ namespace pksm
         }
     }
 
-    bool PK3::abilityBit(void) const { return (LittleEndian::convertTo<u32>(data + 0x48) >> 31) == 1; }
+    bool PK3::abilityBit(void) const
+    {
+        return (LittleEndian::convertTo<u32>(data + 0x48) >> 31) == 1;
+    }
     void PK3::abilityBit(bool v)
     {
-        LittleEndian::convertFrom<u32>(data + 0x48, (LittleEndian::convertTo<u32>(data + 0x48) & 0x7FFFFFFF) | (v ? 1u << 31 : 0u));
+        LittleEndian::convertFrom<u32>(data + 0x48,
+            (LittleEndian::convertTo<u32>(data + 0x48) & 0x7FFFFFFF) | (v ? 1u << 31 : 0u));
     }
 
     bool PK3::hasRibbon(Ribbon ribbon) const { return OFFSET_OF(ribbon).first != RIBBON_ABSENT; }
@@ -362,10 +402,14 @@ namespace pksm
         LittleEndian::convertFrom<u16>(data + 0x4C, rawVal);
     }
 
-    bool PK3::fatefulEncounter(void) const { return (LittleEndian::convertTo<u32>(data + 0x4C) >> 31) == 1; }
+    bool PK3::fatefulEncounter(void) const
+    {
+        return (LittleEndian::convertTo<u32>(data + 0x4C) >> 31) == 1;
+    }
     void PK3::fatefulEncounter(bool v)
     {
-        LittleEndian::convertFrom<u32>(data + 0x4C, (LittleEndian::convertTo<u32>(data + 0x4C) & ~(1u << 31)) | (u32)(v ? 1u << 31 : 0));
+        LittleEndian::convertFrom<u32>(data + 0x4C,
+            (LittleEndian::convertTo<u32>(data + 0x4C) & ~(1u << 31)) | (u32)(v ? 1u << 31 : 0));
     }
 
     int PK3::partyLevel() const
@@ -419,13 +463,19 @@ namespace pksm
     std::unique_ptr<PK4> PK3::convertToG4(Sav&) const
     {
         static constexpr std::array<std::array<u8, 18>, 7> trashBytes = {{
-            {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
-            {0x18, 0x20, 0x0D, 0x02, 0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0xA1, 0x0C, 0x02, 0xE0, 0xFF},
-            {0x74, 0x20, 0x0D, 0x02, 0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xA4, 0xA1, 0x0C, 0x02, 0xE0, 0xFF},
-            {0x54, 0x20, 0x0D, 0x02, 0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x84, 0xA1, 0x0C, 0x02, 0xE0, 0xFF},
-            {0x74, 0x20, 0x0D, 0x02, 0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xA4, 0xA1, 0x0C, 0x02, 0xE0, 0xFF},
+            {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00},
+            {0x18, 0x20, 0x0D, 0x02, 0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0xA1,
+                0x0C, 0x02, 0xE0, 0xFF},
+            {0x74, 0x20, 0x0D, 0x02, 0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xA4, 0xA1,
+                0x0C, 0x02, 0xE0, 0xFF},
+            {0x54, 0x20, 0x0D, 0x02, 0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x84, 0xA1,
+                0x0C, 0x02, 0xE0, 0xFF},
+            {0x74, 0x20, 0x0D, 0x02, 0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xA4, 0xA1,
+                0x0C, 0x02, 0xE0, 0xFF},
             {}, // Unused
-            {0x74, 0x20, 0x0D, 0x02, 0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xA4, 0xA1, 0x0C, 0x02, 0xE0, 0xFF},
+            {0x74, 0x20, 0x0D, 0x02, 0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xA4, 0xA1,
+                0x0C, 0x02, 0xE0, 0xFF},
         }};
 
         auto pk4 = PKX::getPKM<Generation::FOUR>(nullptr);
@@ -651,7 +701,8 @@ namespace pksm
     Nature PK3::nature() const { return Nature{u8(PID() % 25)}; }
     void PK3::nature(Nature v)
     {
-        PID(PKX::getRandomPID(species(), gender(), version(), v, alternativeForm(), abilityBit() ? 2 : 1, PID(), Generation::THREE));
+        PID(PKX::getRandomPID(species(), gender(), version(), v, alternativeForm(),
+            abilityBit() ? 2 : 1, PID(), Generation::THREE));
     }
 
     Gender PK3::gender() const
@@ -670,7 +721,8 @@ namespace pksm
     }
     void PK3::gender(Gender v)
     {
-        PID(PKX::getRandomPID(species(), v, version(), nature(), alternativeForm(), abilityBit() ? 2 : 1, PID(), Generation::THREE));
+        PID(PKX::getRandomPID(species(), v, version(), nature(), alternativeForm(),
+            abilityBit() ? 2 : 1, PID(), Generation::THREE));
     }
 
     u16 PK3::alternativeForm() const
@@ -685,7 +737,8 @@ namespace pksm
     {
         if (species() == Species::Unown)
         {
-            PID(PKX::getRandomPID(species(), gender(), version(), nature(), v, abilityBit() ? 2 : 1, PID(), Generation::THREE));
+            PID(PKX::getRandomPID(species(), gender(), version(), nature(), v, abilityBit() ? 2 : 1,
+                PID(), Generation::THREE));
         }
     }
 
@@ -699,8 +752,9 @@ namespace pksm
     Type PK3::hpType(void) const
     {
         return Type{u8((15 *
-                           ((iv(Stat::HP) & 1) + 2 * (iv(Stat::ATK) & 1) + 4 * (iv(Stat::DEF) & 1) + 8 * (iv(Stat::SPD) & 1) +
-                               16 * (iv(Stat::SPATK) & 1) + 32 * (iv(Stat::SPDEF) & 1)) /
+                           ((iv(Stat::HP) & 1) + 2 * (iv(Stat::ATK) & 1) + 4 * (iv(Stat::DEF) & 1) +
+                               8 * (iv(Stat::SPD) & 1) + 16 * (iv(Stat::SPATK) & 1) +
+                               32 * (iv(Stat::SPDEF) & 1)) /
                            63) +
                        1)};
     }
@@ -746,14 +800,16 @@ namespace pksm
         {
             while (!shiny())
             {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), abilityNumber(), PID(), generation()));
+                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
+                    abilityNumber(), PID(), generation()));
             }
         }
         else
         {
             while (shiny())
             {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), abilityNumber(), PID(), generation()));
+                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
+                    abilityNumber(), PID(), generation()));
             }
         }
     }
@@ -801,7 +857,8 @@ namespace pksm
 
     void PK3::updatePartyData()
     {
-        constexpr Stat stats[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
+        constexpr Stat stats[] = {
+            Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
         for (size_t i = 0; i < 6; i++)
         {
             partyStat(stats[i], stat(stats[i]));

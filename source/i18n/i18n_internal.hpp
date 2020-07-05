@@ -83,8 +83,9 @@ namespace i18n
     template <typename T>
     void load(pksm::Language lang, const std::string& name, std::map<T, std::string>& map)
     {
-        std::string path = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name) ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
-                                                                                   : _PKSMCORE_LANG_FOLDER + folder(pksm::Language::ENG) + name;
+        std::string path = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name)
+                               ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
+                               : _PKSMCORE_LANG_FOLDER + folder(pksm::Language::ENG) + name;
 
         std::string tmp;
         FILE* values = fopen(path.c_str(), "rt");
@@ -104,7 +105,8 @@ namespace i18n
                 {
                     tmp = std::string(data);
                     tmp = tmp.substr(0, tmp.find('\n'));
-                    // 0 automatically deduces the base: 0x prefix makes it hexadecimal, 0 prefix makes it octal
+                    // 0 automatically deduces the base: 0x prefix makes it hexadecimal, 0 prefix
+                    // makes it octal
                     T val    = std::stoi(tmp.substr(0, tmp.find('|')), 0, 0);
                     map[val] = tmp.substr(0, tmp.find('\r')).substr(tmp.find('|') + 1);
                 }

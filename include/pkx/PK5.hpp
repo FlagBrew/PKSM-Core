@@ -197,10 +197,19 @@ namespace pksm
         inline Type type1(void) const override { return PersonalBWB2W2::type1(formSpecies()); }
         inline Type type2(void) const override { return PersonalBWB2W2::type2(formSpecies()); }
         inline u8 genderType(void) const override { return PersonalBWB2W2::gender(formSpecies()); }
-        inline u8 baseFriendship(void) const override { return PersonalBWB2W2::baseFriendship(formSpecies()); }
+        inline u8 baseFriendship(void) const override
+        {
+            return PersonalBWB2W2::baseFriendship(formSpecies());
+        }
         inline u8 expType(void) const override { return PersonalBWB2W2::expType(formSpecies()); }
-        inline Ability abilities(u8 n) const override { return PersonalBWB2W2::ability(formSpecies(), n); }
-        inline u16 formStatIndex(void) const override { return PersonalBWB2W2::formStatIndex(formSpecies()); }
+        inline Ability abilities(u8 n) const override
+        {
+            return PersonalBWB2W2::ability(formSpecies(), n);
+        }
+        inline u16 formStatIndex(void) const override
+        {
+            return PersonalBWB2W2::formStatIndex(formSpecies());
+        }
     };
 }
 

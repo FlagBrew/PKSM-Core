@@ -250,10 +250,19 @@ namespace pksm
         inline Type type1(void) const override { return PersonalSMUSUM::type1(formSpecies()); }
         inline Type type2(void) const override { return PersonalSMUSUM::type2(formSpecies()); }
         inline u8 genderType(void) const override { return PersonalSMUSUM::gender(formSpecies()); }
-        inline u8 baseFriendship(void) const override { return PersonalSMUSUM::baseFriendship(formSpecies()); }
+        inline u8 baseFriendship(void) const override
+        {
+            return PersonalSMUSUM::baseFriendship(formSpecies());
+        }
         inline u8 expType(void) const override { return PersonalSMUSUM::expType(formSpecies()); }
-        inline Ability abilities(u8 n) const override { return PersonalSMUSUM::ability(formSpecies(), n); }
-        inline u16 formStatIndex(void) const override { return PersonalSMUSUM::formStatIndex(formSpecies()); }
+        inline Ability abilities(u8 n) const override
+        {
+            return PersonalSMUSUM::ability(formSpecies(), n);
+        }
+        inline u16 formStatIndex(void) const override
+        {
+            return PersonalSMUSUM::formStatIndex(formSpecies());
+        }
     };
 }
 

@@ -57,14 +57,28 @@ namespace pksm
     Language Sav7::language(void) const { return Language(data[TrainerCard + 0x35]); }
     void Sav7::language(Language v) { data[TrainerCard + 0x35] = u8(v); }
 
-    std::string Sav7::otName(void) const { return StringUtils::transString67(StringUtils::getString(data.get(), TrainerCard + 0x38, 13)); }
-    void Sav7::otName(const std::string_view& v) { return StringUtils::setString(data.get(), StringUtils::transString67(v), TrainerCard + 0x38, 13); }
+    std::string Sav7::otName(void) const
+    {
+        return StringUtils::transString67(
+            StringUtils::getString(data.get(), TrainerCard + 0x38, 13));
+    }
+    void Sav7::otName(const std::string_view& v)
+    {
+        return StringUtils::setString(
+            data.get(), StringUtils::transString67(v), TrainerCard + 0x38, 13);
+    }
 
     u32 Sav7::money(void) const { return LittleEndian::convertTo<u32>(&data[Misc + 0x4]); }
-    void Sav7::money(u32 v) { LittleEndian::convertFrom<u32>(&data[Misc + 0x4], v > 9999999 ? 9999999 : v); }
+    void Sav7::money(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(&data[Misc + 0x4], v > 9999999 ? 9999999 : v);
+    }
 
     u32 Sav7::BP(void) const { return LittleEndian::convertTo<u32>(&data[Misc + 0x11C]); }
-    void Sav7::BP(u32 v) { LittleEndian::convertFrom<u32>(&data[Misc + 0x11C], v > 9999 ? 9999 : v); }
+    void Sav7::BP(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(&data[Misc + 0x11C], v > 9999 ? 9999 : v);
+    }
 
     u8 Sav7::badges(void) const
     {
@@ -89,11 +103,17 @@ namespace pksm
     u8 Sav7::currentBox(void) const { return data[LastViewedBox]; }
     void Sav7::currentBox(u8 v) { data[LastViewedBox] = v; }
 
-    u32 Sav7::boxOffset(u8 box, u8 slot) const { return Box + PK7::BOX_LENGTH * 30 * box + PK7::BOX_LENGTH * slot; }
+    u32 Sav7::boxOffset(u8 box, u8 slot) const
+    {
+        return Box + PK7::BOX_LENGTH * 30 * box + PK7::BOX_LENGTH * slot;
+    }
 
     u32 Sav7::partyOffset(u8 slot) const { return Party + PK7::PARTY_LENGTH * slot; }
 
-    std::unique_ptr<PKX> Sav7::pkm(u8 slot) const { return PKX::getPKM<Generation::SEVEN>(&data[partyOffset(slot)], true); }
+    std::unique_ptr<PKX> Sav7::pkm(u8 slot) const
+    {
+        return PKX::getPKM<Generation::SEVEN>(&data[partyOffset(slot)], true);
+    }
 
     void Sav7::pkm(const PKX& pk, u8 slot)
     {
@@ -105,7 +125,10 @@ namespace pksm
         }
     }
 
-    std::unique_ptr<PKX> Sav7::pkm(u8 box, u8 slot) const { return PKX::getPKM<Generation::SEVEN>(&data[boxOffset(box, slot)]); }
+    std::unique_ptr<PKX> Sav7::pkm(u8 box, u8 slot) const
+    {
+        return PKX::getPKM<Generation::SEVEN>(&data[boxOffset(box, slot)]);
+    }
 
     void Sav7::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)
     {
@@ -117,7 +140,8 @@ namespace pksm
                 trade(*pkm);
             }
 
-            std::copy(pkm->rawData(), pkm->rawData() + PK7::BOX_LENGTH, &data[boxOffset(box, slot)]);
+            std::copy(
+                pkm->rawData(), pkm->rawData() + PK7::BOX_LENGTH, &data[boxOffset(box, slot)]);
         }
     }
 
@@ -126,13 +150,15 @@ namespace pksm
         PK7* pk7 = (PK7*)&pk;
         if (pk7->egg())
         {
-            if (otName() != pk7->otName() || TID() != pk7->TID() || SID() != pk7->SID() || gender() != pk7->otGender())
+            if (otName() != pk7->otName() || TID() != pk7->TID() || SID() != pk7->SID() ||
+                gender() != pk7->otGender())
             {
                 pk7->metLocation(30002);
                 pk7->metDate(date);
             }
         }
-        else if (otName() == pk7->otName() && TID() == pk7->TID() && SID() == pk7->SID() && gender() == pk7->otGender())
+        else if (otName() == pk7->otName() && TID() == pk7->TID() && SID() == pk7->SID() &&
+                 gender() == pk7->otGender())
         {
             pk7->currentHandler(0);
         }
@@ -155,7 +181,8 @@ namespace pksm
         {
             for (u8 slot = 0; slot < 30; slot++)
             {
-                std::unique_ptr<PKX> pk7 = PKX::getPKM<Generation::SEVEN>(&data[boxOffset(box, slot)], false, true);
+                std::unique_ptr<PKX> pk7 =
+                    PKX::getPKM<Generation::SEVEN>(&data[boxOffset(box, slot)], false, true);
                 if (!crypted)
                 {
                     pk7->encrypt();
@@ -302,7 +329,8 @@ namespace pksm
         {
             if ((data[PokeDex + 0x84] & (1 << (shift + 4))) != 0)
             { // Already 2
-                LittleEndian::convertFrom<u32>(&data[PokeDex + 0x8E8 + shift * 4], pk.encryptionConstant());
+                LittleEndian::convertFrom<u32>(
+                    &data[PokeDex + 0x8E8 + shift * 4], pk.encryptionConstant());
                 data[PokeDex + 0x84] |= (u8)(1 << shift);
             }
             else if ((data[PokeDex + 0x84] & (1 << shift)) == 0)
@@ -332,7 +360,8 @@ namespace pksm
                 u8 fc = PersonalSMUSUM::formCount(u16(pk.species()));
                 if (fc > 1)
                 { // actually has forms
-                    int f = dexFormIndex(u16(pk.species()), fc, u16(VersionTables::maxSpecies(version())) - 1);
+                    int f = dexFormIndex(
+                        u16(pk.species()), fc, u16(VersionTables::maxSpecies(version())) - 1);
                     if (f >= 0) // bit index valid
                         bitIndex = f + form;
                 }
@@ -364,7 +393,9 @@ namespace pksm
             int forms   = formCount(spec);
             for (int form = 0; form < forms; form++)
             {
-                int dexForms = form == 0 ? -1 : dexFormIndex(species, forms, u16(VersionTables::maxSpecies(version())) - 1);
+                int dexForms = form == 0 ? -1
+                                         : dexFormIndex(species, forms,
+                                               u16(VersionTables::maxSpecies(version())) - 1);
 
                 int index = species - 1;
                 if (dexForms >= 0)
@@ -404,15 +435,21 @@ namespace pksm
         {
             WC7* wc7 = (WC7*)&wc;
             data[WondercardFlags + wc7->ID() / 8] |= 0x1 << (wc7->ID() % 8);
-            std::copy(wc7->rawData(), wc7->rawData() + WC7::length, &data[WondercardData + WC7::length * pos]);
+            std::copy(wc7->rawData(), wc7->rawData() + WC7::length,
+                &data[WondercardData + WC7::length * pos]);
             pos = (pos + 1) % maxWondercards();
         }
     }
 
-    std::string Sav7::boxName(u8 box) const { return StringUtils::transString67(StringUtils::getString(data.get(), PCLayout + 0x22 * box, 17)); }
+    std::string Sav7::boxName(u8 box) const
+    {
+        return StringUtils::transString67(
+            StringUtils::getString(data.get(), PCLayout + 0x22 * box, 17));
+    }
     void Sav7::boxName(u8 box, const std::string_view& name)
     {
-        StringUtils::setString(data.get(), StringUtils::transString67(name), PCLayout + 0x22 * box, 17);
+        StringUtils::setString(
+            data.get(), StringUtils::transString67(name), PCLayout + 0x22 * box, 17);
     }
 
     u8 Sav7::boxWallpaper(u8 box) const { return data[PCLayout + 1472 + box]; }
@@ -448,7 +485,10 @@ namespace pksm
         return t;
     }
 
-    std::unique_ptr<WCX> Sav7::mysteryGift(int pos) const { return std::make_unique<WC7>(&data[WondercardData + pos * WC7::length]); }
+    std::unique_ptr<WCX> Sav7::mysteryGift(int pos) const
+    {
+        return std::make_unique<WC7>(&data[WondercardData + pos * WC7::length]);
+    }
 
     void Sav7::item(const Item& item, Pouch pouch, u16 slot)
     {
@@ -507,9 +547,12 @@ namespace pksm
 
     std::vector<std::pair<Sav::Pouch, int>> Sav7::pouches(void) const
     {
-        std::vector<std::pair<Pouch, int>> pouches = {{Pouch::NormalItem, game == Game::SM ? 430 : 427},
-            {Pouch::KeyItem, game == Game::SM ? 184 : 198}, {Pouch::TM, 108}, {Pouch::Medicine, game == Game::SM ? 64 : 60},
-            {Pouch::Berry, game == Game::SM ? 72 : 67}, {Pouch::ZCrystals, game == Game::SM ? 30 : 35}};
+        std::vector<std::pair<Pouch, int>> pouches = {
+            {Pouch::NormalItem, game == Game::SM ? 430 : 427},
+            {Pouch::KeyItem, game == Game::SM ? 184 : 198}, {Pouch::TM, 108},
+            {Pouch::Medicine, game == Game::SM ? 64 : 60},
+            {Pouch::Berry, game == Game::SM ? 72 : 67},
+            {Pouch::ZCrystals, game == Game::SM ? 30 : 35}};
 
         if (game == Game::USUM)
             pouches.push_back({Pouch::RotomPower, 11});
