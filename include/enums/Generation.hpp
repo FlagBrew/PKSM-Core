@@ -42,19 +42,20 @@ namespace pksm
 
         private:
             // values MUST remain consistent
+            // ONE and TWO to have maybe_unused removed in the future
             enum class GenerationEnum : u32
             {
-                ONE   = 7,
-                TWO   = 8,
-                THREE = 6,
-                FOUR  = 0,
-                FIVE  = 1,
-                SIX   = 2,
-                SEVEN = 3,
-                LGPE  = 4,
-                EIGHT = 5,
+                ONE[[maybe_unused]] = 7,
+                TWO[[maybe_unused]] = 8,
+                THREE               = 6,
+                FOUR                = 0,
+                FIVE                = 1,
+                SIX                 = 2,
+                SEVEN               = 3,
+                LGPE                = 4,
+                EIGHT               = 5,
 
-                UNUSED = 0xFFFFFFFF
+                UNUSED[[maybe_unused]] = 0xFFFFFFFF
             } v;
 
             constexpr explicit Generation_impl(GenerationEnum v) : v(v) {}

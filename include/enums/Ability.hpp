@@ -307,7 +307,7 @@ namespace pksm
                 QuickDraw,
                 UnseenFist,
 
-                INVALID = std::numeric_limits<std::underlying_type_t<AbilityEnum>>::max()
+                INVALID[[maybe_unused]] = std::numeric_limits<std::underlying_type_t<AbilityEnum>>::max()
             } v;
 
             constexpr explicit Ability_impl(AbilityEnum v) : v(v) {}

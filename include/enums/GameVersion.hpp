@@ -116,7 +116,7 @@ namespace pksm
                 /// Pokémon Shield (NX)
                 SH = 45,
 
-                INVALID = std::numeric_limits<std::underlying_type_t<GameVersionEnum>>::max()
+                INVALID[[maybe_unused]] = std::numeric_limits<std::underlying_type_t<GameVersionEnum>>::max()
             } v;
 
             constexpr explicit GameVersion_impl(GameVersionEnum v) : v(v) {}

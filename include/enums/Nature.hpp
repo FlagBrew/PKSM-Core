@@ -70,7 +70,7 @@ namespace pksm
                 Careful,
                 Quirky,
 
-                INVALID = std::numeric_limits<std::underlying_type_t<NatureEnum>>::max()
+                INVALID[[maybe_unused]] = std::numeric_limits<std::underlying_type_t<NatureEnum>>::max()
             } v;
 
             constexpr explicit Nature_impl(NatureEnum v) : v(v) {}

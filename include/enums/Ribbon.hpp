@@ -194,7 +194,7 @@ namespace pksm
                 MarkVigor,
                 MarkSlump,
 
-                INVALID = std::numeric_limits<std::underlying_type_t<RibbonEnum>>::max()
+                INVALID[[maybe_unused]] = std::numeric_limits<std::underlying_type_t<RibbonEnum>>::max()
             } v;
 
             constexpr explicit Ribbon_impl(RibbonEnum v) : v(v) {}

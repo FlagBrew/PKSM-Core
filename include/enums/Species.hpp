@@ -939,7 +939,7 @@ namespace pksm
                 Urshifu,
                 Zarude,
 
-                INVALID = std::numeric_limits<std::underlying_type_t<SpeciesEnum>>::max()
+                INVALID[[maybe_unused]] = std::numeric_limits<std::underlying_type_t<SpeciesEnum>>::max()
             } v;
             constexpr explicit Species_impl(SpeciesEnum v) : v(v) {}
             constexpr Species_impl(const Species_impl&) = default;

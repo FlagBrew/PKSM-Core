@@ -72,7 +72,7 @@ namespace pksm
                 Dream,
                 Beast,
 
-                INVALID = std::numeric_limits<std::underlying_type_t<BallEnum>>::max()
+                INVALID[[maybe_unused]] = std::numeric_limits<std::underlying_type_t<BallEnum>>::max()
             } v;
 
             constexpr explicit Ball_impl(BallEnum v) : v(v) {}

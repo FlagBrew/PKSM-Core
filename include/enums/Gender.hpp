@@ -47,7 +47,7 @@ namespace pksm
                 Female     = 1,
                 Genderless = 2,
 
-                INVALID = std::numeric_limits<std::underlying_type_t<GenderEnum>>::max()
+                INVALID[[maybe_unused]] = std::numeric_limits<std::underlying_type_t<GenderEnum>>::max()
             } v;
 
             constexpr explicit Gender_impl(GenderEnum v) : v(v) {}

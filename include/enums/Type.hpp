@@ -63,7 +63,7 @@ namespace pksm
                 Dark,
                 Fairy,
 
-                INVALID = std::numeric_limits<std::underlying_type_t<TypeEnum>>::max()
+                INVALID[[maybe_unused]] = std::numeric_limits<std::underlying_type_t<TypeEnum>>::max()
             } v;
 
             constexpr explicit Type_impl(TypeEnum v) : v(v) {}
