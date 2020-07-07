@@ -34,7 +34,7 @@
 
 namespace
 {
-#ifdef _PKSMCORE_DISABLE_THREAD_SAFE_RANDOM
+#ifdef _PKSMCORE_DISABLE_THREAD_SAFETY
     std::mt19937 randomNumbers;
     std::uniform_int_distribution<u32> distrib;
     bool seeded = false;

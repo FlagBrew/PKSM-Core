@@ -20,7 +20,7 @@ Required defines:
 
 Optional defines:
 - _PKSMCORE_GETLINE_FUNC: the name of your stdio.h getline function (on certain platforms, it may be named something different, such as `__getline`). Defaults to `getline`
-- _PKSMCORE_DISABLE_THREAD_SAFE_RANDOM: If defined, `thread_local` is removed from the random number generator
+- _PKSMCORE_DISABLE_THREAD_SAFETY: If defined, `thread_local` is removed from the random number generator and atomics are removed from the i18n initialization
 - _PKSMCORE_EXTRA_LANGUAGES: If defined, this must be a comma-separated list of language names. They will be added to the Language enum in order of appearance in the list with values starting at `u8(Language::CHT) + 1`, and will work properly with all i18n functions. If a given file for a language does not exist, it will use the English version. If there is no English version, it will likely fail gracefully, but I'd suggest staying away from that situation.
 
 Credits:

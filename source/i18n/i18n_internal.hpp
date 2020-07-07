@@ -57,7 +57,11 @@ namespace i18n
     inline const std::map<u16, std::string> emptyU16Map = {};
     inline const std::map<u8, std::string> emptyU8Map   = {};
 
+#ifdef _PKSMCORE_DISABLE_THREAD_SAFETY
+    extern std::unordered_map<pksm::Language, LangState> languages;
+#else
     extern std::unordered_map<pksm::Language, std::atomic<LangState>> languages;
+#endif
 
     inline void checkInitialized(pksm::Language lang)
     {
@@ -70,11 +74,13 @@ namespace i18n
         {
             i18n::init(found->first);
         }
+#ifndef _PKSMCORE_DISABLE_THREAD_SAFETY
         while (found->second != LangState::INITIALIZED)
         {
             timespec time = {0, 100000};
             nanosleep(&time, nullptr);
         }
+#endif
     }
 
     std::string folder(pksm::Language lang);

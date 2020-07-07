@@ -52,8 +52,13 @@
 
 namespace i18n
 {
+#ifdef _PKSMCORE_DISABLE_THREAD_SAFETY
+    std::unordered_map<pksm::Language, LangState> languages = []() {
+        std::unordered_map<pksm::Language, LangState> ret;
+#else
     std::unordered_map<pksm::Language, std::atomic<LangState>> languages = []() {
         std::unordered_map<pksm::Language, std::atomic<LangState>> ret;
+#endif
         MAP(MAKE_MAP, LANGUAGES_TO_USE);
         return ret;
     }();
@@ -71,9 +76,15 @@ namespace i18n
         {
             found = languages.find(pksm::Language::ENG);
         }
+#ifdef _PKSMCORE_DISABLE_THREAD_SAFETY
+        if (found->second == LangState::UNINITIALIZED)
+        {
+            found->second = LangState::INITIALIZING;
+#else
         LangState expected = LangState::UNINITIALIZED;
         if (found->second.compare_exchange_strong(expected, LangState::INITIALIZING))
         {
+#endif
             for (auto& callback : initCallbacks)
             {
                 callback(lang);
@@ -88,11 +99,13 @@ namespace i18n
         {
             if (lang.second != LangState::UNINITIALIZED)
             {
+#ifndef _PKSMCORE_DISABLE_THREAD_SAFETY
                 while (lang.second != LangState::INITIALIZED)
                 {
                     timespec time = {0, 100000};
                     nanosleep(&time, nullptr);
                 }
+#endif
 
                 for (auto& callback : exitCallbacks)
                 {
