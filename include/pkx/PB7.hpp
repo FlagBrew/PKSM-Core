@@ -55,12 +55,12 @@ namespace pksm
         void crypt(void) override;
 
     public:
-        static constexpr size_t BOX_LENGTH           = 232;
-        static constexpr size_t PARTY_LENGTH         = 260;
-        static constexpr size_t FORMAT_SPECIES_LIMIT = 809;
+        static constexpr size_t BOX_LENGTH            = 232;
+        static constexpr size_t PARTY_LENGTH          = 260;
+        static constexpr Species FORMAT_SPECIES_LIMIT = Species::Melmetal;
 
         PB7(PrivateConstructor, u8* dt, bool party = true, bool directAccess = false);
-        virtual ~PB7() {}
+        virtual ~PB7() = default;
 
         std::string extension() const override { return ".pb7"; }
 

@@ -57,12 +57,12 @@ namespace pksm
         void crypt(void) override;
 
     public:
-        static constexpr size_t BOX_LENGTH           = 136;
-        static constexpr size_t PARTY_LENGTH         = 236;
-        static constexpr size_t FORMAT_SPECIES_LIMIT = 493;
+        static constexpr size_t BOX_LENGTH            = 136;
+        static constexpr size_t PARTY_LENGTH          = 236;
+        static constexpr Species FORMAT_SPECIES_LIMIT = Species::Arceus;
 
         PK4(PrivateConstructor, u8* dt, bool party = false, bool directAccess = false);
-        virtual ~PK4() {}
+        virtual ~PK4() = default;
 
         std::unique_ptr<PK3> convertToG3(Sav& save) const override;
         std::unique_ptr<PK5> convertToG5(Sav& save) const override;
