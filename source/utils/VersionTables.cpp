@@ -31,8 +31,9 @@
 namespace
 {
     template <typename T>
-    static inline void fill_set_consecutive(std::set<T>& set, const T& begin, const T& end)
+    static inline std::set<T> create_set_consecutive(const T& begin, const T& end)
     {
+        std::set<T> set;
         if constexpr (std::is_integral_v<T>)
         {
             for (T i = begin; i <= end; i++)
@@ -49,6 +50,7 @@ namespace
                 set.insert(T(i));
             }
         }
+        return set;
     }
 }
 
@@ -62,153 +64,127 @@ namespace pksm
             case GameVersion::R:
             case GameVersion::S:
             {
-                static std::set<int> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<int>(items, 0, 348);
-                }
+                static const std::set<int> items = [] {
+                    return create_set_consecutive<int>(0, 348);
+                }();
                 return items;
             }
             case GameVersion::FR:
             case GameVersion::LG:
             {
-                static std::set<int> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<int>(items, 0, 374);
-                }
+                static const std::set<int> items = [] {
+                    return create_set_consecutive<int>(0, 374);
+                }();
                 return items;
             }
             case GameVersion::E:
             {
-                static std::set<int> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<int>(items, 0, 376);
-                }
+                static const std::set<int> items = [] {
+                    return create_set_consecutive<int>(0, 376);
+                }();
                 return items;
             }
             case GameVersion::D:
             case GameVersion::P:
             {
-                static std::set<int> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<int>(items, 0, 464);
-                }
+                static const std::set<int> items = [] {
+                    return create_set_consecutive<int>(0, 464);
+                }();
                 return items;
             }
             case GameVersion::Pt:
             {
-                static std::set<int> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<int>(items, 0, 467);
-                }
+                static const std::set<int> items = [] {
+                    return create_set_consecutive<int>(0, 467);
+                }();
                 return items;
             }
             case GameVersion::HG:
             case GameVersion::SS:
             {
-                static std::set<int> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<int>(items, 0, 536);
-                }
+                static const std::set<int> items = [] {
+                    return create_set_consecutive<int>(0, 536);
+                }();
                 return items;
             }
             case GameVersion::B:
             case GameVersion::W:
             {
-                static std::set<int> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<int>(items, 0, 632);
-                }
+                static const std::set<int> items = [] {
+                    return create_set_consecutive<int>(0, 632);
+                }();
                 return items;
             }
             case GameVersion::B2:
             case GameVersion::W2:
             {
-                static std::set<int> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<int>(items, 0, 638);
-                }
+                static const std::set<int> items = [] {
+                    return create_set_consecutive<int>(0, 638);
+                }();
                 return items;
             }
             case GameVersion::X:
             case GameVersion::Y:
             {
-                static std::set<int> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<int>(items, 0, 717);
-                }
+                static const std::set<int> items = [] {
+                    return create_set_consecutive<int>(0, 717);
+                }();
                 return items;
             }
             case GameVersion::OR:
             case GameVersion::AS:
             {
-                static std::set<int> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<int>(items, 0, 775);
-                }
+                static const std::set<int> items = [] {
+                    return create_set_consecutive<int>(0, 775);
+                }();
                 return items;
             }
             case GameVersion::SN:
             case GameVersion::MN:
             {
-                static std::set<int> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<int>(items, 0, 920);
-                }
+                static const std::set<int> items = [] {
+                    return create_set_consecutive<int>(0, 920);
+                }();
                 return items;
             }
             case GameVersion::US:
             case GameVersion::UM:
             {
-                static std::set<int> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<int>(items, 0, 959);
-                }
+                static const std::set<int> items = [] {
+                    return create_set_consecutive<int>(0, 959);
+                }();
                 return items;
             }
             case GameVersion::GE:
             case GameVersion::GP:
             {
-                static std::set<int> items = {0, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-                    30, 31, 32, 38, 39, 40, 41, 709, 903, 328, 329, 330, 331, 332, 333, 334, 335,
-                    336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351,
-                    352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367,
-                    368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383,
-                    384, 385, 386, 387, 50, 960, 961, 962, 963, 964, 965, 966, 967, 968, 969, 970,
-                    971, 972, 973, 974, 975, 976, 977, 978, 979, 980, 981, 982, 983, 984, 985, 986,
-                    987, 988, 989, 990, 991, 992, 993, 994, 995, 996, 997, 998, 999, 1000, 1001,
-                    1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014,
-                    1015, 1016, 1017, 1018, 1019, 1020, 1021, 1022, 1023, 1024, 1025, 1026, 1027,
-                    1028, 1029, 1030, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038, 1039, 1040,
-                    1041, 1042, 1043, 1044, 1045, 1046, 1047, 1048, 1049, 1050, 1051, 1052, 1053,
-                    1054, 1055, 1056, 1057, 51, 53, 81, 82, 83, 84, 85, 849, 1, 2, 3, 4, 12, 164,
-                    166, 168, 861, 862, 863, 864, 865, 866, 55, 56, 57, 58, 59, 60, 61, 62, 656,
-                    659, 660, 661, 662, 663, 671, 672, 675, 676, 678, 679, 760, 762, 770, 773, 76,
-                    77, 78, 79, 86, 87, 88, 89, 90, 91, 92, 93, 101, 102, 103, 113, 115, 121, 122,
-                    123, 124, 125, 126, 127, 128, 442, 571, 632, 651, 795, 796, 872, 873, 874, 875,
-                    876, 877, 878, 885, 886, 887, 888, 889, 890, 891, 892, 893, 894, 895, 896, 900,
-                    901, 902};
+                static const std::set<int> items = {0, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
+                    28, 29, 30, 31, 32, 38, 39, 40, 41, 709, 903, 328, 329, 330, 331, 332, 333, 334,
+                    335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350,
+                    351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366,
+                    367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382,
+                    383, 384, 385, 386, 387, 50, 960, 961, 962, 963, 964, 965, 966, 967, 968, 969,
+                    970, 971, 972, 973, 974, 975, 976, 977, 978, 979, 980, 981, 982, 983, 984, 985,
+                    986, 987, 988, 989, 990, 991, 992, 993, 994, 995, 996, 997, 998, 999, 1000,
+                    1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013,
+                    1014, 1015, 1016, 1017, 1018, 1019, 1020, 1021, 1022, 1023, 1024, 1025, 1026,
+                    1027, 1028, 1029, 1030, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038, 1039,
+                    1040, 1041, 1042, 1043, 1044, 1045, 1046, 1047, 1048, 1049, 1050, 1051, 1052,
+                    1053, 1054, 1055, 1056, 1057, 51, 53, 81, 82, 83, 84, 85, 849, 1, 2, 3, 4, 12,
+                    164, 166, 168, 861, 862, 863, 864, 865, 866, 55, 56, 57, 58, 59, 60, 61, 62,
+                    656, 659, 660, 661, 662, 663, 671, 672, 675, 676, 678, 679, 760, 762, 770, 773,
+                    76, 77, 78, 79, 86, 87, 88, 89, 90, 91, 92, 93, 101, 102, 103, 113, 115, 121,
+                    122, 123, 124, 125, 126, 127, 128, 442, 571, 632, 651, 795, 796, 872, 873, 874,
+                    875, 876, 877, 878, 885, 886, 887, 888, 889, 890, 891, 892, 893, 894, 895, 896,
+                    900, 901, 902};
                 return items;
             }
             case GameVersion::SW:
             case GameVersion::SH:
             {
-                static std::set<int> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<int>(items, 0, 1589);
-                }
+                static const std::set<int> items = [] {
+                    return create_set_consecutive<int>(0, 1589);
+                }();
                 return items;
             }
             default:
@@ -227,11 +203,9 @@ namespace pksm
             case GameVersion::LG:
             case GameVersion::E:
             {
-                static std::set<int> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<int>(items, 0, 354);
-                }
+                static const std::set<int> items = [] {
+                    return create_set_consecutive<int>(0, 354);
+                }();
                 return items;
             }
             case GameVersion::D:
@@ -240,11 +214,9 @@ namespace pksm
             case GameVersion::HG:
             case GameVersion::SS:
             {
-                static std::set<int> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<int>(items, 0, 467);
-                }
+                static const std::set<int> items = [] {
+                    return create_set_consecutive<int>(0, 467);
+                }();
                 return items;
             }
             case GameVersion::B:
@@ -252,80 +224,68 @@ namespace pksm
             case GameVersion::B2:
             case GameVersion::W2:
             {
-                static std::set<int> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<int>(items, 0, 559);
-                }
+                static const std::set<int> items = [] {
+                    return create_set_consecutive<int>(0, 559);
+                }();
                 return items;
             }
             case GameVersion::X:
             case GameVersion::Y:
             {
-                static std::set<int> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<int>(items, 0, 617);
-                }
+                static const std::set<int> items = [] {
+                    return create_set_consecutive<int>(0, 617);
+                }();
                 return items;
             }
             case GameVersion::OR:
             case GameVersion::AS:
             {
-                static std::set<int> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<int>(items, 0, 621);
-                }
+                static const std::set<int> items = [] {
+                    return create_set_consecutive<int>(0, 621);
+                }();
                 return items;
             }
             case GameVersion::SN:
             case GameVersion::MN:
             {
-                static std::set<int> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<int>(items, 0, 720);
-                }
+                static const std::set<int> items = [] {
+                    return create_set_consecutive<int>(0, 720);
+                }();
                 return items;
             }
             case GameVersion::US:
             case GameVersion::UM:
             {
-                static std::set<int> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<int>(items, 0, 728);
-                }
+                static const std::set<int> items = [] {
+                    return create_set_consecutive<int>(0, 728);
+                }();
                 return items;
             }
             case GameVersion::GE:
             case GameVersion::GP:
             {
-                static std::set<int> items = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                    16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
-                    36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55,
-                    56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75,
-                    76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95,
-                    96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112,
-                    113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128,
-                    129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144,
-                    145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160,
-                    161, 162, 163, 164, 182, 188, 200, 224, 227, 231, 242, 243, 247, 252, 257, 261,
-                    263, 269, 270, 276, 280, 281, 339, 347, 355, 364, 369, 389, 394, 398, 399, 403,
-                    404, 405, 406, 417, 420, 430, 438, 446, 453, 483, 492, 499, 503, 504, 525, 529,
-                    583, 585, 603, 605, 606, 607, 729, 730, 731, 733, 734, 735, 736, 737, 738, 739,
-                    740, 742};
+                static const std::set<int> items = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+                    14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
+                    34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53,
+                    54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73,
+                    74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93,
+                    94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110,
+                    111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126,
+                    127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142,
+                    143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158,
+                    159, 160, 161, 162, 163, 164, 182, 188, 200, 224, 227, 231, 242, 243, 247, 252,
+                    257, 261, 263, 269, 270, 276, 280, 281, 339, 347, 355, 364, 369, 389, 394, 398,
+                    399, 403, 404, 405, 406, 417, 420, 430, 438, 446, 453, 483, 492, 499, 503, 504,
+                    525, 529, 583, 585, 603, 605, 606, 607, 729, 730, 731, 733, 734, 735, 736, 737,
+                    738, 739, 740, 742};
                 return items;
             }
             case GameVersion::SW:
             case GameVersion::SH:
             {
-                static std::set<int> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<int>(items, 0, 818);
-                }
+                static const std::set<int> items = [] {
+                    return create_set_consecutive<int>(0, 818);
+                }();
                 return items;
             }
             default:
@@ -344,11 +304,9 @@ namespace pksm
             case GameVersion::LG:
             case GameVersion::E:
             {
-                static std::set<Species> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<Species>(items, Species::Bulbasaur, Species::Deoxys);
-                }
+                static const std::set<Species> items = [] {
+                    return create_set_consecutive<Species>(Species::Bulbasaur, Species::Deoxys);
+                }();
                 return items;
             }
             case GameVersion::D:
@@ -357,11 +315,9 @@ namespace pksm
             case GameVersion::HG:
             case GameVersion::SS:
             {
-                static std::set<Species> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<Species>(items, Species::Bulbasaur, Species::Arceus);
-                }
+                static const std::set<Species> items = [] {
+                    return create_set_consecutive<Species>(Species::Bulbasaur, Species::Arceus);
+                }();
                 return items;
             }
             case GameVersion::B:
@@ -369,11 +325,9 @@ namespace pksm
             case GameVersion::B2:
             case GameVersion::W2:
             {
-                static std::set<Species> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<Species>(items, Species::Bulbasaur, Species::Genesect);
-                }
+                static const std::set<Species> items = [] {
+                    return create_set_consecutive<Species>(Species::Bulbasaur, Species::Genesect);
+                }();
                 return items;
             }
             case GameVersion::X:
@@ -381,49 +335,42 @@ namespace pksm
             case GameVersion::OR:
             case GameVersion::AS:
             {
-                static std::set<Species> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<Species>(items, Species::Bulbasaur, Species::Volcanion);
-                }
+                static const std::set<Species> items = [] {
+                    return create_set_consecutive<Species>(Species::Bulbasaur, Species::Volcanion);
+                }();
                 return items;
             }
             case GameVersion::SN:
             case GameVersion::MN:
             {
-                static std::set<Species> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<Species>(items, Species::Bulbasaur, Species::Marshadow);
-                }
+                static const std::set<Species> items = [] {
+                    return create_set_consecutive<Species>(Species::Bulbasaur, Species::Marshadow);
+                }();
                 return items;
             }
             case GameVersion::US:
             case GameVersion::UM:
             {
-                static std::set<Species> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<Species>(items, Species::Bulbasaur, Species::Zeraora);
-                }
+                static const std::set<Species> items = [] {
+                    return create_set_consecutive<Species>(Species::Bulbasaur, Species::Zeraora);
+                }();
                 return items;
             }
             case GameVersion::GE:
             case GameVersion::GP:
             {
-                static std::set<Species> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<Species>(items, Species::Bulbasaur, Species::Mew);
-                    items.emplace(Species::Meltan);
-                    items.emplace(Species::Melmetal);
-                }
+                static const std::set<Species> items = [] {
+                    auto ret = create_set_consecutive<Species>(Species::Bulbasaur, Species::Mew);
+                    ret.emplace(Species::Meltan);
+                    ret.emplace(Species::Melmetal);
+                    return ret;
+                }();
                 return items;
             }
             case GameVersion::SW:
             case GameVersion::SH:
             {
-                static std::set<Species> items = {Species::Bulbasaur, Species::Ivysaur,
+                static const std::set<Species> items = {Species::Bulbasaur, Species::Ivysaur,
                     Species::Venusaur, Species::Charmander, Species::Charmeleon, Species::Charizard,
                     Species::Squirtle, Species::Wartortle, Species::Blastoise, Species::Caterpie,
                     Species::Metapod, Species::Butterfree, Species::Pikachu, Species::Raichu,
@@ -560,7 +507,8 @@ namespace pksm
                     Species::Talonflame, Species::Skrelp, Species::Dragalge, Species::Clauncher,
                     Species::Clawitzer, Species::Dedenne, Species::Klefki, Species::Rockruff,
                     Species::Lycanroc, Species::Fomantis, Species::Lurantis, Species::Comfey,
-                    Species::Sandygast, Species::Palossand, Species::Magearna};
+                    Species::Sandygast, Species::Palossand, Species::Magearna, Species::Kubfu,
+                    Species::Urshifu, Species::Zarude};
                 return items;
             }
             default:
@@ -579,11 +527,9 @@ namespace pksm
             case GameVersion::LG:
             case GameVersion::E:
             {
-                static std::set<Ability> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<Ability>(items, Ability::Stench, Ability::TangledFeet);
-                }
+                static const std::set<Ability> items = [] {
+                    return create_set_consecutive<Ability>(Ability::Stench, Ability::TangledFeet);
+                }();
                 return items;
             }
             case GameVersion::D:
@@ -592,11 +538,9 @@ namespace pksm
             case GameVersion::HG:
             case GameVersion::SS:
             {
-                static std::set<Ability> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<Ability>(items, Ability::Stench, Ability::BadDreams);
-                }
+                static const std::set<Ability> items = [] {
+                    return create_set_consecutive<Ability>(Ability::Stench, Ability::BadDreams);
+                }();
                 return items;
             }
             case GameVersion::B:
@@ -604,71 +548,57 @@ namespace pksm
             case GameVersion::B2:
             case GameVersion::W2:
             {
-                static std::set<Ability> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<Ability>(items, Ability::Stench, Ability::Teravolt);
-                }
+                static const std::set<Ability> items = [] {
+                    return create_set_consecutive<Ability>(Ability::Stench, Ability::Teravolt);
+                }();
                 return items;
             }
             case GameVersion::X:
             case GameVersion::Y:
             {
-                static std::set<Ability> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<Ability>(items, Ability::Stench, Ability::AuraBreak);
-                }
+                static const std::set<Ability> items = [] {
+                    return create_set_consecutive<Ability>(Ability::Stench, Ability::AuraBreak);
+                }();
                 return items;
             }
             case GameVersion::OR:
             case GameVersion::AS:
             {
-                static std::set<Ability> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<Ability>(items, Ability::Stench, Ability::DeltaStream);
-                }
+                static const std::set<Ability> items = [] {
+                    return create_set_consecutive<Ability>(Ability::Stench, Ability::DeltaStream);
+                }();
                 return items;
             }
             case GameVersion::SN:
             case GameVersion::MN:
             {
-                static std::set<Ability> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<Ability>(items, Ability::Stench, Ability::PrismArmor);
-                }
+                static const std::set<Ability> items = [] {
+                    return create_set_consecutive<Ability>(Ability::Stench, Ability::PrismArmor);
+                }();
                 return items;
             }
             case GameVersion::US:
             case GameVersion::UM:
             {
-                static std::set<Ability> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<Ability>(items, Ability::Stench, Ability::Neuroforce);
-                }
+                static const std::set<Ability> items = [] {
+                    return create_set_consecutive<Ability>(Ability::Stench, Ability::Neuroforce);
+                }();
                 return items;
             }
             case GameVersion::GE:
             case GameVersion::GP:
             {
-                static std::set<Ability> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<Ability>(items, Ability::Stench, Ability::Neuroforce);
-                }
+                static const std::set<Ability> items = [] {
+                    return create_set_consecutive<Ability>(Ability::Stench, Ability::Neuroforce);
+                }();
                 return items;
             }
             case GameVersion::SW:
             case GameVersion::SH:
             {
-                static std::set<Ability> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<Ability>(items, Ability::Stench, Ability::UnseenFist);
-                }
+                static const std::set<Ability> items = [] {
+                    return create_set_consecutive<Ability>(Ability::Stench, Ability::UnseenFist);
+                }();
                 return items;
             }
             default:
@@ -683,41 +613,33 @@ namespace pksm
         {
             case Generation::THREE:
             {
-                static std::set<Ball> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<Ball>(items, Ball::Master, Ball::Premier);
-                }
+                static const std::set<Ball> items = [] {
+                    return create_set_consecutive<Ball>(Ball::Master, Ball::Premier);
+                }();
                 return items;
             }
             case Generation::FOUR:
             {
-                static std::set<Ball> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<Ball>(items, Ball::Master, Ball::Sport);
-                }
+                static const std::set<Ball> items = [] {
+                    return create_set_consecutive<Ball>(Ball::Master, Ball::Sport);
+                }();
                 return items;
             }
             case Generation::FIVE:
             case Generation::SIX:
             {
-                static std::set<Ball> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<Ball>(items, Ball::Master, Ball::Dream);
-                }
+                static const std::set<Ball> items = [] {
+                    return create_set_consecutive<Ball>(Ball::Master, Ball::Dream);
+                }();
                 return items;
             }
             case Generation::SEVEN:
             case Generation::LGPE:
             case Generation::EIGHT:
             {
-                static std::set<Ball> items;
-                if (items.empty())
-                {
-                    fill_set_consecutive<Ball>(items, Ball::Master, Ball::Beast);
-                }
+                static const std::set<Ball> items = [] {
+                    return create_set_consecutive<Ball>(Ball::Master, Ball::Beast);
+                }();
                 return items;
             }
             default:

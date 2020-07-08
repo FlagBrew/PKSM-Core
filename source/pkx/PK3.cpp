@@ -88,8 +88,8 @@ namespace pksm
 
     void PK3::shuffleArray(u8 sv)
     {
-        static const int blockLength = 12;
-        u8 index                     = sv * 4;
+        static constexpr int blockLength = 12;
+        u8 index                         = sv * 4;
 
         u8 cdata[length];
         std::copy(data, data + length, cdata);
