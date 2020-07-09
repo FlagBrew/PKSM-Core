@@ -108,7 +108,7 @@ namespace pksm
             BALL
         };
 
-        virtual ~Sav() {}
+        virtual ~Sav() = default;
         Sav(std::shared_ptr<u8[]> data, u32 length) : data(data), length(length) {}
         Sav(const Sav& save) = delete;
         Sav& operator=(const Sav& save) = delete;

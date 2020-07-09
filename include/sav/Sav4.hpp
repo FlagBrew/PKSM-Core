@@ -62,7 +62,6 @@ namespace pksm
 
     public:
         Sav4(std::shared_ptr<u8[]> data, u32 length) : Sav(data, length) {}
-        virtual ~Sav4() {}
         void resign(void);
         void finishEditing(void) override { resign(); }
         void beginEditing(void) override {}

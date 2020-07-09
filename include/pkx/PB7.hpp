@@ -60,7 +60,6 @@ namespace pksm
         static constexpr Species FORMAT_SPECIES_LIMIT = Species::Melmetal;
 
         PB7(PrivateConstructor, u8* dt, bool party = true, bool directAccess = false);
-        virtual ~PB7() = default;
 
         std::string extension() const override { return ".pb7"; }
 

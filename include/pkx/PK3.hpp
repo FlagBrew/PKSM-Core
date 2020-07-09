@@ -61,7 +61,6 @@ namespace pksm
         static constexpr Species FORMAT_SPECIES_LIMIT = Species::Deoxys;
 
         PK3(PrivateConstructor, u8* dt, bool party = false, bool directAccess = false);
-        virtual ~PK3() = default;
 
         static u8 getUnownForm(u32 pid);
 

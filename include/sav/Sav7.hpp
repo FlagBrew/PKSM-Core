@@ -48,7 +48,6 @@ namespace pksm
 
     public:
         Sav7(std::shared_ptr<u8[]> data, u32 length) : Sav(data, length) {}
-        virtual ~Sav7() {}
         virtual void resign(void) = 0;
         void finishEditing(void) override { resign(); }
         void beginEditing(void) override {}

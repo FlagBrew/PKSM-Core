@@ -58,7 +58,6 @@ namespace pksm
         static constexpr Species FORMAT_SPECIES_LIMIT = Species::Volcanion;
 
         PK6(PrivateConstructor, u8* dt, bool party = false, bool directAccess = false);
-        virtual ~PK6() = default;
 
         std::unique_ptr<PK3> convertToG3(Sav& save) const override;
         std::unique_ptr<PK4> convertToG4(Sav& save) const override;

@@ -101,7 +101,6 @@ namespace pksm
         static constexpr int SIZE_BLOCK = 0x1000;
         static Game getVersion(std::shared_ptr<u8[]> dt);
 
-        virtual ~Sav3() {}
         void resign(void);
         void finishEditing(void) override { resign(); }
         void beginEditing(void) override {}

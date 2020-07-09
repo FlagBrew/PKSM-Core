@@ -45,7 +45,7 @@ namespace pksm
     class Item
     {
     public:
-        virtual ~Item() {}
+        virtual ~Item() = default;
         virtual Generation generation(void) const = 0;
         virtual u16 maxCount(void) const          = 0;
         virtual u16 id(void) const                = 0;

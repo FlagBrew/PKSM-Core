@@ -44,7 +44,6 @@ namespace pksm
 
     public:
         Sav8(std::shared_ptr<u8[]> dt, size_t length);
-        virtual ~Sav8() {}
 
         std::shared_ptr<pksm::crypto::swsh::SCBlock> getBlock(u32 key) const;
 
