@@ -102,8 +102,13 @@ namespace pksm
         static std::unique_ptr<typename GenToPkx<g>::PKX> getPKM(
             u8* data, bool party = false, bool directAccess = false)
         {
-            return std::make_unique<typename GenToPkx<g>::PKX>(
-                PrivateConstructor{}, data, party, directAccess);
+            return getPKM<typename GenToPkx<g>::PKX>(data, party, directAccess);
+        }
+        template <typename Pkm>
+        static std::enable_if_t<std::is_base_of_v<::pksm::PKX, Pkm>, std::unique_ptr<Pkm>> getPKM(
+            u8* data, bool party = false, bool directAccess = false)
+        {
+            return std::make_unique<Pkm>(PrivateConstructor{}, data, party, directAccess);
         }
 
         // Returns null if length is not valid for that generation, and a party Pokemon depending on
@@ -114,9 +119,15 @@ namespace pksm
         static std::unique_ptr<typename GenToPkx<g>::PKX> getPKM(
             u8* data, size_t length, bool directAccess = false)
         {
-            if (GenToPkx<g>::PKX::PARTY_LENGTH == length || GenToPkx<g>::PKX::BOX_LENGTH == length)
+            return getPKM<typename GenToPkx<g>::PKX>(data, length, directAccess);
+        }
+        template <typename Pkm>
+        static std::enable_if_t<std::is_base_of_v<::pksm::PKX, Pkm>, std::unique_ptr<Pkm>> getPKM(
+            u8* data, size_t length, bool directAccess = false)
+        {
+            if (Pkm::PARTY_LENGTH == length || Pkm::BOX_LENGTH == length)
             {
-                return getPKM<g>(data, length == GenToPkx<g>::PKX::PARTY_LENGTH, directAccess);
+                return getPKM<Pkm>(data, length == Pkm::PARTY_LENGTH, directAccess);
             }
             return nullptr;
         }
