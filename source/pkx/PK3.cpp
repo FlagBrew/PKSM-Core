@@ -480,7 +480,6 @@ namespace pksm
 
         auto pk4 = PKX::getPKM<Generation::FOUR>(nullptr);
 
-        pk4->PID(PID());
         pk4->species(species());
         pk4->TID(TID());
         pk4->SID(SID());
@@ -525,6 +524,7 @@ namespace pksm
         {
             pk4->ability(ability());
         }
+        pk4->PID(PID());
         pk4->version(version());
         pk4->ball(ball());
         pk4->pkrsStrain(pkrsStrain());
