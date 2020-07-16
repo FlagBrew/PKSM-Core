@@ -91,6 +91,9 @@ namespace pksm
     u8 Sav5::currentBox(void) const { return data[PCLayout]; }
     void Sav5::currentBox(u8 v) { data[PCLayout] = v; }
 
+    u8 Sav5::unlockedBoxes(void) const { return data[PCLayout + 0x3DD]; }
+    void Sav5::unlockedBoxes(u8 v) { data[PCLayout + 0x3DD] = v; }
+
     u32 Sav5::boxOffset(u8 box, u8 slot) const
     {
         return Box + PK5::BOX_LENGTH * box * 30 + 0x10 * box + PK5::BOX_LENGTH * slot;

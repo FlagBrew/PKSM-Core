@@ -158,6 +158,9 @@ namespace pksm
 
         virtual u8 currentBox(void) const            = 0;
         virtual void currentBox(u8 v)                = 0;
+        virtual u8 unlockedBoxes(void) const         = 0;
+        virtual void unlockedBoxes(u8 v)             = 0;
+        virtual u8 legendBoxUnlockSize(void) const   = 0;
         virtual u32 boxOffset(u8 box, u8 slot) const = 0;
         virtual u32 partyOffset(u8 slot) const       = 0;
 

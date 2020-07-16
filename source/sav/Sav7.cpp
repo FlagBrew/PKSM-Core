@@ -103,6 +103,9 @@ namespace pksm
     u8 Sav7::currentBox(void) const { return data[LastViewedBox]; }
     void Sav7::currentBox(u8 v) { data[LastViewedBox] = v; }
 
+    u8 Sav7::unlockedBoxes(void) const { return data[LastViewedBox - 2]; }
+    void Sav7::unlockedBoxes(u8 v) { data[LastViewedBox - 2] = v; }
+
     u32 Sav7::boxOffset(u8 box, u8 slot) const
     {
         return Box + PK7::BOX_LENGTH * 30 * box + PK7::BOX_LENGTH * slot;

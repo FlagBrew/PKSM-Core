@@ -139,6 +139,9 @@ namespace pksm
 
         u8 currentBox(void) const override;
         void currentBox(u8 v) override;
+        u8 unlockedBoxes(void) const override { return maxBoxes(); }
+        void unlockedBoxes(u8) override {}
+        u8 legendBoxUnlockSize(void) const override { return 0; }
         // Note: a Pokemon may be split up into two pieces! That will happen if RETURNVALUE % 0x1000
         // + PK3::BOX_LENGTH > 0xF80 In this case, the first 0xF80 - RETURNVALUE bytes of a Pokemon
         // should be written to the returned offset, with the remainder written to offset

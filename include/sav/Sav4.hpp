@@ -98,6 +98,9 @@ namespace pksm
 
         u8 currentBox(void) const override;
         void currentBox(u8 v) override;
+        u8 unlockedBoxes(void) const override { return maxBoxes(); }
+        void unlockedBoxes(u8 v) override {}
+        u8 legendBoxUnlockSize(void) const override { return 0; }
         u32 boxOffset(u8 box, u8 slot) const override;
         u32 partyOffset(u8 slot) const override;
 
