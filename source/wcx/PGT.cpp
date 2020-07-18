@@ -40,6 +40,7 @@ namespace pksm
             pokemonData->species(Species::Manaphy);
             pokemonData->alternativeForm(0);
             pokemonData->egg(true);
+            pokemonData->shiny(false);
             pokemonData->gender(Gender::Genderless);
             pokemonData->level(1);
             pokemonData->setAbility(0);
