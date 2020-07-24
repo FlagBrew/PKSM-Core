@@ -200,22 +200,21 @@ namespace pksm
 
     u8 SavLGPE::badges() const
     {
-        struct
-        {
-            u8 unimportant1 : 4;
-            u8 b1 : 1;
-            u8 b2 : 1;
-            u8 b3 : 1;
-            u8 b4 : 1;
-            u8 b5 : 1;
-            u8 b6 : 1;
-            u8 b7 : 1;
-            u8 b8 : 1;
-            u8 unimportant2 : 4;
-        } badgeBits;
-        std::copy(&data[0x21b1], &data[0x21b1 + 2], (u8*)&badgeBits);
-        return badgeBits.b1 + badgeBits.b2 + badgeBits.b3 + badgeBits.b4 + badgeBits.b5 +
-               badgeBits.b6 + badgeBits.b7 + badgeBits.b8;
+        // struct
+        // {
+        //     u8 unimportant1 : 4;
+        //     u8 b1 : 1;
+        //     u8 b2 : 1;
+        //     u8 b3 : 1;
+        //     u8 b4 : 1;
+        //     u8 b5 : 1;
+        //     u8 b6 : 1;
+        //     u8 b7 : 1;
+        //     u8 b8 : 1;
+        //     u8 unimportant2 : 4;
+        // } badgeBits;
+        u8 badges = (LittleEndian::convertTo<u16>(&data[0x21b1]) >> 4) & 0xFF;
+        return pksm::crypto::popcount(badges);
     }
 
     u16 SavLGPE::playedHours(void) const { return LittleEndian::convertTo<u16>(&data[0x45400]); }
@@ -303,29 +302,32 @@ namespace pksm
 
     void SavLGPE::trade(PKX& pk, const Date& date) const
     {
-        PB7* pb7 = (PB7*)&pk;
-        if (pb7->egg() && !(otName() == pb7->otName() && TID() == pb7->TID() &&
-                              SID() == pb7->SID() && gender() == pb7->otGender()))
+        if (pk.generation() == Generation::LGPE)
         {
-            pb7->metLocation(30002);
-            pb7->metDate(date);
-        }
-        else if (!(otName() == pb7->otName() && TID() == pb7->TID() && SID() == pb7->SID() &&
-                     gender() == pb7->otGender()))
-        {
-            pb7->currentHandler(0);
-        }
-        else
-        {
-            if (pb7->htName() != otName())
+            PB7& pb7 = reinterpret_cast<PB7&>(pk);
+            if (pb7.egg() && !(otName() == pb7.otName() && TID() == pb7.TID() &&
+                                 SID() == pb7.SID() && gender() == pb7.otGender()))
             {
-                pb7->htFriendship(pb7->currentFriendship()); // copy friendship instead of resetting
-                                                             // (don't alter CP)
-                pb7->htAffection(0);
+                pb7.metLocation(30002);
+                pb7.metDate(date);
             }
-            pb7->currentHandler(1);
-            pb7->htName(otName());
-            pb7->htGender(gender());
+            else if (!(otName() == pb7.otName() && TID() == pb7.TID() && SID() == pb7.SID() &&
+                         gender() == pb7.otGender()))
+            {
+                pb7.currentHandler(0);
+            }
+            else
+            {
+                if (pb7.htName() != otName())
+                {
+                    pb7.htFriendship(pb7.currentFriendship()); // copy friendship instead of
+                                                               // resetting (don't alter CP)
+                    pb7.htAffection(0);
+                }
+                pb7.currentHandler(1);
+                pb7.htName(otName());
+                pb7.htGender(gender());
+            }
         }
     }
 
@@ -399,7 +401,7 @@ namespace pksm
         for (u8 i = 0; i < 4; i++)
         {
             int brDisplayed = (4 + i) * brSize;
-            displayed |= (data[off + brDisplayed + bd1] & (u8)(1 << bm1)) != 0;
+            displayed |= (data[off + brDisplayed + bd1] & (1 << bm1)) != 0;
         }
 
         if (!displayed && baseSpecies != index)
@@ -407,13 +409,13 @@ namespace pksm
             for (u8 i = 0; i < 4; i++)
             {
                 int brDisplayed = (4 + i) * brSize;
-                displayed |= (data[off + brDisplayed + bd] & (u8)(1 << bm)) != 0;
+                displayed |= (data[off + brDisplayed + bd] & (1 << bm)) != 0;
             }
         }
         if (displayed)
             return;
 
-        data[off + (4 + shift) * brSize + bd] |= (u8)(1 << bm);
+        data[off + (4 + shift) * brSize + bd] |= (1 << bm);
     }
 
     int SavLGPE::getDexFlags(int index, int baseSpecies) const
@@ -428,11 +430,11 @@ namespace pksm
 
         for (u8 i = 0; i < 4; i++)
         {
-            if (data[ofs + i * brSize + bd] & (u8)(1 << bm))
+            if (data[ofs + i * brSize + bd] & (1 << bm))
             {
                 ret++;
             }
-            if (data[ofs + i * brSize + bd1] & (u8)(1 << bm1))
+            if (data[ofs + i * brSize + bd1] & (1 << bm1))
             {
                 ret++;
             }
@@ -475,7 +477,7 @@ namespace pksm
         }
 
         int off = PokeDex + 0x08 + 0x80;
-        data[off + bd] |= (u8)(1 << bm);
+        data[off + bd] |= (1 << bm);
 
         int formstart = pk.alternativeForm();
         int formend   = formstart;
@@ -579,92 +581,92 @@ namespace pksm
         }
     }
 
-    void SavLGPE::mysteryGift(WCX& wc, int&)
+    void SavLGPE::mysteryGift(const WCX& wc, int&)
     {
         if (wc.generation() == Generation::LGPE)
         {
-            WB7* wb7 = (WB7*)&wc;
-            if (wb7->pokemon())
+            const WB7& wb7 = reinterpret_cast<const WB7&>(wc);
+            if (wb7.pokemon())
             {
                 if (boxedPkm() == maxSlot())
                 {
                     return;
                 }
                 auto pb7 = PKX::getPKM<Generation::LGPE>(nullptr, false);
-                pb7->species(wb7->species());
-                pb7->alternativeForm(wb7->alternativeForm());
-                if (wb7->level() > 0)
+                pb7->species(wb7.species());
+                pb7->alternativeForm(wb7.alternativeForm());
+                if (wb7.level() > 0)
                 {
-                    pb7->level(wb7->level());
+                    pb7->level(wb7.level());
                 }
                 else
                 {
                     pb7->level(pksm::randomNumber(1, 100));
                 }
-                if (wb7->metLevel() > 0)
+                if (wb7.metLevel() > 0)
                 {
-                    pb7->metLevel(wb7->metLevel());
+                    pb7->metLevel(wb7.metLevel());
                 }
                 else
                 {
                     pb7->metLevel(pb7->level());
                 }
-                pb7->TID(wb7->TID());
-                pb7->SID(wb7->SID());
+                pb7->TID(wb7.TID());
+                pb7->SID(wb7.SID());
                 for (int i = 0; i < 4; i++)
                 {
-                    pb7->move(i, wb7->move(i));
-                    pb7->relearnMove(i, wb7->move(i));
+                    pb7->move(i, wb7.move(i));
+                    pb7->relearnMove(i, wb7.move(i));
                 }
-                if (wb7->nature() == Nature::INVALID)
+                if (wb7.nature() == Nature::INVALID)
                 {
                     pb7->nature(Nature{u8(pksm::randomNumber(0, 24))});
                 }
                 else
                 {
-                    pb7->nature(wb7->nature());
+                    pb7->nature(wb7.nature());
                 }
-                if (u8(wb7->gender()) == 3) // Invalid gender value
+                if (u8(wb7.gender()) == 3) // Invalid gender value
                 {
                     pb7->gender(PKX::genderFromRatio(pksm::randomNumber(0, 0xFFFFFFFF),
-                        PersonalLGPE::gender(u16(wb7->species()))));
+                        PersonalLGPE::gender(u16(wb7.species()))));
                 }
                 else
                 {
-                    pb7->gender(wb7->gender());
+                    pb7->gender(wb7.gender());
                 }
-                pb7->heldItem(wb7->heldItem());
-                pb7->encryptionConstant(wb7->encryptionConstant());
-                if (wb7->version() != GameVersion::INVALID)
+                pb7->heldItem(wb7.heldItem());
+                pb7->encryptionConstant(wb7.encryptionConstant());
+                if (wb7.version() != GameVersion::INVALID)
                 {
-                    pb7->version(wb7->version());
+                    pb7->version(wb7.version());
                 }
                 else
                 {
                     pb7->version(version());
                 }
                 pb7->language(language());
-                pb7->ball(wb7->ball());
+                pb7->ball(wb7.ball());
                 pb7->country(country());
                 pb7->region(subRegion());
                 pb7->consoleRegion(consoleRegion());
-                pb7->metLocation(wb7->metLocation());
-                pb7->eggLocation(wb7->eggLocation());
+                pb7->metLocation(wb7.metLocation());
+                pb7->eggLocation(wb7.eggLocation());
                 for (int i = 0; i < 6; i++)
                 {
-                    pb7->awakened(Stat(i), wb7->awakened(Stat(i)));
-                    pb7->ev(Stat(i), wb7->ev(Stat(i)));
+                    pb7->awakened(Stat(i), wb7.awakened(Stat(i)));
+                    pb7->ev(Stat(i), wb7.ev(Stat(i)));
                 }
-                if (wb7->nickname((Language)language()).length() == 0)
+                if (wb7.nickname(language()).length() == 0)
                 {
                     pb7->nickname(pb7->species().localize(language()));
                 }
                 else
                 {
-                    pb7->nickname(wb7->nickname((Language)language()));
+                    pb7->nickname(wb7.nickname(language()));
                     pb7->nicknamed(pb7->nickname() != pb7->species().localize(language()));
                 }
-                if (wb7->otName((Language)language()).length() == 0)
+                if (wb7.otName(language()).length() == 0)
                 {
                     pb7->otName(otName());
                     pb7->otGender(gender());
@@ -672,9 +674,9 @@ namespace pksm
                 }
                 else
                 {
-                    pb7->otName(wb7->otName((Language)language()));
+                    pb7->otName(wb7.otName(language()));
                     pb7->htName(otName());
-                    pb7->otGender(wb7->otGender());
+                    pb7->otGender(wb7.otGender());
                     pb7->htGender(gender());
                     pb7->otFriendship(PersonalLGPE::baseFriendship(pb7->formSpecies()));
                     pb7->currentHandler(1);
@@ -684,9 +686,9 @@ namespace pksm
                 for (Stat stat :
                     {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF})
                 {
-                    if (wb7->iv(stat) - 0xFC < 3)
+                    if (wb7.iv(stat) - 0xFC < 3)
                     {
-                        numPerfectIVs = wb7->iv(stat) - 0xFB;
+                        numPerfectIVs = wb7.iv(stat) - 0xFB;
                         break;
                     }
                 }
@@ -708,7 +710,7 @@ namespace pksm
                     }
                 }
 
-                if (u16(wb7->otGender()) == 3)
+                if (u16(wb7.otGender()) == 3)
                 {
                     pb7->TID(TID());
                     pb7->SID(SID());
@@ -716,23 +718,23 @@ namespace pksm
 
                 // Sets the ability to the one specific to the formSpecies and sets abilitynumber
                 // (Why? Don't quite understand that)
-                switch (wb7->abilityType())
+                switch (wb7.abilityType())
                 {
                     case 0:
                     case 1:
                     case 2:
-                        pb7->setAbility(wb7->abilityType());
+                        pb7->setAbility(wb7.abilityType());
                         break;
                     case 3:
                     case 4:
-                        pb7->setAbility(pksm::randomNumber(0, wb7->abilityType() - 2));
+                        pb7->setAbility(pksm::randomNumber(0, wb7.abilityType() - 2));
                         break;
                 }
 
-                switch (wb7->PIDType())
+                switch (wb7.PIDType())
                 {
                     case 0: // Fixed value
-                        pb7->PID(wb7->PID());
+                        pb7->PID(wb7.PID());
                         break;
                     case 1: // Random
                         pb7->PID(pksm::randomNumber(0, 0xFFFFFFFF));
@@ -747,15 +749,15 @@ namespace pksm
                         break;
                 }
 
-                if (wb7->egg())
+                if (wb7.egg())
                 {
                     pb7->egg(true);
-                    pb7->eggDate(wb7->date());
+                    pb7->eggDate(wb7.date());
                     pb7->nickname(pb7->species().localize(language()));
                     pb7->nicknamed(true);
                 }
 
-                pb7->metDate(wb7->date());
+                pb7->metDate(wb7.date());
                 pb7->currentFriendship(PersonalLGPE::baseFriendship(pb7->formSpecies()));
 
                 pb7->height(pksm::randomNumber(0, 255));
@@ -766,11 +768,11 @@ namespace pksm
                 pkm(*pb7, boxedPkm());
                 boxedPkm(this->boxedPkm() + 1);
             }
-            else if (wb7->item())
+            else if (wb7.item())
             {
                 auto valid  = validItems();
                 auto limits = pouches();
-                for (int itemNum = 0; itemNum < wb7->items(); itemNum++)
+                for (int itemNum = 0; itemNum < wb7.items(); itemNum++)
                 {
                     bool currentSet = false;
                     for (size_t pouch = 0; pouch < limits.size(); pouch++)
@@ -778,21 +780,21 @@ namespace pksm
                         // Check this is the correct pouch
                         if (!currentSet &&
                             std::binary_search(valid[limits[pouch].first].begin(),
-                                valid[limits[pouch].first].end(), wb7->object(itemNum)))
+                                valid[limits[pouch].first].end(), wb7.object(itemNum)))
                         {
                             for (int slot = 0; slot < limits[pouch].second; slot++)
                             {
                                 auto occupying = item(limits[pouch].first, slot);
                                 if (occupying->id() == 0)
                                 {
-                                    occupying->id(wb7->object(itemNum));
-                                    occupying->count(wb7->objectQuantity(itemNum));
-                                    ((Item7b*)occupying.get())->newFlag(true);
+                                    occupying->id(wb7.object(itemNum));
+                                    occupying->count(wb7.objectQuantity(itemNum));
+                                    reinterpret_cast<Item7b*>(occupying.get())->newFlag(true);
                                     item(*occupying, limits[pouch].first, slot);
                                     currentSet = true;
                                     break;
                                 }
-                                else if (occupying->id() == wb7->object(itemNum) &&
+                                else if (occupying->id() == wb7.object(itemNum) &&
                                          limits[pouch].first != Pouch::TM)
                                 {
                                     occupying->count(occupying->count() + 1);
@@ -810,7 +812,7 @@ namespace pksm
 
     void SavLGPE::item(const Item& item, Pouch pouch, u16 slot)
     {
-        Item7b item7b = (Item7b)item;
+        Item7b item7b = static_cast<Item7b>(item);
         auto write    = item7b.bytes();
         switch (pouch)
         {

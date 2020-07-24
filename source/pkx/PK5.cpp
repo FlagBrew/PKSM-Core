@@ -513,7 +513,7 @@ namespace pksm
     Gender PK5::gender(void) const { return Gender{u8((data[0x40] >> 1) & 0x3)}; }
     void PK5::gender(Gender g)
     {
-        data[0x40] = u8((data[0x40] & ~0x06) | (u8(g) << 1));
+        data[0x40] = (data[0x40] & ~0x06) | (u8(g) << 1);
         if (shiny())
         {
             do
@@ -533,7 +533,7 @@ namespace pksm
     }
 
     u16 PK5::alternativeForm(void) const { return data[0x40] >> 3; }
-    void PK5::alternativeForm(u16 v) { data[0x40] = u8((data[0x40] & 0x07) | (v << 3)); }
+    void PK5::alternativeForm(u16 v) { data[0x40] = (data[0x40] & 0x07) | (v << 3); }
 
     Nature PK5::nature(void) const { return Nature{data[0x41]}; }
     void PK5::nature(Nature v) { data[0x41] = u8(v); }

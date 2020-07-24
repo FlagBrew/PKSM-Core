@@ -123,7 +123,7 @@ namespace pksm
             static_assert(std::is_integral_v<T>);
             return T(impl);
         }
-        constexpr operator EnumType() const noexcept { return (EnumType)impl; }
+        constexpr operator EnumType() const noexcept { return static_cast<EnumType>(impl); }
 
         constexpr bool operator<(const Type& other) const noexcept { return impl < other.impl; }
         constexpr bool operator<=(const Type& other) const noexcept { return impl <= other.impl; }

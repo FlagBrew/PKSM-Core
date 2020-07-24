@@ -68,9 +68,9 @@ namespace pksm
     {
         int zeroBlock1 = std::find(blockOrder1.begin(), blockOrder1.end(), 0) - blockOrder1.begin();
         int zeroBlock2 = std::find(blockOrder2.begin(), blockOrder2.end(), 0) - blockOrder2.begin();
-        if ((size_t)zeroBlock2 == blockOrder2.size())
+        if (size_t(zeroBlock2) == blockOrder2.size())
             return 0;
-        if ((size_t)zeroBlock1 == blockOrder1.size())
+        if (size_t(zeroBlock1) == blockOrder1.size())
             return 1;
         u32 count1 = LittleEndian::convertTo<u32>(&dt[(zeroBlock1 * SIZE_BLOCK) + 0x0FFC]);
         u32 count2 = LittleEndian::convertTo<u32>(&dt[(zeroBlock2 * SIZE_BLOCK) + 0xEFFC]);
@@ -580,8 +580,9 @@ namespace pksm
     }
     void Sav3::partyCount(u8 v) { data[blockOfs[1] + (game == Game::FRLG ? 0x34 : 0x234)] = v; }
 
-    void Sav3::item(const Item& item, Pouch pouch, u16 slot)
+    void Sav3::item(const Item& tItem, Pouch pouch, u16 slot)
     {
+        Item3 item = static_cast<Item3>(tItem);
         auto write = item.bytes();
         switch (pouch)
         {

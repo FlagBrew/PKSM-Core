@@ -269,10 +269,10 @@ namespace pksm
     void PK7::fatefulEncounter(bool v) { data[0x1D] = (u8)((data[0x1D] & ~0x01) | (v ? 1 : 0)); }
 
     Gender PK7::gender(void) const { return Gender{u8((data[0x1D] >> 1) & 0x3)}; }
-    void PK7::gender(Gender v) { data[0x1D] = u8((data[0x1D] & ~0x06) | (u8(v) << 1)); }
+    void PK7::gender(Gender v) { data[0x1D] = (data[0x1D] & ~0x06) | (u8(v) << 1); }
 
     u16 PK7::alternativeForm(void) const { return data[0x1D] >> 3; }
-    void PK7::alternativeForm(u16 v) { data[0x1D] = u8((data[0x1D] & 0x07) | (v << 3)); }
+    void PK7::alternativeForm(u16 v) { data[0x1D] = (data[0x1D] & 0x07) | (v << 3); }
 
     u8 PK7::ev(Stat ev) const { return data[0x1E + u8(ev)]; }
     void PK7::ev(Stat ev, u8 v) { data[0x1E + u8(ev)] = v; }

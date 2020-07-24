@@ -102,7 +102,7 @@ namespace i18n
                 fclose(values);
                 return;
             }
-            char* data  = (char*)malloc(128);
+            char* data  = static_cast<char*>(malloc(128));
             size_t size = 0;
             while (!feof(values) && !ferror(values))
             {

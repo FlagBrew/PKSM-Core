@@ -165,7 +165,7 @@ namespace pksm
         int dexSeen(void) const override;
         int dexCaught(void) const override;
         int currentGiftAmount(void) const override { return 0; }
-        void mysteryGift(WCX&, int&) override {}
+        void mysteryGift(const WCX&, int&) override {}
         std::unique_ptr<WCX> mysteryGift(int pos) const override;
         void cryptBoxData(bool crypted) override;
         std::string boxName(u8 box) const override;

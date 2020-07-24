@@ -54,29 +54,33 @@ namespace pksm
 
     void Sav8::trade(PKX& pk, const Date& date) const
     {
-        if (pk.egg())
+        if (pk.generation() == Generation::EIGHT)
         {
-            if (pk.otName() != otName() || pk.TID() != TID() || pk.SID() != SID() ||
-                pk.gender() != gender())
+            if (pk.egg())
             {
-                pk.metLocation(30002);
-                pk.metDate(date);
-            }
-        }
-        else
-        {
-            if (pk.otName() != otName() || pk.TID() != TID() || pk.SID() != SID() ||
-                pk.gender() != gender())
-            {
-                pk.currentHandler(0);
+                if (pk.otName() != otName() || pk.TID() != TID() || pk.SID() != SID() ||
+                    pk.gender() != gender())
+                {
+                    pk.metLocation(30002);
+                    pk.metDate(date);
+                }
             }
             else
             {
-                pk.currentHandler(1);
-                ((PK8&)pk).htName(otName());
-                ((PK8&)pk).currentFriendship(pk.baseFriendship());
-                ((PK8&)pk).htGender(gender());
-                ((PK8&)pk).htLanguage(language());
+                if (pk.otName() != otName() || pk.TID() != TID() || pk.SID() != SID() ||
+                    pk.gender() != gender())
+                {
+                    pk.currentHandler(0);
+                }
+                else
+                {
+                    pk.currentHandler(1);
+                    PK8& pk8 = reinterpret_cast<PK8&>(pk);
+                    pk8.htName(otName());
+                    pk8.currentFriendship(pk.baseFriendship());
+                    pk8.htGender(gender());
+                    pk8.htLanguage(language());
+                }
             }
         }
     }

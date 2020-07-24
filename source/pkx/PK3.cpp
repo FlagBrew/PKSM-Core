@@ -207,13 +207,13 @@ namespace pksm
     void PK3::language(Language v) { data[0x12] = u8(v); }
 
     bool PK3::flagIsBadEgg(void) const { return (data[0x13] & 1) == 1; }
-    void PK3::flagIsBadEgg(bool v) { data[0x13] = (u8)((data[0x13] & ~2) | (v ? 1 : 0)); }
+    void PK3::flagIsBadEgg(bool v) { data[0x13] = (data[0x13] & ~2) | (v ? 1 : 0); }
 
     bool PK3::flagHasSpecies(void) const { return (data[0x13] & 2) == 2; }
-    void PK3::flagHasSpecies(bool v) { data[0x13] = (u8)((data[0x13] & ~2) | (v ? 2 : 0)); }
+    void PK3::flagHasSpecies(bool v) { data[0x13] = (data[0x13] & ~2) | (v ? 2 : 0); }
 
     bool PK3::flagIsEgg(void) const { return (data[0x13] & 4) == 4; }
-    void PK3::flagIsEgg(bool v) { data[0x13] = (u8)((data[0x13] & ~4) | (v ? 4 : 0)); }
+    void PK3::flagIsEgg(bool v) { data[0x13] = (data[0x13] & ~4) | (v ? 4 : 0); }
 
     std::string PK3::otName(void) const
     {
@@ -253,7 +253,7 @@ namespace pksm
     {
         if (item.generation() == Generation::THREE)
         {
-            heldItem3(((Item3*)&item)->id3());
+            heldItem3((reinterpret_cast<const Item3&>(item)).id3());
         }
         else
         {
@@ -267,7 +267,7 @@ namespace pksm
     u8 PK3::PPUp(u8 move) const { return (data[0x28] >> (move * 2) & 3); }
     void PK3::PPUp(u8 move, u8 v)
     {
-        data[0x28] = (u8)((data[0x28] & ~(3 << (move * 2))) | (v & 3) << (move * 2));
+        data[0x28] = (data[0x28] & ~(3 << (move * 2))) | ((v & 3) << (move * 2));
     }
 
     u8 PK3::otFriendship(void) const { return data[0x29]; }
@@ -289,19 +289,19 @@ namespace pksm
     void PK3::pkrs(u8 v) { data[0x44] = v; }
 
     u8 PK3::pkrsDays(void) const { return data[0x44] & 0xF; }
-    void PK3::pkrsDays(u8 v) { data[0x44] = (u8)((data[0x44] & ~0xF) | v); }
+    void PK3::pkrsDays(u8 v) { data[0x44] = (data[0x44] & ~0xF) | v; }
 
     u8 PK3::pkrsStrain(void) const { return data[0x44] >> 4; }
-    void PK3::pkrsStrain(u8 v) { data[0x44] = (u8)((data[0x44] & 0xF) | v << 4); }
+    void PK3::pkrsStrain(u8 v) { data[0x44] = (data[0x44] & 0xF) | (v << 4); }
 
     u16 PK3::metLocation(void) const { return data[0x45]; }
-    void PK3::metLocation(u16 v) { data[0x45] = (u8)v; }
+    void PK3::metLocation(u16 v) { data[0x45] = u8(v); }
 
     u8 PK3::metLevel(void) const { return LittleEndian::convertTo<u16>(data + 0x46) & 0x7F; }
     void PK3::metLevel(u8 v)
     {
         LittleEndian::convertFrom<u16>(
-            data + 0x46, (u16)((LittleEndian::convertTo<u16>(data + 0x46) & ~0x7F) | v));
+            data + 0x46, u16((LittleEndian::convertTo<u16>(data + 0x46) & ~0x7F) | v));
     }
 
     GameVersion PK3::version(void) const
@@ -311,7 +311,7 @@ namespace pksm
     void PK3::version(GameVersion v)
     {
         LittleEndian::convertFrom<u16>(data + 0x46,
-            (u16)((LittleEndian::convertTo<u16>(data + 0x46) & ~0x780) | ((u8(v) & 0xF) << 7)));
+            u16((LittleEndian::convertTo<u16>(data + 0x46) & ~0x780) | ((u8(v) & 0xF) << 7)));
     }
 
     Ball PK3::ball(void) const
@@ -321,7 +321,7 @@ namespace pksm
     void PK3::ball(Ball v)
     {
         LittleEndian::convertFrom<u16>(data + 0x46,
-            (u16)((LittleEndian::convertTo<u16>(data + 0x46) & ~0x7800) | ((u16(v) & 0xF) << 11)));
+            u16((LittleEndian::convertTo<u16>(data + 0x46) & ~0x7800) | ((u16(v) & 0xF) << 11)));
     }
 
     Gender PK3::otGender(void) const
@@ -331,13 +331,13 @@ namespace pksm
     void PK3::otGender(Gender v)
     {
         LittleEndian::convertFrom<u16>(data + 0x46,
-            (u16)((LittleEndian::convertTo<u16>(data + 0x46) & ~(1 << 15)) | ((u8(v) & 1) << 15)));
+            u16((LittleEndian::convertTo<u16>(data + 0x46) & ~(1 << 15)) | ((u8(v) & 1) << 15)));
     }
 
     u8 PK3::iv(Stat stat) const
     {
         u32 buffer = LittleEndian::convertTo<u32>(data + 0x48);
-        return (u8)((buffer >> 5 * u8(stat)) & 0x1F);
+        return u8((buffer >> 5 * u8(stat)) & 0x1F);
     }
     void PK3::iv(Stat stat, u8 v)
     {
@@ -351,8 +351,8 @@ namespace pksm
     void PK3::egg(bool v)
     {
         LittleEndian::convertFrom<u32>(
-            data + 0x48, (u32)((LittleEndian::convertTo<u32>(data + 0x48) & ~0x40000000) |
-                               (u32)(v ? 0x40000000 : 0)));
+            data + 0x48, u32((LittleEndian::convertTo<u32>(data + 0x48) & ~0x40000000) |
+                             (u32)(v ? 0x40000000 : 0)));
         flagIsEgg(v);
         if (v)
         {
@@ -409,7 +409,7 @@ namespace pksm
     void PK3::fatefulEncounter(bool v)
     {
         LittleEndian::convertFrom<u32>(data + 0x4C,
-            (LittleEndian::convertTo<u32>(data + 0x4C) & ~(1u << 31)) | (u32)(v ? 1u << 31 : 0));
+            (LittleEndian::convertTo<u32>(data + 0x4C) & ~(1u << 31)) | (v ? 1u << 31 : 0));
     }
 
     int PK3::partyLevel() const

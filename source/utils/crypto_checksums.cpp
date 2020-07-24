@@ -72,11 +72,11 @@ namespace pksm::crypto
         u16 crc = 0xFFFF;
         for (u32 i = 0; i < len; i++)
         {
-            crc ^= (u16)(buf[i] << 8);
+            crc ^= buf[i] << 8;
             for (u32 j = 0; j < 0x8; j++)
             {
                 if ((crc & 0x8000) > 0)
-                    crc = (u16)((crc << 1) ^ 0x1021);
+                    crc = (crc << 1) ^ 0x1021;
                 else
                     crc <<= 1;
             }

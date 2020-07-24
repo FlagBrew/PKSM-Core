@@ -123,7 +123,7 @@ namespace pksm
         int dexSeen(void) const override;
         int dexCaught(void) const override;
         int currentGiftAmount(void) const override { return 0; } // Data not stored
-        void mysteryGift(WCX& wc, int& pos) override;
+        void mysteryGift(const WCX& wc, int& pos) override;
         std::unique_ptr<WCX> mysteryGift(
             int pos) const override; // Always returns null: Data not stored
         void cryptBoxData(bool crypted) override;

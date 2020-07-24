@@ -99,9 +99,9 @@ namespace pksm
 
     void PGF::year(int v) { LittleEndian::convertFrom<u16>(data + 0xAE, v); }
 
-    void PGF::month(int v) { data[0xAD] = (u8)v; }
+    void PGF::month(int v) { data[0xAD] = static_cast<u8>(v); }
 
-    void PGF::day(int v) { data[0xAC] = (u8)v; }
+    void PGF::day(int v) { data[0xAC] = static_cast<u8>(v); }
 
     bool PGF::item(void) const { return type() == 2; }
 

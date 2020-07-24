@@ -441,7 +441,7 @@ namespace pksm
             case GameVersion::GE:
             case GameVersion::SW:
             case GameVersion::SH:
-                return (u32)(SID() << 16 | TID()) % 1000000;
+                return u32(SID() << 16 | TID()) % 1000000;
         }
     }
     u32 PKX::versionSID() const
@@ -458,7 +458,7 @@ namespace pksm
             case GameVersion::GE:
             case GameVersion::SW:
             case GameVersion::SH:
-                return (u32)(SID() << 16 | TID()) / 1000000;
+                return u32(SID() << 16 | TID()) / 1000000;
         }
     }
 
@@ -474,7 +474,7 @@ namespace pksm
             case Generation::SEVEN:
             case Generation::LGPE:
             case Generation::EIGHT:
-                return (u32)(SID() << 16 | TID()) % 1000000;
+                return u32(SID() << 16 | TID()) % 1000000;
             case Generation::UNUSED:
             case Generation::ONE:
             case Generation::TWO:
@@ -494,7 +494,7 @@ namespace pksm
             case Generation::SEVEN:
             case Generation::LGPE:
             case Generation::EIGHT:
-                return (u32)(SID() << 16 | TID()) / 1000000;
+                return u32(SID() << 16 | TID()) / 1000000;
             case Generation::UNUSED:
             case Generation::ONE:
             case Generation::TWO:

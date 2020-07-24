@@ -144,13 +144,13 @@ namespace pksm
     void PB7::nature(Nature v) { data[0x1C] = u8(v); }
 
     bool PB7::fatefulEncounter(void) const { return (data[0x1D] & 1) == 1; }
-    void PB7::fatefulEncounter(bool v) { data[0x1D] = (u8)((data[0x1D] & ~0x01) | (v ? 1 : 0)); }
+    void PB7::fatefulEncounter(bool v) { data[0x1D] = (data[0x1D] & ~0x01) | (v ? 1 : 0); }
 
     Gender PB7::gender(void) const { return Gender{u8((data[0x1D] >> 1) & 0x3)}; }
-    void PB7::gender(Gender v) { data[0x1D] = u8((data[0x1D] & ~0x06) | (u8(v) << 1)); }
+    void PB7::gender(Gender v) { data[0x1D] = (data[0x1D] & ~0x06) | (u8(v) << 1); }
 
     u16 PB7::alternativeForm(void) const { return data[0x1D] >> 3; }
-    void PB7::alternativeForm(u16 v) { data[0x1D] = u8((data[0x1D] & 0x07) | (v << 3)); }
+    void PB7::alternativeForm(u16 v) { data[0x1D] = (data[0x1D] & 0x07) | (v << 3); }
 
     u8 PB7::ev(Stat ev) const { return data[0x1E + u8(ev)]; }
     void PB7::ev(Stat ev, u8 v) { data[0x1E + u8(ev)] = v; }
@@ -165,10 +165,10 @@ namespace pksm
     void PB7::pkrs(u8 v) { data[0x2B] = v; }
 
     u8 PB7::pkrsDays(void) const { return data[0x2B] & 0xF; };
-    void PB7::pkrsDays(u8 v) { data[0x2B] = (u8)((data[0x2B] & ~0xF) | v); }
+    void PB7::pkrsDays(u8 v) { data[0x2B] = (data[0x2B] & ~0xF) | v; }
 
     u8 PB7::pkrsStrain(void) const { return data[0x2B] >> 4; };
-    void PB7::pkrsStrain(u8 v) { data[0x2B] = (u8)((data[0x2B] & 0xF) | v << 4); }
+    void PB7::pkrsStrain(u8 v) { data[0x2B] = (data[0x2B] & 0xF) | (v << 4); }
 
     std::string PB7::nickname(void) const { return StringUtils::getString(data, 0x40, 12); }
     void PB7::nickname(const std::string_view& v) { StringUtils::setString(data, v, 0x40, 12); }
@@ -188,7 +188,7 @@ namespace pksm
     u8 PB7::iv(Stat stat) const
     {
         u32 buffer = LittleEndian::convertTo<u32>(data + 0x74);
-        return (u8)((buffer >> 5 * u8(stat)) & 0x1F);
+        return u8((buffer >> 5 * u8(stat)) & 0x1F);
     }
 
     void PB7::iv(Stat stat, u8 v)
@@ -206,7 +206,7 @@ namespace pksm
     void PB7::egg(bool v)
     {
         LittleEndian::convertFrom<u32>(data + 0x74,
-            (LittleEndian::convertTo<u32>(data + 0x74) & ~0x40000000) | (u32)(v ? 0x40000000 : 0));
+            (LittleEndian::convertTo<u32>(data + 0x74) & ~0x40000000u) | (v ? 0x40000000u : 0u));
     }
 
     bool PB7::nicknamed(void) const
@@ -216,7 +216,7 @@ namespace pksm
     void PB7::nicknamed(bool v)
     {
         LittleEndian::convertFrom<u32>(data + 0x74,
-            (LittleEndian::convertTo<u32>(data + 0x74) & 0x7FFFFFFF) | (v ? 0x80000000 : 0));
+            (LittleEndian::convertTo<u32>(data + 0x74) & 0x7FFFFFFFu) | (v ? 0x80000000u : 0u));
     }
 
     std::string PB7::htName(void) const { return StringUtils::getString(data, 0x78, 12); }
@@ -319,8 +319,8 @@ namespace pksm
     }
     void PB7::hyperTrain(Stat stat, bool v)
     {
-        data[0xDE] = (u8)((data[0xDE] & ~(1 << hyperTrainLookup[size_t(stat)])) |
-                          (v ? 1 << hyperTrainLookup[size_t(stat)] : 0));
+        data[0xDE] = (data[0xDE] & ~(1 << hyperTrainLookup[size_t(stat)])) |
+                     (v ? 1 << hyperTrainLookup[size_t(stat)] : 0);
     }
 
     GameVersion PB7::version(void) const { return GameVersion(data[0xDF]); }
@@ -596,10 +596,10 @@ namespace pksm
             awake += awakened(Stat(i));
         }
 
-        base = (u16)((float)(base * 6 * level()) / 100.0f);
+        base = u16((float)(base * 6 * level()) / 100.0f);
 
         double modifier = level() / 100.0 + 2.0;
-        awake           = (u16)modifier * awake;
+        awake           = u16(modifier) * awake;
         return std::min(10000, base + awake);
     }
 

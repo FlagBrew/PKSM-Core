@@ -150,31 +150,34 @@ namespace pksm
 
     void Sav7::trade(PKX& pk, const Date& date) const
     {
-        PK7* pk7 = (PK7*)&pk;
-        if (pk7->egg())
+        if (pk.generation() == Generation::SEVEN)
         {
-            if (otName() != pk7->otName() || TID() != pk7->TID() || SID() != pk7->SID() ||
-                gender() != pk7->otGender())
+            PK7& pk7 = reinterpret_cast<PK7&>(pk);
+            if (pk7.egg())
             {
-                pk7->metLocation(30002);
-                pk7->metDate(date);
+                if (otName() != pk7.otName() || TID() != pk7.TID() || SID() != pk7.SID() ||
+                    gender() != pk7.otGender())
+                {
+                    pk7.metLocation(30002);
+                    pk7.metDate(date);
+                }
             }
-        }
-        else if (otName() == pk7->otName() && TID() == pk7->TID() && SID() == pk7->SID() &&
-                 gender() == pk7->otGender())
-        {
-            pk7->currentHandler(0);
-        }
-        else
-        {
-            if (pk7->htName() != otName())
+            else if (otName() == pk7.otName() && TID() == pk7.TID() && SID() == pk7.SID() &&
+                     gender() == pk7.otGender())
             {
-                pk7->htFriendship(pk7->baseFriendship());
-                pk7->htAffection(0);
-                pk7->htName(otName());
+                pk7.currentHandler(0);
             }
-            pk7->currentHandler(1);
-            pk7->htGender(gender());
+            else
+            {
+                if (pk7.htName() != otName())
+                {
+                    pk7.htFriendship(pk7.baseFriendship());
+                    pk7.htAffection(0);
+                    pk7.htName(otName());
+                }
+                pk7.currentHandler(1);
+                pk7.htGender(gender());
+            }
         }
     }
 
@@ -205,13 +208,13 @@ namespace pksm
         int bm1          = baseSpecies & 7;
 
         int brSeen = shift * brSize;
-        data[ofs + brSeen + bd] |= (u8)(1 << bm);
+        data[ofs + brSeen + bd] |= 1 << bm;
 
         bool displayed = false;
         for (u8 i = 0; i < 4; i++)
         {
             int brDisplayed = (4 + i) * brSize;
-            displayed |= (data[ofs + brDisplayed + bd1] & (u8)(1 << bm1)) != 0;
+            displayed |= (data[ofs + brDisplayed + bd1] & (1 << bm1)) != 0;
         }
 
         if (!displayed && baseSpecies != index)
@@ -219,13 +222,13 @@ namespace pksm
             for (u8 i = 0; i < 4; i++)
             {
                 int brDisplayed = (4 + i) * brSize;
-                displayed |= (data[ofs + brDisplayed + bd] & (u8)(1 << bm)) != 0;
+                displayed |= (data[ofs + brDisplayed + bd] & (1 << bm)) != 0;
             }
         }
         if (displayed)
             return;
 
-        data[ofs + (4 + shift) * brSize + bd] |= (u8)(1 << bm);
+        data[ofs + (4 + shift) * brSize + bd] |= (1 << bm);
     }
 
     int Sav7::getDexFlags(int index, int baseSpecies) const
@@ -240,11 +243,11 @@ namespace pksm
 
         for (u8 i = 0; i < 4; i++)
         {
-            if (data[ofs + i * brSize + bd] & (u8)(1 << bm))
+            if (data[ofs + i * brSize + bd] & (1 << bm))
             {
                 ret++;
             }
-            if (data[ofs + i * brSize + bd1] & (u8)(1 << bm1))
+            if (data[ofs + i * brSize + bd1] & (1 << bm1))
             {
                 ret++;
             }
@@ -343,7 +346,7 @@ namespace pksm
         }
 
         int off = PokeDex + 0x08 + 0x80;
-        data[off + bd] |= (u8)(1 << bm);
+        data[off + bd] |= 1 << bm;
 
         int formstart = pk.alternativeForm();
         int formend   = formstart;
@@ -383,7 +386,7 @@ namespace pksm
                 lang = 1;
             int lbit = bit * langCount + lang;
             if (lbit >> 3 < 920)
-                data[PokeDexLanguageFlags + (lbit >> 3)] |= (u8)(1 << (lbit & 7));
+                data[PokeDexLanguageFlags + (lbit >> 3)] |= (1 << (lbit & 7));
         }
     }
 
@@ -432,13 +435,12 @@ namespace pksm
         return ret;
     }
 
-    void Sav7::mysteryGift(WCX& wc, int& pos)
+    void Sav7::mysteryGift(const WCX& wc, int& pos)
     {
         if (wc.generation() == Generation::SEVEN)
         {
-            WC7* wc7 = (WC7*)&wc;
-            data[WondercardFlags + wc7->ID() / 8] |= 0x1 << (wc7->ID() % 8);
-            std::copy(wc7->rawData(), wc7->rawData() + WC7::length,
+            data[WondercardFlags + wc.ID() / 8] |= 0x1 << (wc.ID() % 8);
+            std::copy(wc.rawData(), wc.rawData() + WC7::length,
                 &data[WondercardData + WC7::length * pos]);
             pos = (pos + 1) % maxWondercards();
         }
@@ -495,7 +497,7 @@ namespace pksm
 
     void Sav7::item(const Item& item, Pouch pouch, u16 slot)
     {
-        Item7 inject = (Item7)item;
+        Item7 inject = static_cast<Item7>(item);
         auto write   = inject.bytes();
         switch (pouch)
         {

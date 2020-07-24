@@ -191,36 +191,36 @@ namespace pksm
 
             constexpr bool operator<(const GameVersion_impl& other) const noexcept
             {
-                if ((Generation) * this == (Generation)other)
+                if (static_cast<Generation>(*this) == static_cast<Generation>(other))
                 {
                     return v < other.v;
                 }
-                return (Generation) * this < (Generation)other;
+                return static_cast<Generation>(*this) < static_cast<Generation>(other);
             }
             constexpr bool operator<=(const GameVersion_impl& other) const noexcept
             {
-                if ((Generation) * this == (Generation)other)
+                if (static_cast<Generation>(*this) == static_cast<Generation>(other))
                 {
                     return v <= other.v;
                 }
-                return (Generation) * this <= (Generation)other;
+                return static_cast<Generation>(*this) <= static_cast<Generation>(other);
             }
 
             constexpr bool operator>(const GameVersion_impl& other) const noexcept
             {
-                if ((Generation) * this == (Generation)other)
+                if (static_cast<Generation>(*this) == static_cast<Generation>(other))
                 {
                     return v > other.v;
                 }
-                return (Generation) * this > (Generation)other;
+                return static_cast<Generation>(*this) > static_cast<Generation>(other);
             }
             constexpr bool operator>=(const GameVersion_impl& other) const noexcept
             {
-                if ((Generation) * this == (Generation)other)
+                if (static_cast<Generation>(*this) == static_cast<Generation>(other))
                 {
                     return v >= other.v;
                 }
-                return (Generation) * this >= (Generation)other;
+                return static_cast<Generation>(*this) >= static_cast<Generation>(other);
             }
 
             constexpr bool operator==(const GameVersion_impl& other) const noexcept
@@ -253,8 +253,11 @@ namespace pksm
             static_assert(std::is_integral_v<T>);
             return T(impl);
         }
-        constexpr explicit operator pksm::Generation() const noexcept { return (Generation)impl; }
-        constexpr operator EnumType() const noexcept { return (EnumType)impl; }
+        constexpr explicit operator pksm::Generation() const noexcept
+        {
+            return static_cast<Generation>(impl);
+        }
+        constexpr operator EnumType() const noexcept { return static_cast<EnumType>(impl); }
 
         static constexpr GameVersion newestVersion(const Generation& gen) noexcept
         {

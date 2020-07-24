@@ -65,7 +65,7 @@ namespace pksm
         u16 formStatIndex(u16 species)
         {
             return LittleEndian::convertTo<u16>(
-                (u8*)personal_lgpe + species * personal_lgpe_entrysize + 0xE);
+                personal_lgpe + species * personal_lgpe_entrysize + 0xE);
         }
         u8 formCount(u16 species)
         {
@@ -126,7 +126,7 @@ namespace pksm
         u16 formStatIndex(u16 species)
         {
             return LittleEndian::convertTo<u16>(
-                (u8*)personal_smusum + species * personal_smusum_entrysize + 0xE);
+                personal_smusum + species * personal_smusum_entrysize + 0xE);
         }
         u8 formCount(u16 species)
         {
@@ -187,7 +187,7 @@ namespace pksm
         u16 formStatIndex(u16 species)
         {
             return LittleEndian::convertTo<u16>(
-                (u8*)personal_xyoras + species * personal_xyoras_entrysize + 0xE);
+                personal_xyoras + species * personal_xyoras_entrysize + 0xE);
         }
         u8 formCount(u16 species)
         {
@@ -248,7 +248,7 @@ namespace pksm
         u16 formStatIndex(u16 species)
         {
             return LittleEndian::convertTo<u16>(
-                (u8*)personal_bwb2w2 + species * personal_bwb2w2_entrysize + 0xE);
+                personal_bwb2w2 + species * personal_bwb2w2_entrysize + 0xE);
         }
         u8 formCount(u16 species)
         {
@@ -321,7 +321,7 @@ namespace pksm
         u16 formStatIndex(u16 species)
         {
             return LittleEndian::convertTo<u16>(
-                (u8*)personal_dppthgss + species * personal_dppthgss_entrysize + 0xD);
+                personal_dppthgss + species * personal_dppthgss_entrysize + 0xD);
         }
         // Normalized to fit with other formCounts' return values
         u8 formCount(u16 species)
@@ -368,27 +368,27 @@ namespace pksm
         Ability ability(u16 species, u8 n)
         {
             return Ability{LittleEndian::convertTo<u16>(
-                (u8*)personal_swsh + species * personal_swsh_entrysize + 0xC + 2 * n)};
+                personal_swsh + species * personal_swsh_entrysize + 0xC + 2 * n)};
         }
         u16 formStatIndex(u16 species)
         {
             return LittleEndian::convertTo<u16>(
-                (u8*)personal_swsh + species * personal_swsh_entrysize + 0x12);
+                personal_swsh + species * personal_swsh_entrysize + 0x12);
         }
         u16 pokedexIndex(u16 species)
         {
             return LittleEndian::convertTo<u16>(
-                (u8*)personal_swsh + species * personal_swsh_entrysize + 0x14);
+                personal_swsh + species * personal_swsh_entrysize + 0x14);
         }
         u16 armordexIndex(u16 species)
         {
             return LittleEndian::convertTo<u16>(
-                (u8*)personal_swsh + species * personal_swsh_entrysize + 0x16);
+                personal_swsh + species * personal_swsh_entrysize + 0x16);
         }
         u16 crowndexIndex(u16 species)
         {
             return LittleEndian::convertTo<u16>(
-                (u8*)personal_swsh + species + personal_swsh_entrysize + 0x18);
+                personal_swsh + species + personal_swsh_entrysize + 0x18);
         }
         bool canLearnTR(u16 species, u8 trID)
         {

@@ -63,8 +63,8 @@ namespace pksm
     Item::operator Item7() const
     {
         Item7 ret;
-        ret.id(std::min((int)id(), 0x3FF));
-        ret.count(std::min((int)count(), 0x3FF));
+        ret.id(std::min<u16>(id(), 0x3FF));
+        ret.count(std::min<u16>(count(), 0x3FF));
         ret.freeSpaceIndex(0);
         ret.newFlag(false);
         ret.reserved(false);
@@ -74,8 +74,8 @@ namespace pksm
     Item::operator Item7b() const
     {
         Item7b ret;
-        ret.id(std::min((int)id(), 0x7FFF));
-        ret.count(std::min((int)count(), 0x7FFF));
+        ret.id(std::min<u16>(id(), 0x7FFF));
+        ret.count(std::min<u16>(count(), 0x7FFF));
         ret.newFlag(false);
         ret.reserved(false);
         return ret;
@@ -84,8 +84,8 @@ namespace pksm
     Item::operator Item8() const
     {
         Item8 ret;
-        ret.id(std::min((int)id(), 0x7FFF));
-        ret.count(std::min((int)count(), 0x7FFF));
+        ret.id(std::min<u16>(id(), 0x7FFF));
+        ret.count(std::min<u16>(count(), 0x7FFF));
         ret.newFlag(false);
         ret.reserved(false);
         return ret;
@@ -114,8 +114,8 @@ namespace pksm
     Item7b::operator Item7() const
     {
         Item7 ret;
-        ret.id(std::min((int)id(), 0x3FF));
-        ret.count(std::min((int)count(), 0x3FF));
+        ret.id(std::min<u16>(id(), 0x3FF));
+        ret.count(std::min<u16>(count(), 0x3FF));
         ret.freeSpaceIndex(0);
         ret.newFlag(newFlag());
         ret.reserved(reserved());
@@ -135,8 +135,8 @@ namespace pksm
     Item8::operator Item7() const
     {
         Item7 ret;
-        ret.id(std::min((int)id(), 0x3FF));
-        ret.count(std::min((int)count(), 0x3FF));
+        ret.id(std::min<u16>(id(), 0x3FF));
+        ret.count(std::min<u16>(count(), 0x3FF));
         ret.freeSpaceIndex(0);
         ret.newFlag(newFlag());
         ret.reserved(reserved());

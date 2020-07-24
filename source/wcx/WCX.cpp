@@ -40,7 +40,7 @@ namespace pksm
             case Generation::SEVEN:
             case Generation::LGPE:
             case Generation::EIGHT:
-                return (u32)(SID() << 16 | TID()) % 1000000;
+                return u32(SID() << 16 | TID()) % 1000000;
             case Generation::UNUSED:
             case Generation::ONE:
             case Generation::TWO:
@@ -61,7 +61,7 @@ namespace pksm
             case Generation::SEVEN:
             case Generation::LGPE:
             case Generation::EIGHT:
-                return (u32)(SID() << 16 | TID()) / 1000000;
+                return u32(SID() << 16 | TID()) / 1000000;
             case Generation::UNUSED:
             case Generation::ONE:
             case Generation::TWO:

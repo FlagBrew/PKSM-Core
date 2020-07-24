@@ -381,7 +381,7 @@ namespace pksm
     u8 PK4::iv(Stat stat) const
     {
         u32 buffer = LittleEndian::convertTo<u32>(data + 0x38);
-        return (u8)((buffer >> 5 * u8(stat)) & 0x1F);
+        return u8((buffer >> 5 * u8(stat)) & 0x1F);
     }
 
     void PK4::iv(Stat stat, u8 v)
@@ -399,8 +399,8 @@ namespace pksm
     void PK4::egg(bool v)
     {
         LittleEndian::convertFrom<u32>(
-            data + 0x38, (u32)((LittleEndian::convertTo<u32>(data + 0x38) & ~0x40000000) |
-                               (u32)(v ? 0x40000000 : 0)));
+            data + 0x38, u32((LittleEndian::convertTo<u32>(data + 0x38) & ~0x40000000u) |
+                             (v ? 0x40000000u : 0)));
     }
 
     bool PK4::nicknamed(void) const
@@ -414,12 +414,12 @@ namespace pksm
     }
 
     bool PK4::fatefulEncounter(void) const { return (data[0x40] & 1) == 1; }
-    void PK4::fatefulEncounter(bool v) { data[0x40] = (u8)((data[0x40] & ~0x01) | (v ? 1 : 0)); }
+    void PK4::fatefulEncounter(bool v) { data[0x40] = (data[0x40] & ~0x01) | (v ? 1 : 0); }
 
     Gender PK4::gender(void) const { return Gender{u8((data[0x40] >> 1) & 0x3)}; }
     void PK4::gender(Gender g)
     {
-        data[0x40] = u8((data[0x40] & ~0x06) | (u8(g) << 1));
+        data[0x40] = (data[0x40] & ~0x06) | (u8(g) << 1);
         if (shiny())
         {
             do
@@ -439,7 +439,7 @@ namespace pksm
     }
 
     u16 PK4::alternativeForm(void) const { return data[0x40] >> 3; }
-    void PK4::alternativeForm(u16 v) { data[0x40] = u8((data[0x40] & 0x07) | (v << 3)); }
+    void PK4::alternativeForm(u16 v) { data[0x40] = (data[0x40] & 0x07) | (v << 3); }
 
     Nature PK4::nature(void) const { return Nature{u8(PID() % 25)}; }
     void PK4::nature(Nature v)

@@ -263,8 +263,9 @@ namespace pksm
 
     void Sav4::trade(PKX& pk, const Date& date) const
     {
-        if (pk.egg() && (otName() != pk.otName() || TID() != pk.TID() || SID() != pk.SID() ||
-                            gender() != pk.otGender()))
+        if (pk.generation() == Generation::FOUR && pk.egg() &&
+            (otName() != pk.otName() || TID() != pk.TID() || SID() != pk.SID() ||
+                gender() != pk.otGender()))
         {
             pk.metLocation(2002);
             pk.metDate(date);
@@ -295,14 +296,13 @@ namespace pksm
         data[gbo + 72] |= v ? 1 : 0;
     }
 
-    void Sav4::mysteryGift(WCX& wc, int& pos)
+    void Sav4::mysteryGift(const WCX& wc, int& pos)
     {
         if (wc.generation() == Generation::FOUR)
         {
             giftsMenuActivated(true);
-            PGT* pgt                            = (PGT*)&wc;
             data[WondercardFlags + (2047 >> 3)] = 0x80;
-            std::copy(pgt->rawData(), pgt->rawData() + PGT::length,
+            std::copy(wc.rawData(), wc.rawData() + PGT::length,
                 &data[WondercardData + pos * PGT::length]);
             pos++;
             if (game == Game::DP)
@@ -374,7 +374,7 @@ namespace pksm
 
         static constexpr int brSize = 0x40;
         int bit                     = u16(pk.species()) - 1;
-        u8 mask                     = (u8)(1 << (bit & 7));
+        u8 mask                     = 1u << (bit & 7);
         int ofs                     = PokeDex + (bit >> 3) + 0x4;
 
         /* 4 BitRegions with 0x40*8 bits
@@ -436,7 +436,7 @@ namespace pksm
                     if (val != 0xFF)
                         continue; // keep searching
 
-                    data[formOffset + 4 + i] = (u8)pk.alternativeForm();
+                    data[formOffset + 4 + i] = u8(pk.alternativeForm());
                     break; // form now set
                 }
             }
@@ -571,8 +571,8 @@ namespace pksm
         static constexpr u8 brSize = 0x40;
         if (species == Species::Deoxys)
         {
-            u32 val = (u32)data[PokeDex + 0x4 + 1 * brSize - 1] |
-                      data[PokeDex + 0x4 + 2 * brSize - 1] << 8;
+            u32 val =
+                data[PokeDex + 0x4 + 1 * brSize - 1] | (data[PokeDex + 0x4 + 2 * brSize - 1] << 8);
             return getDexFormValues(val, 4, 4);
         }
 
@@ -629,7 +629,7 @@ namespace pksm
         u8 n1 = 0xFF >> (8 - bitsPerForm);
         for (int i = 0; i < readCt; i++)
         {
-            u8 val   = (u8)(v >> (i * bitsPerForm)) & n1;
+            u8 val   = (v >> (i * bitsPerForm)) & n1;
             forms[i] = n1 == val && bitsPerForm > 1 ? 255 : val;
         }
 
@@ -647,24 +647,24 @@ namespace pksm
         if (species == Species::Deoxys)
         {
             u32 newval                           = setDexFormValues(forms, 4, 4);
-            data[PokeDex + 0x4 + 1 * brSize - 1] = (u8)(newval & 0xFF);
-            data[PokeDex + 0x4 + 2 * brSize - 1] = (u8)((newval >> 8) & 0xFF);
+            data[PokeDex + 0x4 + 1 * brSize - 1] = newval & 0xFF;
+            data[PokeDex + 0x4 + 2 * brSize - 1] = (newval >> 8) & 0xFF;
         }
 
         int formOffset = PokeDex + 4 + 4 * brSize + 4;
         switch (species)
         {
             case Species::Shellos:
-                data[formOffset + 0] = (u8)setDexFormValues(forms, 1, 2);
+                data[formOffset + 0] = u8(setDexFormValues(forms, 1, 2));
                 return;
             case Species::Gastrodon:
-                data[formOffset + 1] = (u8)setDexFormValues(forms, 1, 2);
+                data[formOffset + 1] = u8(setDexFormValues(forms, 1, 2));
                 return;
             case Species::Burmy:
-                data[formOffset + 2] = (u8)setDexFormValues(forms, 2, 3);
+                data[formOffset + 2] = u8(setDexFormValues(forms, 2, 3));
                 return;
             case Species::Wormadam:
-                data[formOffset + 3] = (u8)setDexFormValues(forms, 2, 3);
+                data[formOffset + 3] = u8(setDexFormValues(forms, 2, 3));
                 return;
             case Species::Unown:
             {
@@ -729,7 +729,7 @@ namespace pksm
             if (val == 255)
                 val = n1;
 
-            v |= (u32)(val << (bitsPerForm * i));
+            v |= u32(val << (bitsPerForm * i));
         }
         return v;
     }
@@ -766,7 +766,7 @@ namespace pksm
 
     void Sav4::item(const Item& item, Pouch pouch, u16 slot)
     {
-        Item4 inject = (Item4)item;
+        Item4 inject = static_cast<Item4>(item);
         auto write   = inject.bytes();
         switch (pouch)
         {

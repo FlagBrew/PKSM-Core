@@ -122,7 +122,7 @@ namespace pksm
         int currentGiftAmount(void) const override;
         bool giftsMenuActivated(void) const;
         void giftsMenuActivated(bool v);
-        void mysteryGift(WCX& wc, int& pos) override;
+        void mysteryGift(const WCX& wc, int& pos) override;
         std::unique_ptr<WCX> mysteryGift(int pos) const override;
         void cryptBoxData(bool crypted) override;
         std::string boxName(u8 box) const override;

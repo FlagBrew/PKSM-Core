@@ -35,6 +35,6 @@ bool pksm::FlagUtil::getFlag(const u8* data, int offset, int bitIndex)
 void pksm::FlagUtil::setFlag(u8* data, int offset, int bitIndex, bool v)
 {
     bitIndex &= 7; // ensure bit access is 0-7
-    data[offset] &= (u8) ~(1 << bitIndex);
-    data[offset] |= (u8)((v ? 1 : 0) << bitIndex);
+    data[offset] &= ~(1 << bitIndex);
+    data[offset] |= (v ? 1 : 0) << bitIndex;
 }

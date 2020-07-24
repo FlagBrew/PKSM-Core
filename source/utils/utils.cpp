@@ -420,7 +420,7 @@ std::u16string StringUtils::getU16String(const u8* data, int ofs, int len, char1
 
 std::string StringUtils::getString(const u8* data, int ofs, int len, char16_t term)
 {
-    return utf16DataToUtf8((char16_t*)(data + ofs), len, term);
+    return utf16DataToUtf8(reinterpret_cast<char16_t*>(data + ofs), len, term);
 }
 
 void StringUtils::setString(

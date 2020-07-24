@@ -296,7 +296,7 @@ namespace pksm
 
     void SavSWSH::item(const Item& item, Pouch pouch, u16 slot)
     {
-        Item8 item8 = (Item8)item;
+        Item8 item8 = static_cast<Item8>(item);
         auto write  = item.bytes();
         switch (pouch)
         {
@@ -558,12 +558,12 @@ namespace pksm
         }
     }
 
-    void SavSWSH::mysteryGift(WCX& wc, int&)
+    void SavSWSH::mysteryGift(const WCX& wc, int&)
     {
         if (wc.generation() == Generation::EIGHT)
         {
-            WC8* wc8 = (WC8*)&wc;
-            if (wc8->pokemon())
+            const WC8& wc8 = reinterpret_cast<const WC8&>(wc);
+            if (wc8.pokemon())
             {
                 int injectPosition = 0;
                 for (injectPosition = 0; injectPosition < maxSlot(); injectPosition++)
@@ -582,27 +582,27 @@ namespace pksm
 
                 auto pk8 = PKX::getPKM<Generation::EIGHT>(nullptr, false);
 
-                pk8->encryptionConstant(wc8->encryptionConstant()
-                                            ? wc8->encryptionConstant()
+                pk8->encryptionConstant(wc8.encryptionConstant()
+                                            ? wc8.encryptionConstant()
                                             : pksm::randomNumber(0, 0xFFFFFFFF));
-                pk8->TID(wc8->TID());
-                pk8->SID(wc8->SID());
-                pk8->species(wc8->species());
-                pk8->alternativeForm(wc8->alternativeForm());
-                pk8->level(wc8->level() ? wc8->level() : pksm::randomNumber(1, 100));
-                pk8->ball(wc8->ball() ? wc8->ball() : Ball::Poke);
-                pk8->metLevel(wc8->metLevel() ? wc8->metLevel() : pk8->level());
-                pk8->heldItem(wc8->heldItem());
+                pk8->TID(wc8.TID());
+                pk8->SID(wc8.SID());
+                pk8->species(wc8.species());
+                pk8->alternativeForm(wc8.alternativeForm());
+                pk8->level(wc8.level() ? wc8.level() : pksm::randomNumber(1, 100));
+                pk8->ball(wc8.ball() ? wc8.ball() : Ball::Poke);
+                pk8->metLevel(wc8.metLevel() ? wc8.metLevel() : pk8->level());
+                pk8->heldItem(wc8.heldItem());
 
                 for (size_t move = 0; move < 4; move++)
                 {
-                    pk8->move(move, wc8->move(move));
-                    pk8->relearnMove(wc8->relearnMove(move));
+                    pk8->move(move, wc8.move(move));
+                    pk8->relearnMove(wc8.relearnMove(move));
                 }
 
-                pk8->version(wc8->version() != GameVersion::INVALID ? wc8->version() : version());
+                pk8->version(wc8.version() != GameVersion::INVALID ? wc8.version() : version());
 
-                std::string wcOT = wc8->otName(language());
+                std::string wcOT = wc8.otName(language());
                 if (wcOT.empty())
                 {
                     pk8->otName(otName());
@@ -611,33 +611,32 @@ namespace pksm
                 else
                 {
                     pk8->otName(wcOT);
-                    pk8->otGender(
-                        wc8->otGender() < Gender::Genderless ? wc8->otGender() : gender());
+                    pk8->otGender(wc8.otGender() < Gender::Genderless ? wc8.otGender() : gender());
                     pk8->htName(otName());
                     pk8->htGender(gender());
                     pk8->htLanguage(language());
                     pk8->currentHandler(1);
                 }
 
-                pk8->otIntensity(wc8->otIntensity());
-                pk8->otMemory(wc8->otMemory());
-                pk8->otTextVar(wc8->otTextvar());
-                pk8->otFeeling(wc8->otFeeling());
+                pk8->otIntensity(wc8.otIntensity());
+                pk8->otMemory(wc8.otMemory());
+                pk8->otTextVar(wc8.otTextvar());
+                pk8->otFeeling(wc8.otFeeling());
                 pk8->fatefulEncounter(true);
 
                 for (Stat stat :
                     {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF})
                 {
-                    pk8->ev(stat, wc8->ev(stat));
+                    pk8->ev(stat, wc8.ev(stat));
                 }
 
-                pk8->canGiga(wc8->canGigantamax());
-                pk8->dynamaxLevel(wc8->dynamaxLevel());
+                pk8->canGiga(wc8.canGigantamax());
+                pk8->dynamaxLevel(wc8.dynamaxLevel());
 
-                pk8->metLocation(wc8->metLocation());
-                pk8->eggLocation(wc8->eggLocation());
+                pk8->metLocation(wc8.metLocation());
+                pk8->eggLocation(wc8.eggLocation());
 
-                if (wc8->otGender() >= Gender::Genderless)
+                if (wc8.otGender() >= Gender::Genderless)
                 {
                     pk8->TID(TID());
                     pk8->SID(SID());
@@ -650,7 +649,7 @@ namespace pksm
 
                 pk8->metDate(Date::today());
 
-                Language nickLang = wc8->nicknameLanguage(language());
+                Language nickLang = wc8.nicknameLanguage(language());
                 if (nickLang != Language(0))
                 {
                     pk8->language(nickLang);
@@ -660,110 +659,47 @@ namespace pksm
                     pk8->language(language());
                 }
 
-                pk8->nicknamed(wc8->nicknamed(pk8->language()));
-                pk8->nickname(pk8->nicknamed() ? wc8->nickname(pk8->language())
+                pk8->nicknamed(wc8.nicknamed(pk8->language()));
+                pk8->nickname(pk8->nicknamed() ? wc8.nickname(pk8->language())
                                                : pk8->species().localize(pk8->language()));
 
-                pk8->ribbon(Ribbon::ChampionKalos, wc8->ribbon(Ribbon::ChampionKalos));
-                pk8->ribbon(Ribbon::ChampionG3Hoenn, wc8->ribbon(Ribbon::ChampionG3Hoenn));
-                pk8->ribbon(Ribbon::ChampionSinnoh, wc8->ribbon(Ribbon::ChampionSinnoh));
-                pk8->ribbon(Ribbon::BestFriends, wc8->ribbon(Ribbon::BestFriends));
-                pk8->ribbon(Ribbon::Training, wc8->ribbon(Ribbon::Training));
-                pk8->ribbon(Ribbon::BattlerSkillful, wc8->ribbon(Ribbon::BattlerSkillful));
-                pk8->ribbon(Ribbon::BattlerExpert, wc8->ribbon(Ribbon::BattlerExpert));
-                pk8->ribbon(Ribbon::Effort, wc8->ribbon(Ribbon::Effort));
-                pk8->ribbon(Ribbon::Alert, wc8->ribbon(Ribbon::Alert));
-                pk8->ribbon(Ribbon::Shock, wc8->ribbon(Ribbon::Shock));
-                pk8->ribbon(Ribbon::Downcast, wc8->ribbon(Ribbon::Downcast));
-                pk8->ribbon(Ribbon::Careless, wc8->ribbon(Ribbon::Careless));
-                pk8->ribbon(Ribbon::Relax, wc8->ribbon(Ribbon::Relax));
-                pk8->ribbon(Ribbon::Snooze, wc8->ribbon(Ribbon::Snooze));
-                pk8->ribbon(Ribbon::Smile, wc8->ribbon(Ribbon::Smile));
-                pk8->ribbon(Ribbon::Gorgeous, wc8->ribbon(Ribbon::Gorgeous));
-                pk8->ribbon(Ribbon::Royal, wc8->ribbon(Ribbon::Royal));
-                pk8->ribbon(Ribbon::GorgeousRoyal, wc8->ribbon(Ribbon::GorgeousRoyal));
-                pk8->ribbon(Ribbon::Artist, wc8->ribbon(Ribbon::Artist));
-                pk8->ribbon(Ribbon::Footprint, wc8->ribbon(Ribbon::Footprint));
-                pk8->ribbon(Ribbon::Record, wc8->ribbon(Ribbon::Record));
-                pk8->ribbon(Ribbon::Legend, wc8->ribbon(Ribbon::Legend));
-                pk8->ribbon(Ribbon::Country, wc8->ribbon(Ribbon::Country));
-                pk8->ribbon(Ribbon::National, wc8->ribbon(Ribbon::National));
-                pk8->ribbon(Ribbon::Earth, wc8->ribbon(Ribbon::Earth));
-                pk8->ribbon(Ribbon::World, wc8->ribbon(Ribbon::World));
-                pk8->ribbon(Ribbon::Classic, wc8->ribbon(Ribbon::Classic));
-                pk8->ribbon(Ribbon::Premier, wc8->ribbon(Ribbon::Premier));
-                pk8->ribbon(Ribbon::Event, wc8->ribbon(Ribbon::Event));
-                pk8->ribbon(Ribbon::Birthday, wc8->ribbon(Ribbon::Birthday));
-                pk8->ribbon(Ribbon::Special, wc8->ribbon(Ribbon::Special));
-                pk8->ribbon(Ribbon::Souvenir, wc8->ribbon(Ribbon::Souvenir));
-                pk8->ribbon(Ribbon::Wishing, wc8->ribbon(Ribbon::Wishing));
-                pk8->ribbon(Ribbon::ChampionBattle, wc8->ribbon(Ribbon::ChampionBattle));
-                pk8->ribbon(Ribbon::ChampionRegional, wc8->ribbon(Ribbon::ChampionRegional));
-                pk8->ribbon(Ribbon::ChampionNational, wc8->ribbon(Ribbon::ChampionNational));
-                pk8->ribbon(Ribbon::ChampionWorld, wc8->ribbon(Ribbon::ChampionWorld));
-                pk8->ribbon(Ribbon::MemoryContest, wc8->ribbon(Ribbon::MemoryContest));
-                pk8->ribbon(Ribbon::MemoryBattle, wc8->ribbon(Ribbon::MemoryBattle));
-                pk8->ribbon(Ribbon::ChampionG6Hoenn, wc8->ribbon(Ribbon::ChampionG6Hoenn));
-                pk8->ribbon(Ribbon::ContestStar, wc8->ribbon(Ribbon::ContestStar));
-                pk8->ribbon(Ribbon::MasterCoolness, wc8->ribbon(Ribbon::MasterCoolness));
-                pk8->ribbon(Ribbon::MasterBeauty, wc8->ribbon(Ribbon::MasterBeauty));
-                pk8->ribbon(Ribbon::MasterCuteness, wc8->ribbon(Ribbon::MasterCuteness));
-                pk8->ribbon(Ribbon::MasterCleverness, wc8->ribbon(Ribbon::MasterCleverness));
-                pk8->ribbon(Ribbon::MasterToughness, wc8->ribbon(Ribbon::MasterToughness));
-                pk8->ribbon(Ribbon::ChampionAlola, wc8->ribbon(Ribbon::ChampionAlola));
-                pk8->ribbon(Ribbon::BattleRoyale, wc8->ribbon(Ribbon::BattleRoyale));
-                pk8->ribbon(Ribbon::BattleTreeGreat, wc8->ribbon(Ribbon::BattleTreeGreat));
-                pk8->ribbon(Ribbon::BattleTreeMaster, wc8->ribbon(Ribbon::BattleTreeMaster));
-                pk8->ribbon(Ribbon::ChampionGalar, wc8->ribbon(Ribbon::ChampionGalar));
-                pk8->ribbon(Ribbon::TowerMaster, wc8->ribbon(Ribbon::TowerMaster));
-                pk8->ribbon(Ribbon::MasterRank, wc8->ribbon(Ribbon::MasterRank));
-                pk8->ribbon(Ribbon::MarkLunchtime, wc8->ribbon(Ribbon::MarkLunchtime));
-                pk8->ribbon(Ribbon::MarkSleepyTime, wc8->ribbon(Ribbon::MarkSleepyTime));
-                pk8->ribbon(Ribbon::MarkDusk, wc8->ribbon(Ribbon::MarkDusk));
-                pk8->ribbon(Ribbon::MarkDawn, wc8->ribbon(Ribbon::MarkDawn));
-                pk8->ribbon(Ribbon::MarkCloudy, wc8->ribbon(Ribbon::MarkCloudy));
-                pk8->ribbon(Ribbon::MarkRainy, wc8->ribbon(Ribbon::MarkRainy));
-                pk8->ribbon(Ribbon::MarkStormy, wc8->ribbon(Ribbon::MarkStormy));
-                pk8->ribbon(Ribbon::MarkSnowy, wc8->ribbon(Ribbon::MarkSnowy));
-                pk8->ribbon(Ribbon::MarkBlizzard, wc8->ribbon(Ribbon::MarkBlizzard));
-                pk8->ribbon(Ribbon::MarkDry, wc8->ribbon(Ribbon::MarkDry));
-                pk8->ribbon(Ribbon::MarkSandstorm, wc8->ribbon(Ribbon::MarkSandstorm));
-                pk8->ribbon(Ribbon::MarkMisty, wc8->ribbon(Ribbon::MarkMisty));
-                pk8->ribbon(Ribbon::MarkDestiny, wc8->ribbon(Ribbon::MarkDestiny));
-                pk8->ribbon(Ribbon::MarkFishing, wc8->ribbon(Ribbon::MarkFishing));
-                pk8->ribbon(Ribbon::MarkCurry, wc8->ribbon(Ribbon::MarkCurry));
-                pk8->ribbon(Ribbon::MarkUncommon, wc8->ribbon(Ribbon::MarkUncommon));
-                pk8->ribbon(Ribbon::MarkRare, wc8->ribbon(Ribbon::MarkRare));
-                pk8->ribbon(Ribbon::MarkRowdy, wc8->ribbon(Ribbon::MarkRowdy));
-                pk8->ribbon(Ribbon::MarkAbsentMinded, wc8->ribbon(Ribbon::MarkAbsentMinded));
-                pk8->ribbon(Ribbon::MarkJittery, wc8->ribbon(Ribbon::MarkJittery));
-                pk8->ribbon(Ribbon::MarkExcited, wc8->ribbon(Ribbon::MarkExcited));
-                pk8->ribbon(Ribbon::MarkCharismatic, wc8->ribbon(Ribbon::MarkCharismatic));
-                pk8->ribbon(Ribbon::MarkCalmness, wc8->ribbon(Ribbon::MarkCalmness));
-                pk8->ribbon(Ribbon::MarkIntense, wc8->ribbon(Ribbon::MarkIntense));
-                pk8->ribbon(Ribbon::MarkZonedOut, wc8->ribbon(Ribbon::MarkZonedOut));
-                pk8->ribbon(Ribbon::MarkJoyful, wc8->ribbon(Ribbon::MarkJoyful));
-                pk8->ribbon(Ribbon::MarkAngry, wc8->ribbon(Ribbon::MarkAngry));
-                pk8->ribbon(Ribbon::MarkSmiley, wc8->ribbon(Ribbon::MarkSmiley));
-                pk8->ribbon(Ribbon::MarkTeary, wc8->ribbon(Ribbon::MarkTeary));
-                pk8->ribbon(Ribbon::MarkUpbeat, wc8->ribbon(Ribbon::MarkUpbeat));
-                pk8->ribbon(Ribbon::MarkPeeved, wc8->ribbon(Ribbon::MarkPeeved));
-                pk8->ribbon(Ribbon::MarkIntellectual, wc8->ribbon(Ribbon::MarkIntellectual));
-                pk8->ribbon(Ribbon::MarkFerocious, wc8->ribbon(Ribbon::MarkFerocious));
-                pk8->ribbon(Ribbon::MarkCrafty, wc8->ribbon(Ribbon::MarkCrafty));
-                pk8->ribbon(Ribbon::MarkScowling, wc8->ribbon(Ribbon::MarkScowling));
-                pk8->ribbon(Ribbon::MarkKindly, wc8->ribbon(Ribbon::MarkKindly));
-                pk8->ribbon(Ribbon::MarkFlustered, wc8->ribbon(Ribbon::MarkFlustered));
-                pk8->ribbon(Ribbon::MarkPumpedUp, wc8->ribbon(Ribbon::MarkPumpedUp));
-                pk8->ribbon(Ribbon::MarkZeroEnergy, wc8->ribbon(Ribbon::MarkZeroEnergy));
-                pk8->ribbon(Ribbon::MarkPrideful, wc8->ribbon(Ribbon::MarkPrideful));
-                pk8->ribbon(Ribbon::MarkUnsure, wc8->ribbon(Ribbon::MarkUnsure));
-                pk8->ribbon(Ribbon::MarkHumble, wc8->ribbon(Ribbon::MarkHumble));
-                pk8->ribbon(Ribbon::MarkThorny, wc8->ribbon(Ribbon::MarkThorny));
-                pk8->ribbon(Ribbon::MarkVigor, wc8->ribbon(Ribbon::MarkVigor));
-                pk8->ribbon(Ribbon::MarkSlump, wc8->ribbon(Ribbon::MarkSlump));
+                constexpr std::array<Ribbon, 98> RIBBONS_TO_TRANSFER = {Ribbon::ChampionKalos,
+                    Ribbon::ChampionG3Hoenn, Ribbon::ChampionSinnoh, Ribbon::BestFriends,
+                    Ribbon::Training, Ribbon::BattlerSkillful, Ribbon::BattlerExpert,
+                    Ribbon::Effort, Ribbon::Alert, Ribbon::Shock, Ribbon::Downcast,
+                    Ribbon::Careless, Ribbon::Relax, Ribbon::Snooze, Ribbon::Smile,
+                    Ribbon::Gorgeous, Ribbon::Royal, Ribbon::GorgeousRoyal, Ribbon::Artist,
+                    Ribbon::Footprint, Ribbon::Record, Ribbon::Legend, Ribbon::Country,
+                    Ribbon::National, Ribbon::Earth, Ribbon::World, Ribbon::Classic,
+                    Ribbon::Premier, Ribbon::Event, Ribbon::Birthday, Ribbon::Special,
+                    Ribbon::Souvenir, Ribbon::Wishing, Ribbon::ChampionBattle,
+                    Ribbon::ChampionRegional, Ribbon::ChampionNational, Ribbon::ChampionWorld,
+                    Ribbon::MemoryContest, Ribbon::MemoryBattle, Ribbon::ChampionG6Hoenn,
+                    Ribbon::ContestStar, Ribbon::MasterCoolness, Ribbon::MasterBeauty,
+                    Ribbon::MasterCuteness, Ribbon::MasterCleverness, Ribbon::MasterToughness,
+                    Ribbon::ChampionAlola, Ribbon::BattleRoyale, Ribbon::BattleTreeGreat,
+                    Ribbon::BattleTreeMaster, Ribbon::ChampionGalar, Ribbon::TowerMaster,
+                    Ribbon::MasterRank, Ribbon::MarkLunchtime, Ribbon::MarkSleepyTime,
+                    Ribbon::MarkDusk, Ribbon::MarkDawn, Ribbon::MarkCloudy, Ribbon::MarkRainy,
+                    Ribbon::MarkStormy, Ribbon::MarkSnowy, Ribbon::MarkBlizzard, Ribbon::MarkDry,
+                    Ribbon::MarkSandstorm, Ribbon::MarkMisty, Ribbon::MarkDestiny,
+                    Ribbon::MarkFishing, Ribbon::MarkCurry, Ribbon::MarkUncommon, Ribbon::MarkRare,
+                    Ribbon::MarkRowdy, Ribbon::MarkAbsentMinded, Ribbon::MarkJittery,
+                    Ribbon::MarkExcited, Ribbon::MarkCharismatic, Ribbon::MarkCalmness,
+                    Ribbon::MarkIntense, Ribbon::MarkZonedOut, Ribbon::MarkJoyful,
+                    Ribbon::MarkAngry, Ribbon::MarkSmiley, Ribbon::MarkTeary, Ribbon::MarkUpbeat,
+                    Ribbon::MarkPeeved, Ribbon::MarkIntellectual, Ribbon::MarkFerocious,
+                    Ribbon::MarkCrafty, Ribbon::MarkScowling, Ribbon::MarkKindly,
+                    Ribbon::MarkFlustered, Ribbon::MarkPumpedUp, Ribbon::MarkZeroEnergy,
+                    Ribbon::MarkPrideful, Ribbon::MarkUnsure, Ribbon::MarkHumble,
+                    Ribbon::MarkThorny, Ribbon::MarkVigor, Ribbon::MarkSlump};
 
-                if (wc8->egg())
+                for (Ribbon ribbon : RIBBONS_TO_TRANSFER)
+                {
+                    pk8->ribbon(ribbon, wc8.ribbon(ribbon));
+                }
+
+                if (wc8.egg())
                 {
                     pk8->eggDate(Date::today());
                     pk8->nickname(i18n::species(pk8->language(), Species::None));
@@ -775,31 +711,31 @@ namespace pksm
                 pk8->height(pksm::randomNumber(0, 0x80) + pksm::randomNumber(0, 0x7F));
                 pk8->weight(pksm::randomNumber(0, 0x80) + pksm::randomNumber(0, 0x7F));
 
-                pk8->nature(wc8->nature() == Nature::INVALID ? Nature{u8(pksm::randomNumber(0, 24))}
-                                                             : wc8->nature());
+                pk8->nature(wc8.nature() == Nature::INVALID ? Nature{u8(pksm::randomNumber(0, 24))}
+                                                            : wc8.nature());
                 pk8->origNature(pk8->nature());
                 pk8->gender(
                     PKX::genderFromRatio(pksm::randomNumber(0, 0xFFFFFFFF), pk8->genderType()));
 
                 // Ability
-                switch (wc8->abilityType())
+                switch (wc8.abilityType())
                 {
                     case 0:
                     case 1:
                     case 2:
-                        pk8->setAbility(wc8->abilityType());
+                        pk8->setAbility(wc8.abilityType());
                         break;
                     case 3:
                     case 4:
-                        pk8->setAbility(pksm::randomNumber(0, wc8->abilityType() - 2));
+                        pk8->setAbility(pksm::randomNumber(0, wc8.abilityType() - 2));
                         break;
                 }
 
                 // PID
-                switch (wc8->PIDType())
+                switch (wc8.PIDType())
                 {
                     case 0: // Fixed value
-                        pk8->PID(wc8->PID());
+                        pk8->PID(wc8.PID());
                         break;
                     case 1: // Random
                         pk8->PID(pksm::randomNumber(0, 0xFFFFFFFF));
@@ -825,9 +761,9 @@ namespace pksm
                 for (Stat stat :
                     {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF})
                 {
-                    if (wc8->iv(stat) - 0xFC < 3)
+                    if (wc8.iv(stat) - 0xFC < 3)
                     {
-                        numPerfectIVs = wc8->iv(stat) - 0xFB;
+                        numPerfectIVs = wc8.iv(stat) - 0xFB;
                         break;
                     }
                 }
@@ -853,11 +789,11 @@ namespace pksm
 
                 pkm(*pk8, injectPosition / 30, injectPosition % 30, false);
             }
-            else if (wc8->item())
+            else if (wc8.item())
             {
                 auto valid  = validItems();
                 auto limits = pouches();
-                for (int itemNum = 0; itemNum < wc8->items(); itemNum++)
+                for (int itemNum = 0; itemNum < wc8.items(); itemNum++)
                 {
                     bool currentSet = false;
                     for (size_t pouch = 0; pouch < limits.size(); pouch++)
@@ -865,21 +801,21 @@ namespace pksm
                         // Check this is the correct pouch
                         if (!currentSet &&
                             std::binary_search(valid[limits[pouch].first].begin(),
-                                valid[limits[pouch].first].end(), wc8->object(itemNum)))
+                                valid[limits[pouch].first].end(), wc8.object(itemNum)))
                         {
                             for (int slot = 0; slot < limits[pouch].second; slot++)
                             {
                                 auto occupying = item(limits[pouch].first, slot);
                                 if (occupying->id() == 0)
                                 {
-                                    occupying->id(wc8->object(itemNum));
-                                    occupying->count(wc8->objectQuantity(itemNum));
-                                    ((Item8*)occupying.get())->newFlag(true);
+                                    occupying->id(wc8.object(itemNum));
+                                    occupying->count(wc8.objectQuantity(itemNum));
+                                    reinterpret_cast<Item8*>(occupying.get())->newFlag(true);
                                     item(*occupying, limits[pouch].first, slot);
                                     currentSet = true;
                                     break;
                                 }
-                                else if (occupying->id() == wc8->object(itemNum) &&
+                                else if (occupying->id() == wc8.object(itemNum) &&
                                          limits[pouch].first != Pouch::TM)
                                 {
                                     occupying->count(occupying->count() + 1);
@@ -892,11 +828,11 @@ namespace pksm
                     }
                 }
             }
-            else if (wc8->BP())
+            else if (wc8.BP())
             {
                 // TODO
             }
-            else if (wc8->clothing())
+            else if (wc8.clothing())
             {
                 // TODO
             }
@@ -913,11 +849,11 @@ namespace pksm
             {
                 entryAddr = getBlock(PokeDex)->decryptedData() + sizeof(DexEntry) * (index - 1);
             }
-            else if (u16 index = ((PK8&)pk).armordexIndex())
+            else if (u16 index = reinterpret_cast<const PK8&>(pk).armordexIndex())
             {
                 entryAddr = getBlock(ArmorDex)->decryptedData() + sizeof(DexEntry) * (index - 1);
             }
-            else if (u16 index = ((PK8&)pk).crowndexIndex())
+            else if (u16 index = reinterpret_cast<const PK8&>(pk).crowndexIndex())
             {
                 entryAddr = getBlock(CrownDex)->decryptedData() + sizeof(DexEntry) * (index - 1);
             }
@@ -931,7 +867,7 @@ namespace pksm
             if (pk.species() == Species::Alcremie)
             {
                 form *= 7;
-                form += ((PK8&)pk).formDuration();
+                form += reinterpret_cast<const PK8&>(pk).formDuration();
             }
             else if (pk.species() == Species::Eternatus)
             {

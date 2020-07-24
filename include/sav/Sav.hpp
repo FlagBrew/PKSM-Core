@@ -177,7 +177,7 @@ namespace pksm
         virtual int dexCaught(void) const                          = 0;
         virtual int currentGiftAmount(void) const                  = 0;
         virtual std::unique_ptr<WCX> mysteryGift(int pos) const    = 0;
-        virtual void mysteryGift(WCX& wc, int& pos)                = 0;
+        virtual void mysteryGift(const WCX& wc, int& pos)          = 0;
         virtual void cryptBoxData(bool crypted)                    = 0;
         virtual std::string boxName(u8 box) const                  = 0;
         virtual void boxName(u8 box, const std::string_view& name) = 0;

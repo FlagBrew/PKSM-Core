@@ -137,8 +137,9 @@ namespace pksm
 
     void Sav5::trade(PKX& pk, const Date& date) const
     {
-        if (pk.egg() && (otName() != pk.otName() || TID() != pk.TID() || SID() != pk.SID() ||
-                            gender() != pk.otGender()))
+        if (pk.generation() == Generation::FIVE && pk.egg() &&
+            (otName() != pk.otName() || TID() != pk.TID() || SID() != pk.SID() ||
+                gender() != pk.otGender()))
         {
             pk.metLocation(30003);
             pk.metDate(date);
@@ -236,20 +237,20 @@ namespace pksm
         int ofs          = PokeDex + 0x8 + (bit >> 3);
 
         // Set the Species Owned Flag
-        data[ofs + brSize * 0] |= (u8)(1 << (bit % 8));
+        data[ofs + brSize * 0] |= (1 << (bit % 8));
 
         // Set the [Species/Gender/Shiny] Seen Flag
-        data[PokeDex + 0x8 + shiftoff + bit / 8] |= (u8)(1 << (bit & 7));
+        data[PokeDex + 0x8 + shiftoff + bit / 8] |= (1 << (bit & 7));
 
         // Set the Display flag if none are set
         bool displayed = false;
-        displayed |= (data[ofs + brSize * 5] & (u8)(1 << (bit & 7))) != 0;
-        displayed |= (data[ofs + brSize * 6] & (u8)(1 << (bit & 7))) != 0;
-        displayed |= (data[ofs + brSize * 7] & (u8)(1 << (bit & 7))) != 0;
-        displayed |= (data[ofs + brSize * 8] & (u8)(1 << (bit & 7))) != 0;
+        displayed |= (data[ofs + brSize * 5] & (1 << (bit & 7))) != 0;
+        displayed |= (data[ofs + brSize * 6] & (1 << (bit & 7))) != 0;
+        displayed |= (data[ofs + brSize * 7] & (1 << (bit & 7))) != 0;
+        displayed |= (data[ofs + brSize * 8] & (1 << (bit & 7))) != 0;
         if (!displayed) // offset is already biased by brSize, reuse shiftoff but for the display
                         // flags.
-            data[ofs + brSize * (shift + 4)] |= (u8)(1 << (bit & 7));
+            data[ofs + brSize * (shift + 4)] |= (1 << (bit & 7));
 
         // Set the Language
         if (bit < 493) // shifted by 1, Gen5 species do not have international language bits
@@ -259,8 +260,7 @@ namespace pksm
                 lang--; // 0-6 language vals
             if (lang < 0)
                 lang = 1;
-            data[PokeDexLanguageFlags + ((bit * 7 + lang) >> 3)] |=
-                (u8)(1 << ((bit * 7 + lang) & 7));
+            data[PokeDexLanguageFlags + ((bit * 7 + lang) >> 3)] |= (1 << ((bit * 7 + lang) & 7));
         }
 
         // Formes
@@ -274,19 +274,19 @@ namespace pksm
         bit         = f + pk.alternativeForm();
 
         // Set Form Seen Flag
-        data[formDex + formLen * shiny + (bit >> 3)] |= (u8)(1 << (bit & 7));
+        data[formDex + formLen * shiny + (bit >> 3)] |= (1 << (bit & 7));
 
         // Set displayed Flag if necessary, check all flags
         for (int i = 0; i < fc; i++)
         {
             bit = f + i;
-            if ((data[formDex + formLen * 2 + (bit >> 3)] & (u8)(1 << (bit & 7))) != 0) // Nonshiny
-                return; // already set
-            if ((data[formDex + formLen * 3 + (bit >> 3)] & (u8)(1 << (bit & 7))) != 0) // Shiny
-                return; // already set
+            if ((data[formDex + formLen * 2 + (bit >> 3)] & (1 << (bit & 7))) != 0) // Nonshiny
+                return;                                                             // already set
+            if ((data[formDex + formLen * 3 + (bit >> 3)] & (1 << (bit & 7))) != 0) // Shiny
+                return;                                                             // already set
         }
         bit = f + pk.alternativeForm();
-        data[formDex + formLen * (2 + shiny) + (bit >> 3)] |= (u8)(1 << (bit & 7));
+        data[formDex + formLen * (2 + shiny) + (bit >> 3)] |= (1 << (bit & 7));
     }
 
     int Sav5::dexSeen(void) const
@@ -325,14 +325,12 @@ namespace pksm
         return ret;
     }
 
-    void Sav5::mysteryGift(WCX& wc, int& pos)
+    void Sav5::mysteryGift(const WCX& wc, int& pos)
     {
         if (wc.generation() == Generation::FIVE)
         {
-            PGF* pgf = (PGF*)&wc;
-
-            data[WondercardFlags + (pgf->ID() / 8)] |= 0x1 << (pgf->ID() & 7);
-            std::copy(pgf->rawData(), pgf->rawData() + PGF::length,
+            data[WondercardFlags + (wc.ID() / 8)] |= 0x1 << (wc.ID() & 7);
+            std::copy(wc.rawData(), wc.rawData() + PGF::length,
                 &data[WondercardData + pos * PGF::length]);
             pos = (pos + 1) % 12;
         }
@@ -400,7 +398,7 @@ namespace pksm
 
     void Sav5::item(const Item& item, Pouch pouch, u16 slot)
     {
-        Item5 inject = (Item5)item;
+        Item5 inject = static_cast<Item5>(item);
         auto write   = inject.bytes();
         switch (pouch)
         {

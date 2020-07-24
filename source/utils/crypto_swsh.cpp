@@ -79,20 +79,10 @@ namespace pksm::crypto::swsh
                 key ^= key << 13;
             }
 
-            static u32 popcount(u32 x)
-            {
-                x -= ((x >> 1) & 0x55555555u);
-                x = (x & 0x33333333u) + ((x >> 2) & 0x33333333u);
-                x = (x + (x >> 4)) & 0x0F0F0F0Fu;
-                x += (x >> 8);
-                x += (x >> 16);
-                return x & 0x0000003Fu;
-            }
-
         public:
             explicit XorShift32(u32 seed)
             {
-                u32 count = popcount(seed);
+                u32 count = pksm::crypto::popcount(seed);
                 for (u32 i = 0; i < count; i++)
                 {
                     advance(seed);

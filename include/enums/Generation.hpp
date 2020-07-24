@@ -100,9 +100,12 @@ namespace pksm
             }
             constexpr explicit operator std::string_view() const
             {
-                return std::string_view{(const char*)*this};
+                return std::string_view{static_cast<const char*>(*this)};
             }
-            explicit operator std::string() const { return std::string{(const char*)*this}; }
+            explicit operator std::string() const
+            {
+                return std::string{static_cast<const char*>(*this)};
+            }
             constexpr operator GenerationEnum() const noexcept { return v; }
 
             constexpr bool operator<(const Generation_impl& other) const noexcept
@@ -215,11 +218,17 @@ namespace pksm
         {
             return T(impl);
         }
-        constexpr operator EnumType() const noexcept { return (EnumType)impl; }
+        constexpr operator EnumType() const noexcept { return static_cast<EnumType>(impl); }
 
-        constexpr explicit operator const char*() const noexcept { return (const char*)impl; }
-        constexpr explicit operator std::string_view() const { return (std::string_view)impl; }
-        explicit operator std::string() const { return (std::string)impl; }
+        constexpr explicit operator const char*() const noexcept
+        {
+            return static_cast<const char*>(impl);
+        }
+        constexpr explicit operator std::string_view() const
+        {
+            return static_cast<std::string_view>(impl);
+        }
+        explicit operator std::string() const { return static_cast<std::string>(impl); }
 
         static constexpr Generation fromString(const std::string_view& str)
         {
