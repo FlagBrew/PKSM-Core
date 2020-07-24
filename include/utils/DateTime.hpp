@@ -33,12 +33,9 @@
 class Date
 {
 public:
-    Date(const time_t& time)
+    Date(const time_t& time) : Date(*gmtime(&time)) {}
+    constexpr Date(const struct tm& time) : Date(time.tm_mday, time.tm_mon + 1, time.tm_year + 1900)
     {
-        struct tm* now = gmtime(&time);
-        mDay           = now->tm_mday;
-        mMonth         = now->tm_mon + 1;
-        mYear          = now->tm_year + 1900;
     }
     constexpr Date(u8 day, u8 month, u32 year) : mYear(year), mDay(day), mMonth(month) {}
 
@@ -105,13 +102,8 @@ private:
 class Time
 {
 public:
-    Time(const time_t& time)
-    {
-        struct tm* now = gmtime(&time);
-        mSecond        = now->tm_sec;
-        mMinute        = now->tm_min;
-        mHour          = now->tm_hour;
-    }
+    Time(const time_t& time) : Time(*gmtime(&time)) {}
+    constexpr Time(const struct tm& time) : Time(time.tm_hour, time.tm_min, time.tm_sec) {}
     constexpr Time(u8 hour, u8 minute, u8 second) : mHour(hour), mMinute(minute), mSecond(second) {}
 
     static Time now() { return Time{time(nullptr)}; }
@@ -177,7 +169,8 @@ private:
 class DateTime : public Date, public Time
 {
 public:
-    DateTime(const time_t& time) : Date(time), Time(time) {}
+    DateTime(const time_t& time) : DateTime(*gmtime(&time)) {}
+    constexpr DateTime(const struct tm& time) : Date(time), Time(time) {}
     constexpr DateTime(const Date& date) : Date(date), Time(0, 0, 0) {}
     constexpr DateTime(const Time& time) : Date(1, 1, 1900), Time(time) {}
     constexpr DateTime(const Date& date, const Time& time) : Date(date), Time(time) {}
@@ -264,6 +257,37 @@ public:
         return Date::operator>(other) || (Date::operator==(other) && Time::operator>(other));
     }
     bool operator>=(const time_t& tOther) const
+    {
+        DateTime other{tOther};
+        return Date::operator>(other) || (Date::operator==(other) && Time::operator>=(other));
+    }
+
+    constexpr bool operator==(const struct tm& tOther) const
+    {
+        DateTime other{tOther};
+        return Date::operator==(other) && Time::operator==(other);
+    }
+    constexpr bool operator!=(const struct tm& tOther) const
+    {
+        DateTime other{tOther};
+        return Date::operator!=(other) || Time::operator!=(other);
+    }
+    constexpr bool operator<(const struct tm& tOther) const
+    {
+        DateTime other{tOther};
+        return Date::operator<(other) || (Date::operator==(other) && Time::operator<(other));
+    }
+    constexpr bool operator<=(const struct tm& tOther) const
+    {
+        DateTime other{tOther};
+        return Date::operator<=(other) || (Date::operator==(other) && Time::operator<=(other));
+    }
+    constexpr bool operator>(const struct tm& tOther) const
+    {
+        DateTime other{tOther};
+        return Date::operator>(other) || (Date::operator==(other) && Time::operator>(other));
+    }
+    constexpr bool operator>=(const struct tm& tOther) const
     {
         DateTime other{tOther};
         return Date::operator>(other) || (Date::operator==(other) && Time::operator>=(other));
@@ -360,6 +384,99 @@ inline bool operator>(const time_t& tThis, const Time& other)
     return This > other;
 }
 inline bool operator>=(const time_t& tThis, const Time& other)
+{
+    Time This{tThis};
+    return This >= other;
+}
+
+constexpr bool operator==(const struct tm& tThis, const DateTime& other)
+{
+    DateTime This{tThis};
+    return This == other;
+}
+constexpr bool operator!=(const struct tm& tThis, const DateTime& other)
+{
+    DateTime This{tThis};
+    return This != other;
+}
+constexpr bool operator<(const struct tm& tThis, const DateTime& other)
+{
+    DateTime This{tThis};
+    return This < other;
+}
+constexpr bool operator<=(const struct tm& tThis, const DateTime& other)
+{
+    DateTime This{tThis};
+    return This <= other;
+}
+constexpr bool operator>(const struct tm& tThis, const DateTime& other)
+{
+    DateTime This{tThis};
+    return This > other;
+}
+constexpr bool operator>=(const struct tm& tThis, const DateTime& other)
+{
+    DateTime This{tThis};
+    return This >= other;
+}
+
+constexpr bool operator==(const struct tm& tThis, const Date& other)
+{
+    Date This{tThis};
+    return This == other;
+}
+constexpr bool operator!=(const struct tm& tThis, const Date& other)
+{
+    Date This{tThis};
+    return This != other;
+}
+constexpr bool operator<(const struct tm& tThis, const Date& other)
+{
+    Date This{tThis};
+    return This < other;
+}
+constexpr bool operator<=(const struct tm& tThis, const Date& other)
+{
+    Date This{tThis};
+    return This <= other;
+}
+constexpr bool operator>(const struct tm& tThis, const Date& other)
+{
+    Date This{tThis};
+    return This > other;
+}
+constexpr bool operator>=(const struct tm& tThis, const Date& other)
+{
+    Date This{tThis};
+    return This >= other;
+}
+
+constexpr bool operator==(const struct tm& tThis, const Time& other)
+{
+    Time This{tThis};
+    return This == other;
+}
+constexpr bool operator!=(const struct tm& tThis, const Time& other)
+{
+    Time This{tThis};
+    return This != other;
+}
+constexpr bool operator<(const struct tm& tThis, const Time& other)
+{
+    Time This{tThis};
+    return This < other;
+}
+constexpr bool operator<=(const struct tm& tThis, const Time& other)
+{
+    Time This{tThis};
+    return This <= other;
+}
+constexpr bool operator>(const struct tm& tThis, const Time& other)
+{
+    Time This{tThis};
+    return This > other;
+}
+constexpr bool operator>=(const struct tm& tThis, const Time& other)
 {
     Time This{tThis};
     return This >= other;
