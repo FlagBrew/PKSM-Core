@@ -81,6 +81,7 @@ namespace pksm
             else
             {
                 itemData = {0, 0, 0, 0};
+                key = securityKey;
             }
         }
         Generation generation(void) const override { return Generation::THREE; }
@@ -97,6 +98,8 @@ namespace pksm
         void id3(u16 v) { LittleEndian::convertFrom<u16>(itemData.data(), v); }
         u16 count(void) const override { return LittleEndian::convertTo<u16>(itemData.data() + 2); }
         void count(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data() + 2, v); }
+        u16 securityKey(void) const { return key; }
+        void securityKey(u16 v) { key = v; }
         std::vector<u8> bytes(void) const override
         {
             std::vector<u8> data{itemData.begin(), itemData.end()};

@@ -33,6 +33,10 @@ namespace pksm
         Item3 ret;
         ret.id(id());
         ret.count(count());
+        if (generation() == Generation::THREE)
+        {
+            ret.securityKey(reinterpret_cast<const Item3*>(this)->securityKey());
+        }
         return ret;
     }
 
