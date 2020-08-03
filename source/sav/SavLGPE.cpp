@@ -56,7 +56,7 @@ namespace pksm
 
     u32 SavLGPE::boxOffset(u8 box, u8 slot) const
     {
-        return 0x5C00 + box * 30 * PB7::BOX_LENGTH + slot * PB7::BOX_LENGTH;
+        return 0x5C00 + box * 30 * PB7::PARTY_LENGTH + slot * PB7::PARTY_LENGTH;
     }
 
     u16 SavLGPE::partyBoxSlot(u8 slot) const
