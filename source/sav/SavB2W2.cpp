@@ -62,6 +62,45 @@ namespace pksm
             LittleEndian::convertFrom<u16>(&data[chkMirror[i]], cs);
             LittleEndian::convertFrom<u16>(&data[chkofs[i]], cs);
         }
+
+        // Memories
+        // Note: Block 1 and its mirror are encrypted with pokecrypto. The commented lines show how
+        // they would be re-encrypted
+        // Block 1
+        {
+            constexpr u32 offset                = 0x7E000;
+            constexpr u32 size_to_checksum      = 0x368;
+            constexpr u32 header_size           = 0xC;
+            constexpr u32 crc_offset_from_start = 0x8;
+            // u32 seed = LittleEndian::convertTo<u32>(data.get() + offset + size_to_checksum +
+            // header_size - 4);
+            // pksm::crypto::pkm::crypt<size_to_checksum - 4>(data.get() + offset
+            // + header_size, seed);
+            u16 crc = pksm::crypto::ccitt16(data.get() + offset + header_size, size_to_checksum);
+            LittleEndian::convertFrom<u16>(data.get() + offset + crc_offset_from_start, crc);
+        }
+        // Block 1 mirror
+        {
+            constexpr u32 offset                = 0x7E400;
+            constexpr u32 size_to_checksum      = 0x368;
+            constexpr u32 header_size           = 0xC;
+            constexpr u32 crc_offset_from_start = 0x8;
+            // u32 seed = LittleEndian::convertTo<u32>(data.get() + offset + size_to_checksum +
+            // header_size - 4);
+            // pksm::crypto::pkm::crypt<size_to_checksum - 4>(data.get() + offset
+            // + header_size, seed);
+            u16 crc = pksm::crypto::ccitt16(data.get() + offset + header_size, size_to_checksum);
+            LittleEndian::convertFrom<u16>(data.get() + offset + crc_offset_from_start, crc);
+        }
+        // Block 2
+        {
+            constexpr u32 offset                = 0x7E800;
+            constexpr u32 size_to_checksum      = 0x214;
+            constexpr u32 header_size           = 0xC;
+            constexpr u32 crc_offset_from_start = 0x8;
+            u16 crc = pksm::crypto::ccitt16(data.get() + offset + header_size, size_to_checksum);
+            LittleEndian::convertFrom<u16>(data.get() + offset + crc_offset_from_start, crc);
+        }
     }
 
     std::map<Sav::Pouch, std::vector<int>> SavB2W2::validItems() const

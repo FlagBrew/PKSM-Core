@@ -192,6 +192,17 @@ namespace pksm::crypto
                 data[i + 1] ^= (key >> 24);
             }
         }
+
+        // NOTE: Use the templated version wherever possible. Compile-time constants are preferred
+        constexpr void crypt(u8* data, u32 key, size_t size)
+        {
+            for (size_t i = 0; i < size; i += 2)
+            {
+                key = seedStep(key);
+                data[i] ^= (key >> 16);
+                data[i + 1] ^= (key >> 24);
+            }
+        }
     }
 }
 
