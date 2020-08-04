@@ -25,7 +25,7 @@
  */
 
 #ifdef MAP_MACRO_HPP
-#undef MAP_MACRO_HP
+#undef MAP_MACRO_HPP
 #undef EVAL0
 #undef EVAL1
 #undef EVAL2
@@ -33,7 +33,7 @@
 #undef EVAL4
 #undef EVAL
 #undef MAP_END
-#undef MAP_OU
+#undef MAP_OUT
 #undef MAP_COMMA
 #undef MAP_GET_END2
 #undef MAP_GET_END1
