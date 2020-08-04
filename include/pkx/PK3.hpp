@@ -35,8 +35,10 @@ namespace pksm
     class PK3 : public PKX
     {
     protected:
-        void shuffleArray(u8 sv) override;
-        void crypt(void) override;
+        static constexpr size_t BlockDataLength   = 12;
+        static constexpr size_t BlockShuffleStart = 32;
+        // Doesn't use pksm::crypto::pkm method because there's no seed stepping
+        void crypt(void);
         u16 calcChecksum() const;
 
     private:
@@ -74,10 +76,10 @@ namespace pksm
         std::unique_ptr<PKX> clone(void) const override;
 
         Generation generation(void) const override;
-        bool isEncrypted(void) const override;
         bool isParty(void) const override { return getLength() == PARTY_LENGTH; }
-        void encrypt(void) override;
         void decrypt(void) override;
+        void encrypt(void) override;
+        bool isEncrypted(void) const override;
 
         u32 encryptionConstant(void) const override;
         void encryptionConstant(u32 v) override;

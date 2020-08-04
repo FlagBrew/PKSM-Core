@@ -82,13 +82,7 @@ namespace pksm
         PKX(u8* data, size_t length, bool directAccess = false);
 
         u32 expTable(u8 row, u8 col) const;
-        u8 blockPosition(u8 index) const;
-        u8 blockPositionInvert(u8 index) const;
-        u32 seedStep(u32 seed);
         virtual void reorderMoves(void);
-
-        virtual void crypt(void)         = 0;
-        virtual void shuffleArray(u8 sv) = 0;
 
         u32 length = 0;
         u8* data;
@@ -146,8 +140,8 @@ namespace pksm
         u32 getLength(void) const { return length; }
         virtual bool isParty(void) const = 0;
 
-        virtual void decrypt(void);
-        virtual void encrypt(void);
+        virtual void decrypt(void)       = 0;
+        virtual void encrypt(void)       = 0;
         virtual bool isEncrypted() const = 0;
 
         virtual std::unique_ptr<PK3> convertToG3(Sav& save) const;

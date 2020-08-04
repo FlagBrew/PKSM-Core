@@ -26,6 +26,7 @@
 
 #include "sav/Sav5.hpp"
 #include "pkx/PK5.hpp"
+#include "utils/crypto.hpp"
 #include "utils/endian.hpp"
 #include "utils/i18n.hpp"
 #include "utils/utils.hpp"
@@ -383,12 +384,7 @@ namespace pksm
     void Sav5::cryptMysteryGiftData()
     {
         u32 seed = LittleEndian::convertTo<u32>(&data[0x1D290]);
-        for (int i = 0; i < 0xA90; i += 2)
-        {
-            seed = seed * 0x41C64E6D + 0x6073; // Replace with seedStep?
-            LittleEndian::convertFrom<u16>(&data[WondercardFlags + i],
-                LittleEndian::convertTo<u16>(&data[WondercardFlags + i]) ^ (seed >> 16));
-        }
+        pksm::crypto::pkm::crypt<0xA90>(&data[WondercardFlags], seed);
     }
 
     std::unique_ptr<WCX> Sav5::mysteryGift(int pos) const

@@ -35,6 +35,8 @@ namespace pksm
     class PK4 : public PKX
     {
     private:
+        static constexpr size_t BLOCK_LENGTH     = 32;
+        static constexpr size_t ENCRYPTION_START = 8;
         int eggYear(void) const override;
         void eggYear(int v) override;
         int eggMonth(void) const override;
@@ -53,9 +55,6 @@ namespace pksm
             Species::Celebi, Species::Raikou, Species::Entei, Species::Suicune};
         static constexpr u16 banned[8] = {15, 19, 57, 70, 250, 249, 127, 431};
 
-        void shuffleArray(u8 sv) override;
-        void crypt(void) override;
-
     public:
         static constexpr size_t BOX_LENGTH            = 136;
         static constexpr size_t PARTY_LENGTH          = 236;
@@ -73,6 +72,8 @@ namespace pksm
         std::unique_ptr<PKX> clone(void) const override;
 
         Generation generation(void) const override;
+        void decrypt(void) override;
+        void encrypt(void) override;
         bool isEncrypted(void) const override;
         bool isParty(void) const override { return getLength() == PARTY_LENGTH; }
 

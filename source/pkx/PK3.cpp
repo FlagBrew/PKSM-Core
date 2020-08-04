@@ -31,6 +31,7 @@
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
 #include "utils/ValueConverter.hpp"
+#include "utils/crypto.hpp"
 #include "utils/endian.hpp"
 #include "utils/flagUtil.hpp"
 #include "utils/i18n.hpp"
@@ -86,29 +87,14 @@ namespace pksm
         return val % 28;
     }
 
-    void PK3::shuffleArray(u8 sv)
-    {
-        static constexpr int blockLength = 12;
-        u8 index                         = sv * 4;
-
-        u8 cdata[length];
-        std::copy(data, data + length, cdata);
-
-        for (u8 block = 0; block < 4; block++)
-        {
-            u8 ofs = blockPosition(index + block);
-            std::copy(cdata + 32 + blockLength * ofs, cdata + 32 + blockLength * ofs + blockLength,
-                data + 32 + blockLength * block);
-        }
-    }
-
     void PK3::encrypt()
     {
         if (!isEncrypted())
         {
             u8 sv = PID() % 24;
             refreshChecksum();
-            shuffleArray(blockPositionInvert(sv));
+            pksm::crypto::pkm::blockShuffle<BlockDataLength>(
+                data + BlockShuffleStart, pksm::crypto::pkm::InvertedBlockPositions[sv]);
             crypt();
         }
     }
@@ -119,7 +105,7 @@ namespace pksm
         {
             u8 sv = PID() % 24;
             crypt();
-            shuffleArray(sv);
+            pksm::crypto::pkm::blockShuffle<BlockDataLength>(data + BlockShuffleStart, sv);
         }
     }
 

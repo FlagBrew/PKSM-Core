@@ -45,7 +45,7 @@ namespace pksm
     class Item
     {
     public:
-        virtual ~Item() = default;
+        virtual ~Item()                           = default;
         virtual Generation generation(void) const = 0;
         virtual u16 maxCount(void) const          = 0;
         virtual u16 id(void) const                = 0;
@@ -81,7 +81,7 @@ namespace pksm
             else
             {
                 itemData = {0, 0, 0, 0};
-                key = securityKey;
+                key      = securityKey;
             }
         }
         Generation generation(void) const override { return Generation::THREE; }

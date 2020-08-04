@@ -35,6 +35,8 @@ namespace pksm
     class PK5 : public PKX
     {
     private:
+        static constexpr size_t BLOCK_LENGTH     = 32;
+        static constexpr size_t ENCRYPTION_START = 8;
         int eggYear(void) const override;
         void eggYear(int v) override;
         int eggMonth(void) const override;
@@ -47,10 +49,6 @@ namespace pksm
         void metMonth(int v) override;
         int metDay(void) const override;
         void metDay(int v) override;
-
-    protected:
-        void shuffleArray(u8 sv) override;
-        void crypt(void) override;
 
     public:
         static constexpr size_t BOX_LENGTH            = 136;
@@ -69,6 +67,8 @@ namespace pksm
         std::unique_ptr<PKX> clone(void) const override;
 
         Generation generation(void) const override;
+        void decrypt(void) override;
+        void encrypt(void) override;
         bool isEncrypted(void) const override;
         bool isParty(void) const override { return getLength() == PARTY_LENGTH; }
 

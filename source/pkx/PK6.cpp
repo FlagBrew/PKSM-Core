@@ -31,6 +31,7 @@
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
 #include "sav/Sav.hpp"
+#include "utils/crypto.hpp"
 #include "utils/endian.hpp"
 #include "utils/flagUtil.hpp"
 #include "utils/random.hpp"
@@ -145,39 +146,73 @@ namespace
 
 namespace pksm
 {
-    void PK6::shuffleArray(u8 sv)
+    // void PK6::shuffleArray(u8 sv)
+    // {
+    //     static constexpr int blockLength = 56;
+    //     u8 index                         = sv * 4;
+
+    //     u8 cdata[length];
+    //     std::copy(data, data + length, cdata);
+
+    //     for (u8 block = 0; block < 4; block++)
+    //     {
+    //         u8 ofs = blockPosition(index + block);
+    //         std::copy(cdata + 8 + blockLength * ofs, cdata + 8 + blockLength * ofs + blockLength,
+    //             data + 8 + blockLength * block);
+    //     }
+    // }
+
+    // void PK6::crypt(void)
+    // {
+    //     u32 seed = encryptionConstant();
+    //     for (size_t i = 0x08; i < BOX_LENGTH; i += 2)
+    //     {
+    //         u16 temp = LittleEndian::convertTo<u16>(data + i);
+    //         seed     = seedStep(seed);
+    //         temp ^= (seed >> 16);
+    //         LittleEndian::convertFrom<u16>(data + i, temp);
+    //     }
+    //     seed = encryptionConstant();
+    //     for (u32 i = BOX_LENGTH; i < length; i += 2)
+    //     {
+    //         u16 temp = LittleEndian::convertTo<u16>(data + i);
+    //         seed     = seedStep(seed);
+    //         temp ^= (seed >> 16);
+    //         LittleEndian::convertFrom<u16>(data + i, temp);
+    //     }
+    // }
+
+    void PK6::encrypt(void)
     {
-        static constexpr int blockLength = 56;
-        u8 index                         = sv * 4;
-
-        u8 cdata[length];
-        std::copy(data, data + length, cdata);
-
-        for (u8 block = 0; block < 4; block++)
+        if (!isEncrypted())
         {
-            u8 ofs = blockPosition(index + block);
-            std::copy(cdata + 8 + blockLength * ofs, cdata + 8 + blockLength * ofs + blockLength,
-                data + 8 + blockLength * block);
+            u8 sv = (encryptionConstant() >> 13) & 31;
+            refreshChecksum();
+            pksm::crypto::pkm::blockShuffle<BLOCK_LENGTH>(
+                data + ENCRYPTION_START, pksm::crypto::pkm::InvertedBlockPositions[sv]);
+            pksm::crypto::pkm::crypt<BOX_LENGTH - ENCRYPTION_START>(
+                data + ENCRYPTION_START, encryptionConstant());
+            if (isParty())
+            {
+                pksm::crypto::pkm::crypt<PARTY_LENGTH - BOX_LENGTH>(
+                    data + BOX_LENGTH, encryptionConstant());
+            }
         }
     }
 
-    void PK6::crypt(void)
+    void PK6::decrypt(void)
     {
-        u32 seed = encryptionConstant();
-        for (size_t i = 0x08; i < BOX_LENGTH; i += 2)
+        if (isEncrypted())
         {
-            u16 temp = LittleEndian::convertTo<u16>(data + i);
-            seed     = seedStep(seed);
-            temp ^= (seed >> 16);
-            LittleEndian::convertFrom<u16>(data + i, temp);
-        }
-        seed = encryptionConstant();
-        for (u32 i = BOX_LENGTH; i < length; i += 2)
-        {
-            u16 temp = LittleEndian::convertTo<u16>(data + i);
-            seed     = seedStep(seed);
-            temp ^= (seed >> 16);
-            LittleEndian::convertFrom<u16>(data + i, temp);
+            u8 sv = (encryptionConstant() >> 13) & 31;
+            pksm::crypto::pkm::crypt<BOX_LENGTH - ENCRYPTION_START>(
+                data + ENCRYPTION_START, encryptionConstant());
+            if (isParty())
+            {
+                pksm::crypto::pkm::crypt<PARTY_LENGTH - BOX_LENGTH>(
+                    data + BOX_LENGTH, encryptionConstant());
+            }
+            pksm::crypto::pkm::blockShuffle<BLOCK_LENGTH>(data + ENCRYPTION_START, sv);
         }
     }
 
