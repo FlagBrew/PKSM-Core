@@ -38,6 +38,7 @@
 #include "enums/Species.hpp"
 #include "enums/Stat.hpp"
 #include "enums/Type.hpp"
+#include "pkx/IPKFilterable.hpp"
 #include "pkx/PKFilter.hpp"
 #include "sav/Item.hpp"
 #include "utils/DateTime.hpp"
@@ -57,7 +58,7 @@ namespace pksm
     class PK8;
     class PB7;
 
-    class PKX
+    class PKX : public IPKFilterable
     {
     private:
         bool directAccess;
@@ -334,6 +335,8 @@ namespace pksm
         virtual u8 expType(void) const        = 0;
         virtual Ability abilities(u8 n) const = 0;
         virtual u16 formStatIndex(void) const = 0;
+
+        bool isFilter() const override { return false; }
     };
 }
 

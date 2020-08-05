@@ -35,13 +35,28 @@
 #include "enums/Nature.hpp"
 #include "enums/Species.hpp"
 #include "enums/Stat.hpp"
+#include "pkx/IPKFilterable.hpp"
 #include <bitset>
 #include <string>
 #include <vector>
 
 #define MAKE_DEFN(name, type)                                                                      \
 public:                                                                                            \
-    type name(void) const { return type##name; }                                                   \
+    type name(void) const override { return type##name; }                                          \
+    void name(type v) override { type##name = v; }                                                 \
+    bool name##Enabled(void) const { return name##Bool; }                                          \
+    void name##Enabled(bool v) { name##Bool = v; }                                                 \
+    bool name##Inversed(void) const { return name##Inverse; }                                      \
+    void name##Inversed(bool v) { name##Inverse = v; }                                             \
+                                                                                                   \
+private:                                                                                           \
+    type type##name    = type();                                                                   \
+    bool name##Bool    = false;                                                                    \
+    bool name##Inverse = false
+
+#define MAKE_DEFN_CONSTANT(name, type)                                                             \
+public:                                                                                            \
+    type name(void) const override { return type##name; }                                          \
     void name(type v) { type##name = v; }                                                          \
     bool name##Enabled(void) const { return name##Bool; }                                          \
     void name##Enabled(bool v) { name##Bool = v; }                                                 \
@@ -55,7 +70,21 @@ private:                                                                        
 
 #define MAKE_NUM_DEFN(name, type, amount, indextype)                                               \
 public:                                                                                            \
-    type name(indextype which) const { return type##name[size_t(which)]; }                         \
+    type name(indextype which) const override { return type##name[size_t(which)]; }                \
+    void name(indextype which, type v) override { type##name[size_t(which)] = v; }                 \
+    bool name##Enabled(indextype which) const { return name##Bool[size_t(which)]; }                \
+    void name##Enabled(indextype which, bool v) { name##Bool[size_t(which)] = v; }                 \
+    bool name##Inversed(indextype which) const { return name##Inverse[size_t(which)]; }            \
+    void name##Inversed(indextype which, bool v) { name##Inverse[size_t(which)] = v; }             \
+                                                                                                   \
+private:                                                                                           \
+    std::vector<type> type##name      = std::vector<type>(amount, type());                         \
+    std::bitset<amount> name##Bool    = std::bitset<amount>(0);                                    \
+    std::bitset<amount> name##Inverse = std::bitset<amount>(0)
+
+#define MAKE_NUM_DEFN_CONSTANT(name, type, amount, indextype)                                      \
+public:                                                                                            \
+    type name(indextype which) const override { return type##name[size_t(which)]; }                \
     void name(indextype which, type v) { type##name[size_t(which)] = v; }                          \
     bool name##Enabled(indextype which) const { return name##Bool[size_t(which)]; }                \
     void name##Enabled(indextype which, bool v) { name##Bool[size_t(which)] = v; }                 \
@@ -69,16 +98,19 @@ private:                                                                        
 
 namespace pksm
 {
-    class PKFilter
+    class PKFilter : public IPKFilterable
     {
-        MAKE_DEFN(generation, Generation);
+    public:
+        bool isFilter() const override { return true; }
+
+        MAKE_DEFN_CONSTANT(generation, Generation);
         MAKE_DEFN(species, Species);
-        MAKE_DEFN(alternativeForm, u8);
+        MAKE_DEFN(alternativeForm, u16);
         MAKE_DEFN(shiny, bool);
         MAKE_DEFN(heldItem, u16);
         MAKE_DEFN(level, u8);
         MAKE_DEFN(ability, Ability);
-        MAKE_DEFN(TSV, u16);
+        MAKE_DEFN_CONSTANT(TSV, u16);
         MAKE_DEFN(nature, Nature);
         MAKE_DEFN(gender, Gender);
         MAKE_NUM_DEFN(move, u16, 4, u8);
@@ -91,6 +123,7 @@ namespace pksm
 }
 
 #undef MAKE_DEFN
+#undef MAKE_DEFN_CONSTANT
 #undef MAKE_NUM_DEFN
 
 #endif
