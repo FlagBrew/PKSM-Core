@@ -360,11 +360,11 @@ namespace pksm
 
     std::string PK6::nickname(void) const
     {
-        return StringUtils::transString67(StringUtils::getString(data, 0x40, 12));
+        return StringUtils::transString67(StringUtils::getString(data, 0x40, 13));
     }
     void PK6::nickname(const std::string_view& v)
     {
-        StringUtils::setString(data, StringUtils::transString67(v), 0x40, 12);
+        StringUtils::setString(data, StringUtils::transString67(v), 0x40, 13);
     }
 
     u16 PK6::move(u8 m) const { return LittleEndian::convertTo<u16>(data + 0x5A + m * 2); }
@@ -422,11 +422,11 @@ namespace pksm
 
     std::string PK6::htName(void) const
     {
-        return StringUtils::transString67(StringUtils::getString(data, 0x78, 12));
+        return StringUtils::transString67(StringUtils::getString(data, 0x78, 13));
     }
     void PK6::htName(const std::string_view& v)
     {
-        StringUtils::setString(data, StringUtils::transString67(v), 0x78, 12);
+        StringUtils::setString(data, StringUtils::transString67(v), 0x78, 13);
     }
 
     Gender PK6::htGender(void) const { return Gender{data[0x92]}; }
