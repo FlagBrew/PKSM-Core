@@ -32,6 +32,7 @@
 #include "enums/Gender.hpp"
 #include "enums/Generation.hpp"
 #include "enums/Language.hpp"
+#include "enums/Move.hpp"
 #include "enums/Nature.hpp"
 #include "enums/Species.hpp"
 #include "enums/Stat.hpp"
@@ -63,8 +64,8 @@ namespace pksm
         IFILTERABLE_DEFINE_CONSTANT_METHOD(TSV, u16);
         IFILTERABLE_DEFINE_METHOD(nature, Nature);
         IFILTERABLE_DEFINE_METHOD(gender, Gender);
-        IFILTERABLE_DEFINE_INDEXED_METHOD(move, u16, u8);
-        IFILTERABLE_DEFINE_INDEXED_METHOD(relearnMove, u16, u8);
+        IFILTERABLE_DEFINE_INDEXED_METHOD(move, Move, u8);
+        IFILTERABLE_DEFINE_INDEXED_METHOD(relearnMove, Move, u8);
         IFILTERABLE_DEFINE_METHOD(ball, Ball);
         IFILTERABLE_DEFINE_METHOD(language, Language);
         IFILTERABLE_DEFINE_METHOD(egg, bool);

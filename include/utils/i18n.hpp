@@ -32,6 +32,7 @@
 #include "enums/GameVersion.hpp"
 #include "enums/Generation.hpp"
 #include "enums/Language.hpp"
+#include "enums/Move.hpp"
 #include "enums/Nature.hpp"
 #include "enums/Ribbon.hpp"
 #include "enums/Species.hpp"
@@ -107,7 +108,7 @@ namespace i18n
 
     void initMove(pksm::Language lang);
     void exitMove(pksm::Language lang);
-    const std::string& move(pksm::Language lang, u16 value);
+    const std::string& move(pksm::Language lang, pksm::Move value);
     const std::vector<std::string>& rawMoves(pksm::Language lang);
 
     void initNature(pksm::Language lang);

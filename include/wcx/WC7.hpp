@@ -89,8 +89,8 @@ namespace pksm
         Language language(void) const override;
         u8 level(void) const override;
         u8 metLevel(void) const override;
-        u16 move(u8 index) const override;
-        u16 relearnMove(u8 index) const;
+        Move move(u8 index) const override;
+        Move relearnMove(u8 index) const;
         Nature nature(void) const override;
         std::string nickname(void) const override;
         GameVersion version(void) const;

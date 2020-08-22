@@ -33,6 +33,7 @@
 #include "enums/Gender.hpp"
 #include "enums/Generation.hpp"
 #include "enums/Language.hpp"
+#include "enums/Move.hpp"
 #include "enums/Nature.hpp"
 #include "enums/Ribbon.hpp"
 #include "enums/Species.hpp"
@@ -220,10 +221,10 @@ namespace pksm
         // BLOCK B
         virtual std::string nickname(void) const         = 0;
         virtual void nickname(const std::string_view& v) = 0;
-        virtual u16 move(u8 move) const                  = 0;
-        virtual void move(u8 move, u16 v)                = 0;
-        virtual u16 relearnMove(u8 move) const           = 0;
-        virtual void relearnMove(u8 move, u16 v)         = 0;
+        virtual Move move(u8 move) const                 = 0;
+        virtual void move(u8 move, Move v)               = 0;
+        virtual Move relearnMove(u8 move) const          = 0;
+        virtual void relearnMove(u8 move, Move v)        = 0;
         virtual u8 PP(u8 move) const                     = 0;
         virtual void PP(u8 move, u8 v)                   = 0;
         virtual u8 PPUp(u8 move) const                   = 0;
@@ -234,6 +235,10 @@ namespace pksm
         virtual void egg(bool v)                         = 0;
         virtual bool nicknamed(void) const               = 0;
         virtual void nicknamed(bool v)                   = 0;
+
+        u8 maxPP(u8 move) const;
+        void healPP();
+        void healPP(u8 move) { PP(move, maxPP(move)); }
 
         // BLOCK C
         virtual u8 currentHandler(void) const = 0;
@@ -336,7 +341,7 @@ namespace pksm
         virtual Ability abilities(u8 n) const = 0;
         virtual u16 formStatIndex(void) const = 0;
 
-        bool isFilter() const override { return false; }
+        bool isFilter() const final { return false; }
     };
 }
 

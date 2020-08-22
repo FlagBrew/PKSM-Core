@@ -26,6 +26,7 @@
 
 #include "utils/VersionTables.hpp"
 #include "personal/personal.hpp"
+#include "ppCount.hpp"
 #include <unordered_map>
 
 namespace
@@ -192,9 +193,9 @@ namespace pksm
         }
     }
 
-    const std::set<int>& VersionTables::availableMoves(GameVersion version)
+    const std::set<Move>& VersionTables::availableMoves(GameVersion version)
     {
-        static const std::set<int> emptySet;
+        static const std::set<Move> emptySet;
         switch (version)
         {
             case GameVersion::R:
@@ -203,8 +204,8 @@ namespace pksm
             case GameVersion::LG:
             case GameVersion::E:
             {
-                static const std::set<int> items = [] {
-                    return create_set_consecutive<int>(0, 354);
+                static const std::set<Move> items = [] {
+                    return create_set_consecutive<Move>(Move::None, Move::PsychoBoost);
                 }();
                 return items;
             }
@@ -214,8 +215,8 @@ namespace pksm
             case GameVersion::HG:
             case GameVersion::SS:
             {
-                static const std::set<int> items = [] {
-                    return create_set_consecutive<int>(0, 467);
+                static const std::set<Move> items = [] {
+                    return create_set_consecutive<Move>(Move::None, Move::ShadowForce);
                 }();
                 return items;
             }
@@ -224,67 +225,104 @@ namespace pksm
             case GameVersion::B2:
             case GameVersion::W2:
             {
-                static const std::set<int> items = [] {
-                    return create_set_consecutive<int>(0, 559);
+                static const std::set<Move> items = [] {
+                    return create_set_consecutive<Move>(Move::None, Move::FusionBolt);
                 }();
                 return items;
             }
             case GameVersion::X:
             case GameVersion::Y:
             {
-                static const std::set<int> items = [] {
-                    return create_set_consecutive<int>(0, 617);
+                static const std::set<Move> items = [] {
+                    return create_set_consecutive<Move>(Move::None, Move::LightofRuin);
                 }();
                 return items;
             }
             case GameVersion::OR:
             case GameVersion::AS:
             {
-                static const std::set<int> items = [] {
-                    return create_set_consecutive<int>(0, 621);
+                static const std::set<Move> items = [] {
+                    return create_set_consecutive<Move>(Move::None, Move::HyperspaceFury);
                 }();
                 return items;
             }
             case GameVersion::SN:
             case GameVersion::MN:
             {
-                static const std::set<int> items = [] {
-                    return create_set_consecutive<int>(0, 720);
+                static const std::set<Move> items = [] {
+                    return create_set_consecutive<Move>(Move::None, Move::MindBlown);
                 }();
                 return items;
             }
             case GameVersion::US:
             case GameVersion::UM:
             {
-                static const std::set<int> items = [] {
-                    return create_set_consecutive<int>(0, 728);
+                static const std::set<Move> items = [] {
+                    return create_set_consecutive<Move>(Move::None, Move::ClangorousSoulblaze);
                 }();
                 return items;
             }
             case GameVersion::GE:
             case GameVersion::GP:
             {
-                static const std::set<int> items = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
-                    14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
-                    34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53,
-                    54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73,
-                    74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93,
-                    94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110,
-                    111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126,
-                    127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142,
-                    143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158,
-                    159, 160, 161, 162, 163, 164, 182, 188, 200, 224, 227, 231, 242, 243, 247, 252,
-                    257, 261, 263, 269, 270, 276, 280, 281, 339, 347, 355, 364, 369, 389, 394, 398,
-                    399, 403, 404, 405, 406, 417, 420, 430, 438, 446, 453, 483, 492, 499, 503, 504,
-                    525, 529, 583, 585, 603, 605, 606, 607, 729, 730, 731, 733, 734, 735, 736, 737,
-                    738, 739, 740, 742};
+                static const std::set<Move> items = {Move::None, Move::Pound, Move::KarateChop,
+                    Move::DoubleSlap, Move::CometPunch, Move::MegaPunch, Move::PayDay,
+                    Move::FirePunch, Move::IcePunch, Move::ThunderPunch, Move::Scratch,
+                    Move::ViseGrip, Move::Guillotine, Move::RazorWind, Move::SwordsDance, Move::Cut,
+                    Move::Gust, Move::WingAttack, Move::Whirlwind, Move::Fly, Move::Bind,
+                    Move::Slam, Move::VineWhip, Move::Stomp, Move::DoubleKick, Move::MegaKick,
+                    Move::JumpKick, Move::RollingKick, Move::SandAttack, Move::Headbutt,
+                    Move::HornAttack, Move::FuryAttack, Move::HornDrill, Move::Tackle,
+                    Move::BodySlam, Move::Wrap, Move::TakeDown, Move::Thrash, Move::DoubleEdge,
+                    Move::TailWhip, Move::PoisonSting, Move::Twineedle, Move::PinMissile,
+                    Move::Leer, Move::Bite, Move::Growl, Move::Roar, Move::Sing, Move::Supersonic,
+                    Move::SonicBoom, Move::Disable, Move::Acid, Move::Ember, Move::Flamethrower,
+                    Move::Mist, Move::WaterGun, Move::HydroPump, Move::Surf, Move::IceBeam,
+                    Move::Blizzard, Move::Psybeam, Move::BubbleBeam, Move::AuroraBeam,
+                    Move::HyperBeam, Move::Peck, Move::DrillPeck, Move::Submission, Move::LowKick,
+                    Move::Counter, Move::SeismicToss, Move::Strength, Move::Absorb, Move::MegaDrain,
+                    Move::LeechSeed, Move::Growth, Move::RazorLeaf, Move::SolarBeam,
+                    Move::PoisonPowder, Move::StunSpore, Move::SleepPowder, Move::PetalDance,
+                    Move::StringShot, Move::DragonRage, Move::FireSpin, Move::ThunderShock,
+                    Move::Thunderbolt, Move::ThunderWave, Move::Thunder, Move::RockThrow,
+                    Move::Earthquake, Move::Fissure, Move::Dig, Move::Toxic, Move::Confusion,
+                    Move::Psychic, Move::Hypnosis, Move::Meditate, Move::Agility, Move::QuickAttack,
+                    Move::Rage, Move::Teleport, Move::NightShade, Move::Mimic, Move::Screech,
+                    Move::DoubleTeam, Move::Recover, Move::Harden, Move::Minimize,
+                    Move::Smokescreen, Move::ConfuseRay, Move::Withdraw, Move::DefenseCurl,
+                    Move::Barrier, Move::LightScreen, Move::Haze, Move::Reflect, Move::FocusEnergy,
+                    Move::Bide, Move::Metronome, Move::MirrorMove, Move::SelfDestruct,
+                    Move::EggBomb, Move::Lick, Move::Smog, Move::Sludge, Move::BoneClub,
+                    Move::FireBlast, Move::Waterfall, Move::Clamp, Move::Swift, Move::SkullBash,
+                    Move::SpikeCannon, Move::Constrict, Move::Amnesia, Move::Kinesis,
+                    Move::SoftBoiled, Move::HighJumpKick, Move::Glare, Move::DreamEater,
+                    Move::PoisonGas, Move::Barrage, Move::LeechLife, Move::LovelyKiss,
+                    Move::SkyAttack, Move::Transform, Move::Bubble, Move::DizzyPunch, Move::Spore,
+                    Move::Flash, Move::Psywave, Move::Splash, Move::AcidArmor, Move::Crabhammer,
+                    Move::Explosion, Move::FurySwipes, Move::Bonemerang, Move::Rest,
+                    Move::RockSlide, Move::HyperFang, Move::Sharpen, Move::Conversion,
+                    Move::TriAttack, Move::SuperFang, Move::Slash, Move::Substitute, Move::Protect,
+                    Move::SludgeBomb, Move::Outrage, Move::Megahorn, Move::Encore, Move::IronTail,
+                    Move::Crunch, Move::MirrorCoat, Move::ShadowBall, Move::FakeOut, Move::HeatWave,
+                    Move::WillOWisp, Move::Facade, Move::Taunt, Move::HelpingHand, Move::Superpower,
+                    Move::BrickBreak, Move::Yawn, Move::BulkUp, Move::CalmMind, Move::Roost,
+                    Move::Feint, Move::Uturn, Move::SuckerPunch, Move::FlareBlitz, Move::PoisonJab,
+                    Move::DarkPulse, Move::AirSlash, Move::XScissor, Move::BugBuzz,
+                    Move::DragonPulse, Move::NastyPlot, Move::IceShard, Move::FlashCannon,
+                    Move::PowerWhip, Move::StealthRock, Move::AquaJet, Move::QuiverDance,
+                    Move::FoulPlay, Move::ClearSmog, Move::Scald, Move::ShellSmash,
+                    Move::DragonTail, Move::DrillRun, Move::PlayRough, Move::Moonblast,
+                    Move::HappyHour, Move::DazzlingGleam, Move::Celebrate, Move::HoldHands,
+                    Move::ZippyZap, Move::SplishySplash, Move::FloatyFall, Move::BouncyBubble,
+                    Move::BuzzyBuzz, Move::SizzlySlide, Move::GlitzyGlow, Move::BaddyBad,
+                    Move::SappySeed, Move::FreezyFrost, Move::SparklySwirl, Move::DoubleIronBash};
                 return items;
             }
             case GameVersion::SW:
             case GameVersion::SH:
             {
-                static const std::set<int> items = [] {
-                    return create_set_consecutive<int>(0, 818);
+                static const std::set<Move> items = [] {
+                    return create_set_consecutive<Move>(Move::None, Move::SurgingStrikes);
                 }();
                 return items;
             }
@@ -694,7 +732,7 @@ namespace pksm
         }
     }
 
-    int VersionTables::maxMove(GameVersion version)
+    Move VersionTables::maxMove(GameVersion version)
     {
         switch (version)
         {
@@ -703,38 +741,38 @@ namespace pksm
             case GameVersion::FR:
             case GameVersion::LG:
             case GameVersion::E:
-                return 354;
+                return Move::PsychoBoost;
             case GameVersion::D:
             case GameVersion::P:
             case GameVersion::Pt:
             case GameVersion::HG:
             case GameVersion::SS:
-                return 467;
+                return Move::ShadowForce;
             case GameVersion::B:
             case GameVersion::W:
             case GameVersion::B2:
             case GameVersion::W2:
-                return 559;
+                return Move::FusionBolt;
             case GameVersion::X:
             case GameVersion::Y:
-                return 617;
+                return Move::LightofRuin;
             case GameVersion::OR:
             case GameVersion::AS:
-                return 621;
+                return Move::HyperspaceFury;
             case GameVersion::SN:
             case GameVersion::MN:
-                return 720;
+                return Move::MindBlown;
             case GameVersion::US:
             case GameVersion::UM:
-                return 728;
+                return Move::ClangorousSoulblaze;
             case GameVersion::GE:
             case GameVersion::GP:
-                return 742;
+                return Move::DoubleIronBash;
             case GameVersion::SW:
             case GameVersion::SH:
-                return 818;
+                return Move::SurgingStrikes;
             default:
-                return 0;
+                return Move::None;
         }
     }
 
@@ -931,5 +969,100 @@ namespace pksm
             default:
                 return 1;
         }
+    }
+
+    u8 VersionTables::movePP(pksm::Generation gen, Move move, u8 ppUps)
+    {
+        if (move == pksm::Move::INVALID || move == pksm::Move::None ||
+            size_t(move) >= internal::PP_G8.size())
+        {
+            return 0;
+        }
+        u8 val = 0;
+        switch (gen)
+        {
+            case pksm::Generation::EIGHT:
+            case pksm::Generation::SEVEN:
+                val = internal::PP_G8[size_t(move)];
+                break;
+            case pksm::Generation::SIX:
+            {
+                auto found = std::find_if(internal::PPDiff_G6.begin(), internal::PPDiff_G6.end(),
+                    [move](const std::pair<pksm::Move, u8>& v) { return v.first == move; });
+                if (found != internal::PPDiff_G6.end())
+                {
+                    val = found->second;
+                }
+                else
+                {
+                    val = internal::PP_G8[size_t(move)];
+                }
+            }
+            break;
+            case pksm::Generation::FIVE:
+            {
+                auto found = std::find_if(internal::PPDiff_G5.begin(), internal::PPDiff_G5.end(),
+                    [move](const std::pair<pksm::Move, u8>& v) { return v.first == move; });
+                if (found != internal::PPDiff_G5.end())
+                {
+                    val = found->second;
+                }
+                else
+                {
+                    val = internal::PP_G8[size_t(move)];
+                }
+            }
+            break;
+            case pksm::Generation::FOUR:
+            {
+                auto found = std::find_if(internal::PPDiff_G4.begin(), internal::PPDiff_G4.end(),
+                    [move](const std::pair<pksm::Move, u8>& v) { return v.first == move; });
+                if (found != internal::PPDiff_G4.end())
+                {
+                    val = found->second;
+                }
+                else
+                {
+                    val = internal::PP_G8[size_t(move)];
+                }
+            }
+            break;
+            case pksm::Generation::THREE:
+            {
+                auto found = std::find_if(internal::PPDiff_G3.begin(), internal::PPDiff_G3.end(),
+                    [move](const std::pair<pksm::Move, u8>& v) { return v.first == move; });
+                if (found != internal::PPDiff_G3.end())
+                {
+                    val = found->second;
+                }
+                else
+                {
+                    val = internal::PP_G8[size_t(move)];
+                }
+            }
+            break;
+            case pksm::Generation::LGPE:
+            {
+                auto found =
+                    std::find_if(internal::PPDiff_LGPE.begin(), internal::PPDiff_LGPE.end(),
+                        [move](const std::pair<pksm::Move, u8>& v) { return v.first == move; });
+                if (found != internal::PPDiff_LGPE.end())
+                {
+                    val = found->second;
+                }
+                else
+                {
+                    val = internal::PP_G8[size_t(move)];
+                }
+            }
+            break;
+        }
+
+        // Stupid thing G1/2 does: they can't store above 63 for PP value
+        if (gen <= pksm::Generation::TWO && val == 40)
+        {
+            return val + 7 * ppUps;
+        }
+        return val + ((val / 5) * ppUps);
     }
 }

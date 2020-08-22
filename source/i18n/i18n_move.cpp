@@ -39,14 +39,14 @@ namespace i18n
 
     void exitMove(pksm::Language lang) { moves.erase(lang); }
 
-    const std::string& move(pksm::Language lang, u16 val)
+    const std::string& move(pksm::Language lang, pksm::Move val)
     {
         checkInitialized(lang);
         if (moves.count(lang) > 0)
         {
-            if (val < moves[lang].size())
+            if (size_t(val) < moves[lang].size())
             {
-                return moves[lang][val];
+                return moves[lang][size_t(val)];
             }
         }
         return emptyString;

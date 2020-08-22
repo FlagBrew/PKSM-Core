@@ -367,8 +367,8 @@ namespace pksm
         StringUtils::setString(data, StringUtils::transString67(v), 0x40, 13);
     }
 
-    u16 PK6::move(u8 m) const { return LittleEndian::convertTo<u16>(data + 0x5A + m * 2); }
-    void PK6::move(u8 m, u16 v) { LittleEndian::convertFrom<u16>(data + 0x5A + m * 2, v); }
+    Move PK6::move(u8 m) const { return Move{LittleEndian::convertTo<u16>(data + 0x5A + m * 2)}; }
+    void PK6::move(u8 m, Move v) { LittleEndian::convertFrom<u16>(data + 0x5A + m * 2, u16(v)); }
 
     u8 PK6::PP(u8 m) const { return data[0x62 + m]; }
     void PK6::PP(u8 m, u8 v) { data[0x62 + m] = v; }
@@ -376,8 +376,14 @@ namespace pksm
     u8 PK6::PPUp(u8 m) const { return data[0x66 + m]; }
     void PK6::PPUp(u8 m, u8 v) { data[0x66 + m] = v; }
 
-    u16 PK6::relearnMove(u8 m) const { return LittleEndian::convertTo<u16>(data + 0x6A + m * 2); }
-    void PK6::relearnMove(u8 m, u16 v) { LittleEndian::convertFrom<u16>(data + 0x6A + m * 2, v); }
+    Move PK6::relearnMove(u8 m) const
+    {
+        return Move{LittleEndian::convertTo<u16>(data + 0x6A + m * 2)};
+    }
+    void PK6::relearnMove(u8 m, Move v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x6A + m * 2, u16(v));
+    }
 
     bool PK6::secretSuperTrainingUnlocked(void) const { return (data[0x72] & 1) == 1; }
     void PK6::secretSuperTrainingUnlocked(bool v) { data[0x72] = (data[0x72] & ~1) | (v ? 1 : 0); }
@@ -889,7 +895,7 @@ namespace pksm
         {
             if (pk5->move(i) > save.maxMove())
             {
-                pk5->move(i, 0);
+                pk5->move(i, Move::None);
             }
         }
 

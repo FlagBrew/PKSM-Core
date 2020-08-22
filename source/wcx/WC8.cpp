@@ -339,11 +339,11 @@ namespace pksm
 
     u16 WC8::heldItem(void) const { return LittleEndian::convertTo<u16>(data + 0x22E); }
 
-    u16 WC8::move(u8 m) const { return LittleEndian::convertTo<u16>(data + 0x230 + m * 2); }
+    Move WC8::move(u8 m) const { return Move{LittleEndian::convertTo<u16>(data + 0x230 + m * 2)}; }
 
-    u16 WC8::relearnMove(u8 index) const
+    Move WC8::relearnMove(u8 index) const
     {
-        return LittleEndian::convertTo<u16>(data + 0x238 + index * 2);
+        return Move{LittleEndian::convertTo<u16>(data + 0x238 + index * 2)};
     }
 
     Species WC8::species(void) const { return Species{LittleEndian::convertTo<u16>(data + 0x240)}; }

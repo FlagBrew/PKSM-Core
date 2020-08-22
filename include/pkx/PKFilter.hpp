@@ -32,6 +32,7 @@
 #include "enums/Gender.hpp"
 #include "enums/Generation.hpp"
 #include "enums/Language.hpp"
+#include "enums/Move.hpp"
 #include "enums/Nature.hpp"
 #include "enums/Species.hpp"
 #include "enums/Stat.hpp"
@@ -113,8 +114,8 @@ namespace pksm
         MAKE_DEFN_CONSTANT(TSV, u16);
         MAKE_DEFN(nature, Nature);
         MAKE_DEFN(gender, Gender);
-        MAKE_NUM_DEFN(move, u16, 4, u8);
-        MAKE_NUM_DEFN(relearnMove, u16, 4, u8);
+        MAKE_NUM_DEFN(move, Move, 4, u8);
+        MAKE_NUM_DEFN(relearnMove, Move, 4, u8);
         MAKE_DEFN(ball, Ball);
         MAKE_DEFN(language, Language);
         MAKE_DEFN(egg, bool);

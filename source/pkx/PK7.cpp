@@ -325,8 +325,8 @@ namespace pksm
         StringUtils::setString(data, StringUtils::transString67(v), 0x40, 13);
     }
 
-    u16 PK7::move(u8 m) const { return LittleEndian::convertTo<u16>(data + 0x5A + m * 2); }
-    void PK7::move(u8 m, u16 v) { LittleEndian::convertFrom<u16>(data + 0x5A + m * 2, v); }
+    Move PK7::move(u8 m) const { return Move{LittleEndian::convertTo<u16>(data + 0x5A + m * 2)}; }
+    void PK7::move(u8 m, Move v) { LittleEndian::convertFrom<u16>(data + 0x5A + m * 2, u16(v)); }
 
     u8 PK7::PP(u8 m) const { return data[0x62 + m]; }
     void PK7::PP(u8 m, u8 v) { data[0x62 + m] = v; }
@@ -334,8 +334,14 @@ namespace pksm
     u8 PK7::PPUp(u8 m) const { return data[0x66 + m]; }
     void PK7::PPUp(u8 m, u8 v) { data[0x66 + m] = v; }
 
-    u16 PK7::relearnMove(u8 m) const { return LittleEndian::convertTo<u16>(data + 0x6A + m * 2); }
-    void PK7::relearnMove(u8 m, u16 v) { LittleEndian::convertFrom<u16>(data + 0x6A + m * 2, v); }
+    Move PK7::relearnMove(u8 m) const
+    {
+        return Move{LittleEndian::convertTo<u16>(data + 0x6A + m * 2)};
+    }
+    void PK7::relearnMove(u8 m, Move v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x6A + m * 2, u16(v));
+    }
 
     u8 PK7::iv(Stat stat) const
     {
@@ -749,11 +755,11 @@ namespace pksm
         {
             if (pk6->move(i) > save.maxMove())
             {
-                pk6->move(i, 0);
+                pk6->move(i, Move::None);
             }
             if (pk6->relearnMove(i) > save.maxMove())
             {
-                pk6->relearnMove(i, 0);
+                pk6->relearnMove(i, Move::None);
             }
         }
         pk6->fixMoves();
@@ -792,8 +798,9 @@ namespace pksm
         for (size_t i = 0; i < 4; i++)
         {
             pk8->move(i, move(i));
-            pk8->PPUp(i, move(i));
-            pk8->relearnMove(i, move(i));
+            pk8->PPUp(i, PPUp(i));
+            pk8->PP(i, PP(i));
+            pk8->relearnMove(i, relearnMove(i));
         }
         pk8->egg(egg());
         pk8->nicknamed(nicknamed());

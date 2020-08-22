@@ -156,7 +156,7 @@ namespace pksm
 
     u16 WB7::heldItem(void) const { return LittleEndian::convertTo<u16>(data + 0x78); }
 
-    u16 WB7::move(u8 m) const { return LittleEndian::convertTo<u16>(data + 0x7A + m * 2); }
+    Move WB7::move(u8 m) const { return Move{LittleEndian::convertTo<u16>(data + 0x7A + m * 2)}; }
 
     Species WB7::species(void) const { return Species{LittleEndian::convertTo<u16>(data + 0x82)}; }
 
@@ -202,9 +202,9 @@ namespace pksm
 
     u32 WB7::PID(void) const { return LittleEndian::convertTo<u32>(data + 0xD4); }
 
-    u16 WB7::relearnMove(u8 index) const
+    Move WB7::relearnMove(u8 index) const
     {
-        return LittleEndian::convertTo<u16>(data + 0xD8 + index * 2);
+        return Move{LittleEndian::convertTo<u16>(data + 0xD8 + index * 2)};
     }
 
     u8 WB7::otIntensity(void) const { return data[0xE0]; }

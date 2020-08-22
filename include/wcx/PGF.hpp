@@ -73,7 +73,7 @@ namespace pksm
         u8 PIDType(void) const override;
         u16 TID(void) const override;
         u16 SID(void) const override;
-        u16 move(u8 index) const override;
+        Move move(u8 index) const override;
         Species species(void) const override;
         Gender gender(void) const override;
         std::string otName(void) const override;

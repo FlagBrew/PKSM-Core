@@ -366,8 +366,8 @@ namespace pksm
         }
     }
 
-    u16 PK4::move(u8 m) const { return LittleEndian::convertTo<u16>(data + 0x28 + m * 2); }
-    void PK4::move(u8 m, u16 v) { LittleEndian::convertFrom<u16>(data + 0x28 + m * 2, v); }
+    Move PK4::move(u8 m) const { return Move{LittleEndian::convertTo<u16>(data + 0x28 + m * 2)}; }
+    void PK4::move(u8 m, Move v) { LittleEndian::convertFrom<u16>(data + 0x28 + m * 2, u16(v)); }
 
     u8 PK4::PP(u8 m) const { return data[0x30 + m]; }
     void PK4::PP(u8 m, u8 v) { data[0x30 + m] = v; }
@@ -843,6 +843,10 @@ namespace pksm
         pk3->PPUp(1, PPUp(1));
         pk3->PPUp(2, PPUp(2));
         pk3->PPUp(3, PPUp(3));
+        pk3->PP(0, PP(0));
+        pk3->PP(1, PP(1));
+        pk3->PP(2, PP(2));
+        pk3->PP(3, PP(3));
         pk3->iv(Stat::HP, iv(Stat::HP));
         pk3->iv(Stat::ATK, iv(Stat::ATK));
         pk3->iv(Stat::DEF, iv(Stat::DEF));
@@ -897,13 +901,13 @@ namespace pksm
         pk3->heldItem(heldItem());
 
         // Remove HM
-        u16 moves[4] = {move(0), move(1), move(2), move(3)};
+        Move moves[4] = {move(0), move(1), move(2), move(3)};
 
         for (int i = 0; i < 4; i++)
         {
-            if (std::find(banned, banned + 8, moves[i]) != banned + 8)
+            if (std::find(std::begin(banned), std::end(banned), moves[i]) != std::end(banned))
             {
-                moves[i] = 0;
+                moves[i] = Move::None;
             }
             pk3->move(i, moves[i]);
         }
@@ -951,13 +955,13 @@ namespace pksm
         pk5->metLevel(pk5->level());
 
         // Remove HM
-        u16 moves[4] = {move(0), move(1), move(2), move(3)};
+        Move moves[4] = {move(0), move(1), move(2), move(3)};
 
         for (int i = 0; i < 4; i++)
         {
             if (std::find(banned, banned + 8, moves[i]) != banned + 8)
             {
-                moves[i] = 0;
+                moves[i] = Move::None;
             }
             pk5->move(i, moves[i]);
         }

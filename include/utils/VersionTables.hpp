@@ -30,26 +30,30 @@
 #include "enums/Ability.hpp"
 #include "enums/Ball.hpp"
 #include "enums/GameVersion.hpp"
+#include "enums/Generation.hpp"
+#include "enums/Move.hpp"
 #include "enums/Species.hpp"
 #include <set>
 
 namespace pksm::VersionTables
 {
     const std::set<int>& availableItems(GameVersion version);
-    const std::set<int>& availableMoves(GameVersion version);
+    const std::set<Move>& availableMoves(GameVersion version);
     const std::set<Species>& availableSpecies(GameVersion version);
     const std::set<Ability>& availableAbilities(GameVersion version);
     const std::set<Ball>& availableBalls(GameVersion version);
 
     // Not guaranteed to be useful
     int maxItem(GameVersion version);
-    int maxMove(GameVersion version);
+    Move maxMove(GameVersion version);
     Species maxSpecies(GameVersion version);
     Ability maxAbility(GameVersion version);
     Ball maxBall(GameVersion version);
 
     // Takes version-specific forms into account
     u8 formCount(GameVersion version, Species species);
+
+    u8 movePP(Generation gen, Move move, u8 ppUps);
 }
 
 #endif

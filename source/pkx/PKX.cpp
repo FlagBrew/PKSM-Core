@@ -33,6 +33,7 @@
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
 #include "pkx/PKFilter.hpp"
+#include "utils/VersionTables.hpp"
 #include "utils/endian.hpp"
 #include "utils/random.hpp"
 
@@ -218,50 +219,50 @@ namespace pksm
 
     void PKX::reorderMoves(void)
     {
-        if (move(3) != 0 && move(2) == 0)
+        if (move(3) != Move::None && move(2) == Move::None)
         {
             move(2, move(3));
             PP(2, PP(3));
             PPUp(2, PPUp(3));
-            move(3, 0);
+            move(3, Move::None);
         }
-        if (move(2) != 0 && move(1) == 0)
+        if (move(2) != Move::None && move(1) == Move::None)
         {
             move(1, move(2));
             PP(1, PP(2));
             PPUp(1, PPUp(2));
-            move(2, 0);
+            move(2, Move::None);
             reorderMoves();
         }
-        if (move(1) != 0 && move(0) == 0)
+        if (move(1) != Move::None && move(0) == Move::None)
         {
             move(0, move(1));
             PP(0, PP(1));
             PPUp(0, PPUp(1));
-            move(1, 0);
+            move(1, Move::None);
             reorderMoves();
         }
-        if (relearnMove(3) != 0 && relearnMove(2) == 0)
+        if (relearnMove(3) != Move::None && relearnMove(2) == Move::None)
         {
             relearnMove(2, relearnMove(3));
             PP(2, PP(3));
             PPUp(2, PPUp(3));
-            relearnMove(3, 0);
+            relearnMove(3, Move::None);
         }
-        if (relearnMove(2) != 0 && relearnMove(1) == 0)
+        if (relearnMove(2) != Move::None && relearnMove(1) == Move::None)
         {
             relearnMove(1, relearnMove(2));
             PP(1, PP(2));
             PPUp(1, PPUp(2));
-            relearnMove(2, 0);
+            relearnMove(2, Move::None);
             reorderMoves();
         }
-        if (relearnMove(1) != 0 && relearnMove(0) == 0)
+        if (relearnMove(1) != Move::None && relearnMove(0) == Move::None)
         {
             relearnMove(0, relearnMove(1));
             PP(0, PP(1));
             PPUp(0, PPUp(1));
-            relearnMove(1, 0);
+            relearnMove(1, Move::None);
             reorderMoves();
         }
     }
@@ -282,22 +283,26 @@ namespace pksm
     {
         reorderMoves();
 
-        if (move(0) == 0)
+        if (move(0) == Move::None)
         {
-            move(0, 1);
+            move(0, Move::Pound);
         }
 
         for (int i = 0; i < 4; i++)
         {
-            if (move(i) == 0)
+            if (move(i) == Move::None)
             {
                 PP(i, 0);
                 PPUp(i, 0);
             }
-            else
-            {
-                PP(i, 5); // Smallest maximum
-            }
+        }
+    }
+
+    void PKX::healPP(void)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            PP(i, maxPP(i));
         }
     }
 
@@ -647,5 +652,10 @@ namespace pksm
             ret->updatePartyData();
             return ret;
         }
+    }
+
+    u8 PKX::maxPP(u8 which) const
+    {
+        return VersionTables::movePP(generation(), move(which), PPUp(which));
     }
 }

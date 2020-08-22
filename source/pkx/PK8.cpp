@@ -463,8 +463,8 @@ namespace pksm
         StringUtils::setString(data, StringUtils::transString67(v), 0x58, 13);
     }
 
-    u16 PK8::move(u8 m) const { return LittleEndian::convertTo<u16>(data + 0x72 + m * 2); }
-    void PK8::move(u8 m, u16 v) { LittleEndian::convertFrom<u16>(data + 0x72 + m * 2, v); }
+    Move PK8::move(u8 m) const { return Move{LittleEndian::convertTo<u16>(data + 0x72 + m * 2)}; }
+    void PK8::move(u8 m, Move v) { LittleEndian::convertFrom<u16>(data + 0x72 + m * 2, u16(v)); }
 
     u8 PK8::PP(u8 m) const { return data[0x7A + m]; }
     void PK8::PP(u8 m, u8 v) { data[0x7A + m] = v; }
@@ -472,8 +472,14 @@ namespace pksm
     u8 PK8::PPUp(u8 m) const { return data[0x7E + m]; }
     void PK8::PPUp(u8 m, u8 v) { data[0x7E + m] = v; }
 
-    u16 PK8::relearnMove(u8 m) const { return LittleEndian::convertTo<u16>(data + 0x82 + m * 2); }
-    void PK8::relearnMove(u8 m, u16 v) { LittleEndian::convertFrom<u16>(data + 0x82 + m * 2, v); }
+    Move PK8::relearnMove(u8 m) const
+    {
+        return Move{LittleEndian::convertTo<u16>(data + 0x82 + m * 2)};
+    }
+    void PK8::relearnMove(u8 m, Move v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x82 + m * 2, u16(v));
+    }
 
     int PK8::partyCurrHP(void) const { return LittleEndian::convertTo<u16>(data + 0x8A); }
     void PK8::partyCurrHP(u16 v) { LittleEndian::convertFrom<u16>(data + 0x8A, v); }

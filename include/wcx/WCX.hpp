@@ -32,6 +32,7 @@
 #include "enums/Gender.hpp"
 #include "enums/Generation.hpp"
 #include "enums/Language.hpp"
+#include "enums/Move.hpp"
 #include "enums/Nature.hpp"
 #include "enums/Ribbon.hpp"
 #include "enums/Species.hpp"
@@ -94,7 +95,7 @@ namespace pksm
         virtual Language language(void) const    = 0;
         virtual u8 level(void) const             = 0;
         virtual u8 metLevel(void) const          = 0;
-        virtual u16 move(u8 index) const         = 0;
+        virtual Move move(u8 index) const        = 0;
         virtual Nature nature(void) const        = 0;
         virtual std::string nickname(void) const = 0;
         virtual std::string otName(void) const   = 0;

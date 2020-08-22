@@ -597,7 +597,7 @@ namespace pksm
                 for (size_t move = 0; move < 4; move++)
                 {
                     pk8->move(move, wc8.move(move));
-                    pk8->relearnMove(wc8.relearnMove(move));
+                    pk8->relearnMove(move, wc8.relearnMove(move));
                 }
 
                 pk8->version(wc8.version() != GameVersion::INVALID ? wc8.version() : version());

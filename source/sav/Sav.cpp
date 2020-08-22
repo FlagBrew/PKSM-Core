@@ -278,12 +278,12 @@ namespace pksm
         bool moveBad = false;
         for (int i = 0; i < 4; i++)
         {
-            if (availableMoves().count((int)pk.move(i)) == 0)
+            if (availableMoves().count(pk.move(i)) == 0)
             {
                 moveBad = true;
                 break;
             }
-            if (availableMoves().count((int)pk.relearnMove(i)) == 0)
+            if (availableMoves().count(pk.relearnMove(i)) == 0)
             {
                 moveBad = true;
                 break;

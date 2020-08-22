@@ -75,8 +75,8 @@ namespace pksm
         bool used(void) const override;
 
         // Pokemon properties
-        u16 move(u8 index) const override;
-        u16 relearnMove(u8 index) const;
+        Move move(u8 index) const override;
+        Move relearnMove(u8 index) const;
         Species species(void) const override;
         u8 alternativeForm(void) const override;
         Gender gender(void) const override;

@@ -172,8 +172,8 @@ namespace pksm
     std::string PB7::nickname(void) const { return StringUtils::getString(data, 0x40, 12); }
     void PB7::nickname(const std::string_view& v) { StringUtils::setString(data, v, 0x40, 12); }
 
-    u16 PB7::move(u8 m) const { return LittleEndian::convertTo<u16>(data + 0x5A + m * 2); }
-    void PB7::move(u8 m, u16 v) { LittleEndian::convertFrom<u16>(data + 0x5A + m * 2, v); }
+    Move PB7::move(u8 m) const { return Move{LittleEndian::convertTo<u16>(data + 0x5A + m * 2)}; }
+    void PB7::move(u8 m, Move v) { LittleEndian::convertFrom<u16>(data + 0x5A + m * 2, u16(v)); }
 
     u8 PB7::PP(u8 m) const { return data[0x62 + m]; }
     void PB7::PP(u8 m, u8 v) { data[0x62 + m] = v; }
@@ -181,8 +181,14 @@ namespace pksm
     u8 PB7::PPUp(u8 m) const { return data[0x66 + m]; }
     void PB7::PPUp(u8 m, u8 v) { data[0x66 + m] = v; }
 
-    u16 PB7::relearnMove(u8 m) const { return LittleEndian::convertTo<u16>(data + 0x6A + m * 2); }
-    void PB7::relearnMove(u8 m, u16 v) { LittleEndian::convertFrom<u16>(data + 0x6A + m * 2, v); }
+    Move PB7::relearnMove(u8 m) const
+    {
+        return Move{LittleEndian::convertTo<u16>(data + 0x6A + m * 2)};
+    }
+    void PB7::relearnMove(u8 m, Move v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x6A + m * 2, u16(v));
+    }
 
     u8 PB7::iv(Stat stat) const
     {
@@ -653,7 +659,8 @@ namespace pksm
         for (size_t i = 0; i < 4; i++)
         {
             pk8->move(i, move(i));
-            pk8->PPUp(i, move(i));
+            pk8->PPUp(i, PPUp(i));
+            pk8->PP(i, PP(i));
             pk8->relearnMove(i, move(i));
         }
         pk8->nicknamed(nicknamed());

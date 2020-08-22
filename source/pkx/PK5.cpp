@@ -460,8 +460,8 @@ namespace pksm
         }
     }
 
-    u16 PK5::move(u8 m) const { return LittleEndian::convertTo<u16>(data + 0x28 + m * 2); }
-    void PK5::move(u8 m, u16 v) { LittleEndian::convertFrom<u16>(data + 0x28 + m * 2, v); }
+    Move PK5::move(u8 m) const { return Move{LittleEndian::convertTo<u16>(data + 0x28 + m * 2)}; }
+    void PK5::move(u8 m, Move v) { LittleEndian::convertFrom<u16>(data + 0x28 + m * 2, u16(v)); }
 
     u8 PK5::PP(u8 m) const { return data[0x30 + m]; }
     void PK5::PP(u8 m, u8 v) { data[0x30 + m] = v; }
@@ -829,7 +829,7 @@ namespace pksm
         {
             if (pk4->move(i) > save.maxMove())
             {
-                pk4->move(i, 0);
+                pk4->move(i, Move::None);
             }
         }
         pk4->fixMoves();

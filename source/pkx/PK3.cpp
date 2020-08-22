@@ -259,8 +259,14 @@ namespace pksm
     u8 PK3::otFriendship(void) const { return data[0x29]; }
     void PK3::otFriendship(u8 v) { data[0x29] = v; }
 
-    u16 PK3::move(u8 move) const { return LittleEndian::convertTo<u16>(data + 0x2C + move * 2); }
-    void PK3::move(u8 move, u16 v) { LittleEndian::convertFrom<u16>(data + 0x2C + move * 2, v); }
+    Move PK3::move(u8 move) const
+    {
+        return Move{LittleEndian::convertTo<u16>(data + 0x2C + move * 2)};
+    }
+    void PK3::move(u8 move, Move v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x2C + move * 2, u16(v));
+    }
 
     u8 PK3::PP(u8 move) const { return data[0x34 + move]; }
     void PK3::PP(u8 move, u8 v) { data[0x34 + move] = v; }
@@ -577,10 +583,11 @@ namespace pksm
         // Remove HM moves
         for (int i = 0; i < 4; i++)
         {
-            static constexpr std::array<u16, 8> hms = {15, 19, 57, 70, 148, 249, 127, 291};
+            static constexpr std::array<Move, 8> hms = {Move::Cut, Move::Fly, Move::Surf,
+                Move::Strength, Move::Flash, Move::RockSmash, Move::Waterfall, Move::Dive};
             if (std::find(hms.begin(), hms.end(), pk4->move(i)) != hms.end())
             {
-                pk4->move(i, 0);
+                pk4->move(i, Move::None);
             }
             else
             {

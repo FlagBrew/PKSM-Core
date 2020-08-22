@@ -135,7 +135,10 @@ namespace pksm
 
     u16 PGF::SID(void) const { return LittleEndian::convertTo<u16>(data + 0x02); }
 
-    u16 PGF::move(u8 index) const { return LittleEndian::convertTo<u16>(data + 0x12 + index * 2); }
+    Move PGF::move(u8 index) const
+    {
+        return Move{LittleEndian::convertTo<u16>(data + 0x12 + index * 2)};
+    }
 
     Species PGF::species(void) const { return Species{LittleEndian::convertTo<u16>(data + 0x1A)}; }
 

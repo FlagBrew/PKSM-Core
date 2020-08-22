@@ -53,7 +53,8 @@ namespace pksm
     protected:
         static constexpr Species beasts[4] = {
             Species::Celebi, Species::Raikou, Species::Entei, Species::Suicune};
-        static constexpr u16 banned[8] = {15, 19, 57, 70, 250, 249, 127, 431};
+        static constexpr Move banned[8] = {Move::Cut, Move::Fly, Move::Surf, Move::Strength,
+            Move::Whirlpool, Move::RockSmash, Move::Waterfall, Move::RockClimb};
 
     public:
         static constexpr size_t BOX_LENGTH            = 136;
@@ -119,10 +120,10 @@ namespace pksm
         bool ribbon(Ribbon rib) const override;
         void ribbon(Ribbon rib, bool v) override;
 
-        u16 move(u8 move) const override;
-        void move(u8 move, u16 v) override;
-        u16 relearnMove(u8) const override { return 0; }
-        void relearnMove(u8, u16) override {}
+        Move move(u8 move) const override;
+        void move(u8 move, Move v) override;
+        Move relearnMove(u8) const override { return Move::None; }
+        void relearnMove(u8, Move) override {}
         u8 PP(u8 move) const override;
         void PP(u8 move, u8 v) override;
         u8 PPUp(u8 move) const override;

@@ -44,10 +44,10 @@ namespace pksm
             pokemonData->gender(Gender::Genderless);
             pokemonData->level(1);
             pokemonData->setAbility(0);
-            pokemonData->move(0, 294);
-            pokemonData->move(1, 145);
-            pokemonData->move(2, 346);
-            pokemonData->move(3, 0);
+            pokemonData->move(0, Move::TailGlow);
+            pokemonData->move(1, Move::Bubble);
+            pokemonData->move(2, Move::WaterSport);
+            pokemonData->move(3, Move::None);
             pokemonData->heldItem(0);
             pokemonData->fatefulEncounter(true);
             pokemonData->ball(Ball::Poke);
@@ -177,7 +177,7 @@ namespace pksm
 
     u16 PGT::SID(void) const { return pokemonData->SID(); }
 
-    u16 PGT::move(u8 index) const { return pokemonData->move(index); }
+    Move PGT::move(u8 index) const { return pokemonData->move(index); }
 
     Species PGT::species(void) const { return pokemonData->species(); }
 

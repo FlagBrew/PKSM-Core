@@ -195,7 +195,7 @@ namespace pksm
         {
             return VersionTables::availableItems(version());
         }
-        const std::set<int>& availableMoves(void) const
+        const std::set<Move>& availableMoves(void) const
         {
             return VersionTables::availableMoves(version());
         }
@@ -213,7 +213,7 @@ namespace pksm
         }
         // Not guaranteed to be useful
         int maxItem() const { return VersionTables::maxItem(version()); }
-        int maxMove() const { return VersionTables::maxMove(version()); }
+        Move maxMove() const { return VersionTables::maxMove(version()); }
         Species maxSpecies() const { return VersionTables::maxSpecies(version()); }
         Ability maxAbility() const { return VersionTables::maxAbility(version()); }
         Ball maxBall() const { return VersionTables::maxBall(version()); }
