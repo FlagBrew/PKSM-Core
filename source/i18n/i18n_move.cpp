@@ -62,3 +62,8 @@ namespace i18n
         return emptyVector;
     }
 }
+
+const std::string& pksm::internal::Move_impl::localize(pksm::Language lang) const
+{
+    return i18n::move(lang, *this);
+}
