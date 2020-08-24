@@ -583,7 +583,14 @@ namespace pksm
     void Sav3::item(const Item& tItem, Pouch pouch, u16 slot)
     {
         Item3 item = static_cast<Item3>(tItem);
-        item.securityKey(securityKey());
+        if (pouch == Pouch::PCItem)
+        {
+            item.securityKey(0);
+        }
+        else
+        {
+            item.securityKey(securityKey());
+        }
         auto write = item.bytes();
         switch (pouch)
         {
