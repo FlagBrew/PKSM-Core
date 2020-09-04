@@ -85,7 +85,7 @@ namespace i18n
         if (found->second.compare_exchange_strong(expected, LangState::INITIALIZING))
         {
 #endif
-            for (auto& callback : initCallbacks)
+            for (const auto& callback : initCallbacks)
             {
                 callback(lang);
             }
@@ -107,7 +107,7 @@ namespace i18n
                 }
 #endif
 
-                for (auto& callback : exitCallbacks)
+                for (const auto& callback : exitCallbacks)
                 {
                     callback(lang.first);
                 }

@@ -583,7 +583,7 @@ std::string& StringUtils::toUpper(std::string& in)
     static constexpr std::array<std::pair<std::string_view, std::string_view>, 12> transStrings = {
         {{"í", "Í"}, {"ó", "Ó"}, {"ú", "Ú"}, {"é", "É"}, {"á", "Á"}, {"ì", "Ì"}, {"ò", "Ò"},
             {"ù", "Ù"}, {"è", "È"}, {"à", "À"}, {"ñ", "Ñ"}, {"æ", "Æ"}}};
-    for (auto& str : transStrings)
+    for (const auto& str : transStrings)
     {
         size_t found;
         while ((found = in.find(str.first)) != std::string::npos)
@@ -607,7 +607,7 @@ std::string& StringUtils::toLower(std::string& in)
     static constexpr std::array<std::pair<std::string_view, std::string_view>, 12> transStrings = {
         {{"Í", "í"}, {"Ó", "ó"}, {"Ú", "ú"}, {"É", "é"}, {"Á", "á"}, {"Ì", "ì"}, {"Ò", "ò"},
             {"Ù", "ù"}, {"È", "è"}, {"À", "à"}, {"Ñ", "ñ"}, {"Æ", "æ"}}};
-    for (auto& str : transStrings)
+    for (const auto& str : transStrings)
     {
         size_t found;
         while ((found = in.find(str.first)) != std::string::npos)

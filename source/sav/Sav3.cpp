@@ -136,7 +136,7 @@ namespace pksm
 
         // Sanity Check SeenFlagOffsets -- early saves may not have block 4 initialized yet
         std::vector<int> seenFlagOffsetsTemp;
-        for (auto seenFlagOffset : seenFlagOffsets)
+        for (const auto& seenFlagOffset : seenFlagOffsets)
         {
             if (seenFlagOffset >= 0)
                 seenFlagOffsetsTemp.push_back(seenFlagOffset);
