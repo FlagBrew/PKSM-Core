@@ -141,6 +141,9 @@ namespace pksm
         bool nPokemon(void) const;
         void nPokemon(bool v);
 
+        bool hyperTrain(Stat) const override { return false; }
+        void hyperTrain(Stat, bool) override {}
+
         std::string nickname(void) const override;
         void nickname(const std::string_view& v) override;
         GameVersion version(void) const override;

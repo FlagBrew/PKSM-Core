@@ -183,6 +183,9 @@ namespace pksm
         // u32 formDuration(void) const;
         // void formDuration(u32 v);
 
+        bool hyperTrain(Stat) const override { return false; }
+        void hyperTrain(Stat, bool) override {}
+
         std::string otName(void) const override;
         void otName(const std::string_view& v) override;
         u8 otFriendship(void) const override;

@@ -236,6 +236,9 @@ namespace pksm
         virtual bool nicknamed(void) const               = 0;
         virtual void nicknamed(bool v)                   = 0;
 
+        virtual bool hyperTrain(Stat stat) const   = 0;
+        virtual void hyperTrain(Stat stat, bool v) = 0;
+
         u8 maxPP(u8 move) const;
         void healPP();
         void healPP(u8 move) { PP(move, maxPP(move)); }

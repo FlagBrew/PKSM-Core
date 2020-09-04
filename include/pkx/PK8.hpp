@@ -226,8 +226,8 @@ namespace pksm
         Gender otGender(void) const override;
         void otGender(Gender v) override;
 
-        bool hyperTrain(Stat stat) const;
-        void hyperTrain(Stat stat, bool v);
+        bool hyperTrain(Stat stat) const override;
+        void hyperTrain(Stat stat, bool v) override;
         bool moveRecordFlag(u8 index) const;
         void moveRecordFlag(u8 index, bool v);
         u64 homeTracker(void) const;

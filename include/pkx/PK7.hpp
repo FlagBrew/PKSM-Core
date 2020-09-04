@@ -203,8 +203,8 @@ namespace pksm
         Gender otGender(void) const override;
         void otGender(Gender v) override;
 
-        bool hyperTrain(Stat stat) const;
-        void hyperTrain(Stat stat, bool v);
+        bool hyperTrain(Stat stat) const override;
+        void hyperTrain(Stat stat, bool v) override;
 
         GameVersion version(void) const override;
         void version(GameVersion v) override;
