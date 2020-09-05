@@ -769,7 +769,8 @@ void StringUtils::setString(
         {
             LittleEndian::convertFrom<char16_t>(data + ofs + (i + iMod) * 2, v[i]);
         }
-        else if (((v[i] & 0b1111'1100'0000'0000) == 0b1101'1000'0000'0000) && i + 1 < v.size() &&
+        else if (((v[i] & 0b1111'1100'0000'0000) == 0b1101'1000'0000'0000) &&
+                 (size_t)i + 1 < v.size() &&
                  ((v[i + 1] & 0b1111'1100'0000'0000) == 0b1101'1100'0000'0000))
         {
             LittleEndian::convertFrom<char16_t>(data + ofs + (i + iMod) * 2, 0xFFFD);
