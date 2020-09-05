@@ -504,9 +504,8 @@ std::string StringUtils::UTF16toUTF8(const std::u16string_view& src)
             addChar[2] = 0x80 | (src[i] & 0x3F);
             addChar[3] = '\0';
         }
-        else if (((src[i] & 0b1111'1100'0000'0000) == 0b1101'1000'0000'0000) &&
-                 i + 1 < src.size() &&
-                 ((src[i + 1] & 0b1111'1100'0000'0000) == 0b1101'1100'0000'0000))
+        else if (((src[i] & 0xFC00) == 0xD800) && i + 1 < src.size() &&
+                 ((src[i + 1] & 0xFC00) == 0xDC00))
         {
             char32_t codepoint = (char32_t(src[i] & 0x03FF) << 10) | (src[i + 1] & 0x03FF);
             codepoint += 0x1'0000; // 20->21 bits
@@ -540,9 +539,8 @@ std::u16string StringUtils::UTF16toUCS2(const std::u16string_view& src)
         {
             ret.push_back(src[i]);
         }
-        else if (((src[i] & 0b1111'1100'0000'0000) == 0b1101'1000'0000'0000) &&
-                 i + 1 < src.size() &&
-                 ((src[i + 1] & 0b1111'1100'0000'0000) == 0b1101'1100'0000'0000))
+        else if (((src[i] & 0xFC00) == 0xD800) && i + 1 < src.size() &&
+                 ((src[i + 1] & 0xFC00) == 0xDC00))
         {
             ret.push_back(0xFFFD);
             i += 1; // skip the continuation byte
@@ -567,9 +565,8 @@ std::u32string StringUtils::UTF16toUTF32(const std::u16string_view& src)
         {
             codepoint = src[i];
         }
-        else if (((src[i] & 0b1111'1100'0000'0000) == 0b1101'1000'0000'0000) &&
-                 i + 1 < src.size() &&
-                 ((src[i + 1] & 0b1111'1100'0000'0000) == 0b1101'1100'0000'0000))
+        else if (((src[i] & 0xFC00) == 0xD800) && i + 1 < src.size() &&
+                 ((src[i + 1] & 0xFC00) == 0xDC00))
         {
             codepoint = (char32_t(src[i] & 0x03FF) << 10) | (src[i + 1] & 0x03FF);
             codepoint += 0x10000; // 20->21 bits
@@ -634,8 +631,8 @@ std::u16string StringUtils::UTF32toUTF16(const std::u32string_view& src)
         else if (codepoint >= 0x0001'0000 && codepoint < 0x0011'0000)
         {
             codepoint -= 0x10000; // Make it fit in 20 bits
-            ret.push_back(0b1101'1000'0000'0000 | ((codepoint >> 10) & 0x03FF));
-            ret.push_back(0b1101'1100'0000'0000 | (codepoint & 0x03FF));
+            ret.push_back(0xD800 | ((codepoint >> 10) & 0x03FF));
+            ret.push_back(0xDC00 | (codepoint & 0x03FF));
         }
         else
         {
@@ -769,9 +766,8 @@ void StringUtils::setString(
         {
             LittleEndian::convertFrom<char16_t>(data + ofs + (i + iMod) * 2, v[i]);
         }
-        else if (((v[i] & 0b1111'1100'0000'0000) == 0b1101'1000'0000'0000) &&
-                 (size_t)i + 1 < v.size() &&
-                 ((v[i + 1] & 0b1111'1100'0000'0000) == 0b1101'1100'0000'0000))
+        else if (((v[i] & 0xFC00) == 0xD800) && (size_t)i + 1 < v.size() &&
+                 ((v[i + 1] & 0xFC00) == 0xDC00))
         {
             LittleEndian::convertFrom<char16_t>(data + ofs + (i + iMod) * 2, 0xFFFD);
             i += 1;
