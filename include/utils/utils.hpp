@@ -39,14 +39,52 @@
 
 namespace StringUtils
 {
-    std::u16string UTF8toUTF16(const std::string_view& src);
-    std::string UTF16toUTF8(const std::u16string_view& src);
-    std::u16string getU16String(const u8* data, int ofs, int len, char16_t term);
-    std::string getString(const u8* data, int ofs, int len, char16_t term = 0);
+    // Standard UTF-8/16/32 conversions
+    std::u16string UTF8toUTF16(const std::string_view& src); // done
+    std::string UTF16toUTF8(const std::u16string_view& src); // done
+
+    std::u32string UTF8toUTF32(const std::string_view& src); // done
+    std::string UTF32toUTF8(const std::u32string_view& src); // done
+
+    std::u32string UTF16toUTF32(const std::u16string_view& src); // done
+    std::u16string UTF32toUTF16(const std::u32string_view& src); // done
+
+    // UCS-2 is UTF-16 without the extended codepage(s). This is the format used in recent Pokémon
+    // games. It can be seen as the valid UTF-16 codepoints between 0x0000 and 0xFFFF, inclusive.
+    // Note that passing a UTF-8 string that contains only codepoints in that region to UTF8toUTF16
+    // will also result in a UCS-2 string.
+    std::u16string UTF8toUCS2(const std::string_view& src);     // done
+    std::u16string UTF16toUCS2(const std::u16string_view& src); // done
+    std::u16string UTF32toUCS2(const std::u32string_view& src); // done
+    inline std::string UCS2toUTF8(const std::u16string_view& src) { return UTF16toUTF8(src); }
+    inline std::u16string UCS2toUTF16(const std::u16string_view& src)
+    {
+        return std::u16string(src);
+    }
+    inline std::u32string UCS2toUTF32(const std::u16string_view& src) { return UTF16toUTF32(src); }
+
+    // All of these take a pointer to a buffer with a UCS-2 little-endian char16_t array at data +
+    // ofs, terminated by term, and turn them into the format indicated by the method name.
+    std::u32string getU32String(const u8* data, int ofs, int len, char16_t term = u'\0');  // done
+    std::u16string getUCS2String(const u8* data, int ofs, int len, char16_t term = u'\0'); // done
+    inline std::u16string getU16String(const u8* data, int ofs, int len, char16_t term = u'\0')
+    {
+        return getUCS2String(data, ofs, len, term);
+    }
+    std::string getString(const u8* data, int ofs, int len, char16_t term = u'\0'); // done
+
+    // All of these take a pointer to a buffer with a UCS-2 char16_t array at data + ofs and write
+    // the given string to them, replacing unrepresentable codepoints with 0xFFFD, and using
+    // terminator as the terminator and padding as the characters to set after the terminator.
+    // Note that any codepoint >= 0x10000 will be converted to 0xFFFD
+    // Note that the u16string_view overload takes a UTF-16 string
+    void setString(u8* data, const std::u32string_view& v, int ofs, int len,
+        char16_t terminator = u'\0', char16_t padding = u'\0');
     void setString(u8* data, const std::u16string_view& v, int ofs, int len,
-        char16_t terminator = 0, char16_t padding = 0);
-    void setString(u8* data, const std::string_view& v, int ofs, int len, char16_t terminator = 0,
-        char16_t padding = 0);
+        char16_t terminator = u'\0', char16_t padding = u'\0');
+    void setString(u8* data, const std::string_view& v, int ofs, int len,
+        char16_t terminator = u'\0', char16_t padding = u'\0');
+
     std::string getString4(const u8* data, int ofs, int len);
     void setString4(u8* data, const std::string_view& v, int ofs, int len);
     std::string getString3(const u8* data, int ofs, int len, bool jp);

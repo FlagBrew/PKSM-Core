@@ -1016,13 +1016,13 @@ namespace pksm
 
         pk6->fixMoves();
 
-        std::u16string toFix = StringUtils::UTF8toUTF16(pk6->otName());
+        std::u16string toFix = StringUtils::UTF8toUCS2(pk6->otName());
         fixString(toFix);
-        pk6->otName(StringUtils::UTF16toUTF8(toFix));
+        pk6->otName(StringUtils::UCS2toUTF8(toFix));
 
-        toFix = StringUtils::UTF8toUTF16(pk6->nickname());
+        toFix = StringUtils::UTF8toUCS2(pk6->nickname());
         fixString(toFix);
-        pk6->nickname(StringUtils::UTF16toUTF8(toFix));
+        pk6->nickname(StringUtils::UCS2toUTF8(toFix));
 
         pk6->refreshChecksum();
         return pk6;

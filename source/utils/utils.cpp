@@ -35,40 +35,7 @@
 
 namespace
 {
-    std::string utf16DataToUtf8(const char16_t* data, size_t size, char16_t delim = 0)
-    {
-        std::string ret;
-        ret.reserve(size);
-        char addChar[4] = {0};
-        for (size_t i = 0; i < size; i++)
-        {
-            if (data[i] == delim)
-            {
-                return ret;
-            }
-            else if (data[i] < 0x0080)
-            {
-                addChar[0] = data[i];
-                addChar[1] = '\0';
-            }
-            else if (data[i] < 0x0800)
-            {
-                addChar[0] = 0xC0 | ((data[i] >> 6) & 0x1F);
-                addChar[1] = 0x80 | (data[i] & 0x3F);
-                addChar[2] = '\0';
-            }
-            else
-            {
-                addChar[0] = 0xE0 | ((data[i] >> 12) & 0x0F);
-                addChar[1] = 0x80 | ((data[i] >> 6) & 0x3F);
-                addChar[2] = 0x80 | (data[i] & 0x3F);
-                addChar[3] = '\0';
-            }
-            ret.append(addChar);
-        }
-        return ret;
-    }
-    u32 swapCodepoints45(u32 codepoint)
+    char32_t swapCodepoints45(char32_t codepoint)
     {
         switch (codepoint)
         {
@@ -318,7 +285,7 @@ namespace
         }
         return codepoint;
     }
-    u32 swapCodepoints67(u32 codepoint)
+    char32_t swapCodepoints67(char32_t codepoint)
     {
         switch (codepoint)
         {
@@ -362,6 +329,16 @@ namespace
         }
         return codepoint;
     }
+
+    // Converts a single latin character from half-width to full-width
+    char16_t tofullwidth(char16_t c)
+    {
+        if (c == ' ')
+            c = u'　';
+        else if (c >= '!' && c <= '~')
+            c += 0xFEE0;
+        return c;
+    }
 }
 
 std::u16string StringUtils::UTF8toUTF16(const std::string_view& src)
@@ -370,17 +347,29 @@ std::u16string StringUtils::UTF8toUTF16(const std::string_view& src)
     ret.reserve(src.size());
     for (size_t i = 0; i < src.size(); i++)
     {
-        u16 codepoint = 0xFFFD;
-        int iMod      = 0;
-        if (src[i] & 0x80 && src[i] & 0x40 && src[i] & 0x20 && !(src[i] & 0x10) &&
-            i + 2 < src.size())
+        char32_t codepoint = 0xFFFD;
+        int iMod           = 0;
+        if (src[i] & 0x80 && src[i] & 0x40 && src[i] & 0x20 && src[i] & 0x10 && !(src[i] & 0x08) &&
+            i + 3 < src.size() && src[i + 1] & 0x80 && !(src[i + 1] & 0x40) && src[i + 2] & 0x80 &&
+            !(src[i + 2] & 0x40) && src[i + 3] & 0x80 && !(src[i + 3] & 0x40))
+        {
+            codepoint = src[i] & 0x07;
+            codepoint = codepoint << 6 | (src[i + 1] & 0x3F);
+            codepoint = codepoint << 6 | (src[i + 2] & 0x3F);
+            codepoint = codepoint << 6 | (src[i + 3] & 0x3F);
+            iMod      = 3;
+        }
+        else if (src[i] & 0x80 && src[i] & 0x40 && src[i] & 0x20 && !(src[i] & 0x10) &&
+                 i + 2 < src.size() && src[i + 1] & 0x80 && !(src[i + 1] & 0x40) &&
+                 src[i + 2] & 0x80 && !(src[i + 2] & 0x40))
         {
             codepoint = src[i] & 0x0F;
             codepoint = codepoint << 6 | (src[i + 1] & 0x3F);
             codepoint = codepoint << 6 | (src[i + 2] & 0x3F);
             iMod      = 2;
         }
-        else if (src[i] & 0x80 && src[i] & 0x40 && !(src[i] & 0x20) && i + 1 < src.size())
+        else if (src[i] & 0x80 && src[i] & 0x40 && !(src[i] & 0x20) && i + 1 < src.size() &&
+                 src[i + 1] & 0x80 && !(src[i + 1] & 0x40))
         {
             codepoint = src[i] & 0x1F;
             codepoint = codepoint << 6 | (src[i + 1] & 0x3F);
@@ -391,46 +380,408 @@ std::u16string StringUtils::UTF8toUTF16(const std::string_view& src)
             codepoint = src[i];
         }
 
-        ret.push_back((char16_t)codepoint);
+        if (codepoint <= 0xD7FF || codepoint >= 0xE000)
+        {
+            ret.push_back(char16_t(codepoint));
+        }
+        else
+        {
+            codepoint -= 0x1'0000; // 21->20 bits
+            ret.push_back(char16_t((codepoint >> 10) & 0x03FF));
+            ret.push_back(char16_t(codepoint & 0x03FF));
+        }
+
         i += iMod;
+    }
+    return ret;
+}
+
+// Nearly identical, just without the 21-bit case
+std::u16string StringUtils::UTF8toUCS2(const std::string_view& src)
+{
+    std::u16string ret;
+    ret.reserve(src.size());
+    for (size_t i = 0; i < src.size(); i++)
+    {
+        char16_t codepoint = 0xFFFD;
+        int iMod           = 0;
+        if (src[i] & 0x80 && src[i] & 0x40 && src[i] & 0x20 && !(src[i] & 0x10) &&
+            i + 2 < src.size() && src[i + 1] & 0x80 && !(src[i + 1] & 0x40) && src[i + 2] & 0x80 &&
+            !(src[i + 2] & 0x40))
+        {
+            codepoint = src[i] & 0x0F;
+            codepoint = codepoint << 6 | (src[i + 1] & 0x3F);
+            codepoint = codepoint << 6 | (src[i + 2] & 0x3F);
+            iMod      = 2;
+        }
+        else if (src[i] & 0x80 && src[i] & 0x40 && !(src[i] & 0x20) && i + 1 < src.size() &&
+                 src[i + 1] & 0x80 && !(src[i + 1] & 0x40))
+        {
+            codepoint = src[i] & 0x1F;
+            codepoint = codepoint << 6 | (src[i + 1] & 0x3F);
+            iMod      = 1;
+        }
+        else if (!(src[i] & 0x80))
+        {
+            codepoint = src[i];
+        }
+
+        ret.push_back(codepoint);
+
+        i += iMod;
+    }
+    return ret;
+}
+
+std::u32string StringUtils::UTF8toUTF32(const std::string_view& src)
+{
+    std::u32string ret;
+    ret.reserve(src.size());
+    for (size_t i = 0; i < src.size(); i++)
+    {
+        char32_t codepoint = 0xFFFD;
+        int iMod           = 0;
+        if (src[i] & 0x80 && src[i] & 0x40 && src[i] & 0x20 && src[i] & 0x10 && !(src[i] & 0x08) &&
+            i + 3 < src.size() && src[i + 1] & 0x80 && !(src[i + 1] & 0x40) && src[i + 2] & 0x80 &&
+            !(src[i + 2] & 0x40) && src[i + 3] & 0x80 && !(src[i + 3] & 0x40))
+        {
+            codepoint = src[i] & 0x07;
+            codepoint = codepoint << 6 | (src[i + 1] & 0x3F);
+            codepoint = codepoint << 6 | (src[i + 2] & 0x3F);
+            codepoint = codepoint << 6 | (src[i + 3] & 0x3F);
+            iMod      = 3;
+        }
+        else if (src[i] & 0x80 && src[i] & 0x40 && src[i] & 0x20 && !(src[i] & 0x10) &&
+                 i + 2 < src.size() && src[i + 1] & 0x80 && !(src[i + 1] & 0x40) &&
+                 src[i + 2] & 0x80 && !(src[i + 2] & 0x40))
+        {
+            codepoint = src[i] & 0x0F;
+            codepoint = codepoint << 6 | (src[i + 1] & 0x3F);
+            codepoint = codepoint << 6 | (src[i + 2] & 0x3F);
+            iMod      = 2;
+        }
+        else if (src[i] & 0x80 && src[i] & 0x40 && !(src[i] & 0x20) && i + 1 < src.size() &&
+                 src[i + 1] & 0x80 && !(src[i + 1] & 0x40))
+        {
+            codepoint = src[i] & 0x1F;
+            codepoint = codepoint << 6 | (src[i + 1] & 0x3F);
+            iMod      = 1;
+        }
+        else if (!(src[i] & 0x80))
+        {
+            codepoint = src[i];
+        }
+
+        ret.push_back(codepoint);
+
+        i += iMod; // Skip continuation bytes
     }
     return ret;
 }
 
 std::string StringUtils::UTF16toUTF8(const std::u16string_view& src)
 {
-    return utf16DataToUtf8(src.data(), src.size());
+    std::string ret;
+    ret.reserve(src.size()); // SIze must be greater than or equal to this
+    char addChar[5] = {'\0'};
+    for (size_t i = 0; i < src.size(); i++)
+    {
+        if (src[i] < 0x0080)
+        {
+            addChar[0] = src[i];
+            addChar[1] = '\0';
+        }
+        else if (src[i] < 0x0800)
+        {
+            addChar[0] = 0xC0 | ((src[i] >> 6) & 0x1F);
+            addChar[1] = 0x80 | (src[i] & 0x3F);
+            addChar[2] = '\0';
+        }
+        else if (src[i] <= 0xD7FF || src[i] >= 0xE000)
+        {
+            addChar[0] = 0xE0 | ((src[i] >> 12) & 0x0F);
+            addChar[1] = 0x80 | ((src[i] >> 6) & 0x3F);
+            addChar[2] = 0x80 | (src[i] & 0x3F);
+            addChar[3] = '\0';
+        }
+        else if (((src[i] & 0b1111'1100'0000'0000) == 0b1101'1000'0000'0000) &&
+                 i + 1 < src.size() &&
+                 ((src[i + 1] & 0b1111'1100'0000'0000) == 0b1101'1100'0000'0000))
+        {
+            char32_t codepoint = (char32_t(src[i] & 0x03FF) << 10) | (src[i + 1] & 0x03FF);
+            codepoint += 0x1'0000; // 20->21 bits
+            addChar[0] = 0xF0 | ((codepoint >> 18) & 0x07);
+            addChar[1] = 0x80 | ((codepoint >> 12) & 0x3F);
+            addChar[2] = 0x80 | ((codepoint >> 6) & 0x3F);
+            addChar[3] = 0x80 | (codepoint & 0x3F);
+            addChar[4] = '\0';
+
+            i += 1; // Advance past the first code unit
+        }
+        else
+        {
+            addChar[0] = 0xF0 | ((0xFFFD >> 12) & 0x0F);
+            addChar[1] = 0x80 | ((0xFFFD >> 6) & 0x3F);
+            addChar[2] = 0x80 | (0xFFFD & 0x3F);
+            addChar[3] = '\0';
+        }
+        ret.append(addChar);
+    }
+    return ret;
 }
 
-std::u16string StringUtils::getU16String(const u8* data, int ofs, int len, char16_t term)
+std::u16string StringUtils::UTF16toUCS2(const std::u16string_view& src)
 {
     std::u16string ret;
+    ret.reserve(src.size());
+    for (size_t i = 0; i < src.size(); i++)
+    {
+        if (src[i] <= 0xD7FF || src[i] >= 0xE000)
+        {
+            ret.push_back(src[i]);
+        }
+        else if (((src[i] & 0b1111'1100'0000'0000) == 0b1101'1000'0000'0000) &&
+                 i + 1 < src.size() &&
+                 ((src[i + 1] & 0b1111'1100'0000'0000) == 0b1101'1100'0000'0000))
+        {
+            ret.push_back(0xFFFD);
+            i += 1; // skip the continuation byte
+        }
+        else
+        {
+            ret.push_back(0xFFFD);
+            // invalid character sequence, so there's no continuation byte to skip
+        }
+    }
+    return ret;
+}
+
+std::u32string StringUtils::UTF16toUTF32(const std::u16string_view& src)
+{
+    std::u32string ret;
+    ret.reserve(src.size());
+    for (size_t i = 0; i < src.size(); i++)
+    {
+        char32_t codepoint = 0xFFFD;
+        if (src[i] <= 0xD7FF || src[i] >= 0xE000)
+        {
+            codepoint = src[i];
+        }
+        else if (((src[i] & 0b1111'1100'0000'0000) == 0b1101'1000'0000'0000) &&
+                 i + 1 < src.size() &&
+                 ((src[i + 1] & 0b1111'1100'0000'0000) == 0b1101'1100'0000'0000))
+        {
+            codepoint = (char32_t(src[i] & 0x03FF) << 10) | (src[i + 1] & 0x03FF);
+            codepoint += 0x10000; // 20->21 bits
+            i += 1;               // skip the continuation byte
+        }
+        ret.push_back(codepoint);
+    }
+    return ret;
+}
+
+std::string StringUtils::UTF32toUTF8(const std::u32string_view& src)
+{
+    std::string ret;
+    ret.reserve(src.size()); // Length *must* be greater than or equal to this.
+    char addChar[5] = {'\0'};
+    for (const char32_t codepoint : src)
+    {
+        if (codepoint < 0x0000'0080)
+        {
+            addChar[0] = codepoint;
+            addChar[1] = '\0';
+        }
+        else if (codepoint < 0x0000'0800)
+        {
+            addChar[0] = 0xC0 | ((codepoint >> 6) & 0x1F);
+            addChar[1] = 0x80 | (codepoint & 0x3F);
+            addChar[2] = '\0';
+        }
+        else if (codepoint < 0x0001'0000)
+        {
+            addChar[0] = 0xE0 | ((codepoint >> 12) & 0x0F);
+            addChar[1] = 0x80 | ((codepoint >> 6) & 0x3F);
+            addChar[2] = 0x80 | (codepoint & 0x3F);
+            addChar[3] = '\0';
+        }
+        // Current maximum codepoint is defined to be U+10FFFF
+        else if (codepoint < 0x0011'0000)
+        {
+            addChar[0] = 0xF0 | ((codepoint >> 18) & 0x07);
+            addChar[1] = 0x80 | ((codepoint >> 12) & 0x3F);
+            addChar[2] = 0x80 | ((codepoint >> 6) & 0x3F);
+            addChar[3] = 0x80 | (codepoint & 0x3F);
+            addChar[4] = '\0';
+        }
+
+        ret.append(addChar);
+    }
+    return ret;
+}
+
+std::u16string StringUtils::UTF32toUTF16(const std::u32string_view& src)
+{
+    std::u16string ret;
+    ret.reserve(src.size());
+    for (char32_t codepoint : src)
+    {
+        if (codepoint <= 0x0000'D7FF || (codepoint >= 0x0000'E000 && codepoint < 0x0001'0000))
+        {
+            ret.push_back(codepoint);
+        }
+        // Current maximum codepoint is defined to be U+10FFFF
+        else if (codepoint >= 0x0001'0000 && codepoint < 0x0011'0000)
+        {
+            codepoint -= 0x10000; // Make it fit in 20 bits
+            ret.push_back(0b1101'1000'0000'0000 | ((codepoint >> 10) & 0x03FF));
+            ret.push_back(0b1101'1100'0000'0000 | (codepoint & 0x03FF));
+        }
+        else
+        {
+            ret.push_back(0xFFFD);
+        }
+    }
+    return ret;
+}
+
+std::u16string StringUtils::UTF32toUCS2(const std::u32string_view& src)
+{
+    std::u16string ret;
+    for (const char32_t& codepoint : src)
+    {
+        if (codepoint <= 0x0000'D7FF || (codepoint >= 0x0000'E000 && codepoint < 0x0001'0000))
+        {
+            ret.push_back(codepoint);
+        }
+        else
+        {
+            ret.push_back(0xFFFD);
+        }
+    }
+    return ret;
+}
+
+std::u32string StringUtils::getU32String(const u8* data, int ofs, int len, char16_t term)
+{
+    std::u32string ret;
     ret.reserve(len);
-    const char16_t* buf = (char16_t*)(data + ofs);
     for (int i = 0; i < len; i++)
     {
-        if (buf[i] == term)
+        char32_t chr = LittleEndian::convertTo<char16_t>(data + ofs + i * 2);
+        if (chr == term)
         {
             return ret;
         }
-        ret.push_back(buf[i]);
+        ret.push_back(chr);
+    }
+    return ret;
+}
+
+std::u16string StringUtils::getUCS2String(const u8* data, int ofs, int len, char16_t term)
+{
+    std::u16string ret;
+    ret.reserve(len);
+    for (int i = 0; i < len; i++)
+    {
+        char16_t chr = LittleEndian::convertTo<char16_t>(data + ofs + i * 2);
+        if (chr == term)
+        {
+            return ret;
+        }
+        ret.push_back(chr);
     }
     return ret;
 }
 
 std::string StringUtils::getString(const u8* data, int ofs, int len, char16_t term)
 {
-    return utf16DataToUtf8(reinterpret_cast<const char16_t*>(data + ofs), len, term);
+    std::string ret;
+    ret.reserve(len);
+    char addChar[4] = {'\0'};
+    for (int i = 0; i < len; i++)
+    {
+        char16_t codeunit = LittleEndian::convertTo<char16_t>(data + ofs + i * 2);
+        if (codeunit == term)
+        {
+            return ret;
+        }
+        else if (codeunit < 0x0080)
+        {
+            addChar[0] = data[i];
+            addChar[1] = '\0';
+        }
+        else if (codeunit < 0x0800)
+        {
+            addChar[0] = 0xC0 | ((codeunit >> 6) & 0x1F);
+            addChar[1] = 0x80 | (codeunit & 0x3F);
+            addChar[2] = '\0';
+        }
+        else if (codeunit <= 0xD7FF || codeunit >= 0xE000)
+        {
+            addChar[0] = 0xE0 | ((codeunit >> 12) & 0x0F);
+            addChar[1] = 0x80 | ((codeunit >> 6) & 0x3F);
+            addChar[2] = 0x80 | (codeunit & 0x3F);
+            addChar[3] = '\0';
+        }
+        else
+        {
+            addChar[0] = 0xF0 | ((0xFFFD >> 12) & 0x0F);
+            addChar[1] = 0x80 | ((0xFFFD >> 6) & 0x3F);
+            addChar[2] = 0x80 | (0xFFFD & 0x3F);
+            addChar[3] = '\0';
+        }
+        ret.append(addChar);
+    }
+    return ret;
+}
+
+void StringUtils::setString(
+    u8* data, const std::u32string_view& v, int ofs, int len, char16_t terminator, char16_t padding)
+{
+    int i = 0;
+    for (; i < std::min(len - 1, (int)v.size()); i++)
+    {
+        if (v[i] <= 0x0000'FFFF)
+        {
+            LittleEndian::convertFrom<char16_t>(data + ofs + i * 2, v[i]);
+        }
+        else
+        {
+            LittleEndian::convertFrom<char16_t>(data + ofs + i * 2, 0xFFFD);
+        }
+    }
+    LittleEndian::convertFrom<char16_t>(data + ofs + i++ * 2, terminator); // Set terminator
+    for (; i < len; i++)
+    {
+        LittleEndian::convertFrom<char16_t>(data + ofs + i * 2, padding); // Set final padding bytes
+    }
 }
 
 void StringUtils::setString(
     u8* data, const std::u16string_view& v, int ofs, int len, char16_t terminator, char16_t padding)
 {
-    int i = 0;
+    int i    = 0;
+    int iMod = 0;
     for (; i < std::min(len - 1, (int)v.size()); i++) // len includes terminator
     {
-        LittleEndian::convertFrom<char16_t>(data + ofs + i * 2, v[i]);
+        if (v[i] <= 0xD7FF || v[i] >= 0xE000)
+        {
+            LittleEndian::convertFrom<char16_t>(data + ofs + (i + iMod) * 2, v[i]);
+        }
+        else if (((v[i] & 0b1111'1100'0000'0000) == 0b1101'1000'0000'0000) && i + 1 < v.size() &&
+                 ((v[i + 1] & 0b1111'1100'0000'0000) == 0b1101'1100'0000'0000))
+        {
+            LittleEndian::convertFrom<char16_t>(data + ofs + (i + iMod) * 2, 0xFFFD);
+            i += 1;
+            iMod -= 1;
+        }
+        else
+        {
+            LittleEndian::convertFrom<char16_t>(data + ofs + (i + iMod) * 2, 0xFFFD);
+        }
     }
+    i += iMod;
     LittleEndian::convertFrom<char16_t>(data + ofs + i++ * 2, terminator); // Set terminator
     for (; i < len; i++)
     {
@@ -441,7 +792,41 @@ void StringUtils::setString(
 void StringUtils::setString(
     u8* data, const std::string_view& v, int ofs, int len, char16_t terminator, char16_t padding)
 {
-    setString(data, UTF8toUTF16(v), ofs, len, terminator, padding);
+    int outOfs = 0;
+    for (size_t i = 0; i < v.size() && outOfs < len - 1; i++)
+    {
+        char16_t out = 0xFFFD;
+        int iMod     = 0;
+        if (v[i] & 0x80 && v[i] & 0x40 && v[i] & 0x20 && !(v[i] & 0x10) && i + 2 < v.size() &&
+            v[i + 1] & 0x80 && !(v[i + 1] & 0x40) && v[i + 2] & 0x80 && !(v[i + 2] & 0x40))
+        {
+            out  = v[i] & 0x0F;
+            out  = out << 6 | (v[i + 1] & 0x3F);
+            out  = out << 6 | (v[i + 2] & 0x3F);
+            iMod = 2;
+        }
+        else if (v[i] & 0x80 && v[i] & 0x40 && !(v[i] & 0x20) && i + 1 < v.size() &&
+                 v[i + 1] & 0x80 && !(v[i + 1] & 0x40))
+        {
+            out  = v[i] & 0x1F;
+            out  = out << 6 | (v[i + 1] & 0x3F);
+            iMod = 1;
+        }
+        else if (!(v[i] & 0x80))
+        {
+            out = v[i];
+        }
+
+        LittleEndian::convertFrom<char16_t>(data + ofs + (outOfs++ * 2), out);
+
+        i += iMod; // Skip continuation bytes
+    }
+    LittleEndian::convertFrom<char16_t>(data + ofs + (outOfs++ * 2), terminator); // Set terminator
+    for (; outOfs < len; outOfs++)
+    {
+        LittleEndian::convertFrom<char16_t>(
+            data + ofs + (outOfs * 2), padding); // Set final padding bytes
+    }
 }
 
 std::string StringUtils::getString4(const u8* data, int ofs, int len)
@@ -622,16 +1007,6 @@ std::string StringUtils::toLower(const std::string_view& in)
 {
     std::string ret = std::string(in);
     return toLower(ret);
-}
-
-// Converts a single latin character from half-width to full-width
-char16_t tofullwidth(char16_t c)
-{
-    if (c == ' ')
-        c = u'　';
-    else if (c >= '!' && c <= '~')
-        c += 0xFEE0;
-    return c;
 }
 
 std::u16string& StringUtils::toFullWidth(std::u16string& in)
