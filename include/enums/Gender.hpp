@@ -47,7 +47,7 @@ namespace pksm
                 Female     = 1,
                 Genderless = 2,
 
-                INVALID[[maybe_unused]] =
+                INVALID [[maybe_unused]] =
                     std::numeric_limits<std::underlying_type_t<GenderEnum>>::max()
             } v;
 

@@ -821,8 +821,8 @@ void StringUtils::setString(
     LittleEndian::convertFrom<char16_t>(data + ofs + (outOfs++ * 2), terminator); // Set terminator
     for (; outOfs < len; outOfs++)
     {
-        LittleEndian::convertFrom<char16_t>(
-            data + ofs + (outOfs * 2), padding); // Set final padding bytes
+        LittleEndian::convertFrom<char16_t>(data + ofs + (outOfs * 2),
+            padding); // Set final padding bytes
     }
 }
 

@@ -72,7 +72,7 @@ namespace pksm
                 Dream,
                 Beast,
 
-                INVALID[[maybe_unused]] =
+                INVALID [[maybe_unused]] =
                     std::numeric_limits<std::underlying_type_t<BallEnum>>::max()
             } v;
 

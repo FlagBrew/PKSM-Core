@@ -40,13 +40,13 @@ namespace pksm
 {
     enum class Language : u8
     {
-        None[[maybe_unused]] = 0,
-        JPN                  = 1,
+        None [[maybe_unused]] = 0,
+        JPN                   = 1,
         ENG,
         FRE,
         ITA,
         GER,
-        UNUSED[[maybe_unused]],
+        UNUSED [[maybe_unused]],
         SPA,
         KOR,
         CHS,
@@ -55,7 +55,7 @@ namespace pksm
         _PKSMCORE_EXTRA_LANGUAGES,
 #endif
 
-        INVALID[[maybe_unused]] = std::numeric_limits<std::underlying_type_t<Language>>::max()
+        INVALID [[maybe_unused]] = std::numeric_limits<std::underlying_type_t<Language>>::max()
     };
 
     Language getSafeLanguage(Generation gen, Language originalLang);

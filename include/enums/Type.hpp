@@ -63,7 +63,7 @@ namespace pksm
                 Dark,
                 Fairy,
 
-                INVALID[[maybe_unused]] =
+                INVALID [[maybe_unused]] =
                     std::numeric_limits<std::underlying_type_t<TypeEnum>>::max()
             } v;
 

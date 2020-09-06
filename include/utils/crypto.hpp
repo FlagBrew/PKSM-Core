@@ -163,7 +163,8 @@ namespace pksm::crypto
 
         constexpr std::array<u8, 32> InvertedBlockPositions = {
             0, 1, 2, 4, 3, 5, 6, 7, 12, 18, 13, 19, 8, 10, 14, 20, 16, 22, 9, 11, 15, 21, 17, 23, 0,
-            1, 2, 4, 3, 5, 6, 7 // duplicates of 0-7 to eliminate modulus
+            1, 2, 4, 3, 5, 6, 7 // duplicates of 0-7 to eliminate
+                                // modulus
         };
 
         constexpr u32 seedStep(u32 seed) { return seed * 0x41C64E6D + 0x6073; }
