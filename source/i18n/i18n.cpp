@@ -28,6 +28,7 @@
 #include "utils/_map_macro.hpp"
 #include "utils/utils.hpp"
 #include <algorithm>
+#include <functional>
 #include <list>
 
 #ifdef _PKSMCORE_EXTRA_LANGUAGES
@@ -53,15 +54,18 @@
 namespace i18n
 {
 #ifdef _PKSMCORE_DISABLE_THREAD_SAFETY
-    std::unordered_map<pksm::Language, LangState> languages = []() {
+    std::unordered_map<pksm::Language, LangState> languages = std::invoke([]() {
         std::unordered_map<pksm::Language, LangState> ret;
-#else
-    std::unordered_map<pksm::Language, std::atomic<LangState>> languages = []() {
-        std::unordered_map<pksm::Language, std::atomic<LangState>> ret;
-#endif
         MAP(MAKE_MAP, LANGUAGES_TO_USE);
         return ret;
-    }();
+    });
+#else
+    std::unordered_map<pksm::Language, std::atomic<LangState>> languages = std::invoke([]() {
+        std::unordered_map<pksm::Language, std::atomic<LangState>> ret;
+        MAP(MAKE_MAP, LANGUAGES_TO_USE);
+        return ret;
+    });
+#endif
 
     std::list<initCallback> initCallbacks = {initAbility, initBall, initForm, initGame, initGeo,
         initType, initItem, initItem3, initLocation, initMove, initNature, initRibbon, initSpecies};
