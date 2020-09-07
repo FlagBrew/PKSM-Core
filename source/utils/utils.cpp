@@ -349,9 +349,8 @@ std::u16string StringUtils::UTF8toUTF16(const std::string_view& src)
     {
         char32_t codepoint = 0xFFFD;
         int iMod           = 0;
-        if (src[i] & 0x80 && src[i] & 0x40 && src[i] & 0x20 && src[i] & 0x10 && !(src[i] & 0x08) &&
-            i + 3 < src.size() && src[i + 1] & 0x80 && !(src[i + 1] & 0x40) && src[i + 2] & 0x80 &&
-            !(src[i + 2] & 0x40) && src[i + 3] & 0x80 && !(src[i + 3] & 0x40))
+        if ((src[i] & 0xF8) == 0xF0 && i + 3 < src.size() && (src[i + 1] & 0xC0) == 0x80 &&
+            (src[i + 2] & 0xC0) == 0x80 && (src[i + 3] & 0xC0) == 0x80)
         {
             codepoint = src[i] & 0x07;
             codepoint = codepoint << 6 | (src[i + 1] & 0x3F);
@@ -359,17 +358,15 @@ std::u16string StringUtils::UTF8toUTF16(const std::string_view& src)
             codepoint = codepoint << 6 | (src[i + 3] & 0x3F);
             iMod      = 3;
         }
-        else if (src[i] & 0x80 && src[i] & 0x40 && src[i] & 0x20 && !(src[i] & 0x10) &&
-                 i + 2 < src.size() && src[i + 1] & 0x80 && !(src[i + 1] & 0x40) &&
-                 src[i + 2] & 0x80 && !(src[i + 2] & 0x40))
+        else if ((src[i] & 0xF0) == 0xE0 && i + 2 < src.size() && (src[i + 1] & 0xC0) == 0x80 &&
+                 (src[i + 2] & 0xC0) == 0x80)
         {
             codepoint = src[i] & 0x0F;
             codepoint = codepoint << 6 | (src[i + 1] & 0x3F);
             codepoint = codepoint << 6 | (src[i + 2] & 0x3F);
             iMod      = 2;
         }
-        else if (src[i] & 0x80 && src[i] & 0x40 && !(src[i] & 0x20) && i + 1 < src.size() &&
-                 src[i + 1] & 0x80 && !(src[i + 1] & 0x40))
+        else if ((src[i] & 0xE0) == 0xC0 && i + 1 < src.size() && (src[i + 1] & 0xC0) == 0x80)
         {
             codepoint = src[i] & 0x1F;
             codepoint = codepoint << 6 | (src[i + 1] & 0x3F);
@@ -387,8 +384,8 @@ std::u16string StringUtils::UTF8toUTF16(const std::string_view& src)
         else
         {
             codepoint -= 0x1'0000; // 21->20 bits
-            ret.push_back(char16_t((codepoint >> 10) & 0x03FF));
-            ret.push_back(char16_t(codepoint & 0x03FF));
+            ret.push_back(0xD800 | char16_t((codepoint >> 10) & 0x03FF));
+            ret.push_back(0xDC00 | char16_t(codepoint & 0x03FF));
         }
 
         i += iMod;
@@ -405,17 +402,15 @@ std::u16string StringUtils::UTF8toUCS2(const std::string_view& src)
     {
         char16_t codepoint = 0xFFFD;
         int iMod           = 0;
-        if (src[i] & 0x80 && src[i] & 0x40 && src[i] & 0x20 && !(src[i] & 0x10) &&
-            i + 2 < src.size() && src[i + 1] & 0x80 && !(src[i + 1] & 0x40) && src[i + 2] & 0x80 &&
-            !(src[i + 2] & 0x40))
+        if ((src[i] & 0xF0) == 0xE0 && i + 2 < src.size() && (src[i + 1] & 0xC0) == 0x80 &&
+            (src[i + 2] & 0xC0) == 0x80)
         {
             codepoint = src[i] & 0x0F;
             codepoint = codepoint << 6 | (src[i + 1] & 0x3F);
             codepoint = codepoint << 6 | (src[i + 2] & 0x3F);
             iMod      = 2;
         }
-        else if (src[i] & 0x80 && src[i] & 0x40 && !(src[i] & 0x20) && i + 1 < src.size() &&
-                 src[i + 1] & 0x80 && !(src[i + 1] & 0x40))
+        else if ((src[i] & 0xE0) == 0xC0 && i + 1 < src.size() && (src[i + 1] & 0xC0) == 0x80)
         {
             codepoint = src[i] & 0x1F;
             codepoint = codepoint << 6 | (src[i + 1] & 0x3F);
@@ -441,9 +436,8 @@ std::u32string StringUtils::UTF8toUTF32(const std::string_view& src)
     {
         char32_t codepoint = 0xFFFD;
         int iMod           = 0;
-        if (src[i] & 0x80 && src[i] & 0x40 && src[i] & 0x20 && src[i] & 0x10 && !(src[i] & 0x08) &&
-            i + 3 < src.size() && src[i + 1] & 0x80 && !(src[i + 1] & 0x40) && src[i + 2] & 0x80 &&
-            !(src[i + 2] & 0x40) && src[i + 3] & 0x80 && !(src[i + 3] & 0x40))
+        if ((src[i] & 0xF8) == 0xF0 && i + 3 < src.size() && (src[i + 1] & 0xC0) == 0x80 &&
+            (src[i + 2] & 0xC0) == 0x80 && (src[i + 3] & 0xC0) == 0x80)
         {
             codepoint = src[i] & 0x07;
             codepoint = codepoint << 6 | (src[i + 1] & 0x3F);
@@ -451,17 +445,15 @@ std::u32string StringUtils::UTF8toUTF32(const std::string_view& src)
             codepoint = codepoint << 6 | (src[i + 3] & 0x3F);
             iMod      = 3;
         }
-        else if (src[i] & 0x80 && src[i] & 0x40 && src[i] & 0x20 && !(src[i] & 0x10) &&
-                 i + 2 < src.size() && src[i + 1] & 0x80 && !(src[i + 1] & 0x40) &&
-                 src[i + 2] & 0x80 && !(src[i + 2] & 0x40))
+        else if ((src[i] & 0xF0) == 0xE0 && i + 2 < src.size() && (src[i + 1] & 0xC0) == 0x80 &&
+                 (src[i + 2] & 0xC0) == 0x80)
         {
             codepoint = src[i] & 0x0F;
             codepoint = codepoint << 6 | (src[i + 1] & 0x3F);
             codepoint = codepoint << 6 | (src[i + 2] & 0x3F);
             iMod      = 2;
         }
-        else if (src[i] & 0x80 && src[i] & 0x40 && !(src[i] & 0x20) && i + 1 < src.size() &&
-                 src[i + 1] & 0x80 && !(src[i + 1] & 0x40))
+        else if ((src[i] & 0xE0) == 0xC0 && i + 1 < src.size() && (src[i + 1] & 0xC0) == 0x80)
         {
             codepoint = src[i] & 0x1F;
             codepoint = codepoint << 6 | (src[i + 1] & 0x3F);
@@ -519,7 +511,7 @@ std::string StringUtils::UTF16toUTF8(const std::u16string_view& src)
         }
         else
         {
-            addChar[0] = 0xF0 | ((0xFFFD >> 12) & 0x0F);
+            addChar[0] = 0xE0 | ((0xFFFD >> 12) & 0x0F);
             addChar[1] = 0x80 | ((0xFFFD >> 6) & 0x3F);
             addChar[2] = 0x80 | (0xFFFD & 0x3F);
             addChar[3] = '\0';
@@ -610,6 +602,13 @@ std::string StringUtils::UTF32toUTF8(const std::u32string_view& src)
             addChar[2] = 0x80 | ((codepoint >> 6) & 0x3F);
             addChar[3] = 0x80 | (codepoint & 0x3F);
             addChar[4] = '\0';
+        }
+        else
+        {
+            addChar[0] = 0xE0 | ((0xFFFD >> 12) & 0x1F);
+            addChar[1] = 0x80 | ((0xFFFD >> 6) & 0x3F);
+            addChar[2] = 0x80 | (0xFFFD & 0x3F);
+            addChar[3] = '\0';
         }
 
         ret.append(addChar);
@@ -705,7 +704,7 @@ std::string StringUtils::getString(const u8* data, int ofs, int len, char16_t te
         }
         else if (codeunit < 0x0080)
         {
-            addChar[0] = data[i];
+            addChar[0] = codeunit;
             addChar[1] = '\0';
         }
         else if (codeunit < 0x0800)
@@ -723,7 +722,7 @@ std::string StringUtils::getString(const u8* data, int ofs, int len, char16_t te
         }
         else
         {
-            addChar[0] = 0xF0 | ((0xFFFD >> 12) & 0x0F);
+            addChar[0] = 0xE0 | ((0xFFFD >> 12) & 0x0F);
             addChar[1] = 0x80 | ((0xFFFD >> 6) & 0x3F);
             addChar[2] = 0x80 | (0xFFFD & 0x3F);
             addChar[3] = '\0';
