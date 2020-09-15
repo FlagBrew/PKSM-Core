@@ -1035,6 +1035,9 @@ namespace pksm
                 }
             }
             break;
+            default:
+                // TODO: G1/2 (very low priority)
+                return 0;
         }
 
         // Stupid thing G1/2 does: they can't store above 63 for PP value
