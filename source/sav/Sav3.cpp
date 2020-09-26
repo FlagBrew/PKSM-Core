@@ -494,26 +494,14 @@ namespace pksm
 
     int Sav3::dexSeen(void) const
     {
-        int ret = 0;
-        for (const auto& spec : availableSpecies())
-        {
-            if (getSeen(spec))
-                ret++;
-        }
-
-        return ret;
+        return std::count_if(availableSpecies().begin(), availableSpecies().end(),
+            [this](const auto& spec) { return getSeen(spec); });
     }
 
     int Sav3::dexCaught(void) const
     {
-        int ret = 0;
-        for (const auto& spec : availableSpecies())
-        {
-            if (getCaught(spec))
-                ret++;
-        }
-
-        return ret;
+        return std::count_if(availableSpecies().begin(), availableSpecies().end(),
+            [this](const auto& spec) { return getCaught(spec); });
     }
 
     // Unused

@@ -604,38 +604,45 @@ namespace pksm
 
     std::unique_ptr<PK3> PKX::convertToG3(Sav&) const
     {
-        return generation() == Generation::THREE ? std::unique_ptr<PK3>((PK3*)clone().release())
-                                                 : nullptr;
+        return generation() == Generation::THREE
+                   ? std::unique_ptr<PK3>(reinterpret_cast<PK3*>(clone().release()))
+                   : nullptr;
     }
     std::unique_ptr<PK4> PKX::convertToG4(Sav&) const
     {
-        return generation() == Generation::FOUR ? std::unique_ptr<PK4>((PK4*)clone().release())
-                                                : nullptr;
+        return generation() == Generation::FOUR
+                   ? std::unique_ptr<PK4>(reinterpret_cast<PK4*>(clone().release()))
+                   : nullptr;
     }
     std::unique_ptr<PK5> PKX::convertToG5(Sav&) const
     {
-        return generation() == Generation::FIVE ? std::unique_ptr<PK5>((PK5*)clone().release())
-                                                : nullptr;
+        return generation() == Generation::FIVE
+                   ? std::unique_ptr<PK5>(reinterpret_cast<PK5*>(clone().release()))
+                   : nullptr;
     }
     std::unique_ptr<PK6> PKX::convertToG6(Sav&) const
     {
-        return generation() == Generation::SIX ? std::unique_ptr<PK6>((PK6*)clone().release())
-                                               : nullptr;
+        return generation() == Generation::SIX
+                   ? std::unique_ptr<PK6>(reinterpret_cast<PK6*>(clone().release()))
+                   : nullptr;
     }
     std::unique_ptr<PK7> PKX::convertToG7(Sav&) const
     {
-        return generation() == Generation::SEVEN ? std::unique_ptr<PK7>((PK7*)clone().release())
-                                                 : nullptr;
+        return generation() == Generation::SEVEN
+                   ? std::unique_ptr<PK7>(reinterpret_cast<PK7*>(clone().release()))
+                   : nullptr;
     }
     std::unique_ptr<PB7> PKX::convertToLGPE(Sav&) const
     {
-        return generation() == Generation::LGPE ? std::unique_ptr<PB7>((PB7*)clone().release())
-                                                : nullptr;
+        return generation() == Generation::LGPE
+                   ? std::unique_ptr<PB7>(reinterpret_cast<PB7*>(clone().release()))
+                   : nullptr;
     }
     std::unique_ptr<PK8> PKX::convertToG8(Sav&) const
     {
-        return generation() == Generation::EIGHT ? std::unique_ptr<PK8>((PK8*)clone().release())
-                                                 : nullptr;
+        return generation() == Generation::EIGHT
+                   ? std::unique_ptr<PK8>(reinterpret_cast<PK8*>(clone().release()))
+                   : nullptr;
     }
 
     std::unique_ptr<PKX> PKX::partyClone() const
