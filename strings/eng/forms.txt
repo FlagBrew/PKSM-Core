@@ -206,3 +206,5 @@ World Cap
 Single Strike Style
 Rapid Strike Style
 Dada
+Ice
+Shadow

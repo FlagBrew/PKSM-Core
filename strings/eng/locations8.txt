@@ -149,6 +149,44 @@
 0x00c6|at the Tower of Darkness
 0x00c8|at the Tower of Waters
 0x00ca|at the Armor Station
+0x00cc|on Slippery Slope
+0x00cd|in the Crown Tundra
+0x00ce|in Freezington
+0x00cf|in the Crown Tundra
+0x00d0|in Frostpoint Field
+0x00d1|in the Crown Tundra
+0x00d2|in the Giant’s Bed
+0x00d3|in the Crown Tundra
+0x00d4|in the Old Cemetery
+0x00d5|in the Crown Tundra
+0x00d6|on Snowslide Slope
+0x00d7|in the Crown Tundra
+0x00d8|in the Tunnel to the Top
+0x00d9|in the Crown Tundra
+0x00da|on the Path to the Peak
+0x00db|in the Crown Tundra
+0x00dc|at the Crown Shrine
+0x00dd|in the Crown Tundra
+0x00de|at the Giant’s Foot
+0x00df|in the Crown Tundra
+0x00e0|in Roaring-Sea Caves
+0x00e1|in the Crown Tundra
+0x00e2|at the Frigid Sea
+0x00e3|in the Crown Tundra
+0x00e4|in Three-Point Pass
+0x00e5|in the Crown Tundra
+0x00e6|at Ballimere Lake
+0x00e7|in the Crown Tundra
+0x00e8|in Lakeside Cave
+0x00e9|in the Crown Tundra
+0x00ea|at Dyna Tree Hill
+0x00eb|in the Crown Tundra
+0x00ec|in the Rock Peak Ruins
+0x00ee|in the Iceberg Ruins
+0x00f0|in the Iron Ruins
+0x00f2|in the Split-Decision Ruins
+0x00f4|in the Max Lair
+0x00f6|at the Crown Tundra Station
 0x7531|a Link Trade
 0x7532|a Link Trade
 0x7533|the Kanto region

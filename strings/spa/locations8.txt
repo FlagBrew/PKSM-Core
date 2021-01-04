@@ -149,6 +149,44 @@
 0x00c6|Torre de las Sombras
 0x00c8|Torre de las Aguas
 0x00ca|Estación Armadura
+0x00cc|Campo Deslizante
+0x00cd|Nieves de la Corona
+0x00ce|Villa Helada
+0x00cf|Nieves de la Corona
+0x00d0|Campo Bajocero
+0x00d1|Nieves de la Corona
+0x00d2|Lecho del Gigante
+0x00d3|Nieves de la Corona
+0x00d4|Viejo Cementerio
+0x00d5|Nieves de la Corona
+0x00d6|Desfiladero Nevado
+0x00d7|Nieves de la Corona
+0x00d8|Túnel Ascensión
+0x00d9|Nieves de la Corona
+0x00da|Senda Blancacima
+0x00db|Nieves de la Corona
+0x00dc|Templo Corona
+0x00dd|Nieves de la Corona
+0x00de|Suela del Gigante
+0x00df|Nieves de la Corona
+0x00e0|Grutas Sonamar
+0x00e1|Nieves de la Corona
+0x00e2|Mar Gélido
+0x00e3|Nieves de la Corona
+0x00e4|Encrucijada Tresvías
+0x00e5|Nieves de la Corona
+0x00e6|Lago Bolaguna
+0x00e7|Nieves de la Corona
+0x00e8|Gruta del Lago
+0x00e9|Nieves de la Corona
+0x00ea|Colina del Maxiárbol
+0x00eb|Nieves de la Corona
+0x00ec|Ruinas Pico Roca
+0x00ee|Ruinas Iceberg
+0x00f0|Ruinas Hierro
+0x00f2|Ruinas del Dilema
+0x00f4|Supernido Dinamax
+0x00f6|Estación Corona
 0x7531|Intercambio en conexión
 0x7532|Intercambio en conexión
 0x7533|Kanto

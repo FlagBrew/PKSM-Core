@@ -864,6 +864,14 @@ namespace pksm
                 JungleHealing,
                 WickedBlow,
                 SurgingStrikes,
+                ThunderCage,
+                DragonEnergy,
+                FreezingGlare,
+                FieryWrath,
+                ThunderousKick,
+                GlacialLance,
+                AstralBarrage,
+                EerieSpell,
 
                 INVALID [[maybe_unused]] =
                     std::numeric_limits<std::underlying_type_t<MoveEnum>>::max()

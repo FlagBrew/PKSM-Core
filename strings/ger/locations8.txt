@@ -149,6 +149,44 @@
 0x00c6|am Turm des Unlichts
 0x00c8|am Turm des Wassers
 0x00ca|in der Rüstungs-Station
+0x00cc|auf dem Schlitterfeld
+0x00cd|in den Kronen-Schneelanden
+0x00ce|in Freezedale
+0x00cf|in den Kronen-Schneelanden
+0x00d0|auf dem Frostfeld
+0x00d1|in den Kronen-Schneelanden
+0x00d2|am Bett des Giganten
+0x00d3|in den Kronen-Schneelanden
+0x00d4|auf dem Uralten Friedhof
+0x00d5|in den Kronen-Schneelanden
+0x00d6|in der Schneeschlucht
+0x00d7|in den Kronen-Schneelanden
+0x00d8|im Aufstiegstunnel
+0x00d9|in den Kronen-Schneelanden
+0x00da|auf dem Schneegipfelpfad
+0x00db|in den Kronen-Schneelanden
+0x00dc|am Kronentempel
+0x00dd|in den Kronen-Schneelanden
+0x00de|an der Sohle des Giganten
+0x00df|in den Kronen-Schneelanden
+0x00e0|in den Rauschenden Höhlen
+0x00e1|in den Kronen-Schneelanden
+0x00e2|am Schollenmeer
+0x00e3|in den Kronen-Schneelanden
+0x00e4|auf dem Dreiwegpass
+0x00e5|in den Kronen-Schneelanden
+0x00e6|am Ballsee-Ufer
+0x00e7|in den Kronen-Schneelanden
+0x00e8|in der Ballsee-Höhle
+0x00e9|in den Kronen-Schneelanden
+0x00ea|auf dem Hügel des Dyna-Baums
+0x00eb|in den Kronen-Schneelanden
+0x00ec|in den Gipfelruinen
+0x00ee|in den Eisberg-Ruinen
+0x00f0|in den Eisen-Ruinen
+0x00f2|in den Zwiespaltruinen
+0x00f4|im Dyna-Riesennest
+0x00f6|im Kronen-Bahnhof
 0x7531|Link-Tausch
 0x7532|Link-Tausch
 0x7533|Kanto-Region

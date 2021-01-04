@@ -306,6 +306,13 @@ namespace pksm
                 HungerSwitch,
                 QuickDraw,
                 UnseenFist,
+                CuriousMedicine,
+                Transistor,
+                DragonsMaw,
+                ChillingNeigh,
+                GrimNeigh,
+                AsOneI,
+                AsOneG,
 
                 INVALID [[maybe_unused]] =
                     std::numeric_limits<std::underlying_type_t<AbilityEnum>>::max()

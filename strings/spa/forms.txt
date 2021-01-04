@@ -206,3 +206,5 @@ Gorra Trotamundos
 Estilo Brusco
 Estilo Fluido
 Papá
+Glacial
+Espectral

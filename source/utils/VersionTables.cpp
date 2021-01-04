@@ -529,7 +529,41 @@ namespace pksm
                     Species::Clawitzer, Species::Dedenne, Species::Klefki, Species::Rockruff,
                     Species::Lycanroc, Species::Fomantis, Species::Lurantis, Species::Comfey,
                     Species::Sandygast, Species::Palossand, Species::Magearna, Species::Kubfu,
-                    Species::Urshifu, Species::Zarude};
+                    Species::Urshifu, Species::Zarude,
+
+                    // Crown Tundra
+                    Species::Regieleki, Species::Regidrago, Species::Glastrier, Species::Spectrier,
+                    Species::Calyrex, Species::Articuno, Species::Zapdos, Species::Moltres,
+                    Species::Slowking, Species::NidoranF, Species::Nidorina, Species::Nidoqueen,
+                    Species::NidoranM, Species::Nidorino, Species::Nidoking, Species::Zubat,
+                    Species::Golbat, Species::Jynx, Species::Electabuzz, Species::Magmar,
+                    Species::Omanyte, Species::Omastar, Species::Kabuto, Species::Kabutops,
+                    Species::Aerodactyl, Species::Dratini, Species::Dragonair, Species::Dragonite,
+                    Species::Crobat, Species::Smoochum, Species::Elekid, Species::Magby,
+                    Species::Raikou, Species::Entei, Species::Suicune, Species::Lugia,
+                    Species::HoOh, Species::Treecko, Species::Grovyle, Species::Sceptile,
+                    Species::Torchic, Species::Combusken, Species::Blaziken, Species::Mudkip,
+                    Species::Marshtomp, Species::Swampert, Species::Aron, Species::Lairon,
+                    Species::Aggron, Species::Swablu, Species::Altaria, Species::Lileep,
+                    Species::Cradily, Species::Anorith, Species::Armaldo, Species::Absol,
+                    Species::Spheal, Species::Sealeo, Species::Walrein, Species::Relicanth,
+                    Species::Bagon, Species::Shelgon, Species::Salamence, Species::Beldum,
+                    Species::Metang, Species::Metagross, Species::Regirock, Species::Regice,
+                    Species::Registeel, Species::Latias, Species::Latios, Species::Kyogre,
+                    Species::Groudon, Species::Rayquaza, Species::Spiritomb, Species::Gible,
+                    Species::Gabite, Species::Garchomp, Species::Electivire, Species::Magmortar,
+                    Species::Uxie, Species::Mesprit, Species::Azelf, Species::Dialga,
+                    Species::Palkia, Species::Heatran, Species::Regigigas, Species::Giratina,
+                    Species::Cresselia, Species::Victini, Species::Audino, Species::Tirtouga,
+                    Species::Carracosta, Species::Archen, Species::Archeops, Species::Cryogonal,
+                    Species::Tornadus, Species::Thundurus, Species::Landorus, Species::Genesect,
+                    Species::Tyrunt, Species::Tyrantrum, Species::Amaura, Species::Aurorus,
+                    Species::Carbink, Species::Xerneas, Species::Yveltal, Species::Zygarde,
+                    Species::Diancie, Species::Volcanion, Species::TapuKoko, Species::TapuLele,
+                    Species::TapuBulu, Species::TapuFini, Species::Nihilego, Species::Buzzwole,
+                    Species::Pheromosa, Species::Xurkitree, Species::Celesteela, Species::Kartana,
+                    Species::Guzzlord, Species::Poipole, Species::Naganadel, Species::Stakataka,
+                    Species::Blacephalon};
                 return items;
             }
             default:

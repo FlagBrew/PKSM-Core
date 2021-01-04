@@ -149,6 +149,44 @@
 0x00c6|nella Torre Buio
 0x00c8|nella Torre Acqua
 0x00ca|nella Stazione dell’Isola dell’Armatura
+0x00cc|alle Nevi Primoscivolo
+0x00cd|nella Landa Corona
+0x00ce|a Freezedale
+0x00cf|nella Landa Corona
+0x00d0|nella Piana Sottozero
+0x00d1|nella Landa Corona
+0x00d2|al Letto del Gigante
+0x00d3|nella Landa Corona
+0x00d4|nel Cimitero Antico
+0x00d5|nella Landa Corona
+0x00d6|nella Valle Innevata
+0x00d7|nella Landa Corona
+0x00d8|nel Tunnel Scalata
+0x00d9|nella Landa Corona
+0x00da|sul Sentiero Biancacima
+0x00db|nella Landa Corona
+0x00dc|al Tempio Corona
+0x00dd|nella Landa Corona
+0x00de|alla Suola del Gigante
+0x00df|nella Landa Corona
+0x00e0|alle Grotte Fragormare
+0x00e1|nella Landa Corona
+0x00e2|al Mar Gelido
+0x00e3|nella Landa Corona
+0x00e4|al Campo Trivio
+0x00e5|nella Landa Corona
+0x00e6|sulla Riva del Lago Ball
+0x00e7|nella Landa Corona
+0x00e8|nella Grotta Rivalago
+0x00e9|nella Landa Corona
+0x00ea|sulla Collina Dynalbero
+0x00eb|nella Landa Corona
+0x00ec|nelle Rovine Picco
+0x00ee|nelle Rovine Iceberg
+0x00f0|nelle Rovine Ferro
+0x00f2|nelle Rovine della Scelta
+0x00f4|nella dynatana max
+0x00f6|alla Stazione della Landa Corona
 0x7531|Scambio in link
 0x7532|Scambio in link
 0x7533|Kanto

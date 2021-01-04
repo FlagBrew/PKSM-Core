@@ -39,6 +39,15 @@ namespace pksm
             143, 569, 823, 826, 834, 839, 841, 842, 844, 851, 858, 861, 869, 879, 884, 890};
 
     public:
+        static constexpr size_t SIZE_G8SWSH    = 0x1716B3; // 1.0
+        static constexpr size_t SIZE_G8SWSH_1  = 0x17195E; // 1.0 -> 1.1
+        static constexpr size_t SIZE_G8SWSH_2  = 0x180B19; // 1.0 -> 1.1 -> 1.2
+        static constexpr size_t SIZE_G8SWSH_2B = 0x180AD0; // 1.0 -> 1.2
+        static constexpr size_t SIZE_G8SWSH_3  = 0x1876B1; // 1.0 -> 1.1 -> 1.2 -> 1.3
+        static constexpr size_t SIZE_G8SWSH_3A = 0x187693; // 1.0 -> 1.1 -> 1.3
+        static constexpr size_t SIZE_G8SWSH_3B = 0x187668; // 1.0 -> 1.2 -> 1.3
+        static constexpr size_t SIZE_G8SWSH_3C = 0x18764A; // 1.0 -> 1.3
+
         SavSWSH(std::shared_ptr<u8[]> dt, size_t length);
 
         [[nodiscard]] u16 TID(void) const override;

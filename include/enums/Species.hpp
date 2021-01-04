@@ -938,6 +938,11 @@ namespace pksm
                 Kubfu,
                 Urshifu,
                 Zarude,
+                Regieleki,
+                Regidrago,
+                Glastrier,
+                Spectrier,
+                Calyrex,
 
                 INVALID [[maybe_unused]] =
                     std::numeric_limits<std::underlying_type_t<SpeciesEnum>>::max()
@@ -1961,6 +1966,11 @@ namespace pksm
         static constexpr internal::Species_impl Kubfu{EnumType::Kubfu};
         static constexpr internal::Species_impl Urshifu{EnumType::Urshifu};
         static constexpr internal::Species_impl Zarude{EnumType::Zarude};
+        static constexpr internal::Species_impl Regieleki{EnumType::Regieleki};
+        static constexpr internal::Species_impl Regidrago{EnumType::Regidrago};
+        static constexpr internal::Species_impl Glastrier{EnumType::Glastrier};
+        static constexpr internal::Species_impl Spectrier{EnumType::Spectrier};
+        static constexpr internal::Species_impl Calyrex{EnumType::Calyrex};
 
         static constexpr internal::Species_impl INVALID{EnumType::INVALID};
     };

@@ -149,6 +149,44 @@
 0x00c6|à la Tour des Ténèbres
 0x00c8|à la Tour de l’Eau
 0x00ca|à la Gare d’Isolarmure
+0x00cc|au Plateau Beau-Gant
+0x00cd|à Couronneige
+0x00ce|au Hameau Gelé
+0x00cf|à Couronneige
+0x00d0|dans la Plaine Granfroy
+0x00d1|à Couronneige
+0x00d2|au Repos du Géant
+0x00d3|à Couronneige
+0x00d4|au Cimetière Ancien
+0x00d5|à Couronneige
+0x00d6|sur la Pente Enneigée
+0x00d7|à Couronneige
+0x00d8|dans les Galeries Monte-Pic
+0x00d9|à Couronneige
+0x00da|sur le Sentier Blanche-Cime
+0x00db|à Couronneige
+0x00dc|au Temple Couronne
+0x00dd|à Couronneige
+0x00de|à l’Empreinte du Géant
+0x00df|à Couronneige
+0x00e0|dans les Cavernes Gronde-Mer
+0x00e1|à Couronneige
+0x00e2|sur la Mer Banquise
+0x00e3|à Couronneige
+0x00e4|à la Croisée Trois-Voies
+0x00e5|à Couronneige
+0x00e6|au Lac Poké Ball
+0x00e7|à Couronneige
+0x00e8|dans la Grotte du Lac
+0x00e9|à Couronneige
+0x00ea|sur la Butte du Dynarbre
+0x00eb|à Couronneige
+0x00ec|dans les Ruines Pic Roche
+0x00ee|dans les Ruines Iceberg
+0x00f0|dans les Ruines de Fer
+0x00f2|dans les Ruines du Choix
+0x00f4|dans le Grand Antre Dynamax
+0x00f6|à la Gare de Couronneige
 0x7531|Échange en réseau
 0x7532|Échange en réseau
 0x7533|Kanto

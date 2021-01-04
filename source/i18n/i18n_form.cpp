@@ -251,6 +251,8 @@ namespace i18n
     static constexpr size_t SingleStrike     = 205;
     static constexpr size_t RapidStrike      = 206;
     static constexpr size_t Dada             = 207;
+    static constexpr size_t IceRider         = 208;
+    static constexpr size_t ShadowRider      = 209;
 
     const std::vector<size_t> formIndices(pksm::GameVersion version, pksm::Species species)
     {
@@ -338,6 +340,9 @@ namespace i18n
             case pksm::Species::Slowbro:
                 ret = {Default, Mega, Galarian};
                 break;
+            case pksm::Species::Slowking:
+                ret = {Default, Galarian};
+                break;
             case pksm::Species::Farfetchd:
                 ret = {Default, Galarian};
                 break;
@@ -371,6 +376,15 @@ namespace i18n
                 break;
             case pksm::Species::Aerodactyl:
                 ret = {Default, Mega};
+                break;
+            case pksm::Species::Articuno:
+                ret = {Default, Galarian};
+                break;
+            case pksm::Species::Zapdos:
+                ret = {Default, Galarian};
+                break;
+            case pksm::Species::Moltres:
+                ret = {Default, Galarian};
                 break;
             case pksm::Species::Mewtwo:
                 ret = {Default, MegaX, MegaY};
@@ -700,6 +714,9 @@ namespace i18n
                 break;
             case pksm::Species::Zarude:
                 ret = {Default, Dada};
+                break;
+            case pksm::Species::Calyrex:
+                ret = {Default, IceRider, ShadowRider};
                 break;
             default:
                 ret = {Default};

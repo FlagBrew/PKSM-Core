@@ -71,8 +71,14 @@ namespace pksm
             case 0xB8800:
             case 0x100000:
                 return std::make_unique<SavLGPE>(dt, length);
-            case 0x180B19: // 1.0->1.1->1.2
-            case 0x180AD0: // 1.0->1.2
+            case SavSWSH::SIZE_G8SWSH:
+            case SavSWSH::SIZE_G8SWSH_1:
+            case SavSWSH::SIZE_G8SWSH_2:
+            case SavSWSH::SIZE_G8SWSH_2B:
+            case SavSWSH::SIZE_G8SWSH_3:
+            case SavSWSH::SIZE_G8SWSH_3A:
+            case SavSWSH::SIZE_G8SWSH_3B:
+            case SavSWSH::SIZE_G8SWSH_3C:
                 return std::make_unique<SavSWSH>(dt, length);
             default:
                 return std::unique_ptr<Sav>(nullptr);
