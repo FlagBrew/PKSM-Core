@@ -443,13 +443,17 @@ namespace pksm
             else if (pk.species() == Species::Pichu && game == Game::HGSS)
             {
                 u8 form = pk.alternativeForm() == 1 ? 2 : u8(pk.gender());
-                checkInsertForm(forms, form);
-                setForms(forms, pk.species());
+                if (checkInsertForm(forms, form))
+                {
+                    setForms(forms, pk.species());
+                }
             }
             else
             {
-                checkInsertForm(forms, pk.alternativeForm());
-                setForms(forms, pk.species());
+                if (checkInsertForm(forms, pk.alternativeForm()))
+                {
+                    setForms(forms, pk.species());
+                }
             }
         }
 

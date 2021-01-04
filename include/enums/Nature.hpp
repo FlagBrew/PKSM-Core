@@ -89,34 +89,34 @@ namespace pksm
             }
             constexpr operator NatureEnum() const noexcept { return v; }
 
-            constexpr bool operator<(const Nature_impl& other) const noexcept
+            [[nodiscard]] constexpr bool operator<(const Nature_impl& other) const noexcept
             {
                 return v < other.v;
             }
-            constexpr bool operator<=(const Nature_impl& other) const noexcept
+            [[nodiscard]] constexpr bool operator<=(const Nature_impl& other) const noexcept
             {
                 return v <= other.v;
             }
 
-            constexpr bool operator>(const Nature_impl& other) const noexcept
+            [[nodiscard]] constexpr bool operator>(const Nature_impl& other) const noexcept
             {
                 return v > other.v;
             }
-            constexpr bool operator>=(const Nature_impl& other) const noexcept
+            [[nodiscard]] constexpr bool operator>=(const Nature_impl& other) const noexcept
             {
                 return v >= other.v;
             }
 
-            constexpr bool operator==(const Nature_impl& other) const noexcept
+            [[nodiscard]] constexpr bool operator==(const Nature_impl& other) const noexcept
             {
                 return v == other.v;
             }
-            constexpr bool operator!=(const Nature_impl& other) const noexcept
+            [[nodiscard]] constexpr bool operator!=(const Nature_impl& other) const noexcept
             {
                 return v != other.v;
             }
 
-            const std::string& localize(Language lang) const;
+            [[nodiscard]] const std::string& localize(Language lang) const;
         };
     }
 
@@ -140,43 +140,64 @@ namespace pksm
         }
         constexpr operator EnumType() const noexcept { return static_cast<EnumType>(impl); }
 
-        constexpr bool operator<(const Nature& other) const noexcept { return impl < other.impl; }
-        constexpr bool operator<=(const Nature& other) const noexcept { return impl <= other.impl; }
+        [[nodiscard]] constexpr bool operator<(const Nature& other) const noexcept
+        {
+            return impl < other.impl;
+        }
+        [[nodiscard]] constexpr bool operator<=(const Nature& other) const noexcept
+        {
+            return impl <= other.impl;
+        }
 
-        constexpr bool operator>(const Nature& other) const noexcept { return impl > other.impl; }
-        constexpr bool operator>=(const Nature& other) const noexcept { return impl >= other.impl; }
+        [[nodiscard]] constexpr bool operator>(const Nature& other) const noexcept
+        {
+            return impl > other.impl;
+        }
+        [[nodiscard]] constexpr bool operator>=(const Nature& other) const noexcept
+        {
+            return impl >= other.impl;
+        }
 
-        constexpr bool operator==(const Nature& other) const noexcept { return impl == other.impl; }
-        constexpr bool operator!=(const Nature& other) const noexcept { return impl != other.impl; }
+        [[nodiscard]] constexpr bool operator==(const Nature& other) const noexcept
+        {
+            return impl == other.impl;
+        }
+        [[nodiscard]] constexpr bool operator!=(const Nature& other) const noexcept
+        {
+            return impl != other.impl;
+        }
 
-        constexpr bool operator<(const internal::Nature_impl& other) const noexcept
+        [[nodiscard]] constexpr bool operator<(const internal::Nature_impl& other) const noexcept
         {
             return impl < other;
         }
-        constexpr bool operator<=(const internal::Nature_impl& other) const noexcept
+        [[nodiscard]] constexpr bool operator<=(const internal::Nature_impl& other) const noexcept
         {
             return impl <= other;
         }
 
-        constexpr bool operator>(const internal::Nature_impl& other) const noexcept
+        [[nodiscard]] constexpr bool operator>(const internal::Nature_impl& other) const noexcept
         {
             return impl > other;
         }
-        constexpr bool operator>=(const internal::Nature_impl& other) const noexcept
+        [[nodiscard]] constexpr bool operator>=(const internal::Nature_impl& other) const noexcept
         {
             return impl >= other;
         }
 
-        constexpr bool operator==(const internal::Nature_impl& other) const noexcept
+        [[nodiscard]] constexpr bool operator==(const internal::Nature_impl& other) const noexcept
         {
             return impl == other;
         }
-        constexpr bool operator!=(const internal::Nature_impl& other) const noexcept
+        [[nodiscard]] constexpr bool operator!=(const internal::Nature_impl& other) const noexcept
         {
             return impl != other;
         }
 
-        const std::string& localize(Language lang) const { return impl.localize(lang); }
+        [[nodiscard]] const std::string& localize(Language lang) const
+        {
+            return impl.localize(lang);
+        }
 
         static constexpr internal::Nature_impl Hardy{EnumType::Hardy};
         static constexpr internal::Nature_impl Lonely{EnumType::Lonely};

@@ -58,7 +58,7 @@ namespace pksm
         INVALID [[maybe_unused]] = std::numeric_limits<std::underlying_type_t<Language>>::max()
     };
 
-    Language getSafeLanguage(Generation gen, Language originalLang);
+    [[nodiscard]] Language getSafeLanguage(Generation gen, Language originalLang);
 }
 
 #endif

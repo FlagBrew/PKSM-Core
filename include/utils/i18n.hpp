@@ -70,81 +70,83 @@ namespace i18n
     // functions in this file
     void exit(void);
 
-    const std::string& langString(pksm::Language l);
-    pksm::Language langFromString(const std::string_view& value);
+    [[nodiscard]] const std::string& langString(pksm::Language l);
+    [[nodiscard]] pksm::Language langFromString(const std::string_view& value);
 
     void initAbility(pksm::Language lang);
     void exitAbility(pksm::Language lang);
-    const std::string& ability(pksm::Language lang, pksm::Ability value);
-    const std::vector<std::string>& rawAbilities(pksm::Language lang);
+    [[nodiscard]] const std::string& ability(pksm::Language lang, pksm::Ability value);
+    [[nodiscard]] const std::vector<std::string>& rawAbilities(pksm::Language lang);
 
     void initBall(pksm::Language lang);
     void exitBall(pksm::Language lang);
-    const std::string& ball(pksm::Language lang, pksm::Ball value);
-    const std::vector<std::string>& rawBalls(pksm::Language lang);
+    [[nodiscard]] const std::string& ball(pksm::Language lang, pksm::Ball value);
+    [[nodiscard]] const std::vector<std::string>& rawBalls(pksm::Language lang);
 
     void initForm(pksm::Language lang);
     void exitForm(pksm::Language lang);
-    const std::string& form(
+    [[nodiscard]] const std::string& form(
         pksm::Language lang, pksm::GameVersion version, pksm::Species species, u8 form);
-    std::vector<std::string> forms(
+    [[nodiscard]] std::vector<std::string> forms(
         pksm::Language lang, pksm::GameVersion version, pksm::Species species);
     // No good raw interface for this
 
     void initGame(pksm::Language lang);
     void exitGame(pksm::Language lang);
-    const std::string& game(pksm::Language lang, pksm::GameVersion value);
-    const std::vector<std::string>& rawGames(pksm::Language lang);
+    [[nodiscard]] const std::string& game(pksm::Language lang, pksm::GameVersion value);
+    [[nodiscard]] const std::vector<std::string>& rawGames(pksm::Language lang);
 
     void initItem(pksm::Language lang);
     void exitItem(pksm::Language lang);
-    const std::string& item(pksm::Language lang, u16 value);
-    const std::vector<std::string>& rawItems(pksm::Language lang);
+    [[nodiscard]] const std::string& item(pksm::Language lang, u16 value);
+    [[nodiscard]] const std::vector<std::string>& rawItems(pksm::Language lang);
 
     void initItem3(pksm::Language lang);
     void exitItem3(pksm::Language lang);
-    const std::string& item3(pksm::Language lang, u16 value);
-    const std::vector<std::string>& rawItems3(pksm::Language lang);
+    [[nodiscard]] const std::string& item3(pksm::Language lang, u16 value);
+    [[nodiscard]] const std::vector<std::string>& rawItems3(pksm::Language lang);
 
     void initMove(pksm::Language lang);
     void exitMove(pksm::Language lang);
-    const std::string& move(pksm::Language lang, pksm::Move value);
-    const std::vector<std::string>& rawMoves(pksm::Language lang);
+    [[nodiscard]] const std::string& move(pksm::Language lang, pksm::Move value);
+    [[nodiscard]] const std::vector<std::string>& rawMoves(pksm::Language lang);
 
     void initNature(pksm::Language lang);
     void exitNature(pksm::Language lang);
-    const std::string& nature(pksm::Language lang, pksm::Nature value);
-    const std::vector<std::string>& rawNatures(pksm::Language lang);
+    [[nodiscard]] const std::string& nature(pksm::Language lang, pksm::Nature value);
+    [[nodiscard]] const std::vector<std::string>& rawNatures(pksm::Language lang);
 
     void initRibbon(pksm::Language lang);
     void exitRibbon(pksm::Language lang);
-    const std::string& ribbon(pksm::Language lang, pksm::Ribbon value);
-    const std::vector<std::string>& rawRibbons(pksm::Language lang);
+    [[nodiscard]] const std::string& ribbon(pksm::Language lang, pksm::Ribbon value);
+    [[nodiscard]] const std::vector<std::string>& rawRibbons(pksm::Language lang);
 
     // Note: several functions require this to function properly.
     // A nonexhaustive list includes PK3::nicknamed, PK4::convertToPK3, PK5::convertToPK6,
     // SavLGPE::mysteryGift, and SavSWSH::mysteryGift
     void initSpecies(pksm::Language lang);
     void exitSpecies(pksm::Language lang);
-    const std::string& species(pksm::Language lang, pksm::Species value);
-    const std::vector<std::string>& rawSpecies(pksm::Language lang);
+    [[nodiscard]] const std::string& species(pksm::Language lang, pksm::Species value);
+    [[nodiscard]] const std::vector<std::string>& rawSpecies(pksm::Language lang);
 
     void initType(pksm::Language lang);
     void exitType(pksm::Language lang);
-    const std::string& type(pksm::Language lang, pksm::Type value);
-    const std::vector<std::string>& rawType(pksm::Language lang);
+    [[nodiscard]] const std::string& type(pksm::Language lang, pksm::Type value);
+    [[nodiscard]] const std::vector<std::string>& rawType(pksm::Language lang);
 
     void initLocation(pksm::Language lang);
     void exitLocation(pksm::Language lang);
-    const std::string& location(pksm::Language lang, pksm::Generation generation, u16 value);
-    const std::map<u16, std::string>& rawLocations(pksm::Language lang, pksm::Generation g);
+    [[nodiscard]] const std::string& location(
+        pksm::Language lang, pksm::Generation generation, u16 value);
+    [[nodiscard]] const std::map<u16, std::string>& rawLocations(
+        pksm::Language lang, pksm::Generation g);
 
     void initGeo(pksm::Language lang);
     void exitGeo(pksm::Language lang);
-    const std::string& subregion(pksm::Language lang, u8 country, u8 value);
-    const std::map<u8, std::string>& rawSubregions(pksm::Language lang, u8 country);
-    const std::string& country(pksm::Language lang, u8 value);
-    const std::map<u8, std::string>& rawCountries(pksm::Language lang);
+    [[nodiscard]] const std::string& subregion(pksm::Language lang, u8 country, u8 value);
+    [[nodiscard]] const std::map<u8, std::string>& rawSubregions(pksm::Language lang, u8 country);
+    [[nodiscard]] const std::string& country(pksm::Language lang, u8 value);
+    [[nodiscard]] const std::map<u8, std::string>& rawCountries(pksm::Language lang);
 };
 
 #endif

@@ -66,29 +66,29 @@ namespace pksm
             }
             constexpr operator GenderEnum() const noexcept { return v; }
 
-            constexpr bool operator<(const Gender_impl& other) const noexcept
+            [[nodiscard]] constexpr bool operator<(const Gender_impl& other) const noexcept
             {
                 return v < other.v;
             }
-            constexpr bool operator<=(const Gender_impl& other) const noexcept
+            [[nodiscard]] constexpr bool operator<=(const Gender_impl& other) const noexcept
             {
                 return v <= other.v;
             }
 
-            constexpr bool operator>(const Gender_impl& other) const noexcept
+            [[nodiscard]] constexpr bool operator>(const Gender_impl& other) const noexcept
             {
                 return v > other.v;
             }
-            constexpr bool operator>=(const Gender_impl& other) const noexcept
+            [[nodiscard]] constexpr bool operator>=(const Gender_impl& other) const noexcept
             {
                 return v >= other.v;
             }
 
-            constexpr bool operator==(const Gender_impl& other) const noexcept
+            [[nodiscard]] constexpr bool operator==(const Gender_impl& other) const noexcept
             {
                 return v == other.v;
             }
-            constexpr bool operator!=(const Gender_impl& other) const noexcept
+            [[nodiscard]] constexpr bool operator!=(const Gender_impl& other) const noexcept
             {
                 return v != other.v;
             }
@@ -115,38 +115,56 @@ namespace pksm
         }
         constexpr operator EnumType() const noexcept { return static_cast<EnumType>(impl); }
 
-        constexpr bool operator<(const Gender& other) const noexcept { return impl < other.impl; }
-        constexpr bool operator<=(const Gender& other) const noexcept { return impl <= other.impl; }
+        [[nodiscard]] constexpr bool operator<(const Gender& other) const noexcept
+        {
+            return impl < other.impl;
+        }
+        [[nodiscard]] constexpr bool operator<=(const Gender& other) const noexcept
+        {
+            return impl <= other.impl;
+        }
 
-        constexpr bool operator>(const Gender& other) const noexcept { return impl > other.impl; }
-        constexpr bool operator>=(const Gender& other) const noexcept { return impl >= other.impl; }
+        [[nodiscard]] constexpr bool operator>(const Gender& other) const noexcept
+        {
+            return impl > other.impl;
+        }
+        [[nodiscard]] constexpr bool operator>=(const Gender& other) const noexcept
+        {
+            return impl >= other.impl;
+        }
 
-        constexpr bool operator==(const Gender& other) const noexcept { return impl == other.impl; }
-        constexpr bool operator!=(const Gender& other) const noexcept { return impl != other.impl; }
+        [[nodiscard]] constexpr bool operator==(const Gender& other) const noexcept
+        {
+            return impl == other.impl;
+        }
+        [[nodiscard]] constexpr bool operator!=(const Gender& other) const noexcept
+        {
+            return impl != other.impl;
+        }
 
-        constexpr bool operator<(const internal::Gender_impl& other) const noexcept
+        [[nodiscard]] constexpr bool operator<(const internal::Gender_impl& other) const noexcept
         {
             return impl < other;
         }
-        constexpr bool operator<=(const internal::Gender_impl& other) const noexcept
+        [[nodiscard]] constexpr bool operator<=(const internal::Gender_impl& other) const noexcept
         {
             return impl <= other;
         }
 
-        constexpr bool operator>(const internal::Gender_impl& other) const noexcept
+        [[nodiscard]] constexpr bool operator>(const internal::Gender_impl& other) const noexcept
         {
             return impl > other;
         }
-        constexpr bool operator>=(const internal::Gender_impl& other) const noexcept
+        [[nodiscard]] constexpr bool operator>=(const internal::Gender_impl& other) const noexcept
         {
             return impl >= other;
         }
 
-        constexpr bool operator==(const internal::Gender_impl& other) const noexcept
+        [[nodiscard]] constexpr bool operator==(const internal::Gender_impl& other) const noexcept
         {
             return impl == other;
         }
-        constexpr bool operator!=(const internal::Gender_impl& other) const noexcept
+        [[nodiscard]] constexpr bool operator!=(const internal::Gender_impl& other) const noexcept
         {
             return impl != other;
         }

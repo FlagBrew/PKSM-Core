@@ -36,13 +36,13 @@ namespace pksm
     class WB7 : public WCX
     {
     private:
-        int year(void) const override;
-        int month(void) const override;
-        int day(void) const override;
+        [[nodiscard]] int year(void) const override;
+        [[nodiscard]] int month(void) const override;
+        [[nodiscard]] int day(void) const override;
         void year(int v) override;
         void month(int v) override;
         void day(int v) override;
-        u32 rawDate() const;
+        [[nodiscard]] u32 rawDate() const;
         void rawDate(u32 v);
 
     protected:
@@ -55,77 +55,77 @@ namespace pksm
 
         explicit WB7(u8* dt, bool full = false);
 
-        std::string extension() const override { return ".wb7"; }
+        [[nodiscard]] std::string_view extension() const override { return ".wb7"; }
 
-        Generation generation(void) const override;
-        bool bean(void) const override;
-        bool BP(void) const override;
-        bool item(void) const override;
-        bool pokemon(void) const override;
-        bool power(void) const override;
-        std::string title(void) const override;
-        u8 type(void) const override;
-        u16 ID(void) const override;
-        u16 object(void) const override;
-        u16 objectQuantity(void) const;
+        [[nodiscard]] Generation generation(void) const override;
+        [[nodiscard]] bool bean(void) const override;
+        [[nodiscard]] bool BP(void) const override;
+        [[nodiscard]] bool item(void) const override;
+        [[nodiscard]] bool pokemon(void) const override;
+        [[nodiscard]] bool power(void) const override;
+        [[nodiscard]] std::string title(void) const override;
+        [[nodiscard]] u8 type(void) const override;
+        [[nodiscard]] u16 ID(void) const override;
+        [[nodiscard]] u16 object(void) const override;
+        [[nodiscard]] u16 objectQuantity(void) const;
         // Multiple-item cards
-        u16 object(int index) const;
-        u16 objectQuantity(int index) const;
-        int items(void) const;
-        bool multiObtainable(void) const override;
-        u8 flags(void) const override;
-        u8 cardLocation(void) const override;
-        bool used(void) const override;
-        bool oncePerDay(void) const;
+        [[nodiscard]] u16 object(int index) const;
+        [[nodiscard]] u16 objectQuantity(int index) const;
+        [[nodiscard]] int items(void) const;
+        [[nodiscard]] bool multiObtainable(void) const override;
+        [[nodiscard]] u8 flags(void) const override;
+        [[nodiscard]] u8 cardLocation(void) const override;
+        [[nodiscard]] bool used(void) const override;
+        [[nodiscard]] bool oncePerDay(void) const;
 
         // Pokemon properties
-        bool egg(void) const override;
-        bool shiny(void) const override;
-        Ability ability(void) const override;
-        u8 abilityType(void) const override;
-        Ball ball(void) const override;
-        u32 encryptionConstant(void) const;
-        u8 alternativeForm(void) const override;
-        Gender gender(void) const override;
-        u16 heldItem(void) const override;
-        Language language(void) const override
+        [[nodiscard]] bool egg(void) const override;
+        [[nodiscard]] bool shiny(void) const override;
+        [[nodiscard]] Ability ability(void) const override;
+        [[nodiscard]] u8 abilityType(void) const override;
+        [[nodiscard]] Ball ball(void) const override;
+        [[nodiscard]] u32 encryptionConstant(void) const;
+        [[nodiscard]] u8 alternativeForm(void) const override;
+        [[nodiscard]] Gender gender(void) const override;
+        [[nodiscard]] u16 heldItem(void) const override;
+        [[nodiscard]] Language language(void) const override
         {
             return Language::UNUSED;
         } // Apparently all WCs are now multi-language?
-        u8 level(void) const override;
-        u8 metLevel(void) const override;
-        Move move(u8 index) const override;
-        Move relearnMove(u8 index) const;
-        Nature nature(void) const override;
-        std::string nickname(void) const override;
-        std::string nickname(Language lang) const;
-        GameVersion version(void) const;
-        std::string otName(void) const override;
-        std::string otName(Language lang) const;
-        Gender otGender(void) const;
-        u8 otIntensity(void) const;
-        u8 otMemory(void) const;
-        u16 otTextvar(void) const;
-        u8 otFeeling(void) const;
-        u16 TID(void) const override;
-        u16 SID(void) const override;
-        u8 PIDType(void) const override;
-        u32 PID(void) const override;
-        Species species(void) const override;
-        u16 eggLocation(void) const override;
-        u16 metLocation(void) const override;
-        u8 contest(u8) const override { return 0; }
-        u8 awakened(Stat index) const;
-        u8 iv(Stat index) const override;
-        u8 ev(Stat index) const;
-        u16 additionalItem(void) const;
-        bool hasRibbon(Ribbon) const override { return false; }
-        bool ribbon(Ribbon) const override { return false; }
+        [[nodiscard]] u8 level(void) const override;
+        [[nodiscard]] u8 metLevel(void) const override;
+        [[nodiscard]] Move move(u8 index) const override;
+        [[nodiscard]] Move relearnMove(u8 index) const;
+        [[nodiscard]] Nature nature(void) const override;
+        [[nodiscard]] std::string nickname(void) const override;
+        [[nodiscard]] std::string nickname(Language lang) const;
+        [[nodiscard]] GameVersion version(void) const;
+        [[nodiscard]] std::string otName(void) const override;
+        [[nodiscard]] std::string otName(Language lang) const;
+        [[nodiscard]] Gender otGender(void) const;
+        [[nodiscard]] u8 otIntensity(void) const;
+        [[nodiscard]] u8 otMemory(void) const;
+        [[nodiscard]] u16 otTextvar(void) const;
+        [[nodiscard]] u8 otFeeling(void) const;
+        [[nodiscard]] u16 TID(void) const override;
+        [[nodiscard]] u16 SID(void) const override;
+        [[nodiscard]] u8 PIDType(void) const override;
+        [[nodiscard]] u32 PID(void) const override;
+        [[nodiscard]] Species species(void) const override;
+        [[nodiscard]] u16 eggLocation(void) const override;
+        [[nodiscard]] u16 metLocation(void) const override;
+        [[nodiscard]] u8 contest(u8) const override { return 0; }
+        [[nodiscard]] u8 awakened(Stat index) const;
+        [[nodiscard]] u8 iv(Stat index) const override;
+        [[nodiscard]] u8 ev(Stat index) const;
+        [[nodiscard]] u16 additionalItem(void) const;
+        [[nodiscard]] bool hasRibbon(Ribbon) const override { return false; }
+        [[nodiscard]] bool ribbon(Ribbon) const override { return false; }
 
-        u16 formSpecies(void) const override;
+        [[nodiscard]] u16 formSpecies(void) const override;
 
-        int size(void) const override { return length; }
-        const u8* rawData(void) const override { return data; }
+        [[nodiscard]] int size(void) const override { return length; }
+        [[nodiscard]] const u8* rawData(void) const override { return data; }
     };
 }
 

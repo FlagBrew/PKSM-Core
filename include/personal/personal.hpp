@@ -35,131 +35,131 @@ namespace pksm
 {
     namespace PersonalLGPE
     {
-        u8 baseHP(u16 formSpecies);
-        u8 baseAtk(u16 formSpecies);
-        u8 baseDef(u16 formSpecies);
-        u8 baseSpe(u16 formSpecies);
-        u8 baseSpa(u16 formSpecies);
-        u8 baseSpd(u16 formSpecies);
-        Type type1(u16 formSpecies);
-        Type type2(u16 formSpecies);
-        u8 gender(u16 formSpecies);
-        u8 baseFriendship(u16 formSpecies);
-        u8 expType(u16 formSpecies);
-        Ability ability(u16 formSpecies, u8 n);
-        u16 formStatIndex(u16 formSpecies);
-        u8 formCount(u16 formSpecies);
+        [[nodiscard]] u8 baseHP(u16 formSpecies);
+        [[nodiscard]] u8 baseAtk(u16 formSpecies);
+        [[nodiscard]] u8 baseDef(u16 formSpecies);
+        [[nodiscard]] u8 baseSpe(u16 formSpecies);
+        [[nodiscard]] u8 baseSpa(u16 formSpecies);
+        [[nodiscard]] u8 baseSpd(u16 formSpecies);
+        [[nodiscard]] Type type1(u16 formSpecies);
+        [[nodiscard]] Type type2(u16 formSpecies);
+        [[nodiscard]] u8 gender(u16 formSpecies);
+        [[nodiscard]] u8 baseFriendship(u16 formSpecies);
+        [[nodiscard]] u8 expType(u16 formSpecies);
+        [[nodiscard]] Ability ability(u16 formSpecies, u8 n);
+        [[nodiscard]] u16 formStatIndex(u16 formSpecies);
+        [[nodiscard]] u8 formCount(u16 formSpecies);
     }
 
     namespace PersonalSMUSUM
     {
-        u8 baseHP(u16 formSpecies);
-        u8 baseAtk(u16 formSpecies);
-        u8 baseDef(u16 formSpecies);
-        u8 baseSpe(u16 formSpecies);
-        u8 baseSpa(u16 formSpecies);
-        u8 baseSpd(u16 formSpecies);
-        Type type1(u16 formSpecies);
-        Type type2(u16 formSpecies);
-        u8 gender(u16 formSpecies);
-        u8 baseFriendship(u16 formSpecies);
-        u8 expType(u16 formSpecies);
-        Ability ability(u16 formSpecies, u8 n);
-        u16 formStatIndex(u16 formSpecies);
-        u8 formCount(u16 formSpecies);
+        [[nodiscard]] u8 baseHP(u16 formSpecies);
+        [[nodiscard]] u8 baseAtk(u16 formSpecies);
+        [[nodiscard]] u8 baseDef(u16 formSpecies);
+        [[nodiscard]] u8 baseSpe(u16 formSpecies);
+        [[nodiscard]] u8 baseSpa(u16 formSpecies);
+        [[nodiscard]] u8 baseSpd(u16 formSpecies);
+        [[nodiscard]] Type type1(u16 formSpecies);
+        [[nodiscard]] Type type2(u16 formSpecies);
+        [[nodiscard]] u8 gender(u16 formSpecies);
+        [[nodiscard]] u8 baseFriendship(u16 formSpecies);
+        [[nodiscard]] u8 expType(u16 formSpecies);
+        [[nodiscard]] Ability ability(u16 formSpecies, u8 n);
+        [[nodiscard]] u16 formStatIndex(u16 formSpecies);
+        [[nodiscard]] u8 formCount(u16 formSpecies);
     }
 
     namespace PersonalXYORAS
     {
-        u8 baseHP(u16 formSpecies);
-        u8 baseAtk(u16 formSpecies);
-        u8 baseDef(u16 formSpecies);
-        u8 baseSpe(u16 formSpecies);
-        u8 baseSpa(u16 formSpecies);
-        u8 baseSpd(u16 formSpecies);
-        Type type1(u16 formSpecies);
-        Type type2(u16 formSpecies);
-        u8 gender(u16 formSpecies);
-        u8 baseFriendship(u16 formSpecies);
-        u8 expType(u16 formSpecies);
-        Ability ability(u16 formSpecies, u8 n);
-        u16 formStatIndex(u16 formSpecies);
-        u8 formCount(u16 formSpecies);
+        [[nodiscard]] u8 baseHP(u16 formSpecies);
+        [[nodiscard]] u8 baseAtk(u16 formSpecies);
+        [[nodiscard]] u8 baseDef(u16 formSpecies);
+        [[nodiscard]] u8 baseSpe(u16 formSpecies);
+        [[nodiscard]] u8 baseSpa(u16 formSpecies);
+        [[nodiscard]] u8 baseSpd(u16 formSpecies);
+        [[nodiscard]] Type type1(u16 formSpecies);
+        [[nodiscard]] Type type2(u16 formSpecies);
+        [[nodiscard]] u8 gender(u16 formSpecies);
+        [[nodiscard]] u8 baseFriendship(u16 formSpecies);
+        [[nodiscard]] u8 expType(u16 formSpecies);
+        [[nodiscard]] Ability ability(u16 formSpecies, u8 n);
+        [[nodiscard]] u16 formStatIndex(u16 formSpecies);
+        [[nodiscard]] u8 formCount(u16 formSpecies);
     }
 
     namespace PersonalBWB2W2
     {
-        u8 baseHP(u16 formSpecies);
-        u8 baseAtk(u16 formSpecies);
-        u8 baseDef(u16 formSpecies);
-        u8 baseSpe(u16 formSpecies);
-        u8 baseSpa(u16 formSpecies);
-        u8 baseSpd(u16 formSpecies);
-        Type type1(u16 formSpecies);
-        Type type2(u16 formSpecies);
-        u8 gender(u16 formSpecies);
-        u8 baseFriendship(u16 formSpecies);
-        u8 expType(u16 formSpecies);
-        Ability ability(u16 formSpecies, u8 n);
-        u16 formStatIndex(u16 formSpecies);
-        u8 formCount(u16 formSpecies);
+        [[nodiscard]] u8 baseHP(u16 formSpecies);
+        [[nodiscard]] u8 baseAtk(u16 formSpecies);
+        [[nodiscard]] u8 baseDef(u16 formSpecies);
+        [[nodiscard]] u8 baseSpe(u16 formSpecies);
+        [[nodiscard]] u8 baseSpa(u16 formSpecies);
+        [[nodiscard]] u8 baseSpd(u16 formSpecies);
+        [[nodiscard]] Type type1(u16 formSpecies);
+        [[nodiscard]] Type type2(u16 formSpecies);
+        [[nodiscard]] u8 gender(u16 formSpecies);
+        [[nodiscard]] u8 baseFriendship(u16 formSpecies);
+        [[nodiscard]] u8 expType(u16 formSpecies);
+        [[nodiscard]] Ability ability(u16 formSpecies, u8 n);
+        [[nodiscard]] u16 formStatIndex(u16 formSpecies);
+        [[nodiscard]] u8 formCount(u16 formSpecies);
     }
 
     namespace PersonalDPPtHGSS
     {
-        u8 baseHP(u16 formSpecies);
-        u8 baseAtk(u16 formSpecies);
-        u8 baseDef(u16 formSpecies);
-        u8 baseSpe(u16 formSpecies);
-        u8 baseSpa(u16 formSpecies);
-        u8 baseSpd(u16 formSpecies);
-        Type type1(u16 formSpecies);
-        Type type2(u16 formSpecies);
-        u8 gender(u16 formSpecies);
-        u8 baseFriendship(u16 formSpecies);
-        u8 expType(u16 formSpecies);
-        Ability ability(u16 formSpecies, u8 n);
-        u16 formStatIndex(u16 formSpecies);
-        u8 formCount(u16 formSpecies);
+        [[nodiscard]] u8 baseHP(u16 formSpecies);
+        [[nodiscard]] u8 baseAtk(u16 formSpecies);
+        [[nodiscard]] u8 baseDef(u16 formSpecies);
+        [[nodiscard]] u8 baseSpe(u16 formSpecies);
+        [[nodiscard]] u8 baseSpa(u16 formSpecies);
+        [[nodiscard]] u8 baseSpd(u16 formSpecies);
+        [[nodiscard]] Type type1(u16 formSpecies);
+        [[nodiscard]] Type type2(u16 formSpecies);
+        [[nodiscard]] u8 gender(u16 formSpecies);
+        [[nodiscard]] u8 baseFriendship(u16 formSpecies);
+        [[nodiscard]] u8 expType(u16 formSpecies);
+        [[nodiscard]] Ability ability(u16 formSpecies, u8 n);
+        [[nodiscard]] u16 formStatIndex(u16 formSpecies);
+        [[nodiscard]] u8 formCount(u16 formSpecies);
     }
 
     namespace PersonalSWSH
     {
-        u8 baseHP(u16 formSpecies);
-        u8 baseAtk(u16 formSpecies);
-        u8 baseDef(u16 formSpecies);
-        u8 baseSpe(u16 formSpecies);
-        u8 baseSpa(u16 formSpecies);
-        u8 baseSpd(u16 formSpecies);
-        Type type1(u16 formSpecies);
-        Type type2(u16 formSpecies);
-        u8 gender(u16 formSpecies);
-        u8 baseFriendship(u16 formSpecies);
-        u8 expType(u16 formSpecies);
-        Ability ability(u16 formSpecies, u8 n);
-        u16 formStatIndex(u16 formSpecies);
-        u8 formCount(u16 formSpecies);
-        u16 pokedexIndex(u16 formSpecies);
-        u16 armordexIndex(u16 species);
-        u16 crowndexIndex(u16 species);
-        bool canLearnTR(u16 formSpecies, u8 trID);
+        [[nodiscard]] u8 baseHP(u16 formSpecies);
+        [[nodiscard]] u8 baseAtk(u16 formSpecies);
+        [[nodiscard]] u8 baseDef(u16 formSpecies);
+        [[nodiscard]] u8 baseSpe(u16 formSpecies);
+        [[nodiscard]] u8 baseSpa(u16 formSpecies);
+        [[nodiscard]] u8 baseSpd(u16 formSpecies);
+        [[nodiscard]] Type type1(u16 formSpecies);
+        [[nodiscard]] Type type2(u16 formSpecies);
+        [[nodiscard]] u8 gender(u16 formSpecies);
+        [[nodiscard]] u8 baseFriendship(u16 formSpecies);
+        [[nodiscard]] u8 expType(u16 formSpecies);
+        [[nodiscard]] Ability ability(u16 formSpecies, u8 n);
+        [[nodiscard]] u16 formStatIndex(u16 formSpecies);
+        [[nodiscard]] u8 formCount(u16 formSpecies);
+        [[nodiscard]] u16 pokedexIndex(u16 formSpecies);
+        [[nodiscard]] u16 armordexIndex(u16 species);
+        [[nodiscard]] u16 crowndexIndex(u16 species);
+        [[nodiscard]] bool canLearnTR(u16 formSpecies, u8 trID);
     }
 
     namespace PersonalRSFRLGE
     {
-        u8 baseHP(u16 formSpecies);
-        u8 baseAtk(u16 formSpecies);
-        u8 baseDef(u16 formSpecies);
-        u8 baseSpe(u16 formSpecies);
-        u8 baseSpa(u16 formSpecies);
-        u8 baseSpd(u16 formSpecies);
-        Type type1(u16 formSpecies);
-        Type type2(u16 formSpecies);
-        u8 gender(u16 formSpecies);
-        u8 baseFriendship(u16 formSpecies);
-        u8 expType(u16 formSpecies);
-        Ability ability(u16 formSpecies, u8 n);
-        u8 formCount(u16 formSpecies);
+        [[nodiscard]] u8 baseHP(u16 formSpecies);
+        [[nodiscard]] u8 baseAtk(u16 formSpecies);
+        [[nodiscard]] u8 baseDef(u16 formSpecies);
+        [[nodiscard]] u8 baseSpe(u16 formSpecies);
+        [[nodiscard]] u8 baseSpa(u16 formSpecies);
+        [[nodiscard]] u8 baseSpd(u16 formSpecies);
+        [[nodiscard]] Type type1(u16 formSpecies);
+        [[nodiscard]] Type type2(u16 formSpecies);
+        [[nodiscard]] u8 gender(u16 formSpecies);
+        [[nodiscard]] u8 baseFriendship(u16 formSpecies);
+        [[nodiscard]] u8 expType(u16 formSpecies);
+        [[nodiscard]] Ability ability(u16 formSpecies, u8 n);
+        [[nodiscard]] u8 formCount(u16 formSpecies);
     }
 }
 

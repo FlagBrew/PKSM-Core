@@ -31,7 +31,7 @@
 
 namespace io
 {
-    bool exists(const std::string& name);
+    [[nodiscard]] bool exists(const std::string& name);
 }
 
 #endif

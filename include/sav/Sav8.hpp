@@ -45,18 +45,18 @@ namespace pksm
     public:
         Sav8(std::shared_ptr<u8[]> dt, size_t length);
 
-        std::shared_ptr<pksm::crypto::swsh::SCBlock> getBlock(u32 key) const;
+        [[nodiscard]] std::shared_ptr<pksm::crypto::swsh::SCBlock> getBlock(u32 key) const;
 
         void finishEditing(void) override;
         void beginEditing(void) override;
 
         void trade(PKX& pk, const Date& date = Date::today()) const override;
-        std::unique_ptr<PKX> emptyPkm() const override;
+        [[nodiscard]] std::unique_ptr<PKX> emptyPkm() const override;
 
-        int maxBoxes(void) const override { return 32; }
-        size_t maxWondercards(void) const override { return 1; } // Data not stored
-        int currentGiftAmount(void) const override { return 0; } // Data not stored
-        Generation generation(void) const override { return Generation::EIGHT; }
+        [[nodiscard]] int maxBoxes(void) const override { return 32; }
+        [[nodiscard]] size_t maxWondercards(void) const override { return 1; } // Data not stored
+        [[nodiscard]] int currentGiftAmount(void) const override { return 0; } // Data not stored
+        [[nodiscard]] Generation generation(void) const override { return Generation::EIGHT; }
     };
 }
 

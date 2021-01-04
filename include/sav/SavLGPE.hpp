@@ -59,56 +59,56 @@ namespace pksm
         void finishEditing(void) override { resign(); }
         void beginEditing(void) override {}
 
-        u16 boxedPkm(void) const;
+        [[nodiscard]] u16 boxedPkm(void) const;
         void boxedPkm(u16 v);
-        u16 followPkm(void) const;
+        [[nodiscard]] u16 followPkm(void) const;
         void followPkm(u16 v);
-        u16 partyBoxSlot(u8 slot) const;
+        [[nodiscard]] u16 partyBoxSlot(u8 slot) const;
         void partyBoxSlot(u8 slot, u16 v);
         void compressBox(void);
         void fixParty(void) override;
 
-        u16 TID(void) const override;
+        [[nodiscard]] u16 TID(void) const override;
         void TID(u16 v) override;
-        u16 SID(void) const override;
+        [[nodiscard]] u16 SID(void) const override;
         void SID(u16 v) override;
-        GameVersion version(void) const override;
+        [[nodiscard]] GameVersion version(void) const override;
         void version(GameVersion v) override;
-        Gender gender(void) const override;
+        [[nodiscard]] Gender gender(void) const override;
         void gender(Gender v) override;
-        u8 subRegion(void) const override { return 0; }
+        [[nodiscard]] u8 subRegion(void) const override { return 0; }
         void subRegion(u8) override {}
-        u8 country(void) const override { return 0; }
+        [[nodiscard]] u8 country(void) const override { return 0; }
         void country(u8) override {}
-        u8 consoleRegion(void) const override { return 0; }
+        [[nodiscard]] u8 consoleRegion(void) const override { return 0; }
         void consoleRegion(u8) override {}
-        Language language(void) const override;
+        [[nodiscard]] Language language(void) const override;
         void language(Language v) override;
-        std::string otName(void) const override;
+        [[nodiscard]] std::string otName(void) const override;
         void otName(const std::string_view& v) override;
-        u32 money(void) const override;
+        [[nodiscard]] u32 money(void) const override;
         void money(u32 v) override;
-        u32 BP(void) const override { return 0; }
+        [[nodiscard]] u32 BP(void) const override { return 0; }
         void BP(u32) override {}
-        u8 badges(void) const override;
-        u16 playedHours(void) const override;
+        [[nodiscard]] u8 badges(void) const override;
+        [[nodiscard]] u16 playedHours(void) const override;
         void playedHours(u16 v) override;
-        u8 playedMinutes(void) const override;
+        [[nodiscard]] u8 playedMinutes(void) const override;
         void playedMinutes(u8 v) override;
-        u8 playedSeconds(void) const override;
+        [[nodiscard]] u8 playedSeconds(void) const override;
         void playedSeconds(u8 v) override;
 
-        u8 currentBox(void) const override { return 0; }
+        [[nodiscard]] u8 currentBox(void) const override { return 0; }
         void currentBox(u8) override {}
-        u8 unlockedBoxes(void) const override { return maxBoxes(); }
+        [[nodiscard]] u8 unlockedBoxes(void) const override { return maxBoxes(); }
         void unlockedBoxes(u8 v) override {}
-        u8 legendBoxUnlockSize(void) const override { return 0; }
-        u32 boxOffset(u8 box, u8 slot) const override;
-        u32 partyOffset(u8 slot) const override;
+        [[nodiscard]] u8 legendBoxUnlockSize(void) const override { return 0; }
+        [[nodiscard]] u32 boxOffset(u8 box, u8 slot) const override;
+        [[nodiscard]] u32 partyOffset(u8 slot) const override;
 
         // Will never be encrypted: part of normal box stuff
-        std::unique_ptr<PKX> pkm(u8 slot) const override;
-        std::unique_ptr<PKX> pkm(u8 box, u8 slot) const override;
+        [[nodiscard]] std::unique_ptr<PKX> pkm(u8 slot) const override;
+        [[nodiscard]] std::unique_ptr<PKX> pkm(u8 box, u8 slot) const override;
 
         // NOTICE: this sets a pkx into the savefile, not a pkx
         // that's because PKSM works with decrypted boxes and
@@ -117,38 +117,38 @@ namespace pksm
         void pkm(const PKX& pk, u8 slot) override;
 
         void trade(PKX& pk, const Date& date = Date::today()) const override;
-        std::unique_ptr<PKX> emptyPkm() const override;
+        [[nodiscard]] std::unique_ptr<PKX> emptyPkm() const override;
 
         void dex(const PKX& pk) override;
-        int dexSeen(void) const override;
-        int dexCaught(void) const override;
-        int currentGiftAmount(void) const override { return 0; } // Data not stored
+        [[nodiscard]] int dexSeen(void) const override;
+        [[nodiscard]] int dexCaught(void) const override;
+        [[nodiscard]] int currentGiftAmount(void) const override { return 0; } // Data not stored
         void mysteryGift(const WCX& wc, int& pos) override;
-        std::unique_ptr<WCX> mysteryGift(
+        [[nodiscard]] std::unique_ptr<WCX> mysteryGift(
             int pos) const override; // Always returns null: Data not stored
         void cryptBoxData(bool crypted) override;
-        std::string boxName(u8) const override
+        [[nodiscard]] std::string boxName(u8) const override
         {
             return "";
         } // There are no actual boxes. They are emulated for interface compatibility
         void boxName(u8, const std::string_view&) override {}
-        u8 boxWallpaper(u8) const override { return 0; }
+        [[nodiscard]] u8 boxWallpaper(u8) const override { return 0; }
         void boxWallpaper(u8, u8) override {}
-        u8 partyCount(void) const override;
+        [[nodiscard]] u8 partyCount(void) const override;
         void partyCount(u8 count) override;
 
-        int maxSlot(void) const override { return 1000; }
-        int maxBoxes(void) const override
+        [[nodiscard]] int maxSlot(void) const override { return 1000; }
+        [[nodiscard]] int maxBoxes(void) const override
         {
             return 34;
         } // ish; stupid 1000-slot list makes this dumb
-        size_t maxWondercards(void) const override { return 1; } // Data not stored
-        Generation generation(void) const override { return Generation::LGPE; }
+        [[nodiscard]] size_t maxWondercards(void) const override { return 1; } // Data not stored
+        [[nodiscard]] Generation generation(void) const override { return Generation::LGPE; }
 
         void item(const Item& item, Pouch pouch, u16 slot) override;
-        std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
-        std::vector<std::pair<Pouch, int>> pouches(void) const override;
-        std::map<Pouch, std::vector<int>> validItems(void) const override;
+        [[nodiscard]] std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
+        [[nodiscard]] std::vector<std::pair<Pouch, int>> pouches(void) const override;
+        [[nodiscard]] std::map<Pouch, std::vector<int>> validItems(void) const override;
     };
 }
 

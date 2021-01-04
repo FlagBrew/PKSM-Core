@@ -37,17 +37,17 @@ namespace pksm
     private:
         static constexpr size_t BLOCK_LENGTH     = 80;
         static constexpr size_t ENCRYPTION_START = 8;
-        int eggYear(void) const override;
+        [[nodiscard]] int eggYear(void) const override;
         void eggYear(int v) override;
-        int eggMonth(void) const override;
+        [[nodiscard]] int eggMonth(void) const override;
         void eggMonth(int v) override;
-        int eggDay(void) const override;
+        [[nodiscard]] int eggDay(void) const override;
         void eggDay(int v) override;
-        int metYear(void) const override;
+        [[nodiscard]] int metYear(void) const override;
         void metYear(int v) override;
-        int metMonth(void) const override;
+        [[nodiscard]] int metMonth(void) const override;
         void metMonth(int v) override;
-        int metDay(void) const override;
+        [[nodiscard]] int metDay(void) const override;
         void metDay(int v) override;
 
     protected:
@@ -60,6 +60,8 @@ namespace pksm
 
         PK8(PrivateConstructor, u8* dt, bool party = false, bool directAccess = false);
 
+        [[nodiscard]] std::string_view extension() const override { return ".pk8"; }
+
         // std::unique_ptr<PK3> convertToG3(Sav& save) const override;
         // std::unique_ptr<PK4> convertToG4(Sav& save) const override;
         // std::unique_ptr<PK5> convertToG5(Sav& save) const override;
@@ -67,29 +69,29 @@ namespace pksm
         // std::unique_ptr<PK7> convertToG7(Sav& save) const override;
         // std::unique_ptr<PB7> convertToLGPE(Sav& save) const override;
 
-        std::unique_ptr<PKX> clone(void) const override;
+        [[nodiscard]] std::unique_ptr<PKX> clone(void) const override;
 
-        Generation generation(void) const override;
+        [[nodiscard]] Generation generation(void) const override;
         void decrypt(void) override;
         void encrypt(void) override;
-        bool isEncrypted(void) const override;
-        bool isParty(void) const override { return getLength() == PARTY_LENGTH; }
+        [[nodiscard]] bool isEncrypted(void) const override;
+        [[nodiscard]] bool isParty(void) const override { return getLength() == PARTY_LENGTH; }
 
-        u32 encryptionConstant(void) const override;
+        [[nodiscard]] u32 encryptionConstant(void) const override;
         void encryptionConstant(u32 v) override;
-        u16 sanity(void) const override;
+        [[nodiscard]] u16 sanity(void) const override;
         void sanity(u16 v) override;
-        u16 checksum(void) const override;
+        [[nodiscard]] u16 checksum(void) const override;
         void checksum(u16 v) override;
-        Species species(void) const override;
+        [[nodiscard]] Species species(void) const override;
         void species(Species v) override;
-        u16 heldItem(void) const override;
+        [[nodiscard]] u16 heldItem(void) const override;
         void heldItem(u16 v) override;
-        u16 TID(void) const override;
+        [[nodiscard]] u16 TID(void) const override;
         void TID(u16 v) override;
-        u16 SID(void) const override;
+        [[nodiscard]] u16 SID(void) const override;
         void SID(u16 v) override;
-        u32 experience(void) const override;
+        [[nodiscard]] u32 experience(void) const override;
         void experience(u32 v) override;
         Ability ability(void) const override;
         void ability(Ability v) override;

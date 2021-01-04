@@ -102,13 +102,13 @@ namespace pksm
             {
                 return std::string_view{static_cast<const char*>(*this)};
             }
-            explicit operator std::string() const
+            [[nodiscard]] explicit operator std::string() const
             {
                 return std::string{static_cast<const char*>(*this)};
             }
             constexpr operator GenerationEnum() const noexcept { return v; }
 
-            constexpr bool operator<(const Generation_impl& other) const noexcept
+            [[nodiscard]] constexpr bool operator<(const Generation_impl& other) const noexcept
             {
                 switch (v)
                 {
@@ -171,7 +171,7 @@ namespace pksm
                         return false;
                 }
             }
-            constexpr bool operator>(const Generation_impl& other) const noexcept
+            [[nodiscard]] constexpr bool operator>(const Generation_impl& other) const noexcept
             {
                 if (*this == other)
                 {
@@ -180,20 +180,20 @@ namespace pksm
                 return !(*this < other);
             }
 
-            constexpr bool operator<=(const Generation_impl& other) const noexcept
+            [[nodiscard]] constexpr bool operator<=(const Generation_impl& other) const noexcept
             {
                 return *this < other || *this == other;
             }
-            constexpr bool operator>=(const Generation_impl& other) const noexcept
+            [[nodiscard]] constexpr bool operator>=(const Generation_impl& other) const noexcept
             {
                 return *this > other || *this == other;
             }
 
-            constexpr bool operator==(const Generation_impl& other) const noexcept
+            [[nodiscard]] constexpr bool operator==(const Generation_impl& other) const noexcept
             {
                 return v == other.v;
             }
-            constexpr bool operator!=(const Generation_impl& other) const noexcept
+            [[nodiscard]] constexpr bool operator!=(const Generation_impl& other) const noexcept
             {
                 return v != other.v;
             }
@@ -228,9 +228,12 @@ namespace pksm
         {
             return static_cast<std::string_view>(impl);
         }
-        explicit operator std::string() const { return static_cast<std::string>(impl); }
+        [[nodiscard]] explicit operator std::string() const
+        {
+            return static_cast<std::string>(impl);
+        }
 
-        static constexpr Generation fromString(const std::string_view& str)
+        [[nodiscard]] static constexpr Generation fromString(const std::string_view& str)
         {
             if (str == "3")
             {
@@ -263,56 +266,62 @@ namespace pksm
             return Generation::UNUSED;
         }
 
-        constexpr bool operator<(const Generation& other) const noexcept
+        [[nodiscard]] constexpr bool operator<(const Generation& other) const noexcept
         {
             return impl < other.impl;
         }
-        constexpr bool operator<=(const Generation& other) const noexcept
+        [[nodiscard]] constexpr bool operator<=(const Generation& other) const noexcept
         {
             return impl <= other.impl;
         }
 
-        constexpr bool operator>(const Generation& other) const noexcept
+        [[nodiscard]] constexpr bool operator>(const Generation& other) const noexcept
         {
             return impl > other.impl;
         }
-        constexpr bool operator>=(const Generation& other) const noexcept
+        [[nodiscard]] constexpr bool operator>=(const Generation& other) const noexcept
         {
             return impl >= other.impl;
         }
 
-        constexpr bool operator==(const Generation& other) const noexcept
+        [[nodiscard]] constexpr bool operator==(const Generation& other) const noexcept
         {
             return impl == other.impl;
         }
-        constexpr bool operator!=(const Generation& other) const noexcept
+        [[nodiscard]] constexpr bool operator!=(const Generation& other) const noexcept
         {
             return impl != other.impl;
         }
 
-        constexpr bool operator<(const internal::Generation_impl& other) const noexcept
+        [[nodiscard]] constexpr bool operator<(
+            const internal::Generation_impl& other) const noexcept
         {
             return impl < other;
         }
-        constexpr bool operator<=(const internal::Generation_impl& other) const noexcept
+        [[nodiscard]] constexpr bool operator<=(
+            const internal::Generation_impl& other) const noexcept
         {
             return impl <= other;
         }
 
-        constexpr bool operator>(const internal::Generation_impl& other) const noexcept
+        [[nodiscard]] constexpr bool operator>(
+            const internal::Generation_impl& other) const noexcept
         {
             return impl > other;
         }
-        constexpr bool operator>=(const internal::Generation_impl& other) const noexcept
+        [[nodiscard]] constexpr bool operator>=(
+            const internal::Generation_impl& other) const noexcept
         {
             return impl >= other;
         }
 
-        constexpr bool operator==(const internal::Generation_impl& other) const noexcept
+        [[nodiscard]] constexpr bool operator==(
+            const internal::Generation_impl& other) const noexcept
         {
             return impl == other;
         }
-        constexpr bool operator!=(const internal::Generation_impl& other) const noexcept
+        [[nodiscard]] constexpr bool operator!=(
+            const internal::Generation_impl& other) const noexcept
         {
             return impl != other;
         }

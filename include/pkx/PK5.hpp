@@ -37,17 +37,17 @@ namespace pksm
     private:
         static constexpr size_t BLOCK_LENGTH     = 32;
         static constexpr size_t ENCRYPTION_START = 8;
-        int eggYear(void) const override;
+        [[nodiscard]] int eggYear(void) const override;
         void eggYear(int v) override;
-        int eggMonth(void) const override;
+        [[nodiscard]] int eggMonth(void) const override;
         void eggMonth(int v) override;
-        int eggDay(void) const override;
+        [[nodiscard]] int eggDay(void) const override;
         void eggDay(int v) override;
-        int metYear(void) const override;
+        [[nodiscard]] int metYear(void) const override;
         void metYear(int v) override;
-        int metMonth(void) const override;
+        [[nodiscard]] int metMonth(void) const override;
         void metMonth(int v) override;
-        int metDay(void) const override;
+        [[nodiscard]] int metDay(void) const override;
         void metDay(int v) override;
 
     public:
@@ -57,158 +57,190 @@ namespace pksm
 
         PK5(PrivateConstructor, u8* dt, bool party = false, bool directAccess = false);
 
-        std::unique_ptr<PK3> convertToG3(Sav& save) const override;
-        std::unique_ptr<PK4> convertToG4(Sav& save) const override;
-        std::unique_ptr<PK6> convertToG6(Sav& save) const override;
-        std::unique_ptr<PK7> convertToG7(Sav& save) const override;
+        [[nodiscard]] std::string_view extension() const override { return ".pk5"; }
+
+        [[nodiscard]] std::unique_ptr<PK3> convertToG3(Sav& save) const override;
+        [[nodiscard]] std::unique_ptr<PK4> convertToG4(Sav& save) const override;
+        [[nodiscard]] std::unique_ptr<PK6> convertToG6(Sav& save) const override;
+        [[nodiscard]] std::unique_ptr<PK7> convertToG7(Sav& save) const override;
         // std::unique_ptr<PB7> convertToLGPE(Sav& save) const override;
-        std::unique_ptr<PK8> convertToG8(Sav& save) const override;
+        [[nodiscard]] std::unique_ptr<PK8> convertToG8(Sav& save) const override;
 
-        std::unique_ptr<PKX> clone(void) const override;
+        [[nodiscard]] std::unique_ptr<PKX> clone(void) const override;
 
-        Generation generation(void) const override;
+        [[nodiscard]] Generation generation(void) const override;
         void decrypt(void) override;
         void encrypt(void) override;
-        bool isEncrypted(void) const override;
-        bool isParty(void) const override { return getLength() == PARTY_LENGTH; }
+        [[nodiscard]] bool isEncrypted(void) const override;
+        [[nodiscard]] bool isParty(void) const override { return getLength() == PARTY_LENGTH; }
 
-        u32 encryptionConstant(void) const override;
+        [[nodiscard]] u32 encryptionConstant(void) const override;
         void encryptionConstant(u32 v) override;
-        u8 currentFriendship(void) const override;
+        [[nodiscard]] u8 currentFriendship(void) const override;
         void currentFriendship(u8 v) override;
-        u8 currentHandler(void) const override { return 0; }
+        [[nodiscard]] u8 currentHandler(void) const override { return 0; }
         void currentHandler(u8) override {}
-        u8 abilityNumber(void) const override;
+        [[nodiscard]] u8 abilityNumber(void) const override;
         void abilityNumber(u8 v) override;
         void setAbility(u8 abilityNumber) override;
 
-        u32 PID(void) const override;
+        [[nodiscard]] u32 PID(void) const override;
         void PID(u32 v) override;
-        u16 sanity(void) const override;
+        [[nodiscard]] u16 sanity(void) const override;
         void sanity(u16 v) override;
-        u16 checksum(void) const override;
+        [[nodiscard]] u16 checksum(void) const override;
         void checksum(u16 v) override;
-        Species species(void) const override;
+        [[nodiscard]] Species species(void) const override;
         void species(Species v) override;
-        u16 heldItem(void) const override;
+        [[nodiscard]] u16 heldItem(void) const override;
         void heldItem(u16 v) override;
-        u16 TID(void) const override;
+        [[nodiscard]] u16 TID(void) const override;
         void TID(u16 v) override;
-        u16 SID(void) const override;
+        [[nodiscard]] u16 SID(void) const override;
         void SID(u16 v) override;
-        u32 experience(void) const override;
+        [[nodiscard]] u32 experience(void) const override;
         void experience(u32 v) override;
-        u8 otFriendship(void) const override;
+        [[nodiscard]] u8 otFriendship(void) const override;
         void otFriendship(u8 v) override;
-        Ability ability(void) const override;
+        [[nodiscard]] Ability ability(void) const override;
         void ability(Ability v) override;
-        u16 markValue(void) const override;
+        [[nodiscard]] u16 markValue(void) const override;
         void markValue(u16 v) override;
-        Language language(void) const override;
+        [[nodiscard]] Language language(void) const override;
         void language(Language v) override;
-        u8 ev(Stat ev) const override;
+        [[nodiscard]] u8 ev(Stat ev) const override;
         void ev(Stat ev, u8 v) override;
-        u8 contest(u8 contest) const override;
+        [[nodiscard]] u8 contest(u8 contest) const override;
         void contest(u8 contest, u8 v) override;
-        bool hasRibbon(Ribbon rib) const override;
-        bool ribbon(Ribbon rib) const override;
+        [[nodiscard]] bool hasRibbon(Ribbon rib) const override;
+        [[nodiscard]] bool ribbon(Ribbon rib) const override;
         void ribbon(Ribbon rib, bool v) override;
 
-        Move move(u8 move) const override;
+        [[nodiscard]] Move move(u8 move) const override;
         void move(u8 move, Move v) override;
-        Move relearnMove(u8) const override { return Move::None; }
+        [[nodiscard]] Move relearnMove(u8) const override { return Move::None; }
         void relearnMove(u8, Move) override {}
-        u8 PP(u8 move) const override;
+        [[nodiscard]] u8 PP(u8 move) const override;
         void PP(u8 move, u8 v) override;
-        u8 PPUp(u8 move) const override;
+        [[nodiscard]] u8 PPUp(u8 move) const override;
         void PPUp(u8 move, u8 v) override;
-        u8 iv(Stat iv) const override;
+        [[nodiscard]] u8 iv(Stat iv) const override;
         void iv(Stat iv, u8 v) override;
-        bool egg(void) const override;
+        [[nodiscard]] bool egg(void) const override;
         void egg(bool v) override;
-        bool nicknamed(void) const override;
+        [[nodiscard]] bool nicknamed(void) const override;
         void nicknamed(bool v) override;
-        bool fatefulEncounter(void) const override;
+        [[nodiscard]] bool fatefulEncounter(void) const override;
         void fatefulEncounter(bool v) override;
-        Gender gender(void) const override;
+        [[nodiscard]] Gender gender(void) const override;
         void gender(Gender g) override;
-        u16 alternativeForm(void) const override;
+        [[nodiscard]] u16 alternativeForm(void) const override;
         void alternativeForm(u16 v) override;
-        Nature nature(void) const override;
+        [[nodiscard]] Nature nature(void) const override;
         void nature(Nature v) override;
-        bool hiddenAbility(void) const;
+        [[nodiscard]] bool hiddenAbility(void) const;
         void hiddenAbility(bool v);
-        bool nPokemon(void) const;
+        [[nodiscard]] bool nPokemon(void) const;
         void nPokemon(bool v);
 
-        bool hyperTrain(Stat) const override { return false; }
+        [[nodiscard]] bool hyperTrain(Stat) const override { return false; }
         void hyperTrain(Stat, bool) override {}
 
-        std::string nickname(void) const override;
+        [[nodiscard]] std::string nickname(void) const override;
         void nickname(const std::string_view& v) override;
-        GameVersion version(void) const override;
+        [[nodiscard]] GameVersion version(void) const override;
         void version(GameVersion v) override;
 
-        std::string otName(void) const override;
+        [[nodiscard]] std::string otName(void) const override;
         void otName(const std::string_view& v) override;
-        u16 eggLocation(void) const override;
+        [[nodiscard]] u16 eggLocation(void) const override;
         void eggLocation(u16 v) override;
-        u16 metLocation(void) const override;
+        [[nodiscard]] u16 metLocation(void) const override;
         void metLocation(u16 v) override;
-        u8 pkrs(void) const override;
+        [[nodiscard]] u8 pkrs(void) const override;
         void pkrs(u8 v) override;
-        u8 pkrsDays(void) const override;
+        [[nodiscard]] u8 pkrsDays(void) const override;
         void pkrsDays(u8 v) override;
-        u8 pkrsStrain(void) const override;
+        [[nodiscard]] u8 pkrsStrain(void) const override;
         void pkrsStrain(u8 v) override;
-        Ball ball(void) const override;
+        [[nodiscard]] Ball ball(void) const override;
         void ball(Ball v) override;
-        u8 metLevel(void) const override;
+        [[nodiscard]] u8 metLevel(void) const override;
         void metLevel(u8 v) override;
-        Gender otGender(void) const override;
+        [[nodiscard]] Gender otGender(void) const override;
         void otGender(Gender v) override;
-        u8 encounterType(void) const;
+        [[nodiscard]] u8 encounterType(void) const;
         void encounterType(u8 v);
 
         void refreshChecksum(void) override;
-        Type hpType(void) const override;
+        [[nodiscard]] Type hpType(void) const override;
         void hpType(Type v) override;
-        u16 TSV(void) const override;
-        u16 PSV(void) const override;
-        u8 level(void) const override;
+        [[nodiscard]] u16 TSV(void) const override;
+        [[nodiscard]] u16 PSV(void) const override;
+        [[nodiscard]] u8 level(void) const override;
         void level(u8 v) override;
-        bool shiny(void) const override;
+        [[nodiscard]] bool shiny(void) const override;
         void shiny(bool v) override;
-        u16 formSpecies(void) const override;
-        u16 stat(Stat stat) const override;
+        [[nodiscard]] u16 formSpecies(void) const override;
+        [[nodiscard]] u16 stat(Stat stat) const override;
 
-        int partyCurrHP(void) const override;
+        [[nodiscard]] int partyCurrHP(void) const override;
         void partyCurrHP(u16 v) override;
-        int partyStat(Stat stat) const override;
+        [[nodiscard]] int partyStat(Stat stat) const override;
         void partyStat(Stat stat, u16 v) override;
-        int partyLevel() const override;
+        [[nodiscard]] int partyLevel() const override;
         void partyLevel(u8 v) override;
         void updatePartyData(void) override;
 
-        inline u8 baseHP(void) const override { return PersonalBWB2W2::baseHP(formSpecies()); }
-        inline u8 baseAtk(void) const override { return PersonalBWB2W2::baseAtk(formSpecies()); }
-        inline u8 baseDef(void) const override { return PersonalBWB2W2::baseDef(formSpecies()); }
-        inline u8 baseSpe(void) const override { return PersonalBWB2W2::baseSpe(formSpecies()); }
-        inline u8 baseSpa(void) const override { return PersonalBWB2W2::baseSpa(formSpecies()); }
-        inline u8 baseSpd(void) const override { return PersonalBWB2W2::baseSpd(formSpecies()); }
-        inline Type type1(void) const override { return PersonalBWB2W2::type1(formSpecies()); }
-        inline Type type2(void) const override { return PersonalBWB2W2::type2(formSpecies()); }
-        inline u8 genderType(void) const override { return PersonalBWB2W2::gender(formSpecies()); }
-        inline u8 baseFriendship(void) const override
+        [[nodiscard]] inline u8 baseHP(void) const override
+        {
+            return PersonalBWB2W2::baseHP(formSpecies());
+        }
+        [[nodiscard]] inline u8 baseAtk(void) const override
+        {
+            return PersonalBWB2W2::baseAtk(formSpecies());
+        }
+        [[nodiscard]] inline u8 baseDef(void) const override
+        {
+            return PersonalBWB2W2::baseDef(formSpecies());
+        }
+        [[nodiscard]] inline u8 baseSpe(void) const override
+        {
+            return PersonalBWB2W2::baseSpe(formSpecies());
+        }
+        [[nodiscard]] inline u8 baseSpa(void) const override
+        {
+            return PersonalBWB2W2::baseSpa(formSpecies());
+        }
+        [[nodiscard]] inline u8 baseSpd(void) const override
+        {
+            return PersonalBWB2W2::baseSpd(formSpecies());
+        }
+        [[nodiscard]] inline Type type1(void) const override
+        {
+            return PersonalBWB2W2::type1(formSpecies());
+        }
+        [[nodiscard]] inline Type type2(void) const override
+        {
+            return PersonalBWB2W2::type2(formSpecies());
+        }
+        [[nodiscard]] inline u8 genderType(void) const override
+        {
+            return PersonalBWB2W2::gender(formSpecies());
+        }
+        [[nodiscard]] inline u8 baseFriendship(void) const override
         {
             return PersonalBWB2W2::baseFriendship(formSpecies());
         }
-        inline u8 expType(void) const override { return PersonalBWB2W2::expType(formSpecies()); }
-        inline Ability abilities(u8 n) const override
+        [[nodiscard]] inline u8 expType(void) const override
+        {
+            return PersonalBWB2W2::expType(formSpecies());
+        }
+        [[nodiscard]] inline Ability abilities(u8 n) const override
         {
             return PersonalBWB2W2::ability(formSpecies(), n);
         }
-        inline u16 formStatIndex(void) const override
+        [[nodiscard]] inline u16 formStatIndex(void) const override
         {
             return PersonalBWB2W2::formStatIndex(formSpecies());
         }

@@ -43,11 +43,11 @@
 
 #define MAKE_DEFN(name, type)                                                                      \
 public:                                                                                            \
-    type name(void) const override { return type##name; }                                          \
+    [[nodiscard]] type name(void) const override { return type##name; }                            \
     void name(type v) override { type##name = v; }                                                 \
-    bool name##Enabled(void) const { return name##Bool; }                                          \
+    [[nodiscard]] bool name##Enabled(void) const { return name##Bool; }                            \
     void name##Enabled(bool v) { name##Bool = v; }                                                 \
-    bool name##Inversed(void) const { return name##Inverse; }                                      \
+    [[nodiscard]] bool name##Inversed(void) const { return name##Inverse; }                        \
     void name##Inversed(bool v) { name##Inverse = v; }                                             \
                                                                                                    \
 private:                                                                                           \
@@ -57,11 +57,11 @@ private:                                                                        
 
 #define MAKE_DEFN_CONSTANT(name, type)                                                             \
 public:                                                                                            \
-    type name(void) const override { return type##name; }                                          \
+    [[nodiscard]] type name(void) const override { return type##name; }                            \
     void name(type v) { type##name = v; }                                                          \
-    bool name##Enabled(void) const { return name##Bool; }                                          \
+    [[nodiscard]] bool name##Enabled(void) const { return name##Bool; }                            \
     void name##Enabled(bool v) { name##Bool = v; }                                                 \
-    bool name##Inversed(void) const { return name##Inverse; }                                      \
+    [[nodiscard]] bool name##Inversed(void) const { return name##Inverse; }                        \
     void name##Inversed(bool v) { name##Inverse = v; }                                             \
                                                                                                    \
 private:                                                                                           \
@@ -71,11 +71,14 @@ private:                                                                        
 
 #define MAKE_NUM_DEFN(name, type, amount, indextype)                                               \
 public:                                                                                            \
-    type name(indextype which) const override { return type##name[size_t(which)]; }                \
+    [[nodiscard]] type name(indextype which) const override { return type##name[size_t(which)]; }  \
     void name(indextype which, type v) override { type##name[size_t(which)] = v; }                 \
-    bool name##Enabled(indextype which) const { return name##Bool[size_t(which)]; }                \
+    [[nodiscard]] bool name##Enabled(indextype which) const { return name##Bool[size_t(which)]; }  \
     void name##Enabled(indextype which, bool v) { name##Bool[size_t(which)] = v; }                 \
-    bool name##Inversed(indextype which) const { return name##Inverse[size_t(which)]; }            \
+    [[nodiscard]] bool name##Inversed(indextype which) const                                       \
+    {                                                                                              \
+        return name##Inverse[size_t(which)];                                                       \
+    }                                                                                              \
     void name##Inversed(indextype which, bool v) { name##Inverse[size_t(which)] = v; }             \
                                                                                                    \
 private:                                                                                           \
@@ -85,11 +88,14 @@ private:                                                                        
 
 #define MAKE_NUM_DEFN_CONSTANT(name, type, amount, indextype)                                      \
 public:                                                                                            \
-    type name(indextype which) const override { return type##name[size_t(which)]; }                \
+    [[nodiscard]] type name(indextype which) const override { return type##name[size_t(which)]; }  \
     void name(indextype which, type v) { type##name[size_t(which)] = v; }                          \
-    bool name##Enabled(indextype which) const { return name##Bool[size_t(which)]; }                \
+    [[nodiscard]] bool name##Enabled(indextype which) const { return name##Bool[size_t(which)]; }  \
     void name##Enabled(indextype which, bool v) { name##Bool[size_t(which)] = v; }                 \
-    bool name##Inversed(indextype which) const { return name##Inverse[size_t(which)]; }            \
+    [[nodiscard]] bool name##Inversed(indextype which) const                                       \
+    {                                                                                              \
+        return name##Inverse[size_t(which)];                                                       \
+    }                                                                                              \
     void name##Inversed(indextype which, bool v) { name##Inverse[size_t(which)] = v; }             \
                                                                                                    \
 private:                                                                                           \
@@ -102,7 +108,7 @@ namespace pksm
     class PKFilter : public IPKFilterable
     {
     public:
-        bool isFilter() const override { return true; }
+        [[nodiscard]] bool isFilter() const override { return true; }
 
         MAKE_DEFN_CONSTANT(generation, Generation);
         MAKE_DEFN(species, Species);
@@ -126,5 +132,6 @@ namespace pksm
 #undef MAKE_DEFN
 #undef MAKE_DEFN_CONSTANT
 #undef MAKE_NUM_DEFN
+#undef MAKE_NUM_DEFN_CONSTANT
 
 #endif

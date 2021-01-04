@@ -36,8 +36,8 @@ namespace pksm
     public:
         explicit SavE(std::shared_ptr<u8[]> dt);
 
-        std::map<Pouch, std::vector<int>> validItems(void) const override;
-        std::map<Pouch, std::vector<int>> validItems3(void) const override;
+        [[nodiscard]] std::map<Pouch, std::vector<int>> validItems(void) const override;
+        [[nodiscard]] std::map<Pouch, std::vector<int>> validItems3(void) const override;
     };
 }
 

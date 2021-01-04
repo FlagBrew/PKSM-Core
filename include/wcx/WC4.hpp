@@ -37,12 +37,12 @@ namespace pksm
     public:
         explicit WC4(u8* wc4);
 
-        std::string extension() const override { return ".wc4"; }
+        [[nodiscard]] std::string_view extension() const override { return ".wc4"; }
 
         static constexpr int length = 856;
-        std::string title(void) const override { return name; };
+        [[nodiscard]] std::string title(void) const override { return name; };
 
-        u16 ID(void) const override { return id; }
+        [[nodiscard]] u16 ID(void) const override { return id; }
 
     private:
         std::string name;

@@ -38,14 +38,14 @@
 #include "enums/Stat.hpp"
 
 #define IFILTERABLE_DEFINE_METHOD(name, type)                                                      \
-    virtual type name() const = 0;                                                                 \
-    virtual void name(type v) = 0
+    [[nodiscard]] virtual type name() const = 0;                                                   \
+    virtual void name(type v)               = 0
 #define IFILTERABLE_DEFINE_CONSTANT_METHOD(name, type) virtual type name() const = 0
 #define IFILTERABLE_DEFINE_INDEXED_METHOD(name, type, indextype)                                   \
-    virtual type name(indextype which) const   = 0;                                                \
-    virtual void name(indextype which, type v) = 0
+    [[nodiscard]] virtual type name(indextype which) const = 0;                                    \
+    virtual void name(indextype which, type v)             = 0
 #define IFILTERABLE_DEFINE_CONSTANT_INDEXED_METHOD(name, type, indextype)                          \
-    virtual type name(indextype which) const = 0
+    [[nodiscard]] virtual type name(indextype which) const = 0
 
 namespace pksm
 {

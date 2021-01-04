@@ -233,17 +233,8 @@ namespace pksm
     u8 PB7::currentHandler(void) const { return data[0x93]; }
     void PB7::currentHandler(u8 v) { data[0x93] = v; }
 
-    u8 PB7::geoRegion(u8 region) const { return data[0x94 + region * 2]; }
-    void PB7::geoRegion(u8 region, u8 v) { data[0x94 + region * 2] = v; }
-
-    u8 PB7::geoCountry(u8 country) const { return data[0x95 + country * 2]; }
-    void PB7::geoCountry(u8 country, u8 v) { data[0x95 + country * 2] = v; }
-
     u8 PB7::htFriendship(void) const { return data[0xA2]; }
     void PB7::htFriendship(u8 v) { data[0xA2] = v; }
-
-    u8 PB7::htAffection(void) const { return data[0xA3]; }
-    void PB7::htAffection(u8 v) { data[0xA3] = v; }
 
     u8 PB7::htIntensity(void) const { return data[0xA4]; }
     void PB7::htIntensity(u8 v) { data[0xA4] = v; }
@@ -268,21 +259,6 @@ namespace pksm
 
     u8 PB7::otFriendship(void) const { return data[0xCA]; }
     void PB7::otFriendship(u8 v) { data[0xCA] = v; }
-
-    u8 PB7::otAffection(void) const { return data[0xCB]; }
-    void PB7::otAffection(u8 v) { data[0xCB] = v; }
-
-    u8 PB7::otIntensity(void) const { return data[0xCC]; }
-    void PB7::otIntensity(u8 v) { data[0xCC] = v; }
-
-    u8 PB7::otMemory(void) const { return data[0xCD]; }
-    void PB7::otMemory(u8 v) { data[0xCD] = v; }
-
-    u16 PB7::otTextVar(void) const { return LittleEndian::convertTo<u16>(data + 0xCE); }
-    void PB7::otTextVar(u16 v) { LittleEndian::convertFrom<u16>(data + 0xCE, v); }
-
-    u8 PB7::otFeeling(void) const { return data[0xD0]; }
-    void PB7::otFeeling(u8 v) { data[0xD0] = v; }
 
     int PB7::eggYear(void) const { return 2000 + data[0xD1]; }
     void PB7::eggYear(int v) { data[0xD1] = v - 2000; }
@@ -330,15 +306,6 @@ namespace pksm
 
     GameVersion PB7::version(void) const { return GameVersion(data[0xDF]); }
     void PB7::version(GameVersion v) { data[0xDF] = u8(v); }
-
-    u8 PB7::country(void) const { return data[0xE0]; }
-    void PB7::country(u8 v) { data[0xE0] = v; }
-
-    u8 PB7::region(void) const { return data[0xE1]; }
-    void PB7::region(u8 v) { data[0xE1] = v; }
-
-    u8 PB7::consoleRegion(void) const { return data[0xE2]; }
-    void PB7::consoleRegion(u8 v) { data[0xE2] = v; }
 
     Language PB7::language(void) const { return Language(data[0xE3]); }
     void PB7::language(Language v) { data[0xE3] = u8(v); }

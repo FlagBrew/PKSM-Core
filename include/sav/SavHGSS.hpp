@@ -36,7 +36,7 @@ namespace pksm
     public:
         explicit SavHGSS(std::shared_ptr<u8[]> dt);
 
-        std::map<Pouch, std::vector<int>> validItems(void) const override;
+        [[nodiscard]] std::map<Pouch, std::vector<int>> validItems(void) const override;
     };
 }
 

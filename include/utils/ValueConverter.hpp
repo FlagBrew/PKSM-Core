@@ -34,15 +34,15 @@ namespace pksm
 {
     namespace SpeciesConverter
     {
-        Species g3ToNational(u16 v);
-        u16 nationalToG3(Species v);
+        [[nodiscard]] Species g3ToNational(u16 v);
+        [[nodiscard]] u16 nationalToG3(Species v);
     }
 
     namespace ItemConverter
     {
         constexpr u16 G3_NOT_CONVERTIBLE = 128;
-        u16 g3ToNational(u16 v);
-        u16 nationalToG3(u16 v);
+        [[nodiscard]] u16 g3ToNational(u16 v);
+        [[nodiscard]] u16 nationalToG3(u16 v);
     }
 }
 

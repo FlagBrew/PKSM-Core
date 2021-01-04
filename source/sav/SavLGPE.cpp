@@ -322,7 +322,6 @@ namespace pksm
                 {
                     pb7.htFriendship(pb7.currentFriendship()); // copy friendship instead of
                                                                // resetting (don't alter CP)
-                    pb7.htAffection(0);
                 }
                 pb7.currentHandler(1);
                 pb7.htName(otName());
@@ -647,9 +646,6 @@ namespace pksm
                 }
                 pb7->language(language());
                 pb7->ball(wb7.ball());
-                pb7->country(country());
-                pb7->region(subRegion());
-                pb7->consoleRegion(consoleRegion());
                 pb7->metLocation(wb7.metLocation());
                 pb7->eggLocation(wb7.eggLocation());
                 for (int i = 0; i < 6; i++)

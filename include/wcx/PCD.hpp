@@ -37,12 +37,12 @@ namespace pksm
     public:
         explicit PCD(u8* pcd);
 
-        std::string extension() const override { return ".pcd"; }
+        [[nodiscard]] std::string_view extension() const override { return ".pcd"; }
 
         static constexpr int length = 856;
-        std::string title(void) const override { return name; };
+        [[nodiscard]] std::string title(void) const override { return name; };
 
-        u16 ID(void) const override { return id; }
+        [[nodiscard]] u16 ID(void) const override { return id; }
 
     private:
         std::string name;

@@ -35,7 +35,7 @@
 
 namespace pksm::crypto
 {
-    constexpr u32 popcount(u32 x)
+    [[nodiscard]] constexpr u32 popcount(u32 x)
     {
         x -= ((x >> 1) & 0x55555555u);
         x = (x & 0x33333333u) + ((x >> 2) & 0x33333333u);
@@ -45,11 +45,11 @@ namespace pksm::crypto
         return x & 0x0000003Fu;
     }
 
-    u16 ccitt16(const u8* buf, size_t len);
-    u16 crc16(const u8* buf, size_t len);
-    u16 crc16_noinvert(const u8* buf, size_t len);
+    [[nodiscard]] u16 ccitt16(const u8* buf, size_t len);
+    [[nodiscard]] u16 crc16(const u8* buf, size_t len);
+    [[nodiscard]] u16 crc16_noinvert(const u8* buf, size_t len);
     // Length must be a multiple of 4
-    u32 sum32(const u8* buf, size_t len);
+    [[nodiscard]] u32 sum32(const u8* buf, size_t len);
 
     // This SHA256 implementation is Brad Conte's. It has been modified to have a C++-style
     // interface.
@@ -74,9 +74,9 @@ namespace pksm::crypto
                 0x1f83d9ab, 0x5be0cd19};
         }
         void update(const u8* data, size_t len);
-        std::array<u8, 32> finish();
+        [[nodiscard]] std::array<u8, 32> finish();
     };
-    std::array<u8, 32> sha256(const u8* buf, size_t len);
+    [[nodiscard]] std::array<u8, 32> sha256(const u8* buf, size_t len);
 
     namespace swsh
     {
@@ -145,8 +145,8 @@ namespace pksm::crypto
 
         void applyXor(std::shared_ptr<u8[]> data, size_t length);
         void sign(std::shared_ptr<u8[]> data, size_t length);
-        bool verify(std::shared_ptr<u8[]> data, size_t length);
-        std::vector<std::shared_ptr<SCBlock>> getBlockList(
+        [[nodiscard]] bool verify(std::shared_ptr<u8[]> data, size_t length);
+        [[nodiscard]] std::vector<std::shared_ptr<SCBlock>> getBlockList(
             std::shared_ptr<u8[]> data, size_t length);
     }
 
@@ -167,7 +167,7 @@ namespace pksm::crypto
                                 // modulus
         };
 
-        constexpr u32 seedStep(u32 seed) { return seed * 0x41C64E6D + 0x6073; }
+        [[nodiscard]] constexpr u32 seedStep(u32 seed) { return seed * 0x41C64E6D + 0x6073; }
 
         template <size_t BlockLength>
         constexpr void blockShuffle(u8* data, u8 sv)

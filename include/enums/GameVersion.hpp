@@ -189,7 +189,7 @@ namespace pksm
             }
             constexpr operator GameVersionEnum() const noexcept { return v; }
 
-            constexpr bool operator<(const GameVersion_impl& other) const noexcept
+            [[nodiscard]] constexpr bool operator<(const GameVersion_impl& other) const noexcept
             {
                 if (static_cast<Generation>(*this) == static_cast<Generation>(other))
                 {
@@ -197,7 +197,7 @@ namespace pksm
                 }
                 return static_cast<Generation>(*this) < static_cast<Generation>(other);
             }
-            constexpr bool operator<=(const GameVersion_impl& other) const noexcept
+            [[nodiscard]] constexpr bool operator<=(const GameVersion_impl& other) const noexcept
             {
                 if (static_cast<Generation>(*this) == static_cast<Generation>(other))
                 {
@@ -206,7 +206,7 @@ namespace pksm
                 return static_cast<Generation>(*this) <= static_cast<Generation>(other);
             }
 
-            constexpr bool operator>(const GameVersion_impl& other) const noexcept
+            [[nodiscard]] constexpr bool operator>(const GameVersion_impl& other) const noexcept
             {
                 if (static_cast<Generation>(*this) == static_cast<Generation>(other))
                 {
@@ -214,7 +214,7 @@ namespace pksm
                 }
                 return static_cast<Generation>(*this) > static_cast<Generation>(other);
             }
-            constexpr bool operator>=(const GameVersion_impl& other) const noexcept
+            [[nodiscard]] constexpr bool operator>=(const GameVersion_impl& other) const noexcept
             {
                 if (static_cast<Generation>(*this) == static_cast<Generation>(other))
                 {
@@ -223,11 +223,11 @@ namespace pksm
                 return static_cast<Generation>(*this) >= static_cast<Generation>(other);
             }
 
-            constexpr bool operator==(const GameVersion_impl& other) const noexcept
+            [[nodiscard]] constexpr bool operator==(const GameVersion_impl& other) const noexcept
             {
                 return v == other.v;
             }
-            constexpr bool operator!=(const GameVersion_impl& other) const noexcept
+            [[nodiscard]] constexpr bool operator!=(const GameVersion_impl& other) const noexcept
             {
                 return v != other.v;
             }
@@ -313,56 +313,62 @@ namespace pksm
             }
         }
 
-        constexpr bool operator<(const GameVersion& other) const noexcept
+        [[nodiscard]] constexpr bool operator<(const GameVersion& other) const noexcept
         {
             return impl < other.impl;
         }
-        constexpr bool operator<=(const GameVersion& other) const noexcept
+        [[nodiscard]] constexpr bool operator<=(const GameVersion& other) const noexcept
         {
             return impl <= other.impl;
         }
 
-        constexpr bool operator>(const GameVersion& other) const noexcept
+        [[nodiscard]] constexpr bool operator>(const GameVersion& other) const noexcept
         {
             return impl > other.impl;
         }
-        constexpr bool operator>=(const GameVersion& other) const noexcept
+        [[nodiscard]] constexpr bool operator>=(const GameVersion& other) const noexcept
         {
             return impl >= other.impl;
         }
 
-        constexpr bool operator==(const GameVersion& other) const noexcept
+        [[nodiscard]] constexpr bool operator==(const GameVersion& other) const noexcept
         {
             return impl == other.impl;
         }
-        constexpr bool operator!=(const GameVersion& other) const noexcept
+        [[nodiscard]] constexpr bool operator!=(const GameVersion& other) const noexcept
         {
             return impl != other.impl;
         }
 
-        constexpr bool operator<(const internal::GameVersion_impl& other) const noexcept
+        [[nodiscard]] constexpr bool operator<(
+            const internal::GameVersion_impl& other) const noexcept
         {
             return impl < other;
         }
-        constexpr bool operator<=(const internal::GameVersion_impl& other) const noexcept
+        [[nodiscard]] constexpr bool operator<=(
+            const internal::GameVersion_impl& other) const noexcept
         {
             return impl <= other;
         }
 
-        constexpr bool operator>(const internal::GameVersion_impl& other) const noexcept
+        [[nodiscard]] constexpr bool operator>(
+            const internal::GameVersion_impl& other) const noexcept
         {
             return impl > other;
         }
-        constexpr bool operator>=(const internal::GameVersion_impl& other) const noexcept
+        [[nodiscard]] constexpr bool operator>=(
+            const internal::GameVersion_impl& other) const noexcept
         {
             return impl >= other;
         }
 
-        constexpr bool operator==(const internal::GameVersion_impl& other) const noexcept
+        [[nodiscard]] constexpr bool operator==(
+            const internal::GameVersion_impl& other) const noexcept
         {
             return impl == other;
         }
-        constexpr bool operator!=(const internal::GameVersion_impl& other) const noexcept
+        [[nodiscard]] constexpr bool operator!=(
+            const internal::GameVersion_impl& other) const noexcept
         {
             return impl != other;
         }

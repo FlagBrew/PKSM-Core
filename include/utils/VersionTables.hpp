@@ -37,23 +37,23 @@
 
 namespace pksm::VersionTables
 {
-    const std::set<int>& availableItems(GameVersion version);
-    const std::set<Move>& availableMoves(GameVersion version);
-    const std::set<Species>& availableSpecies(GameVersion version);
-    const std::set<Ability>& availableAbilities(GameVersion version);
-    const std::set<Ball>& availableBalls(GameVersion version);
+    [[nodiscard]] const std::set<int>& availableItems(GameVersion version);
+    [[nodiscard]] const std::set<Move>& availableMoves(GameVersion version);
+    [[nodiscard]] const std::set<Species>& availableSpecies(GameVersion version);
+    [[nodiscard]] const std::set<Ability>& availableAbilities(GameVersion version);
+    [[nodiscard]] const std::set<Ball>& availableBalls(GameVersion version);
 
     // Not guaranteed to be useful
-    int maxItem(GameVersion version);
-    Move maxMove(GameVersion version);
-    Species maxSpecies(GameVersion version);
-    Ability maxAbility(GameVersion version);
-    Ball maxBall(GameVersion version);
+    [[nodiscard]] int maxItem(GameVersion version);
+    [[nodiscard]] Move maxMove(GameVersion version);
+    [[nodiscard]] Species maxSpecies(GameVersion version);
+    [[nodiscard]] Ability maxAbility(GameVersion version);
+    [[nodiscard]] Ball maxBall(GameVersion version);
 
     // Takes version-specific forms into account
-    u8 formCount(GameVersion version, Species species);
+    [[nodiscard]] u8 formCount(GameVersion version, Species species);
 
-    u8 movePP(Generation gen, Move move, u8 ppUps);
+    [[nodiscard]] u8 movePP(Generation gen, Move move, u8 ppUps);
 }
 
 #endif

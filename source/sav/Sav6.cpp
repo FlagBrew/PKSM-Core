@@ -175,8 +175,8 @@ namespace pksm
                         pk6.geoCountry(pk6.geoCountry(i - 1), i);
                         pk6.geoRegion(pk6.geoRegion(i - 1), i);
                     }
-                    pk6.geoCountry(country());
-                    pk6.geoRegion(subRegion());
+                    pk6.geoCountry(0, country());
+                    pk6.geoRegion(0, subRegion());
                 }
             }
             else
@@ -189,8 +189,8 @@ namespace pksm
                         pk6.geoCountry(pk6.geoCountry(i - 1), i);
                         pk6.geoRegion(pk6.geoRegion(i - 1), i);
                     }
-                    pk6.geoCountry(country());
-                    pk6.geoRegion(subRegion());
+                    pk6.geoCountry(0, country());
+                    pk6.geoRegion(0, subRegion());
                 }
 
                 if (pk6.htName() != otName())
