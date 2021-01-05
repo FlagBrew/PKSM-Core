@@ -25,8 +25,8 @@
  */
 
 #include "utils/random.hpp"
+#include "../../pcg-cpp/include/pcg_random.hpp"
 #include "utils/DateTime.hpp"
-#include <random>
 
 #ifndef _PKSMCORE_CONFIGURED
 #include "PKSMCORE_CONFIG.h"
@@ -35,11 +35,11 @@
 namespace
 {
 #ifdef _PKSMCORE_DISABLE_THREAD_SAFETY
-    std::mt19937 randomNumbers;
+    pcg32 randomNumbers;
     std::uniform_int_distribution<u32> distrib;
     bool seeded = false;
 #else
-    thread_local std::mt19937 randomNumbers;
+    thread_local pcg32 randomNumbers;
     thread_local std::uniform_int_distribution<u32> distrib;
     thread_local bool seeded = false;
 #endif
