@@ -173,7 +173,7 @@ namespace pksm
             case GameVersion::SH:
             {
                 static const std::set<int> items =
-                    std::invoke([]() { return create_set_consecutive<int>(0, 1589); });
+                    std::invoke([]() { return create_set_consecutive<int>(0, 1607); });
                 return items;
             }
             default:
@@ -304,9 +304,8 @@ namespace pksm
             case GameVersion::SW:
             case GameVersion::SH:
             {
-                static const std::set<Move> items = std::invoke([]() {
-                    return create_set_consecutive<Move>(Move::None, Move::SurgingStrikes);
-                });
+                static const std::set<Move> items = std::invoke(
+                    []() { return create_set_consecutive<Move>(Move::None, Move::EerieSpell); });
                 return items;
             }
             default:
@@ -652,7 +651,7 @@ namespace pksm
             case GameVersion::SH:
             {
                 static const std::set<Ability> items = std::invoke([]() {
-                    return create_set_consecutive<Ability>(Ability::Stench, Ability::UnseenFist);
+                    return create_set_consecutive<Ability>(Ability::Stench, Ability::AsOneG);
                 });
                 return items;
             }
@@ -739,7 +738,7 @@ namespace pksm
                 return 1057;
             case GameVersion::SW:
             case GameVersion::SH:
-                return 1589;
+                return 1607;
             default:
                 return 0;
         }
@@ -783,7 +782,7 @@ namespace pksm
                 return Move::DoubleIronBash;
             case GameVersion::SW:
             case GameVersion::SH:
-                return Move::SurgingStrikes;
+                return Move::EerieSpell;
             default:
                 return Move::None;
         }
@@ -826,7 +825,7 @@ namespace pksm
                 return Species::Melmetal;
             case GameVersion::SW:
             case GameVersion::SH:
-                return Species::Zarude;
+                return Species::Calyrex;
             default:
                 return Species::None;
         }
@@ -870,7 +869,7 @@ namespace pksm
                 return Ability::Neuroforce;
             case GameVersion::SW:
             case GameVersion::SH:
-                return Ability::UnseenFist;
+                return Ability::AsOneG;
             default:
                 return Ability::None;
         }

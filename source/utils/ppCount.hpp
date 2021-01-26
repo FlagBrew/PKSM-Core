@@ -34,7 +34,7 @@
 
 namespace pksm::internal
 {
-    constexpr std::array<u8, 819> PP_G8 = {
+    constexpr std::array<u8, 827> PP_G8 = {
         0,  // None
         35, // Pound
         25, // KarateChop
@@ -854,6 +854,14 @@ namespace pksm::internal
         10, // JungleHealing
         5,  // WickedBlow
         5,  // SurgingStrikes
+        15, // ThunderCage
+        5,  // DragonEnergy
+        10, // FreezingGlare
+        10, // FieryWrath
+        10, // ThunderousKick
+        5,  // GlacialLance
+        5,  // AstralBarrage
+        5,  // EerieSpell
     };
 
     constexpr std::array<std::pair<pksm::Move, u8>, 9> PPDiff_LGPE = {{{pksm::Move::Absorb, 15},

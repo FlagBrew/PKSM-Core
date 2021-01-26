@@ -704,6 +704,13 @@ namespace pksm
         static constexpr internal::Ability_impl HungerSwitch{EnumType::HungerSwitch};
         static constexpr internal::Ability_impl QuickDraw{EnumType::QuickDraw};
         static constexpr internal::Ability_impl UnseenFist{EnumType::UnseenFist};
+        static constexpr internal::Ability_impl CuriousMedicine{EnumType::CuriousMedicine};
+        static constexpr internal::Ability_impl Transistor{EnumType::Transistor};
+        static constexpr internal::Ability_impl DragonsMaw{EnumType::DragonsMaw};
+        static constexpr internal::Ability_impl ChillingNeigh{EnumType::ChillingNeigh};
+        static constexpr internal::Ability_impl GrimNeigh{EnumType::GrimNeigh};
+        static constexpr internal::Ability_impl AsOneI{EnumType::AsOneI};
+        static constexpr internal::Ability_impl AsOneG{EnumType::AsOneG};
 
         static constexpr internal::Ability_impl INVALID{EnumType::INVALID};
     };

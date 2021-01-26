@@ -1822,6 +1822,14 @@ namespace pksm
         static constexpr internal::Move_impl JungleHealing{EnumType::JungleHealing};
         static constexpr internal::Move_impl WickedBlow{EnumType::WickedBlow};
         static constexpr internal::Move_impl SurgingStrikes{EnumType::SurgingStrikes};
+        static constexpr internal::Move_impl ThunderCage{EnumType::ThunderCage};
+        static constexpr internal::Move_impl DragonEnergy{EnumType::DragonEnergy};
+        static constexpr internal::Move_impl FreezingGlare{EnumType::FreezingGlare};
+        static constexpr internal::Move_impl FieryWrath{EnumType::FieryWrath};
+        static constexpr internal::Move_impl ThunderousKick{EnumType::ThunderousKick};
+        static constexpr internal::Move_impl GlacialLance{EnumType::GlacialLance};
+        static constexpr internal::Move_impl AstralBarrage{EnumType::AstralBarrage};
+        static constexpr internal::Move_impl EerieSpell{EnumType::EerieSpell};
 
         static constexpr internal::Move_impl INVALID{EnumType::INVALID};
     };
