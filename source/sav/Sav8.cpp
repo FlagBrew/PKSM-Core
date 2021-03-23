@@ -75,7 +75,7 @@ namespace pksm
                 else
                 {
                     pk.currentHandler(1);
-                    PK8& pk8 = reinterpret_cast<PK8&>(pk);
+                    PK8& pk8 = static_cast<PK8&>(pk);
                     pk8.htName(otName());
                     pk8.currentFriendship(pk.baseFriendship());
                     pk8.htGender(gender());

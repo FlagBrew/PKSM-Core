@@ -35,7 +35,7 @@ namespace pksm
         ret.count(count());
         if (generation() == Generation::THREE)
         {
-            ret.securityKey(reinterpret_cast<const Item3*>(this)->securityKey());
+            ret.securityKey(static_cast<const Item3*>(this)->securityKey());
         }
         return ret;
     }

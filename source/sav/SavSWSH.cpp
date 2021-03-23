@@ -562,7 +562,7 @@ namespace pksm
     {
         if (wc.generation() == Generation::EIGHT)
         {
-            const WC8& wc8 = reinterpret_cast<const WC8&>(wc);
+            const WC8& wc8 = static_cast<const WC8&>(wc);
             if (wc8.pokemon())
             {
                 int injectPosition = 0;
@@ -810,7 +810,7 @@ namespace pksm
                                 {
                                     occupying->id(wc8.object(itemNum));
                                     occupying->count(wc8.objectQuantity(itemNum));
-                                    reinterpret_cast<Item8*>(occupying.get())->newFlag(true);
+                                    static_cast<Item8*>(occupying.get())->newFlag(true);
                                     item(*occupying, limits[pouch].first, slot);
                                     currentSet = true;
                                     break;
@@ -849,11 +849,11 @@ namespace pksm
             {
                 entryAddr = getBlock(PokeDex)->decryptedData() + sizeof(DexEntry) * (index - 1);
             }
-            else if (u16 index = reinterpret_cast<const PK8&>(pk).armordexIndex())
+            else if (u16 index = static_cast<const PK8&>(pk).armordexIndex())
             {
                 entryAddr = getBlock(ArmorDex)->decryptedData() + sizeof(DexEntry) * (index - 1);
             }
-            else if (u16 index = reinterpret_cast<const PK8&>(pk).crowndexIndex())
+            else if (u16 index = static_cast<const PK8&>(pk).crowndexIndex())
             {
                 entryAddr = getBlock(CrownDex)->decryptedData() + sizeof(DexEntry) * (index - 1);
             }
@@ -867,7 +867,7 @@ namespace pksm
             if (pk.species() == Species::Alcremie)
             {
                 form *= 7;
-                form += reinterpret_cast<const PK8&>(pk).formDuration();
+                form += static_cast<const PK8&>(pk).formDuration();
             }
             else if (pk.species() == Species::Eternatus)
             {

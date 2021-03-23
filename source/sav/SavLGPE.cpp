@@ -304,7 +304,7 @@ namespace pksm
     {
         if (pk.generation() == Generation::LGPE)
         {
-            PB7& pb7 = reinterpret_cast<PB7&>(pk);
+            PB7& pb7 = static_cast<PB7&>(pk);
             if (pb7.egg() && !(otName() == pb7.otName() && TID() == pb7.TID() &&
                                  SID() == pb7.SID() && gender() == pb7.otGender()))
             {
@@ -584,7 +584,7 @@ namespace pksm
     {
         if (wc.generation() == Generation::LGPE)
         {
-            const WB7& wb7 = reinterpret_cast<const WB7&>(wc);
+            const WB7& wb7 = static_cast<const WB7&>(wc);
             if (wb7.pokemon())
             {
                 if (boxedPkm() == maxSlot())
@@ -785,7 +785,7 @@ namespace pksm
                                 {
                                     occupying->id(wb7.object(itemNum));
                                     occupying->count(wb7.objectQuantity(itemNum));
-                                    reinterpret_cast<Item7b*>(occupying.get())->newFlag(true);
+                                    static_cast<Item7b*>(occupying.get())->newFlag(true);
                                     item(*occupying, limits[pouch].first, slot);
                                     currentSet = true;
                                     break;

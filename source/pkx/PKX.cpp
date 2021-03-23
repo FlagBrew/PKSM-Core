@@ -605,43 +605,43 @@ namespace pksm
     std::unique_ptr<PK3> PKX::convertToG3(Sav&) const
     {
         return generation() == Generation::THREE
-                   ? std::unique_ptr<PK3>(reinterpret_cast<PK3*>(clone().release()))
+                   ? std::unique_ptr<PK3>(static_cast<PK3*>(clone().release()))
                    : nullptr;
     }
     std::unique_ptr<PK4> PKX::convertToG4(Sav&) const
     {
         return generation() == Generation::FOUR
-                   ? std::unique_ptr<PK4>(reinterpret_cast<PK4*>(clone().release()))
+                   ? std::unique_ptr<PK4>(static_cast<PK4*>(clone().release()))
                    : nullptr;
     }
     std::unique_ptr<PK5> PKX::convertToG5(Sav&) const
     {
         return generation() == Generation::FIVE
-                   ? std::unique_ptr<PK5>(reinterpret_cast<PK5*>(clone().release()))
+                   ? std::unique_ptr<PK5>(static_cast<PK5*>(clone().release()))
                    : nullptr;
     }
     std::unique_ptr<PK6> PKX::convertToG6(Sav&) const
     {
         return generation() == Generation::SIX
-                   ? std::unique_ptr<PK6>(reinterpret_cast<PK6*>(clone().release()))
+                   ? std::unique_ptr<PK6>(static_cast<PK6*>(clone().release()))
                    : nullptr;
     }
     std::unique_ptr<PK7> PKX::convertToG7(Sav&) const
     {
         return generation() == Generation::SEVEN
-                   ? std::unique_ptr<PK7>(reinterpret_cast<PK7*>(clone().release()))
+                   ? std::unique_ptr<PK7>(static_cast<PK7*>(clone().release()))
                    : nullptr;
     }
     std::unique_ptr<PB7> PKX::convertToLGPE(Sav&) const
     {
         return generation() == Generation::LGPE
-                   ? std::unique_ptr<PB7>(reinterpret_cast<PB7*>(clone().release()))
+                   ? std::unique_ptr<PB7>(static_cast<PB7*>(clone().release()))
                    : nullptr;
     }
     std::unique_ptr<PK8> PKX::convertToG8(Sav&) const
     {
         return generation() == Generation::EIGHT
-                   ? std::unique_ptr<PK8>(reinterpret_cast<PK8*>(clone().release()))
+                   ? std::unique_ptr<PK8>(static_cast<PK8*>(clone().release()))
                    : nullptr;
     }
 

@@ -152,7 +152,7 @@ namespace pksm
     {
         if (pk.generation() == Generation::SEVEN)
         {
-            PK7& pk7 = reinterpret_cast<PK7&>(pk);
+            PK7& pk7 = static_cast<PK7&>(pk);
             if (pk7.egg())
             {
                 if (otName() != pk7.otName() || TID() != pk7.TID() || SID() != pk7.SID() ||

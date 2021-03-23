@@ -239,7 +239,7 @@ namespace pksm
     {
         if (item.generation() == Generation::THREE)
         {
-            heldItem3((reinterpret_cast<const Item3&>(item)).id3());
+            heldItem3((static_cast<const Item3&>(item)).id3());
         }
         else
         {
