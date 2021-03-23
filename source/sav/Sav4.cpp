@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM-Core
- *   Copyright (C) 2016-2020 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2021 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -126,11 +126,22 @@ namespace pksm
     {
         u16 cs;
         // start, end, chkoffset
-        int general[3] = {0x0, game == Game::DP ? 0xC0EC : game == Game::Pt ? 0xCF18 : 0xF618,
-            game == Game::DP ? 0xC0FE : game == Game::Pt ? 0xCF2A : 0xF626};
-        int storage[3] = {game == Game::DP ? 0xC100 : game == Game::Pt ? 0xCF2C : 0xF700,
-            game == Game::DP ? 0x1E2CC : game == Game::Pt ? 0x1F0FC : 0x21A00,
-            game == Game::DP ? 0x1E2DE : game == Game::Pt ? 0x1F10E : 0x21A0E};
+        int general[3] = {0x0,
+            game == Game::DP   ? 0xC0EC
+            : game == Game::Pt ? 0xCF18
+                               : 0xF618,
+            game == Game::DP   ? 0xC0FE
+            : game == Game::Pt ? 0xCF2A
+                               : 0xF626};
+        int storage[3] = {game == Game::DP   ? 0xC100
+                          : game == Game::Pt ? 0xCF2C
+                                             : 0xF700,
+            game == Game::DP   ? 0x1E2CC
+            : game == Game::Pt ? 0x1F0FC
+                               : 0x21A00,
+            game == Game::DP   ? 0x1E2DE
+            : game == Game::Pt ? 0x1F10E
+                               : 0x21A0E};
 
         cs = pksm::crypto::ccitt16(&data[gbo + general[0]], general[1] - general[0]);
         LittleEndian::convertFrom<u16>(&data[gbo + general[2]], cs);
@@ -147,8 +158,9 @@ namespace pksm
 
     GameVersion Sav4::version(void) const
     {
-        return game == Game::DP ? GameVersion::D
-                                : game == Game::Pt ? GameVersion::Pt : GameVersion::HG;
+        return game == Game::DP   ? GameVersion::D
+               : game == Game::Pt ? GameVersion::Pt
+                                  : GameVersion::HG;
     }
     void Sav4::version(GameVersion) {}
 
@@ -830,14 +842,30 @@ namespace pksm
 
     std::vector<std::pair<Sav::Pouch, int>> Sav4::pouches(void) const
     {
-        return {{Pouch::NormalItem, game == Game::DP ? 161 : game == Game::Pt ? 162 : 162},
-            {Pouch::KeyItem, game == Game::DP ? 37 : game == Game::Pt ? 40 : 38},
-            {Pouch::TM, game == Game::DP ? 100 : game == Game::Pt ? 100 : 100},
-            {Pouch::Mail, game == Game::DP ? 12 : game == Game::Pt ? 12 : 12},
-            {Pouch::Medicine, game == Game::DP ? 38 : game == Game::Pt ? 38 : 38},
-            {Pouch::Berry, game == Game::DP ? 64 : game == Game::Pt ? 64 : 64},
-            {Pouch::Ball, game == Game::DP ? 15 : game == Game::Pt ? 15 : 24},
-            {Pouch::Battle, game == Game::DP ? 13 : game == Game::Pt ? 13 : 13}};
+        return {{Pouch::NormalItem, game == Game::DP   ? 161
+                                    : game == Game::Pt ? 162
+                                                       : 162},
+            {Pouch::KeyItem, game == Game::DP   ? 37
+                             : game == Game::Pt ? 40
+                                                : 38},
+            {Pouch::TM, game == Game::DP   ? 100
+                        : game == Game::Pt ? 100
+                                           : 100},
+            {Pouch::Mail, game == Game::DP   ? 12
+                          : game == Game::Pt ? 12
+                                             : 12},
+            {Pouch::Medicine, game == Game::DP   ? 38
+                              : game == Game::Pt ? 38
+                                                 : 38},
+            {Pouch::Berry, game == Game::DP   ? 64
+                           : game == Game::Pt ? 64
+                                              : 64},
+            {Pouch::Ball, game == Game::DP   ? 15
+                          : game == Game::Pt ? 15
+                                             : 24},
+            {Pouch::Battle, game == Game::DP   ? 13
+                            : game == Game::Pt ? 13
+                                               : 13}};
     }
 
     std::map<Sav::Pouch, std::vector<int>> Sav4::validItems() const

@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM-Core
- *   Copyright (C) 2016-2020 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2021 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -195,8 +195,9 @@ namespace pksm
 
     GameVersion Sav3::version(void) const
     {
-        return game == Game::RS ? GameVersion::S
-                                : game == Game::E ? GameVersion::E : GameVersion::FR;
+        return game == Game::RS  ? GameVersion::S
+               : game == Game::E ? GameVersion::E
+                                 : GameVersion::FR;
     }
     void Sav3::version(GameVersion) {}
 
