@@ -193,7 +193,7 @@ namespace pksm
     void PK3::language(Language v) { data[0x12] = u8(v); }
 
     bool PK3::flagIsBadEgg(void) const { return (data[0x13] & 1) == 1; }
-    void PK3::flagIsBadEgg(bool v) { data[0x13] = (data[0x13] & ~2) | (v ? 1 : 0); }
+    void PK3::flagIsBadEgg(bool v) { data[0x13] = (data[0x13] & ~1) | (v ? 1 : 0); }
 
     bool PK3::flagHasSpecies(void) const { return (data[0x13] & 2) == 2; }
     void PK3::flagHasSpecies(bool v) { data[0x13] = (data[0x13] & ~2) | (v ? 2 : 0); }
