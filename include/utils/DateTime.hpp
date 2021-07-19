@@ -99,7 +99,12 @@ public:
         return *this == other || *this > other;
     }
 
-private:
+    [[nodiscard]] constexpr operator struct tm() const
+    {
+        return {0, 0, 0, mDay, mMonth - 1, (int)(mYear - 1900), 0, 0, 0};
+    }
+
+protected:
     u32 mYear;
     u8 mDay;
     u8 mMonth;
@@ -172,7 +177,12 @@ public:
         return *this == other || *this > other;
     }
 
-private:
+    [[nodiscard]] constexpr operator struct tm() const
+    {
+        return {mSecond, mMinute, mHour, 1, 0, 0, 0, 0, 0};
+    }
+
+protected:
     u8 mHour;
     u8 mMinute;
     u8 mSecond;
@@ -303,6 +313,11 @@ public:
     {
         DateTime other{tOther};
         return Date::operator>(other) || (Date::operator==(other) && Time::operator>=(other));
+    }
+
+    [[nodiscard]] constexpr operator struct tm() const
+    {
+        return {mSecond, mMinute, mHour, mDay, mMonth - 1, (int)(mYear - 1900), 0, 0, 0};
     }
 
     [[nodiscard]] static DateTime now() { return DateTime{time(nullptr)}; }
