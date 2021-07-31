@@ -25,6 +25,7 @@
  */
 
 #include "utils/utils.hpp"
+#include "g1text.hpp"
 #include "g3text.hpp"
 #include "g4text.hpp"
 #include "utils/endian.hpp"
@@ -1082,6 +1083,59 @@ void StringUtils::setString3(
     if (outPos < (size_t)len)
     {
         data[ofs + outPos] = 0xFF;
+    }
+
+    while (outPos < (size_t)padTo)
+    {
+        data[ofs + outPos] = padWith;
+        outPos++;
+    }
+}
+
+// TODO: japanese character conversions done by Transporter
+std::string StringUtils::getString1(const u8* data, int ofs, int len, bool jp)
+{
+    auto characters = jp ? pksm::internal::G1_JP : pksm::internal::G1_EN;
+    std::u16string outString;
+
+    for (size_t i = 0; i < (size_t)len; i++)
+    {
+        auto pos = characters.find(data[i]);
+        if (pos != characters.end())
+        {
+            outString += pos->second;
+        }
+    }
+
+    return StringUtils::UTF16toUTF8(outString);
+}
+
+void StringUtils::setString1(u8* data, const std::string_view& v, int ofs, int len, bool jp, int padTo,
+        u8 padWith)
+{
+    auto characters = jp ? pksm::internal::G1_JP : pksm::internal::G1_EN;
+    std::u16string str = StringUtils::UTF8toUTF16(v);
+    if (jp) str = StringUtils::toFullWidth(str);
+
+    size_t outPos;
+    for (outPos = 0; outPos < std::min((size_t)len, str.size()); outPos++)
+    {
+        u16 codePoint = 256;
+        for (auto it = characters.begin(); it != characters.end(); it++)
+        {
+            if (it->second == str[outPos])
+            {
+                codePoint = it->first;
+            }
+        }
+        if (codePoint < 256)
+        {
+            data[ofs + outPos] = codePoint;
+        }
+    }
+    if (outPos < (size_t)len)
+    {
+        data[ofs + outPos] = 0x50;
     }
 
     while (outPos < (size_t)padTo)

@@ -45,7 +45,7 @@ namespace pksm
             // ONE and TWO to have maybe_unused removed in the future
             enum class GenerationEnum : u32
             {
-                ONE [[maybe_unused]] = 7,
+                ONE                  = 7,
                 TWO [[maybe_unused]] = 8,
                 THREE                = 6,
                 FOUR                 = 0,
@@ -235,7 +235,11 @@ namespace pksm
 
         [[nodiscard]] static constexpr Generation fromString(const std::string_view& str)
         {
-            if (str == "3")
+            if (str == "1")
+            {
+                return Generation::ONE;
+            }
+            else if (str == "3")
             {
                 return Generation::THREE;
             }

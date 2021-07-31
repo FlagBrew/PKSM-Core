@@ -26,6 +26,7 @@
 
 #include "pkx/PKX.hpp"
 #include "pkx/PB7.hpp"
+#include "pkx/PK1.hpp"
 #include "pkx/PK3.hpp"
 #include "pkx/PK4.hpp"
 #include "pkx/PK5.hpp"
@@ -277,6 +278,8 @@ namespace pksm
 
     bool PKX::originGen3(void) const { return (Generation)version() == Generation::THREE; }
 
+    bool PKX::originGen1(void) const { return (Generation)version() == Generation::ONE; }
+
     Generation PKX::originGen(void) const { return (Generation)version(); }
 
     void PKX::fixMoves(void)
@@ -424,6 +427,7 @@ namespace pksm
     {
         switch (generation())
         {
+            case Generation::ONE:
             case Generation::THREE:
             case Generation::FOUR:
             case Generation::FIVE:
@@ -434,7 +438,6 @@ namespace pksm
             case Generation::EIGHT:
                 return u32(SID() << 16 | TID()) % 1000000;
             case Generation::UNUSED:
-            case Generation::ONE:
             case Generation::TWO:
                 return 0;
         }
@@ -465,6 +468,8 @@ namespace pksm
     {
         switch (gen)
         {
+            case Generation::ONE:
+                return getPKM<Generation::ONE>(data, party, directAccess);
             case Generation::THREE:
                 return getPKM<Generation::THREE>(data, party, directAccess);
             case Generation::FOUR:
@@ -480,7 +485,6 @@ namespace pksm
             case Generation::EIGHT:
                 return getPKM<Generation::EIGHT>(data, party, directAccess);
             case Generation::UNUSED:
-            case Generation::ONE:
             case Generation::TWO:
                 return nullptr;
         }
@@ -491,6 +495,8 @@ namespace pksm
     {
         switch (gen)
         {
+            case Generation::ONE:
+                return getPKM<Generation::ONE>(data, length, directAccess);
             case Generation::THREE:
                 return getPKM<Generation::THREE>(data, length, directAccess);
             case Generation::FOUR:
@@ -506,7 +512,6 @@ namespace pksm
             case Generation::EIGHT:
                 return getPKM<Generation::EIGHT>(data, length, directAccess);
             case Generation::UNUSED:
-            case Generation::ONE:
             case Generation::TWO:
                 return nullptr;
         }
@@ -602,6 +607,12 @@ namespace pksm
         return true;
     }
 
+    std::unique_ptr<PK1> PKX::convertToG1(Sav&) const
+    {
+        return generation() == Generation::ONE
+                   ? std::unique_ptr<PK1>(static_cast<PK1*>(clone().release()))
+                   : nullptr;
+    }
     std::unique_ptr<PK3> PKX::convertToG3(Sav&) const
     {
         return generation() == Generation::THREE

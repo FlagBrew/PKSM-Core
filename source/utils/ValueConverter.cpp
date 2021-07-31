@@ -26,11 +26,30 @@
 
 #include "utils/ValueConverter.hpp"
 #include "enums/Species.hpp"
+#include "g1values.hpp"
 #include "g3values.hpp"
 #include <algorithm>
 
 namespace pksm
 {
+    Species SpeciesConverter::g1ToNational(u8 v)
+    {
+        if (v < internal::g1ToSpecies.size())
+        {
+            return Species{internal::g1ToSpecies[v]};
+        }
+        return Species::None;
+    }
+
+    u8 SpeciesConverter::nationalToG1(Species v)
+    {
+        if (u16(v) < internal::speciesToG1.size())
+        {
+            return internal::speciesToG1[u16(v)];
+        }
+        return 0;
+    }
+
     Species SpeciesConverter::g3ToNational(u16 v)
     {
         if (v < internal::g3ToSpecies.size())
@@ -47,6 +66,27 @@ namespace pksm
             return internal::speciesToG3[u16(v)];
         }
         return 0;
+    }
+
+    u16 ItemConverter::g1ToNational(u8 v)
+    {
+        //"v < internal::g1ToItem.size()" is always true due to a size of 256
+        return internal::g1ToItem[v];
+    }
+
+    u8 ItemConverter::nationalToG1(u16 v)
+    {
+        if (v == 0)
+        {
+            return 0;
+        }
+
+        auto it = std::find(internal::g1ToItem.begin(), internal::g1ToItem.end(), v);
+        if (it == internal::g1ToItem.end())
+        {
+            return 0;
+        }
+        return std::distance(internal::g1ToItem.begin(), it);
     }
 
     u16 ItemConverter::g3ToNational(u16 v)

@@ -66,7 +66,9 @@ namespace pksm
             SWSH,
             RS,
             E,
-            FRLG
+            FRLG,
+            RGB,
+            Y
         } game;
 
         int Box, Party, PokeDex, WondercardData, WondercardFlags;
@@ -74,6 +76,7 @@ namespace pksm
 
         const std::shared_ptr<u8[]> data;
         const u32 length;
+        [[nodiscard]] static std::unique_ptr<Sav> checkGBType(std::shared_ptr<u8[]> dt);
         [[nodiscard]] static std::unique_ptr<Sav> checkGBAType(std::shared_ptr<u8[]> dt);
         [[nodiscard]] static std::unique_ptr<Sav> checkDSType(std::shared_ptr<u8[]> dt);
         [[nodiscard]] static bool validSequence(std::shared_ptr<u8[]> dt, size_t offset);

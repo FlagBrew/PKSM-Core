@@ -26,6 +26,7 @@
 
 #include "sav/Sav.hpp"
 #include "pkx/PB7.hpp"
+#include "pkx/PK1.hpp"
 #include "pkx/PK3.hpp"
 #include "pkx/PK4.hpp"
 #include "pkx/PK5.hpp"
@@ -33,6 +34,7 @@
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
 #include "pkx/PKX.hpp"
+#include "sav/Sav1.hpp"
 #include "sav/SavB2W2.hpp"
 #include "sav/SavBW.hpp"
 #include "sav/SavDP.hpp"
@@ -68,6 +70,8 @@ namespace pksm
                 return checkDSType(dt);
             case 0x20000:
                 return checkGBAType(dt);
+            case 0x8000:
+                return checkGBType(dt);
             case 0xB8800:
             case 0x100000:
                 return std::make_unique<SavLGPE>(dt, length);
@@ -80,6 +84,18 @@ namespace pksm
             case SavSWSH::SIZE_G8SWSH_3B:
             case SavSWSH::SIZE_G8SWSH_3C:
                 return std::make_unique<SavSWSH>(dt, length);
+            default:
+                return std::unique_ptr<Sav>(nullptr);
+        }
+    }
+    std::unique_ptr<Sav> Sav::checkGBType(std::shared_ptr<u8[]> dt)
+    {
+        switch (Sav1::getVersion(dt))
+        {
+            case Game::RGB:
+                return std::make_unique<Sav1>(dt);
+            case Game::Y:
+                return std::make_unique<Sav1>(dt);  // in case anyone wants to
             default:
                 return std::unique_ptr<Sav>(nullptr);
         }
@@ -191,6 +207,8 @@ namespace pksm
     {
         switch (generation())
         {
+            case Generation::ONE:
+                return pk.convertToG1(*this);
             case Generation::THREE:
                 return pk.convertToG3(*this);
             case Generation::FOUR:
@@ -206,7 +224,6 @@ namespace pksm
             case Generation::EIGHT:
                 return pk.convertToG8(*this);
             case Generation::UNUSED:
-            case Generation::ONE:
             case Generation::TWO:
                 return nullptr;
         }
@@ -241,6 +258,7 @@ namespace pksm
     {
         switch (generation())
         {
+            case Generation::ONE:
             case Generation::THREE:
             case Generation::FOUR:
             case Generation::FIVE:
@@ -251,7 +269,6 @@ namespace pksm
             case Generation::EIGHT:
                 return u32(SID() << 16 | TID()) % 1000000;
             case Generation::UNUSED:
-            case Generation::ONE:
             case Generation::TWO:
                 return 0;
         }

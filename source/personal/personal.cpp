@@ -32,6 +32,7 @@
 #include "personal_smusum.h"
 #include "personal_swsh.h"
 #include "personal_xyoras.h"
+#include "personal_y.h"
 #include "utils/endian.hpp"
 
 namespace pksm
@@ -475,4 +476,56 @@ namespace pksm
             }
         }
     }
+    namespace PersonalRGBY
+    {
+        u8 baseHP(u8 species)
+        {
+            return personal_y[species * personal_y_entrysize + 0x0];
+        }
+        u8 baseAtk(u8 species)
+        {
+            return personal_y[species * personal_y_entrysize + 0x1];
+        }
+        u8 baseDef(u8 species)
+        {
+            return personal_y[species * personal_y_entrysize + 0x2];
+        }
+        u8 baseSpe(u8 species)
+        {
+            return personal_y[species * personal_y_entrysize + 0x3];
+        }
+        u8 baseSpad(u8 species)
+        {
+            return personal_y[species * personal_y_entrysize + 0x4];
+        }
+        Type type1(u8 species)
+        {
+            u8 typeVal = personal_y[species * personal_y_entrysize + 0x5];
+            if (typeVal >= 20)
+            {
+                return Type{u8(typeVal - 11)};
+            }
+            else
+                return Type{typeVal};
+        }
+        Type type2(u8 species)
+        {
+            u8 typeVal = personal_y[species * personal_y_entrysize + 0x6];
+            if (typeVal >= 20)
+            {
+                return Type{u8(typeVal - 11)};
+            }
+            else
+                return Type{typeVal};
+        }
+        u8 catchRate(u8 species)
+        {
+            return personal_y[species * personal_y_entrysize + 0x7];
+        }
+        u8 expType(u8 species)
+        {
+            return personal_y[species * personal_y_entrysize + 0x8];
+        }
+    }
+    
 }

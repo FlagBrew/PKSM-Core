@@ -63,6 +63,21 @@ namespace pksm
         static const std::set<int> emptySet;
         switch (version)
         {
+            case GameVersion::RD:
+            case GameVersion::GN:
+            case GameVersion::BU:
+            case GameVersion::YW:
+            {
+                static const std::set<int> items = {0, 1, 2, 3, 4, 5, 6, 10, 11, 12, 13, 14, 15, 16,
+                    17, 18, 19, 20, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 45,
+                    46, 47, 48, 49, 51, 52, 53, 54, 55, 56, 57, 58, 60, 61, 62, 63, 64, 65, 66, 67,
+                    68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 196, 197, 198,
+                    199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214,
+                    215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230,
+                    231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246,
+                    247, 248, 249, 250};
+                return items;
+            }
             case GameVersion::R:
             case GameVersion::S:
             {
@@ -186,6 +201,15 @@ namespace pksm
         static const std::set<Move> emptySet;
         switch (version)
         {
+            case GameVersion::RD:
+            case GameVersion::GN:
+            case GameVersion::BU:
+            case GameVersion::YW:
+            {
+                static const std::set<Move> items = std::invoke(
+                    []() { return create_set_consecutive<Move>(Move::None, Move::Substitute); });
+                return items;
+            }
             case GameVersion::R:
             case GameVersion::S:
             case GameVersion::FR:
@@ -318,6 +342,16 @@ namespace pksm
         static const std::set<Species> emptySet;
         switch (version)
         {
+            case GameVersion::RD:
+            case GameVersion::GN:
+            case GameVersion::BU:
+            case GameVersion::YW:
+            {
+                static const std::set<Species> items = std::invoke([]() {
+                    return create_set_consecutive<Species>(Species::Bulbasaur, Species::Mew);
+                });
+                return items;
+            }
             case GameVersion::R:
             case GameVersion::S:
             case GameVersion::FR:
@@ -701,6 +735,11 @@ namespace pksm
     {
         switch (version)
         {
+            case GameVersion::RD:
+            case GameVersion::GN:
+            case GameVersion::BU:
+            case GameVersion::YW:
+                return 250;
             case GameVersion::R:
             case GameVersion::S:
             case GameVersion::FR:
@@ -748,6 +787,11 @@ namespace pksm
     {
         switch (version)
         {
+            case GameVersion::RD:
+            case GameVersion::GN:
+            case GameVersion::BU:
+            case GameVersion::YW:
+                return Move::Substitute; // technically it's Struggle
             case GameVersion::R:
             case GameVersion::S:
             case GameVersion::FR:
@@ -792,6 +836,11 @@ namespace pksm
     {
         switch (version)
         {
+            case GameVersion::RD:
+            case GameVersion::GN:
+            case GameVersion::BU:
+            case GameVersion::YW:
+                return Species::Mew;
             case GameVersion::R:
             case GameVersion::S:
             case GameVersion::FR:
@@ -1039,11 +1088,15 @@ namespace pksm
                 }
             }
             break;
+            // So... no PP changes for Gen I and II moves occurred until Gen IV. Nice.
+            case pksm::Generation::ONE:
+            case pksm::Generation::TWO:
             case pksm::Generation::THREE:
             {
-                auto found = std::find_if(internal::PPDiff_G3.begin(), internal::PPDiff_G3.end(),
-                    [move](const std::pair<pksm::Move, u8>& v) { return v.first == move; });
-                if (found != internal::PPDiff_G3.end())
+                auto found =
+                    std::find_if(internal::PPDiff_G123.begin(), internal::PPDiff_G123.end(),
+                        [move](const std::pair<pksm::Move, u8>& v) { return v.first == move; });
+                if (found != internal::PPDiff_G123.end())
                 {
                     val = found->second;
                 }
@@ -1069,7 +1122,6 @@ namespace pksm
             }
             break;
             default:
-                // TODO: G1/2 (very low priority)
                 return 0;
         }
 

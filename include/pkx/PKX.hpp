@@ -51,6 +51,7 @@
 namespace pksm
 {
     class Sav;
+    class PK1;
     class PK3;
     class PK4;
     class PK5;
@@ -148,6 +149,7 @@ namespace pksm
         virtual void encrypt(void)                     = 0;
         [[nodiscard]] virtual bool isEncrypted() const = 0;
 
+        [[nodiscard]] virtual std::unique_ptr<PK1> convertToG1(Sav& save) const;
         [[nodiscard]] virtual std::unique_ptr<PK3> convertToG3(Sav& save) const;
         [[nodiscard]] virtual std::unique_ptr<PK4> convertToG4(Sav& save) const;
         [[nodiscard]] virtual std::unique_ptr<PK5> convertToG5(Sav& save) const;
@@ -164,6 +166,7 @@ namespace pksm
         [[nodiscard]] bool originGen5(void) const;
         [[nodiscard]] bool originGen4(void) const;
         [[nodiscard]] bool originGen3(void) const;
+        [[nodiscard]] bool originGen1(void) const;
         [[nodiscard]] Generation originGen(void) const;
         void fixMoves(void);
 

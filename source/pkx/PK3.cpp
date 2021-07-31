@@ -578,7 +578,7 @@ namespace pksm
         pk4->otName(otName());
 
         // I use 0 for invalid items
-        pk4->heldItem(heldItem() == ItemConverter::G3_NOT_CONVERTIBLE ? 0 : heldItem());
+        pk4->heldItem(heldItem() == ItemConverter::ITEM_NOT_CONVERTIBLE ? 0 : heldItem());
 
         // Remove HM moves
         for (int i = 0; i < 4; i++)
