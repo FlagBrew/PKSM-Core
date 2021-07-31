@@ -36,9 +36,10 @@ namespace pksm
     class Sav1 : public Sav
     {
     protected:
-        bool japanese;
+        bool japanese = false;
         GameVersion versionOfGame = GameVersion::RD; //not even PKHeX tries to do better
-        int maxPkmInBox;
+        u8 maxPkmInBox;
+        u32 OFS_PARTY;
 
         void initialize();
         void fixBoxes();
@@ -96,6 +97,8 @@ namespace pksm
         [[nodiscard]] u8 legendBoxUnlockSize(void) const override { return 0; }
         [[nodiscard]] u32 boxOffset(u8 box, u8 slot) const override;
         [[nodiscard]] u32 partyOffset(u8 slot) const override;
+        [[nodiscard]] u32 boxStart(u8 box) const;
+        [[nodiscard]] u32 boxDataStart(u8 box) const;
 
         [[nodiscard]] std::unique_ptr<PKX> pkm(u8 slot) const override;
         [[nodiscard]] std::unique_ptr<PKX> pkm(u8 box, u8 slot) const override;
@@ -125,6 +128,7 @@ namespace pksm
         [[nodiscard]] int maxBoxes(void) const override;
         [[nodiscard]] size_t maxWondercards(void) const override { return 0; }
         [[nodiscard]] Generation generation(void) const override { return Generation::ONE; }
+        [[nodiscard]] int boxSize(void) const;
 
         void item(const Item& tItem, Pouch pouch, u16 slot) override;
         [[nodiscard]] std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;

@@ -45,7 +45,7 @@ namespace pksm
 
     private:
         // TODO: below
-        bool japanese;
+        bool japanese = false;
         Language lang;
         [[nodiscard]] int eggYear(void) const override { return 1900; }
         void eggYear(int) override {}

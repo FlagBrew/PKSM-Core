@@ -32,6 +32,7 @@
 #include "utils/flagUtil.hpp"
 #include "utils/i18n.hpp"
 #include "utils/utils.hpp"
+#include "gui.hpp"
 #include "wcx/WCX.hpp"
 #include <algorithm>
 #include <limits>
@@ -41,7 +42,8 @@ namespace pksm
 {
     Sav::Game Sav1::getVersion(std::shared_ptr<u8[]> dt)
     {
-        // for now it doesn't matter, the only difference is Pikachu's friendship and Pikachu surf score
+        // for now it doesn't matter, the only difference is Pikachu's friendship and Pikachu surf
+        // score
         return Game::RGB;
     }
     // ctrl-v the fixparty code, boxes are expected to be continuous
@@ -77,13 +79,14 @@ namespace pksm
     {
         // these are unused padding bytes for box data (current and 0 respectively). the difference
         // in international is location of boxes
-        //japanese    = (data[0x2EF4] == 0xFF) && (data[0x304C] == 0xFF);
-        japanese = false;
+        // japanese    = (data[0x2EF4] == 0xFF) && (data[0x304C] == 0xFF);
+        japanese    = false;
         maxPkmInBox = japanese ? 30 : 20;
+        OFS_PARTY   = japanese ? 0x2ED5 : 0x2F2C;
     }
     u8 Sav1::calculateChecksum(const u8* data, size_t len)
     {
-        u8 state = 255;
+        u8 state     = 255;
         size_t index = 0;
         while (index < len)
         {
@@ -104,27 +107,28 @@ namespace pksm
         {
             data[japanese ? 0x2CA1 : 0x2CEE] = 0;
         }
-        //fixBoxes();
+        // fixBoxes();
         for (int box = 0; box < maxBoxes(); box++)
         {
-            if (box < maxBoxes() / 2)
+            if (box < (maxBoxes()/2))
             {
-                data[(japanese ? 0x54A9 : 0x5A4D) + box] = calculateChecksum(
-                    &data[0x4000 + (box * (japanese ? 0x52A : 0x462))], japanese ? 0x52A : 0x462);
+                data[(japanese ? 0x54A9 : 0x5A4D) + box] =
+                    calculateChecksum(&data[boxDataStart(box)], boxSize());
             }
             else
             {
-                data[(japanese ? 0x74A9 : 0x7A4D) + box] = calculateChecksum(
-                    &data[0x6000 + ((box - (maxBoxes() / 2)) * (japanese ? 0x52A : 0x462))],
-                    japanese ? 0x52A : 0x462);
+                data[(japanese ? 0x74A9 : 0x7A4D) + box] =
+                    calculateChecksum(&data[boxDataStart(box)], boxSize());
             }
         }
-        std::copy(&data[(currentBox() < maxBoxes()/2 ? 0x4000 : 0x6000) + (currentBox() * (japanese ? 0x52A : 0x462))],
-            &data[(currentBox() < maxBoxes()/2 ? 0x4000 : 0x6000) + (currentBox() * (japanese ? 0x52A : 0x462))] +
-                (japanese ? 0x52A : 0x462),
+        std::copy(&data[boxStart(currentBox())], &data[boxStart(currentBox())] + boxSize(),
             &data[japanese ? 0x302D : 0x30C0]);
         data[japanese ? 0x3594 : 0x3523] =
             calculateChecksum(&data[0x2598], japanese ? 0xFFC : 0xF8B);
+        data[japanese ? 0x54A8 : 0x5A4C] =
+            calculateChecksum(&data[0x4000], japanese ? 0x14A8 : 0x1A4C);
+        data[japanese ? 0x74A8 : 0x7A4C] =
+            calculateChecksum(&data[0x6000], japanese ? 0x14A8 : 0x1A4C);
     }
     u16 Sav1::TID() const { return BigEndian::convertTo<u16>(&data[japanese ? 0x25FB : 0x2605]); }
     void Sav1::TID(u16 v) { BigEndian::convertFrom<u16>(&data[japanese ? 0x25FB : 0x2605], v); }
@@ -188,19 +192,28 @@ namespace pksm
     u8 Sav1::currentBox() const { return data[japanese ? 0x2842 : 0x284C] & 0x7F; }
     void Sav1::currentBox(u8 v)
     {
-        data[japanese ? 0x2842 : 0x284C] = (data[japanese ? 0x2842 : 0x284C] & 0x80) | (v & 0x7F);
+        data[japanese ? 0x2842 : 0x284C] = 0x80 | (v & 0x7F);
     }
     u32 Sav1::boxOffset(u8 box, u8 slot) const
     {
-        int bank = 0x4000;
-        if (box >= maxBoxes() / 2)
-        {
-            bank = 0x6000;
-            box -= maxBoxes() / 2;
-        }
-        return bank + (box * (japanese ? 0x52A : 0x462)) + (japanese ? 32 : 22) + (slot * PK1::BOX_LENGTH);
+        Gui::warn(std::to_string(boxDataStart(box) + (slot * PK1::BOX_LENGTH)));
+        return boxDataStart(box) + (slot * PK1::BOX_LENGTH);
     }
-    u32 Sav1::partyOffset(u8 slot) const { return (japanese ? 0x2ED5 : 0x2F2C) + 8 + (slot * PK1::PARTY_LENGTH); }
+    u32 Sav1::partyOffset(u8 slot) const
+    {
+        return OFS_PARTY + 8 + (slot * PK1::PARTY_LENGTH);
+    }
+
+    u32 Sav1::boxStart(u8 box) const
+    {
+        if (box < maxBoxes() / 2)
+        {
+            return 0x4000 + (box * boxSize());
+        }
+        box -= maxBoxes() / 2;
+        return 0x6000 + (box * boxSize());
+    }
+    u32 Sav1::boxDataStart(u8 box) const { return boxStart(box) + (japanese ? 32 : 22); }
 
     // these will need modified to have the name information included, since names are not
     // contiguous with other data and PK1 includes names. good enough to boot with placeholders
@@ -210,7 +223,10 @@ namespace pksm
     }
     std::unique_ptr<PKX> Sav1::pkm(u8 box, u8 slot) const
     {
-        if (slot >= (japanese ? 30 : 20)) return nullptr;
+        if (slot >= maxPkmInBox)
+        {
+            return PKX::getPKM<Generation::ONE>(nullptr);
+        }
         return PKX::getPKM<Generation::ONE>(&data[boxOffset(box, slot)]);
     }
     void Sav1::pkm(const PKX& pk, u8 slot)
@@ -224,6 +240,10 @@ namespace pksm
     }
     void Sav1::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)
     {
+        if (slot >= maxPkmInBox)
+        {
+            return;
+        }
         if (pk.generation() == Generation::ONE)
         {
             auto pk1 = pk.clone();
@@ -231,7 +251,8 @@ namespace pksm
             {
                 trade(*pk1);
             }
-            std::copy(pk1->rawData(), pk1->rawData() + PK1::BOX_LENGTH, &data[boxOffset(box, slot)]);
+            std::copy(
+                pk1->rawData(), pk1->rawData() + PK1::BOX_LENGTH, &data[boxOffset(box, slot)]);
         }
     }
 
@@ -286,26 +307,15 @@ namespace pksm
     void Sav1::partyCount(u8 count) { data[japanese ? 0x2ED5 : 0x2F2C] = count; }
     u8 Sav1::boxCount(u8 box) const
     {
-        int bank = 0x4000;
-        if (box >= maxBoxes() / 2)
-        {
-            bank = 0x6000;
-            box -= maxBoxes() / 2;
-        }
-        return data[bank + (box * (japanese ? 0x52A : 0x462))];
+        return data[boxStart(box)];
     }
     void Sav1::boxCount(u8 box, u8 count)
     {
-        int bank = 0x4000;
-        if (box >= maxBoxes() / 2)
-        {
-            bank = 0x6000;
-            box -= maxBoxes() / 2;
-        }
-        data[bank + (box * (japanese ? 0x52A : 0x462))] = count;
+        data[boxStart(box)] = count;
     }
 
     int Sav1::maxBoxes() const { return japanese ? 8 : 12; }
+    int Sav1::boxSize() const { return japanese ? 0x52A : 0x462; }
 
     void Sav1::item(const Item& tItem, Pouch pouch, u16 slot)
     {
@@ -317,11 +327,11 @@ namespace pksm
             {
                 case Pouch::NormalItem:
                     std::copy(write.begin(), write.end(),
-                        &data[(japanese ? 0x25C4 : 0x25C9) + (slot * 2)]);
+                        &data[(japanese ? 0x25C4 : 0x25C9) + 1 + (slot * 2)]);
                     break;
                 case Pouch::PCItem:
                     std::copy(write.begin(), write.end(),
-                        &data[(japanese ? 0x27DC : 0x27E6) + (slot * 2)]);
+                        &data[(japanese ? 0x27DC : 0x27E6) + 1 + (slot * 2)]);
                     break;
                 default:
                     return;
