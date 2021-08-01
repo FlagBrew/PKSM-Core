@@ -213,7 +213,7 @@ namespace pksm
         [[nodiscard]] Type hpType(void) const override { return Type::Normal; }
         void hpType(Type v) override {}
         [[nodiscard]] u16 TSV(void) const override { return 0; }
-        [[nodiscard]] u16 PSV(void) const override { return 0; }
+        [[nodiscard]] u16 PSV(void) const override { return 0xFFFF; }
         [[nodiscard]] u8 level(void) const override;
         void level(u8 v) override;
         [[nodiscard]] bool shiny(void) const override;

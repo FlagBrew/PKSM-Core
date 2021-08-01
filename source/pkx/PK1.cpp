@@ -128,12 +128,13 @@ namespace pksm
     // experience is actually 3 bytes
     u32 PK1::experience() const
     {
-        return (BigEndian::convertTo<u16>(data + 14) << 8) | data[16];
+        return BigEndian::convertTo<u32>(data + 14) >> 8;
     }
     void PK1::experience(u32 v)
     {
-        BigEndian::convertFrom<u16>(data + 14, (u16)(v >> 8));
-        data[16] = u8(v);
+        data[14] = v >> 16;
+        data[15] = (v >> 8) & 0x00FF;
+        data[16] = v & 0x0000FF;
     }
     u16 PK1::statExperience(Stat se) const
     {
@@ -172,11 +173,22 @@ namespace pksm
     }
     u8 PK1::iv(Stat iv) const
     {
-        if (iv == Stat::HP) {
-            return (data[27] & 0x10 >> 1) | (data[27] & 0x01 << 2) | (data[28] & 0x10 >> 3) | (data[28] & 0x01);
+        switch (iv)
+        {
+            case Stat::HP:
+                return ((PK1::iv(Stat::ATK) & 0x01) << 3) | ((PK1::iv(Stat::DEF) & 0x01) << 2) | ((PK1::iv(Stat::SPD) & 0x01) << 1) | (PK1::iv(Stat::SPATK) & 0x01);
+            case Stat::ATK:
+                return (data[0x1B] & 0xF0) >> 4;
+            case Stat::DEF:
+                return data[0x1B] & 0x0F;
+            case Stat::SPD:
+                return (data[0x1C] & 0xF0) >> 4;
+            case Stat::SPATK:
+            case Stat::SPDEF:
+                return data[0x1C] & 0x0F;
+            default:
+                return 0;
         }
-        if (iv == Stat::SPDEF) iv = Stat::SPATK;
-        return u8((BigEndian::convertTo<u16>(data + 27) >> 4 * (u8(iv) - 1)) & 0x0F);
     }
     void PK1::iv(Stat iv, u8 v)
     {
@@ -192,9 +204,10 @@ namespace pksm
     }
     u8 PK1::level() const
     {
-        u8 i = 1;
+        u8 i      = 1;
         u8 xpType = expType();
-        while (experience() >= expTable(i, xpType) && ++i < 100);
+        while (experience() >= expTable(i, xpType) && ++i < 100)
+            ;
         return i;
     }
     void PK1::level(u8 v)

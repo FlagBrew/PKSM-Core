@@ -40,6 +40,15 @@
 
 namespace pksm
 {
+    Sav1::Sav1(std::shared_ptr<u8[]> data, u32 length) : Sav(data, length)
+    {
+        // these are unused padding bytes for box data (current and 0 respectively). the difference
+        // in international is location of boxes
+        japanese    = (data[0x2EF4] == 0xFF) && (data[0x304C] == 0xFF);
+        maxPkmInBox = japanese ? 30 : 20;
+        OFS_PARTY   = japanese ? 0x2ED5 : 0x2F2C;
+    }
+    Sav1::Sav1(std::shared_ptr<u8[]> data) : Sav1(data, 0x8000) {}
     Sav::Game Sav1::getVersion(std::shared_ptr<u8[]> dt)
     {
         // for now it doesn't matter, the only difference is Pikachu's friendship and Pikachu surf
@@ -75,15 +84,6 @@ namespace pksm
         }
     }
 
-    void Sav1::initialize()
-    {
-        // these are unused padding bytes for box data (current and 0 respectively). the difference
-        // in international is location of boxes
-        // japanese    = (data[0x2EF4] == 0xFF) && (data[0x304C] == 0xFF);
-        japanese    = false;
-        maxPkmInBox = japanese ? 30 : 20;
-        OFS_PARTY   = japanese ? 0x2ED5 : 0x2F2C;
-    }
     u8 Sav1::calculateChecksum(const u8* data, size_t len)
     {
         u8 state     = 255;
@@ -196,7 +196,6 @@ namespace pksm
     }
     u32 Sav1::boxOffset(u8 box, u8 slot) const
     {
-        Gui::warn(std::to_string(boxDataStart(box) + (slot * PK1::BOX_LENGTH)));
         return boxDataStart(box) + (slot * PK1::BOX_LENGTH);
     }
     u32 Sav1::partyOffset(u8 slot) const
@@ -225,7 +224,7 @@ namespace pksm
     {
         if (slot >= maxPkmInBox)
         {
-            return PKX::getPKM<Generation::ONE>(nullptr);
+            return emptyPkm();
         }
         return PKX::getPKM<Generation::ONE>(&data[boxOffset(box, slot)]);
     }

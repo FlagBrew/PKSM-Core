@@ -38,10 +38,9 @@ namespace pksm
     protected:
         bool japanese = false;
         GameVersion versionOfGame = GameVersion::RD; //not even PKHeX tries to do better
-        u8 maxPkmInBox;
-        u32 OFS_PARTY;
+        u8 maxPkmInBox = 20;
+        u32 OFS_PARTY = 0x2F2C;
 
-        void initialize();
         void fixBoxes();
 
         [[nodiscard]] bool getCaught(Species species) const;
@@ -52,9 +51,9 @@ namespace pksm
         [[nodiscard]] static u8 calculateChecksum(const u8* data, size_t len);
 
     public:
-        Sav1(std::shared_ptr<u8[]> data, u32 length) : Sav(data, length) {}
-        Sav1(std::shared_ptr<u8[]> data) : Sav1(data, 0x8000) {}
-        
+        Sav1(std::shared_ptr<u8[]> data, u32 length);
+        Sav1(std::shared_ptr<u8[]> data);
+
         [[nodiscard]] static Game getVersion(std::shared_ptr<u8[]> dt);
 
         void finishEditing(void) override;

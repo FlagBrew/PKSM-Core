@@ -1095,7 +1095,7 @@ void StringUtils::setString3(
 // TODO: japanese character conversions done by Transporter
 std::string StringUtils::getString1(const u8* data, int ofs, int len, bool jp)
 {
-    auto characters = jp ? pksm::internal::G1_JP : pksm::internal::G1_EN;
+    auto& characters = jp ? pksm::internal::G1_JP : pksm::internal::G1_EN;
     std::u16string outString;
 
     for (size_t i = 0; i < (size_t)len; i++)
@@ -1113,7 +1113,7 @@ std::string StringUtils::getString1(const u8* data, int ofs, int len, bool jp)
 void StringUtils::setString1(u8* data, const std::string_view& v, int ofs, int len, bool jp, int padTo,
         u8 padWith)
 {
-    auto characters = jp ? pksm::internal::G1_JP : pksm::internal::G1_EN;
+    auto& characters = jp ? pksm::internal::G1_JP : pksm::internal::G1_EN;
     std::u16string str = StringUtils::UTF8toUTF16(v);
     if (jp) str = StringUtils::toFullWidth(str);
 
