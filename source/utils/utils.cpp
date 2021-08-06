@@ -1092,17 +1092,49 @@ void StringUtils::setString3(
     }
 }
 
+std::string StringUtils::getTradeOT(pksm::Language lang) {
+    switch (lang)
+    {
+        case pksm::Language::JPN:
+            return "トレーナー";
+        case pksm::Language::ENG:
+            return "Trainer";
+        case pksm::Language::FRE:
+            return "Dresseur";
+        case pksm::Language::ITA:
+            return "Allenatore";
+        case pksm::Language::GER:
+            return "Trainer";
+        case pksm::Language::SPA:
+            return "Entrenador";
+        case pksm::Language::KOR:
+            return "트레이너";
+        default:
+            return "";
+    }
+}
+
 // TODO: japanese character conversions done by Transporter
-std::string StringUtils::getString1(const u8* data, int ofs, int len, bool jp)
+// TODO: trade OT 
+std::string StringUtils::getString1(const u8* data, int ofs, int len, pksm::Language lang)
 {
-    auto& characters = jp ? pksm::internal::G1_JP : pksm::internal::G1_EN;
+    auto& characters = lang == pksm::Language::JPN ? pksm::internal::G1_JP : pksm::internal::G1_EN;
     std::u16string outString;
+
+    if (data[ofs] == 0x5D)
+    {
+        return getTradeOT(lang);
+    }
 
     for (size_t i = 0; i < (size_t)len; i++)
     {
-        auto pos = characters.find(data[i]);
+        auto pos = characters.find(data[i + ofs]);
         if (pos != characters.end())
         {
+            if (pos->second == '\0')
+                break;
+            if (pos->second == pksm::internal::tradeOTChar)
+                continue;
             outString += pos->second;
         }
     }
@@ -1110,29 +1142,38 @@ std::string StringUtils::getString1(const u8* data, int ofs, int len, bool jp)
     return StringUtils::UTF16toUTF8(outString);
 }
 
-void StringUtils::setString1(u8* data, const std::string_view& v, int ofs, int len, bool jp, int padTo,
+void StringUtils::setString1(u8* data, const std::string_view& v, int ofs, int len, pksm::Language lang, int padTo,
         u8 padWith)
 {
-    auto& characters = jp ? pksm::internal::G1_JP : pksm::internal::G1_EN;
-    std::u16string str = StringUtils::UTF8toUTF16(v);
-    if (jp) str = StringUtils::toFullWidth(str);
-
-    size_t outPos;
-    for (outPos = 0; outPos < std::min((size_t)len, str.size()); outPos++)
+    size_t outPos = 0;
+    if (v == getTradeOT(lang) || v.at(0) == pksm::internal::tradeOTChar)
     {
-        u16 codePoint = 256;
-        for (auto it = characters.begin(); it != characters.end(); it++)
+        data[ofs + outPos] = 0x5D;
+        outPos++;
+    }
+    else
+    {
+        auto& characters = lang == pksm::Language::JPN ? pksm::internal::G1_JP : pksm::internal::G1_EN;
+        std::u16string str = StringUtils::UTF8toUTF16(v);
+        if (lang == pksm::Language::JPN) str = StringUtils::toFullWidth(str);
+
+        for (; outPos < std::min((size_t)len, str.size()); outPos++)
         {
-            if (it->second == str[outPos])
+            u16 codePoint = 256;
+            for (auto it = characters.begin(); it != characters.end(); it++)
             {
-                codePoint = it->first;
+                if (it->second == str[outPos])
+                {
+                    codePoint = it->first;
+                }
+            }
+            if (codePoint < 256)
+            {
+                data[ofs + outPos] = codePoint;
             }
         }
-        if (codePoint < 256)
-        {
-            data[ofs + outPos] = codePoint;
-        }
     }
+
     if (outPos < (size_t)len)
     {
         data[ofs + outPos] = 0x50;

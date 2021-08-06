@@ -83,7 +83,7 @@ namespace pksm
 
     std::unique_ptr<PKX> PB7::clone(void) const
     {
-        return PKX::getPKM<Generation::LGPE>(const_cast<u8*>(data), isParty());
+        return PKX::getPKM<Generation::LGPE>(const_cast<u8*>(data), isParty() ? PARTY_LENGTH : BOX_LENGTH);
     }
 
     Generation PB7::generation(void) const { return Generation::LGPE; }
@@ -598,7 +598,7 @@ namespace pksm
 
     std::unique_ptr<PK8> PB7::convertToG8(Sav& save) const
     {
-        auto pk8 = PKX::getPKM<Generation::EIGHT>(nullptr, false);
+        auto pk8 = PKX::getPKM<Generation::EIGHT>(nullptr, PK8::BOX_LENGTH);
 
         // Note: Locale stuff does not transfer
         pk8->encryptionConstant(encryptionConstant());

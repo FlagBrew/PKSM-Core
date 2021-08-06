@@ -609,6 +609,14 @@ namespace pksm
         static const std::set<Ability> emptySet;
         switch (version)
         {
+            case GameVersion::RD:
+            case GameVersion::GN:
+            case GameVersion::BU:
+            case GameVersion::YW:
+            {
+                static const std::set<Ability> items = {Ability::None};
+                return items;
+            }
             case GameVersion::R:
             case GameVersion::S:
             case GameVersion::FR:
@@ -699,6 +707,12 @@ namespace pksm
         static const std::set<Ball> emptySet;
         switch ((Generation)version)
         {
+            case Generation::ONE:
+            {
+                static const std::set<Ball> items = std::invoke(
+                    []() { return create_set_consecutive<Ball>(Ball::Master, Ball::Safari); });
+                return items;
+            }
             case Generation::THREE:
             {
                 static const std::set<Ball> items = std::invoke(
@@ -928,6 +942,8 @@ namespace pksm
     {
         switch ((Generation)version)
         {
+            case Generation::ONE:
+                return Ball::Safari;
             case Generation::THREE:
                 return Ball::Premier;
             case Generation::FOUR:

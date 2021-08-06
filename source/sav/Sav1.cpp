@@ -32,7 +32,6 @@
 #include "utils/flagUtil.hpp"
 #include "utils/i18n.hpp"
 #include "utils/utils.hpp"
-#include "gui.hpp"
 #include "wcx/WCX.hpp"
 #include <algorithm>
 #include <limits>
@@ -42,11 +41,18 @@ namespace pksm
 {
     Sav1::Sav1(std::shared_ptr<u8[]> data, u32 length) : Sav(data, length)
     {
-        // these are unused padding bytes for box data (current and 0 respectively). the difference
-        // in international is location of boxes
-        japanese    = (data[0x2EF4] == 0xFF) && (data[0x304C] == 0xFF);
-        maxPkmInBox = japanese ? 30 : 20;
-        OFS_PARTY   = japanese ? 0x2ED5 : 0x2F2C;
+        // checks if two boxes are valid
+        japanese     = ((data[0x2ED5] <= 30) && (data[0x2ED5 + 1 + data[0x2ED5]] == 0xFF)) && ((data[0x302D] <= 30) && (data[0x302D + 1 + data[0x302D]] == 0xFF));
+
+        // [French or German] can also be detected by umlaut characters, which aren't in the other
+        // keyboards. And obviously when finding umlauts German would be the first guess. meh later
+        lang         = japanese ? Language::JPN : Language::ENG;
+
+        maxPkmInBox  = japanese ? 30 : 20;
+        boxSize      = japanese ? 0x566 : 0x462;
+        OFS_PARTY    = japanese ? 0x2ED5 : 0x2F2C;
+        OFS_BAG      = japanese ? 0x25C4 : 0x25C9;
+        OFS_PC_ITEMS = japanese ? 0x27DC : 0x27E6;
     }
     Sav1::Sav1(std::shared_ptr<u8[]> data) : Sav1(data, 0x8000) {}
     Sav::Game Sav1::getVersion(std::shared_ptr<u8[]> dt)
@@ -55,8 +61,19 @@ namespace pksm
         // score
         return Game::RGB;
     }
-    // ctrl-v the fixparty code, boxes are expected to be continuous
 
+    // max length of string + terminator
+    u8 Sav1::nameLength() const
+    {
+        return japanese ? 6 : 11;
+    }
+
+    u8 Sav1::PK1Length(void) const
+    {
+        return japanese ? PK1::JP_LENGTH_WITH_NAMES : PK1::EN_LENGTH_WITH_NAMES;
+    }
+
+    // ctrl-v the fixparty code, boxes are expected to be contiguous
     void Sav1::fixBoxes()
     {
         // Poor man's bubble sort-like thing
@@ -81,6 +98,7 @@ namespace pksm
                 }
             }
             boxCount(i, numPkm);
+            boxSpecies(i);
         }
     }
 
@@ -97,7 +115,6 @@ namespace pksm
     }
     void Sav1::finishEditing()
     {
-        // TODO: clean up this ternary crap
         if (playedHours() == 255 && playedMinutes() == 59 && playedSeconds() == 59)
         {
             data[japanese ? 0x2CA4 : 0x2CF1] = 59;  // frame count
@@ -107,46 +124,51 @@ namespace pksm
         {
             data[japanese ? 0x2CA1 : 0x2CEE] = 0;
         }
-        // fixBoxes();
+        fixBoxes();
+        partySpecies();
+        fixItemLists();
         for (int box = 0; box < maxBoxes(); box++)
         {
-            if (box < (maxBoxes()/2))
+            if (box < (maxBoxes() / 2))
             {
                 data[(japanese ? 0x54A9 : 0x5A4D) + box] =
-                    calculateChecksum(&data[boxDataStart(box)], boxSize());
+                    calculateChecksum(&data[boxDataStart(box)], boxSize);
             }
             else
             {
                 data[(japanese ? 0x74A9 : 0x7A4D) + box] =
-                    calculateChecksum(&data[boxDataStart(box)], boxSize());
+                    calculateChecksum(&data[boxDataStart(box)], boxSize);
             }
         }
-        std::copy(&data[boxStart(currentBox())], &data[boxStart(currentBox())] + boxSize(),
+        std::copy(&data[boxStart(currentBox())], &data[boxStart(currentBox())] + boxSize,
             &data[japanese ? 0x302D : 0x30C0]);
         data[japanese ? 0x3594 : 0x3523] =
             calculateChecksum(&data[0x2598], japanese ? 0xFFC : 0xF8B);
         data[japanese ? 0x54A8 : 0x5A4C] =
-            calculateChecksum(&data[0x4000], japanese ? 0x14A8 : 0x1A4C);
+            calculateChecksum(&data[0x4000], japanese ? 0x1598 : 0x1A4C);
         data[japanese ? 0x74A8 : 0x7A4C] =
-            calculateChecksum(&data[0x6000], japanese ? 0x14A8 : 0x1A4C);
+            calculateChecksum(&data[0x6000], japanese ? 0x1598 : 0x1A4C);
     }
     u16 Sav1::TID() const { return BigEndian::convertTo<u16>(&data[japanese ? 0x25FB : 0x2605]); }
     void Sav1::TID(u16 v) { BigEndian::convertFrom<u16>(&data[japanese ? 0x25FB : 0x2605], v); }
     Language Sav1::language() const
     {
-        return japanese ? Language::JPN : Language::ENG;
-        // [French or German] can also be detected by umlaut characters, which aren't in the other
-        // keyboards. And obviously when finding umlauts German would be the first guess. meh later
+        return lang;
     }
-    void Sav1::language(Language v) {}
+    void Sav1::language(Language v)
+    {
+        lang = v;
+    }
+
+    // INT has space for 10 characters + terminator, but the in-game keyboard only permits 7
     std::string Sav1::otName() const
     {
-        return StringUtils::getString1(data.get(), 0x2598, japanese ? 6 : 11, japanese);
+        return StringUtils::getString1(data.get(), 0x2598, japanese ? 6 : 8, lang);
     }
     void Sav1::otName(const std::string_view& v)
     {
         StringUtils::setString1(
-            data.get(), v, 0x2598, japanese ? 6 : 11, japanese, japanese ? 6 : 11, 0);
+            data.get(), v, 0x2598, japanese ? 6 : 8, lang);
     }
 
     // why did they use BCD
@@ -190,35 +212,38 @@ namespace pksm
     void Sav1::playedSeconds(u8 v) { data[japanese ? 0x2CA3 : 0x2CF0] = v; }
 
     u8 Sav1::currentBox() const { return data[japanese ? 0x2842 : 0x284C] & 0x7F; }
-    void Sav1::currentBox(u8 v)
-    {
-        data[japanese ? 0x2842 : 0x284C] = 0x80 | (v & 0x7F);
-    }
+    void Sav1::currentBox(u8 v) { data[japanese ? 0x2842 : 0x284C] = 0x80 | (v & 0x7F); }
     u32 Sav1::boxOffset(u8 box, u8 slot) const
     {
         return boxDataStart(box) + (slot * PK1::BOX_LENGTH);
     }
-    u32 Sav1::partyOffset(u8 slot) const
-    {
-        return OFS_PARTY + 8 + (slot * PK1::PARTY_LENGTH);
-    }
+    u32 Sav1::boxOtNameOffset(u8 box, u8 slot) const {return boxDataStart(box) + (maxPkmInBox * PK1::BOX_LENGTH) + (slot * nameLength());}
+    u32 Sav1::boxNicknameOffset(u8 box, u8 slot) const {return boxDataStart(box) + (maxPkmInBox * PK1::BOX_LENGTH) + ((maxPkmInBox + slot) * nameLength());}
+    u32 Sav1::partyOffset(u8 slot) const { return OFS_PARTY + 8 + (slot * PK1::PARTY_LENGTH); }
+    u32 Sav1::partyOtNameOffset(u8 slot) const { return OFS_PARTY + 272 + (slot * nameLength());}
+    u32 Sav1::partyNicknameOffset(u8 slot) const { return OFS_PARTY + 272 + ((6 + slot) * nameLength());}
 
     u32 Sav1::boxStart(u8 box) const
     {
         if (box < maxBoxes() / 2)
         {
-            return 0x4000 + (box * boxSize());
+            return 0x4000 + (box * boxSize);
         }
         box -= maxBoxes() / 2;
-        return 0x6000 + (box * boxSize());
+        return 0x6000 + (box * boxSize);
     }
-    u32 Sav1::boxDataStart(u8 box) const { return boxStart(box) + (japanese ? 32 : 22); }
+    u32 Sav1::boxDataStart(u8 box) const { return boxStart(box) + maxPkmInBox + 2; }
 
-    // these will need modified to have the name information included, since names are not
-    // contiguous with other data and PK1 includes names. good enough to boot with placeholders
+    // the PK1 and PK2 formats used by the community start with magic bytes, the second being species
     std::unique_ptr<PKX> Sav1::pkm(u8 slot) const
     {
-        return PKX::getPKM<Generation::ONE>(&data[partyOffset(slot)], true);
+        u8 buffer[PK1Length()] = {0x01, data[partyOffset(slot)], 0xFF};
+
+        std::copy(&data[partyOffset(slot)], &data[partyOffset(slot)] + PK1::PARTY_LENGTH, buffer + 3);
+        std::copy(&data[partyOtNameOffset(slot)], &data[partyOtNameOffset(slot)] + nameLength(), buffer + 3 + PK1::PARTY_LENGTH);
+        std::copy(&data[partyNicknameOffset(slot)], &data[partyNicknameOffset(slot)] + nameLength(), buffer + 3 + PK1::PARTY_LENGTH + nameLength());
+
+        return PKX::getPKM<Generation::ONE>(buffer, japanese ? PK1::JP_LENGTH_WITH_NAMES : PK1::EN_LENGTH_WITH_NAMES);
     }
     std::unique_ptr<PKX> Sav1::pkm(u8 box, u8 slot) const
     {
@@ -226,15 +251,27 @@ namespace pksm
         {
             return emptyPkm();
         }
-        return PKX::getPKM<Generation::ONE>(&data[boxOffset(box, slot)]);
+
+        u8 buffer[PK1Length()] = {0x01, data[boxOffset(box, slot)], 0xFF};
+
+        std::copy(&data[boxOffset(box, slot)], &data[boxOffset(box, slot)] + PK1::BOX_LENGTH, buffer + 3);
+        std::copy(&data[boxOtNameOffset(box, slot)], &data[boxOtNameOffset(box, slot)] + nameLength(), buffer + 3 + PK1::PARTY_LENGTH);
+        std::copy(&data[boxNicknameOffset(box, slot)], &data[boxNicknameOffset(box, slot)] + nameLength(), buffer + 3 + PK1::PARTY_LENGTH + nameLength());
+        
+        auto pk1 = PKX::getPKM<Generation::ONE>(buffer, japanese ? PK1::JP_LENGTH_WITH_NAMES : PK1::EN_LENGTH_WITH_NAMES);
+        pk1->updatePartyData();
+        return pk1;
     }
     void Sav1::pkm(const PKX& pk, u8 slot)
     {
         // this and the other one will need Gen II handling
-        if (pk.generation() == Generation::ONE)
+        if (pk.generation() == Generation::ONE && ((pk.language() != Language::JPN) ^ (language() == Language::JPN)))
         {
             auto pk1 = pk.partyClone();
-            std::copy(pk1->rawData(), pk1->rawData() + PK1::PARTY_LENGTH, &data[partyOffset(slot)]);
+            std::copy(pk1->rawData() + 3, pk1->rawData() + 3 + PK1::PARTY_LENGTH, &data[partyOffset(slot)]);
+            std::copy(pk1->rawData() + 3 + PK1::PARTY_LENGTH, pk1->rawData() + 3 + PK1::PARTY_LENGTH + nameLength(), &data[partyOtNameOffset(slot)]);
+            std::copy(pk1->rawData() + 3 + PK1::PARTY_LENGTH + nameLength(), pk1->rawData() + 3 + PK1::PARTY_LENGTH + 2 * nameLength(), &data[partyNicknameOffset(slot)]);
+            data[OFS_PARTY + 1 + slot] = pk1->rawData()[3];
         }
     }
     void Sav1::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)
@@ -245,25 +282,26 @@ namespace pksm
         }
         if (pk.generation() == Generation::ONE)
         {
-            auto pk1 = pk.clone();
+            auto pk1 = pk.clone();  // note that partyClone and clone are equivalent
             if (applyTrade)
             {
                 trade(*pk1);
             }
-            std::copy(
-                pk1->rawData(), pk1->rawData() + PK1::BOX_LENGTH, &data[boxOffset(box, slot)]);
+            static_cast<PK1*>(pk1.get())->boxLevel(pk1->level());
+            std::copy(pk1->rawData() + 3, pk1->rawData() + 3 + PK1::BOX_LENGTH, &data[boxOffset(box, slot)]);
+            std::copy(pk1->rawData() + 3 + PK1::PARTY_LENGTH, pk1->rawData() + 3 + PK1::PARTY_LENGTH + nameLength(), &data[boxOtNameOffset(box, slot)]);
+            std::copy(pk1->rawData() + 3 + PK1::PARTY_LENGTH + nameLength(), pk1->rawData() + 3 + PK1::PARTY_LENGTH + 2 * nameLength(), &data[boxNicknameOffset(box, slot)]);
+            data[boxStart(box) + 1 + slot] = pk1->rawData()[3];
         }
     }
 
-    void Sav1::trade(PKX& pk, const Date& date) const
-    {
-        // TODO
-    }
-    std::unique_ptr<PKX> Sav1::emptyPkm() const { return PKX::getPKM<Generation::ONE>(nullptr); }
+    void Sav1::trade(PKX& pk, const Date& date) const {}
+
+    std::unique_ptr<PKX> Sav1::emptyPkm() const { return PKX::getPKM<Generation::ONE>(nullptr, japanese ? PK1::JP_LENGTH_WITH_NAMES : PK1::EN_LENGTH_WITH_NAMES); }
 
     void Sav1::dex(const PKX& pk)
     {
-        if (!(availableSpecies().count(pk.species()) > 0) || pk.egg())
+        if (!(availableSpecies().count(pk.species()) > 0))
             return;
         setCaught(pk.species(), true);
         setSeen(pk.species(), true);
@@ -302,19 +340,35 @@ namespace pksm
         return std::count_if(availableSpecies().begin(), availableSpecies().end(),
             [this](const auto& spec) { return getCaught(spec); });
     }
-    u8 Sav1::partyCount() const { return data[japanese ? 0x2ED5 : 0x2F2C]; }
-    void Sav1::partyCount(u8 count) { data[japanese ? 0x2ED5 : 0x2F2C] = count; }
-    u8 Sav1::boxCount(u8 box) const
+    u8 Sav1::partyCount() const { return data[OFS_PARTY]; }
+    void Sav1::partyCount(u8 count) { data[OFS_PARTY] = count; }
+    u8 Sav1::boxCount(u8 box) const { return data[boxStart(box)]; }
+    void Sav1::boxCount(u8 box, u8 count) { data[boxStart(box)] = count; }
+    void Sav1::boxSpecies(u8 box)
     {
-        return data[boxStart(box)];
-    }
-    void Sav1::boxCount(u8 box, u8 count)
-    {
+        u8 count = 0;
+        while (pkm(box, count)->species() != Species::None)
+        {
+            // sets the species1 in a list that the game uses for speed
+            data[boxStart(box) + 1 + count] = data[boxOffset(box, count)];
+            count++;
+        }
+        data[boxStart(box) + 1 + count] = 0xFF;
         data[boxStart(box)] = count;
+    }
+    void Sav1::partySpecies()
+    {
+        u8 count = 0;
+        while (pkm(count)->species() != Species::None && count < 6)
+        {
+            data[OFS_PARTY + 1 + count] = data[partyOffset(count)];
+            count++;
+        }
+        data[OFS_PARTY + 1 + count] = 0xFF;
+        data[OFS_PARTY] = count;
     }
 
     int Sav1::maxBoxes() const { return japanese ? 8 : 12; }
-    int Sav1::boxSize() const { return japanese ? 0x52A : 0x462; }
 
     void Sav1::item(const Item& tItem, Pouch pouch, u16 slot)
     {
@@ -325,12 +379,10 @@ namespace pksm
             switch (pouch)
             {
                 case Pouch::NormalItem:
-                    std::copy(write.begin(), write.end(),
-                        &data[(japanese ? 0x25C4 : 0x25C9) + 1 + (slot * 2)]);
+                    std::copy(write.begin(), write.end(), &data[OFS_BAG + 1 + (slot * 2)]);
                     break;
                 case Pouch::PCItem:
-                    std::copy(write.begin(), write.end(),
-                        &data[(japanese ? 0x27DC : 0x27E6) + 1 + (slot * 2)]);
+                    std::copy(write.begin(), write.end(), &data[OFS_PC_ITEMS + 1 + (slot * 2)]);
                     break;
                 default:
                     return;
@@ -339,15 +391,22 @@ namespace pksm
     }
     std::unique_ptr<Item> Sav1::item(Pouch pouch, u16 slot) const
     {
+        std::unique_ptr<Item1> returnVal;
         switch (pouch)
         {
             case Pouch::NormalItem:
-                return std::make_unique<Item1>(&data[(japanese ? 0x25C4 : 0x25C9) + (slot * 2)]);
+                returnVal = std::make_unique<Item1>(&data[OFS_BAG + 1 + (slot * 2)]);
+                break;
             case Pouch::PCItem:
-                return std::make_unique<Item1>(&data[(japanese ? 0x27DC : 0x27E6) + (slot * 2)]);
+                returnVal = std::make_unique<Item1>(&data[OFS_PC_ITEMS + 1 + (slot * 2)]);
+                break;
             default:
                 return nullptr;
         }
+        // 0xFF is a list terminator. In a normal game state it will be in an ID slot.
+        if (returnVal->id1() == 0xFF)
+            return std::make_unique<Item1>(nullptr);
+        return returnVal;
     }
     std::vector<std::pair<Sav::Pouch, int>> Sav1::pouches() const
     {
@@ -385,5 +444,23 @@ namespace pksm
         items[Pouch::PCItem].insert(items[Pouch::PCItem].end(), items[Pouch::NormalItem].begin(),
             items[Pouch::NormalItem].end());
         return items;
+    }
+    void Sav1::fixItemLists()
+    {
+        u8 count = 0;
+        while (count < 20 && item(Pouch::NormalItem, count)->id() != 0)
+        {
+            count++;
+        }
+        data[OFS_BAG] = count;
+        data[OFS_BAG + 1 + (count * 2)] = 0xFF;
+
+        count = 0;
+        while (count < 50 && item(Pouch::PCItem, count)->id() != 0)
+        {
+            count++;
+        }
+        data[OFS_PC_ITEMS] = count;
+        data[OFS_PC_ITEMS + 1 + (count * 2)] = 0xFF;
     }
 }

@@ -36,10 +36,11 @@ namespace pksm
     class Sav1 : public Sav
     {
     protected:
-        bool japanese = false;
-        GameVersion versionOfGame = GameVersion::RD; //not even PKHeX tries to do better
-        u8 maxPkmInBox = 20;
-        u32 OFS_PARTY = 0x2F2C;
+        bool japanese;
+        Language lang;
+        GameVersion versionOfGame = GameVersion::RD; // not even PKHeX tries to do better
+        u8 maxPkmInBox;
+        u32 boxSize, OFS_PARTY, OFS_BAG, OFS_PC_ITEMS;
 
         void fixBoxes();
 
@@ -95,9 +96,15 @@ namespace pksm
         void unlockedBoxes(u8) override {}
         [[nodiscard]] u8 legendBoxUnlockSize(void) const override { return 0; }
         [[nodiscard]] u32 boxOffset(u8 box, u8 slot) const override;
+        [[nodiscard]] u32 boxNicknameOffset(u8 box, u8 slot) const;
+        [[nodiscard]] u32 boxOtNameOffset(u8 box, u8 slot) const;
         [[nodiscard]] u32 partyOffset(u8 slot) const override;
+        [[nodiscard]] u32 partyNicknameOffset(u8 slot) const;
+        [[nodiscard]] u32 partyOtNameOffset(u8 slot) const;
         [[nodiscard]] u32 boxStart(u8 box) const;
         [[nodiscard]] u32 boxDataStart(u8 box) const;
+        [[nodiscard]] u8 nameLength(void) const;
+        [[nodiscard]] u8 PK1Length(void) const;
 
         [[nodiscard]] std::unique_ptr<PKX> pkm(u8 slot) const override;
         [[nodiscard]] std::unique_ptr<PKX> pkm(u8 box, u8 slot) const override;
@@ -115,19 +122,23 @@ namespace pksm
         void mysteryGift(const WCX&, int&) override {}
         [[nodiscard]] std::unique_ptr<WCX> mysteryGift(int pos) const override { return nullptr; }
         void cryptBoxData(bool crypted) override {}
-        [[nodiscard]] std::string boxName(u8 box) const override { return "Box " + std::to_string(box + 1); }
+        [[nodiscard]] std::string boxName(u8 box) const override
+        {
+            return "Box " + std::to_string(box + 1);
+        }
         void boxName(u8 box, const std::string_view& name) override {}
         [[nodiscard]] u8 boxWallpaper(u8 box) const override { return 0; }
         void boxWallpaper(u8 box, u8 v) override {}
         [[nodiscard]] u8 partyCount(void) const override;
         void partyCount(u8 count) override;
-        [[nodiscard]] u8 boxCount(u8 slot) const;
-        void boxCount(u8 slot, u8 count);
+        [[nodiscard]] u8 boxCount(u8 box) const;
+        void boxCount(u8 box, u8 count);
+        void boxSpecies(u8 box);
+        void partySpecies();
 
         [[nodiscard]] int maxBoxes(void) const override;
         [[nodiscard]] size_t maxWondercards(void) const override { return 0; }
         [[nodiscard]] Generation generation(void) const override { return Generation::ONE; }
-        [[nodiscard]] int boxSize(void) const;
 
         void item(const Item& tItem, Pouch pouch, u16 slot) override;
         [[nodiscard]] std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
@@ -135,6 +146,7 @@ namespace pksm
         [[nodiscard]] std::map<Pouch, std::vector<int>> validItems(void) const override;
         // Gen I Item IDs
         [[nodiscard]] std::map<Pouch, std::vector<int>> validItems1(void) const;
+        void fixItemLists(void);
     };
 }
 

@@ -205,7 +205,7 @@ namespace pksm
 
     std::unique_ptr<PKX> PK7::clone(void) const
     {
-        return PKX::getPKM<Generation::SEVEN>(const_cast<u8*>(data), isParty());
+        return PKX::getPKM<Generation::SEVEN>(const_cast<u8*>(data), isParty() ? PARTY_LENGTH : BOX_LENGTH);
     }
 
     Generation PK7::generation(void) const { return Generation::SEVEN; }
@@ -725,7 +725,7 @@ namespace pksm
 
     std::unique_ptr<PK6> PK7::convertToG6(Sav& save) const
     {
-        auto pk6 = PKX::getPKM<Generation::SIX>(const_cast<u8*>(data));
+        auto pk6 = PKX::getPKM<Generation::SIX>(const_cast<u8*>(data), PK6::BOX_LENGTH);
 
         // markvalue field moved, clear old gen 7 data
         LittleEndian::convertFrom<u16>(pk6->rawData() + 0x16, 0);
@@ -770,7 +770,7 @@ namespace pksm
 
     std::unique_ptr<PK8> PK7::convertToG8(Sav& save) const
     {
-        auto pk8 = PKX::getPKM<Generation::EIGHT>(nullptr, false);
+        auto pk8 = PKX::getPKM<Generation::EIGHT>(nullptr, PK8::BOX_LENGTH);
 
         // Note: Locale stuff does not transfer
         pk8->encryptionConstant(encryptionConstant());

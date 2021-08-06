@@ -28,13 +28,13 @@
 #define G1TEXT_HPP
 
 #include "utils/coretypes.h"
-#include <map>
+#include <unordered_map>
 
 namespace pksm::internal
 {
     char16_t tradeOTChar = u'ඞ'; // a character not expected to appear in native names, maybe it'll surprise a joker ;P
 
-    std::map<u8, char16_t> G1_EN = {{0x50, u'\0'}, {0x5D, tradeOTChar},
+    std::unordered_map<u8, char16_t> G1_EN = {{0x50, u'\0'}, {0x5D, tradeOTChar},
         {0x7F, u' '}, {0x80, u'A'}, {0x81, u'B'}, {0x82, u'C'}, {0x83, u'D'}, {0x84, u'E'}, {0x85, u'F'},
         {0x86, u'G'}, {0x87, u'H'}, {0x88, u'I'}, {0x89, u'J'}, {0x8A, u'K'}, {0x8B, u'L'}, {0x8C, u'M'},
         {0x8D, u'N'}, {0x8E, u'O'}, {0x8F, u'P'}, {0x90, u'Q'}, {0x91, u'R'}, {0x92, u'S'}, {0x93, u'T'},
@@ -64,7 +64,7 @@ namespace pksm::internal
         {0xF7, u'1'}, {0xF8, u'2'}, {0xF9, u'3'}, {0xFA, u'4'}, {0xFB, u'5'}, {0xFC, u'6'}, {0xFD, u'7'},
         {0xFE, u'8'}, {0xFF, u'9'}};
 
-    std::map<u8, char16_t> G1_JP = {{0x05, u'ガ'}, {0x06, u'ギ'}, {0x07, u'グ'},
+    std::unordered_map<u8, char16_t> G1_JP = {{0x05, u'ガ'}, {0x06, u'ギ'}, {0x07, u'グ'},
         {0x08, u'ゲ'}, {0x09, u'ゴ'}, {0x0A, u'ザ'}, {0x0B, u'ジ'}, {0x0C, u'ズ'}, {0x0D, u'ゼ'},
         {0x0E, u'ゾ'}, {0x0F, u'ダ'}, {0x10, u'ヂ'}, {0x11, u'ヅ'}, {0x12, u'デ'}, {0x13, u'ド'},
         {0x19, u'バ'}, {0x1A, u'ビ'}, {0x1B, u'ブ'}, {0x1C, u'ボ'}, {0x26, u'が'}, {0x27, u'ぎ'},

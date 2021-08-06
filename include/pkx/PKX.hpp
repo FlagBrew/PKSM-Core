@@ -93,24 +93,8 @@ namespace pksm
     public:
         static constexpr Species PKSM_MAX_SPECIES = Species::Zarude;
 
-        [[nodiscard]] static std::unique_ptr<PKX> getPKM(
-            Generation gen, u8* data, bool party = false, bool directAccess = false);
-        template <Generation::EnumType g>
-        [[nodiscard]] static std::unique_ptr<typename GenToPkx<g>::PKX> getPKM(
-            u8* data, bool party = false, bool directAccess = false)
-        {
-            return getPKM<typename GenToPkx<g>::PKX>(data, party, directAccess);
-        }
-        template <typename Pkm>
-        [[nodiscard]] static std::enable_if_t<std::is_base_of_v<::pksm::PKX, Pkm>,
-            std::unique_ptr<Pkm>>
-            getPKM(u8* data, bool party = false, bool directAccess = false)
-        {
-            return std::make_unique<Pkm>(PrivateConstructor{}, data, party, directAccess);
-        }
-
         // Returns null if length is not valid for that generation, and a party Pokemon depending on
-        // length
+        // length, or in Gen I and II a Japanese Pokemon depending on length
         [[nodiscard]] static std::unique_ptr<PKX> getPKM(
             Generation gen, u8* data, size_t length, bool directAccess = false);
         template <Generation::EnumType g>
@@ -119,14 +103,26 @@ namespace pksm
         {
             return getPKM<typename GenToPkx<g>::PKX>(data, length, directAccess);
         }
+
         template <typename Pkm>
         [[nodiscard]] static std::enable_if_t<std::is_base_of_v<::pksm::PKX, Pkm>,
             std::unique_ptr<Pkm>>
             getPKM(u8* data, size_t length, bool directAccess = false)
         {
-            if (Pkm::PARTY_LENGTH == length || Pkm::BOX_LENGTH == length)
+            if constexpr (std::is_same_v<typename GenToPkx<Generation::ONE>::PKX, std::remove_cvref_t<Pkm>>)
             {
-                return getPKM<Pkm>(data, length == Pkm::PARTY_LENGTH, directAccess);
+                if (Pkm::JP_LENGTH_WITH_NAMES == length || Pkm::EN_LENGTH_WITH_NAMES == length)
+                {
+                    return std::make_unique<Pkm>(
+                        PrivateConstructor{}, data, length == Pkm::JP_LENGTH_WITH_NAMES, directAccess);
+                }
+            }
+            else {
+                if (Pkm::PARTY_LENGTH == length || Pkm::BOX_LENGTH == length)
+                {
+                    return std::make_unique<Pkm>(
+                        PrivateConstructor{}, data, length == Pkm::PARTY_LENGTH, directAccess);
+                }
             }
             return nullptr;
         }

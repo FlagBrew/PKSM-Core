@@ -155,7 +155,7 @@ namespace pksm
     std::unique_ptr<PKX> PK3::clone(void) const
     {
         // Can't use normal data constructor because of checksum encryption checks
-        std::unique_ptr<PK3> ret = PKX::getPKM<Generation::THREE>(nullptr, isParty());
+        std::unique_ptr<PK3> ret = PKX::getPKM<Generation::THREE>(nullptr, isParty() ? PARTY_LENGTH : BOX_LENGTH);
         std::copy(data, data + getLength(), ret->rawData());
         return ret;
     }
@@ -470,7 +470,7 @@ namespace pksm
                 0x0C, 0x02, 0xE0, 0xFF},
         }};
 
-        auto pk4 = PKX::getPKM<Generation::FOUR>(nullptr);
+        auto pk4 = PKX::getPKM<Generation::FOUR>(nullptr, PK4::BOX_LENGTH);
 
         pk4->species(species());
         pk4->TID(TID());

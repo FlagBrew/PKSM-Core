@@ -103,7 +103,7 @@ namespace pksm
 
     std::unique_ptr<PKX> Sav5::pkm(u8 slot) const
     {
-        return PKX::getPKM<Generation::FIVE>(&data[partyOffset(slot)], true);
+        return PKX::getPKM<Generation::FIVE>(&data[partyOffset(slot)], PK5::PARTY_LENGTH);
     }
 
     void Sav5::pkm(const PKX& pk, u8 slot)
@@ -118,7 +118,7 @@ namespace pksm
 
     std::unique_ptr<PKX> Sav5::pkm(u8 box, u8 slot) const
     {
-        return PKX::getPKM<Generation::FIVE>(&data[boxOffset(box, slot)]);
+        return PKX::getPKM<Generation::FIVE>(&data[boxOffset(box, slot)], PK5::BOX_LENGTH);
     }
 
     void Sav5::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)
@@ -154,7 +154,7 @@ namespace pksm
             for (u8 slot = 0; slot < 30; slot++)
             {
                 std::unique_ptr<PKX> pk5 =
-                    PKX::getPKM<Generation::FIVE>(&data[boxOffset(box, slot)], false, true);
+                    PKX::getPKM<Generation::FIVE>(&data[boxOffset(box, slot)], PK5::BOX_LENGTH, true);
                 if (!crypted)
                 {
                     pk5->encrypt();
@@ -354,7 +354,7 @@ namespace pksm
     u8 Sav5::partyCount(void) const { return data[Party + 4]; }
     void Sav5::partyCount(u8 v) { data[Party + 4] = v; }
 
-    std::unique_ptr<PKX> Sav5::emptyPkm() const { return PKX::getPKM<Generation::FIVE>(nullptr); }
+    std::unique_ptr<PKX> Sav5::emptyPkm() const { return PKX::getPKM<Generation::FIVE>(nullptr, PK5::BOX_LENGTH); }
 
     int Sav5::currentGiftAmount(void) const
     {

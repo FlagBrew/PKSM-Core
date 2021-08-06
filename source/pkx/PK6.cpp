@@ -233,7 +233,7 @@ namespace pksm
 
     std::unique_ptr<PKX> PK6::clone(void) const
     {
-        return PKX::getPKM<Generation::SIX>(const_cast<u8*>(data), isParty());
+        return PKX::getPKM<Generation::SIX>(const_cast<u8*>(data), isParty() ? PARTY_LENGTH : BOX_LENGTH);
     }
 
     Generation PK6::generation(void) const { return Generation::SIX; }
@@ -793,7 +793,7 @@ namespace pksm
 
     std::unique_ptr<PK5> PK6::convertToG5(Sav& save) const
     {
-        auto pk5 = PKX::getPKM<Generation::FIVE>(nullptr);
+        auto pk5 = PKX::getPKM<Generation::FIVE>(nullptr, PK5::BOX_LENGTH);
 
         pk5->species(species());
         pk5->TID(TID());
@@ -905,7 +905,7 @@ namespace pksm
 
     std::unique_ptr<PK7> PK6::convertToG7(Sav& save) const
     {
-        auto pk7 = PKX::getPKM<Generation::SEVEN>(const_cast<u8*>(data));
+        auto pk7 = PKX::getPKM<Generation::SEVEN>(const_cast<u8*>(data), PK7::BOX_LENGTH);
 
         // markvalue field moved, clear old gen 6 data
         pk7->rawData()[0x2A] = 0;

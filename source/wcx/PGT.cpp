@@ -34,7 +34,7 @@ namespace pksm
     PGT::PGT(u8* pgt)
     {
         std::copy(pgt, pgt + length, data);
-        pokemonData = PKX::getPKM<Generation::FOUR>(pgt + 0x8, true);
+        pokemonData = PKX::getPKM<Generation::FOUR>(pgt + 0x8, PK4::PARTY_LENGTH);
         if (type() == 7)
         {
             pokemonData->species(Species::Manaphy);

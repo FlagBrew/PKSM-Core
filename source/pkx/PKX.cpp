@@ -464,33 +464,6 @@ namespace pksm
         return 0;
     }
 
-    std::unique_ptr<PKX> PKX::getPKM(Generation gen, u8* data, bool party, bool directAccess)
-    {
-        switch (gen)
-        {
-            case Generation::ONE:
-                return getPKM<Generation::ONE>(data, party, directAccess);
-            case Generation::THREE:
-                return getPKM<Generation::THREE>(data, party, directAccess);
-            case Generation::FOUR:
-                return getPKM<Generation::FOUR>(data, party, directAccess);
-            case Generation::FIVE:
-                return getPKM<Generation::FIVE>(data, party, directAccess);
-            case Generation::SIX:
-                return getPKM<Generation::SIX>(data, party, directAccess);
-            case Generation::SEVEN:
-                return getPKM<Generation::SEVEN>(data, party, directAccess);
-            case Generation::LGPE:
-                return getPKM<Generation::LGPE>(data, party, directAccess);
-            case Generation::EIGHT:
-                return getPKM<Generation::EIGHT>(data, party, directAccess);
-            case Generation::UNUSED:
-            case Generation::TWO:
-                return nullptr;
-        }
-        return nullptr;
-    }
-
     std::unique_ptr<PKX> PKX::getPKM(Generation gen, u8* data, size_t length, bool directAccess)
     {
         switch (gen)
@@ -517,7 +490,7 @@ namespace pksm
         }
         return nullptr;
     }
-
+    
     bool PKX::operator==(const PKFilter& filter) const
     {
         if (filter.generationEnabled() &&
@@ -665,7 +638,38 @@ namespace pksm
         }
         else
         {
-            auto ret = PKX::getPKM(generation(), nullptr, true);
+            size_t boxlen;
+            switch (generation())
+            {
+                case Generation::ONE:
+                    boxlen = (language() == Language::JPN ? PK1::JP_LENGTH_WITH_NAMES
+                                                         : PK1::EN_LENGTH_WITH_NAMES);
+                    break;
+                case Generation::THREE:
+                    boxlen = PK3::BOX_LENGTH;
+                    break;
+                case Generation::FOUR:
+                    boxlen = PK4::BOX_LENGTH;
+                    break;
+                case Generation::FIVE:
+                    boxlen = PK5::BOX_LENGTH;
+                    break;
+                case Generation::SIX:
+                    boxlen = PK6::BOX_LENGTH;
+                    break;
+                case Generation::SEVEN:
+                    boxlen = PK7::BOX_LENGTH;
+                    break;
+                case Generation::LGPE:
+                    boxlen = PB7::BOX_LENGTH;
+                    break;
+                case Generation::EIGHT:
+                    boxlen = PK8::BOX_LENGTH;
+                    break;
+                default:
+                    boxlen = 0;
+            }
+            auto ret = PKX::getPKM(generation(), nullptr, boxlen);
             std::copy(data, data + getLength(), ret->rawData());
             ret->updatePartyData();
             return ret;

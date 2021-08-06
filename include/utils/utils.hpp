@@ -27,6 +27,7 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
+#include "enums/Language.hpp"
 #include "utils/coretypes.h"
 #include <codecvt>
 #include <locale>
@@ -100,10 +101,12 @@ namespace StringUtils
     [[nodiscard]] std::string getString3(const u8* data, int ofs, int len, bool jp);
     void setString3(u8* data, const std::string_view& v, int ofs, int len, bool jp, int padTo = 0,
         u8 padWith = 0xFF);
-    [[nodiscard]] std::string getString1(const u8* data, int ofs, int len, bool jp);
-    void setString1(u8* data, const std::string_view& v, int ofs, int len, bool jp, int padTo = 0,
+    [[nodiscard]] std::string getString1(const u8* data, int ofs, int len, pksm::Language lang);
+    void setString1(u8* data, const std::string_view& v, int ofs, int len, pksm::Language lang, int padTo = 0,
         u8 padWith = 0x50);
     
+    std::string getTradeOT(pksm::Language lang);
+
     [[nodiscard]] std::vector<u16> stringToG4(const std::string_view& v);
     std::string& toLower(std::string& in);
     [[nodiscard]] std::string toLower(const std::string_view& in);

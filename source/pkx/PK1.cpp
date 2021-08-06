@@ -42,11 +42,13 @@
 
 namespace pksm
 {
-    // TODO: bang head on wall until i figure out how to put in strings
-    PK1::PK1(PrivateConstructor, u8* dt, bool party, bool directAccess)
-        : PKX(dt, party ? PARTY_LENGTH : BOX_LENGTH, directAccess)
+    PK1::PK1(PrivateConstructor, u8* dt, bool japanese, bool directAccess)
+        : PKX(dt, japanese ? JP_LENGTH_WITH_NAMES : EN_LENGTH_WITH_NAMES, directAccess)
     {
+        this->japanese = japanese;
+        // TODO: other language detection, which involves characters not used in the English keyboard
         lang = japanese ? Language::JPN : Language::ENG;
+        shiftedData = data + 3;
     }
 
     /*
@@ -58,24 +60,24 @@ namespace pksm
 
     std::unique_ptr<PKX> PK1::clone() const
     {
-        return PKX::getPKM<Generation::ONE>(const_cast<u8*>(data), isParty());
+        return PKX::getPKM<Generation::ONE>(const_cast<u8*>(data), japanese ? JP_LENGTH_WITH_NAMES : EN_LENGTH_WITH_NAMES);
     }
 
     u16 PK1::TID() const
     {
-        return BigEndian::convertTo<u16>(data + 12);
+        return BigEndian::convertTo<u16>(shiftedData + 12);
     }
     void PK1::TID(u16 v)
     {
-        BigEndian::convertFrom<u16>(data + 12, v);
+        BigEndian::convertFrom<u16>(shiftedData + 12, v);
     }
     std::string PK1::nickname() const
     {
-        return "filler";
+        return StringUtils::getString1(shiftedData, 44 + (japanese ? 6 : 11), japanese ? 6 : 11, lang);
     }
     void PK1::nickname(const std::string_view& v)
     {
-
+        StringUtils::setString1(shiftedData, v, 44 + (japanese ? 6 : 11), japanese ? 6 : 11, lang, japanese ? 6 : 11);
     }
     Language PK1::language() const
     {
@@ -91,20 +93,21 @@ namespace pksm
     }
     std::string PK1::otName() const
     {
-        return "filler";
+        return StringUtils::getString1(shiftedData, 44, japanese ? 6 : 11, lang);
     }
     void PK1::otName(const std::string_view& v)
     {
-
+        StringUtils::setString1(shiftedData, v, 44, japanese ? 6 : 11, lang, japanese ? 6 : 11);
     }
 
     u8 PK1::speciesID1() const
     {
-        return data[0];
+        return shiftedData[0];
     }
     void PK1::speciesID1(u8 v)
     {
-        data[0] = v;
+        data[1] = v;
+        shiftedData[0] = v;
         writeG1Types();
     }
 
@@ -119,57 +122,57 @@ namespace pksm
     // yes, Gen I pokemon data stores catch rate, and yes it's actually important for Gen II importing
     u16 PK1::catchRate() const
     {
-        return BigEndian::convertTo<u16>(data + 7);
+        return BigEndian::convertTo<u16>(shiftedData + 7);
     }
     void PK1::catchRate(u16 v)
     {
-        BigEndian::convertFrom<u16>(data + 7, v);
+        BigEndian::convertFrom<u16>(shiftedData + 7, v);
     }
     // experience is actually 3 bytes
     u32 PK1::experience() const
     {
-        return BigEndian::convertTo<u32>(data + 14) >> 8;
+        return BigEndian::convertTo<u32>(shiftedData + 14) >> 8;
     }
     void PK1::experience(u32 v)
     {
-        data[14] = v >> 16;
-        data[15] = (v >> 8) & 0x00FF;
-        data[16] = v & 0x0000FF;
+        shiftedData[14] = v >> 16;
+        shiftedData[15] = (v >> 8) & 0x00FF;
+        shiftedData[16] = v & 0x0000FF;
     }
     u16 PK1::statExperience(Stat se) const
     {
         if (se == Stat::SPDEF) se = Stat::SPATK;
-        return BigEndian::convertTo<u16>(data + 17 + 2 * u8(se));
+        return BigEndian::convertTo<u16>(shiftedData + 17 + 2 * u8(se));
     }
     void PK1::statExperience(Stat se, u16 v)
     {
         if (se == Stat::SPDEF) se = Stat::SPATK;
-        BigEndian::convertFrom<u16>(data + 17 + 2 * u8(se), v);
+        BigEndian::convertFrom<u16>(shiftedData + 17 + 2 * u8(se), v);
     }
 
     Move PK1::move(u8 move) const
     {
-        return Move{data[8 + move]};
+        return Move{shiftedData[8 + move]};
     }
     void PK1::move(u8 move, Move v)
     {
-        data[8 + move] = u8(v);
+        shiftedData[8 + move] = u8(v);
     }
     u8 PK1::PP(u8 move) const
     {
-        return u8(data[29 + move] & 0x3F);
+        return u8(shiftedData[29 + move] & 0x3F);
     }
     void PK1::PP(u8 move, u8 v)
     {
-        data[29 + move] = u8((data[29 + move] & 0xC0) | (v & 0x3F));
+        shiftedData[29 + move] = u8((shiftedData[29 + move] & 0xC0) | (v & 0x3F));
     }
     u8 PK1::PPUp(u8 move) const
     {
-        return data[29 + move] >> 6;
+        return shiftedData[29 + move] >> 6;
     }
     void PK1::PPUp(u8 move, u8 v)
     {
-        data[29 + move] = u8((v & 0xC0) | (data[29 + move] & 0x3F));
+        shiftedData[29 + move] = u8((v & 0xC0) | (shiftedData[29 + move] & 0x3F));
     }
     u8 PK1::iv(Stat iv) const
     {
@@ -178,23 +181,40 @@ namespace pksm
             case Stat::HP:
                 return ((PK1::iv(Stat::ATK) & 0x01) << 3) | ((PK1::iv(Stat::DEF) & 0x01) << 2) | ((PK1::iv(Stat::SPD) & 0x01) << 1) | (PK1::iv(Stat::SPATK) & 0x01);
             case Stat::ATK:
-                return (data[0x1B] & 0xF0) >> 4;
+                return (shiftedData[0x1B] & 0xF0) >> 4;
             case Stat::DEF:
-                return data[0x1B] & 0x0F;
+                return shiftedData[0x1B] & 0x0F;
             case Stat::SPD:
-                return (data[0x1C] & 0xF0) >> 4;
+                return (shiftedData[0x1C] & 0xF0) >> 4;
             case Stat::SPATK:
             case Stat::SPDEF:
-                return data[0x1C] & 0x0F;
+                return shiftedData[0x1C] & 0x0F;
             default:
                 return 0;
         }
     }
     void PK1::iv(Stat iv, u8 v)
     {
-        if (iv == Stat::HP) return;
-        if (iv == Stat::SPDEF) iv = Stat::SPATK;
-        data[27 + (u8(iv) - 1)/2] = u8((v & 0x0F) << (((u8(iv) - 1) % 2) ? 0 : 4));
+        if (v > 15) v = 15;
+        switch (iv)
+        {
+            case Stat::ATK:
+                shiftedData[0x1B] = ((v & 0x0F) << 4) | (shiftedData[0x1B] & 0x0F);
+                break;
+            case Stat::DEF:
+                shiftedData[0x1B] = (shiftedData[0x1B] & 0xF0) | (v & 0x0F);
+                break;
+            case Stat::SPD:
+                shiftedData[0x1C] = ((v & 0x0F) << 4) | (shiftedData[0x1C] & 0x0F);
+                break;
+            case Stat::SPATK:
+            case Stat::SPDEF:
+                shiftedData[0x1C] = (shiftedData[0x1C] & 0xF0) | (v & 0x0F);
+                break;
+            case Stat::HP:
+            default:
+                return;
+        }
     }
     bool PK1::nicknamed() const
     {
@@ -213,6 +233,7 @@ namespace pksm
     void PK1::level(u8 v)
     {
         experience(expTable(v - 1, expType()));
+        boxLevel(v);
     }
     bool PK1::shiny() const
     {
@@ -248,8 +269,9 @@ namespace pksm
             case Stat::DEF:
                 base = baseDef();
                 break;
+            // WHO NAMED THE STAT SPD AND THE METHOD SPE?!
             case Stat::SPD:
-                base = baseSpd();
+                base = baseSpe();
                 break;
             case Stat::SPATK:
             case Stat::SPDEF:
@@ -258,39 +280,48 @@ namespace pksm
             default:
                 base = 0;
         }
-        u16 partOne = u16((((base + iv(stat)) * 2 + u16(sqrt(statExperience(stat)) / 4)) * level()) / 100);
-        if (stat == Stat::HP) return partOne + level() + 10;
-        return partOne + 5;
+        u16 EV = u16(std::min(255, int(std::sqrt(statExperience(stat)))) >> 2);
+        u16 mid = u16(((2 * (base + iv(stat)) + EV) * level() / 100) + 5);
+        if (stat == Stat::HP) return mid + 5 + level();
+        return mid;
     }
 
     int PK1::partyCurrHP() const
     {
-        return isParty() ? BigEndian::convertTo<u16>(data + 1) : -1;
+        return isParty() ? BigEndian::convertTo<u16>(shiftedData + 1) : -1;
     }
     void PK1::partyCurrHP(u16 v)
     {
-        if (isParty()) BigEndian::convertFrom<u16>(data + 1, v);
+        if (isParty()) BigEndian::convertFrom<u16>(shiftedData + 1, v);
     }
     int PK1::partyStat(Stat stat) const
     {
         if (!isParty()) return -1;
         if (stat == Stat::SPDEF) stat = Stat::SPATK;
-        return BigEndian::convertTo<u16>(data + 34 + 2 * u8(stat));
+        return BigEndian::convertTo<u16>(shiftedData + 34 + 2 * u8(stat));
     }
     void PK1::partyStat(Stat stat, u16 v)
     {
         if (isParty()) {
             if (stat == Stat::SPDEF) stat = Stat::SPATK;
-            BigEndian::convertFrom<u16>(data + 34 + 2 * u8(stat), v);
+            BigEndian::convertFrom<u16>(shiftedData + 34 + 2 * u8(stat), v);
         }
     }
     int PK1::partyLevel() const
     {
-        return isParty() ? data[34] : -1;
+        return isParty() ? shiftedData[33] : -1;
     }
     void PK1::partyLevel(u8 v)
     {
-        if (isParty()) data[34] = v;
+        if (isParty()) shiftedData[33] = v;
+    }
+    int PK1::boxLevel() const
+    {
+        return shiftedData[3];
+    }
+    void PK1::boxLevel(u8 v)
+    {
+        shiftedData[3] = v;
     }
     void PK1::updatePartyData()
     {
@@ -303,8 +334,8 @@ namespace pksm
 
     void PK1::writeG1Types()
     {
-        data[5] = type1() < Type::Steel ? u8(type1()) : (20 + (u8(type1()) - u8(Type::Fire)));
-        data[6] = type2() < Type::Steel ? u8(type2()) : (20 + (u8(type2()) - u8(Type::Fire)));
+        shiftedData[5] = type1() < Type::Steel ? u8(type1()) : (20 + (u8(type1()) - u8(Type::Fire)));
+        shiftedData[6] = type2() < Type::Steel ? u8(type2()) : (20 + (u8(type2()) - u8(Type::Fire)));
     }    
 }
 

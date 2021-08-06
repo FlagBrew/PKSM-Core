@@ -44,9 +44,10 @@ namespace pksm
         GameVersion versionOfGame = GameVersion::RD; //not even PKHeX tries to do better
 
     private:
-        // TODO: below
-        bool japanese = false;
+        bool japanese;
         Language lang;
+        u8* shiftedData;
+
         [[nodiscard]] int eggYear(void) const override { return 1900; }
         void eggYear(int) override {}
         [[nodiscard]] int eggMonth(void) const override { return 1; }
@@ -61,14 +62,15 @@ namespace pksm
         void metDay(int) override {}
 
     public:
-        // frustratingly, nickname and ot name are not stored contiguously
+        static constexpr size_t JP_LENGTH_WITH_NAMES    = 59;
+        static constexpr size_t EN_LENGTH_WITH_NAMES    = 69;
+
         static constexpr size_t BOX_LENGTH              = 33;
         static constexpr size_t PARTY_LENGTH            = 44;
-        static constexpr size_t BOX_LENGTH_WITH_NAMES   = 44;
-        static constexpr size_t PARTY_LENGTH_WITH_NAMES = 55;
+
         static constexpr Species FORMAT_SPECIES_LIMIT = Species::Mew;
 
-        PK1(PrivateConstructor, u8* dt, bool party = false, bool directAccess = false);
+        PK1(PrivateConstructor, u8* dt, bool japanese = false, bool directAccess = false);
 
         [[nodiscard]] std::string_view extension() const override { return ".pk1"; }
 
@@ -83,7 +85,7 @@ namespace pksm
         [[nodiscard]] std::unique_ptr<PKX> clone(void) const override;
 
         [[nodiscard]] Generation generation(void) const override { return Generation::ONE; }
-        [[nodiscard]] bool isParty(void) const override { return getLength() == PARTY_LENGTH; }
+        [[nodiscard]] bool isParty(void) const override { return true; }
         void decrypt(void) override {}
         void encrypt(void) override {}
         [[nodiscard]] bool isEncrypted(void) const override { return false; }
@@ -227,6 +229,8 @@ namespace pksm
         void partyStat(Stat stat, u16 v) override;
         [[nodiscard]] int partyLevel() const override;
         void partyLevel(u8 v) override;
+        [[nodiscard]] int boxLevel() const;
+        void boxLevel(u8 v);
         void updatePartyData(void) override;
 
         void writeG1Types(void);

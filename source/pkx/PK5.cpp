@@ -344,7 +344,7 @@ namespace pksm
 
     std::unique_ptr<PKX> PK5::clone(void) const
     {
-        return PKX::getPKM<Generation::FIVE>(const_cast<u8*>(data), isParty());
+        return PKX::getPKM<Generation::FIVE>(const_cast<u8*>(data), isParty() ? PARTY_LENGTH : BOX_LENGTH);
     }
 
     Generation PK5::generation(void) const { return Generation::FIVE; }
@@ -807,7 +807,7 @@ namespace pksm
 
     std::unique_ptr<PK4> PK5::convertToG4(Sav& save) const
     {
-        auto pk4 = PKX::getPKM<Generation::FOUR>(const_cast<u8*>(data));
+        auto pk4 = PKX::getPKM<Generation::FOUR>(const_cast<u8*>(data), PK4::BOX_LENGTH);
 
         // Clear nature field
         pk4->rawData()[0x41] = 0;
@@ -840,7 +840,7 @@ namespace pksm
 
     std::unique_ptr<PK6> PK5::convertToG6(Sav& save) const
     {
-        auto pk6 = PKX::getPKM<Generation::SIX>(nullptr);
+        auto pk6 = PKX::getPKM<Generation::SIX>(nullptr, PK6::BOX_LENGTH);
 
         pk6->encryptionConstant(PID());
         pk6->species(species());
