@@ -68,9 +68,9 @@ namespace pksm
         return japanese ? 6 : 11;
     }
 
-    u8 Sav1::PK1Length(void) const
+    u8 Sav1::PK1Length() const
     {
-        return japanese ? PK1::JP_LENGTH_WITH_NAMES : PK1::EN_LENGTH_WITH_NAMES;
+        return japanese ? PK1::JP_LENGTH_WITH_NAMES : PK1::INT_LENGTH_WITH_NAMES;
     }
 
     // ctrl-v the fixparty code, boxes are expected to be contiguous
@@ -157,7 +157,10 @@ namespace pksm
     }
     void Sav1::language(Language v)
     {
-        lang = v;
+        if (lang != Language::JPN && v != Language::JPN)
+        {
+            lang = v;
+        }
     }
 
     // INT has space for 10 characters + terminator, but the in-game keyboard only permits 7
@@ -183,7 +186,7 @@ namespace pksm
     void Sav1::money(u32 v)
     {
         u32 result = 0;
-        v %= 1000000;
+        if (v > 999999) v = 999999;
         result |= (v / 100000) << 20;
         result |= ((v / 10000) % 10) << 16;
         result |= ((v / 1000) % 10) << 12;
@@ -212,7 +215,7 @@ namespace pksm
     void Sav1::playedSeconds(u8 v) { data[japanese ? 0x2CA3 : 0x2CF0] = v; }
 
     u8 Sav1::currentBox() const { return data[japanese ? 0x2842 : 0x284C] & 0x7F; }
-    void Sav1::currentBox(u8 v) { data[japanese ? 0x2842 : 0x284C] = 0x80 | (v & 0x7F); }
+    void Sav1::currentBox(u8 v) { data[japanese ? 0x2842 : 0x284C] = (data[japanese ? 0x2842 : 0x284C] & 0x80) | (v & 0x7F); }
     u32 Sav1::boxOffset(u8 box, u8 slot) const
     {
         return boxDataStart(box) + (slot * PK1::BOX_LENGTH);
@@ -220,8 +223,8 @@ namespace pksm
     u32 Sav1::boxOtNameOffset(u8 box, u8 slot) const {return boxDataStart(box) + (maxPkmInBox * PK1::BOX_LENGTH) + (slot * nameLength());}
     u32 Sav1::boxNicknameOffset(u8 box, u8 slot) const {return boxDataStart(box) + (maxPkmInBox * PK1::BOX_LENGTH) + ((maxPkmInBox + slot) * nameLength());}
     u32 Sav1::partyOffset(u8 slot) const { return OFS_PARTY + 8 + (slot * PK1::PARTY_LENGTH); }
-    u32 Sav1::partyOtNameOffset(u8 slot) const { return OFS_PARTY + 272 + (slot * nameLength());}
-    u32 Sav1::partyNicknameOffset(u8 slot) const { return OFS_PARTY + 272 + ((6 + slot) * nameLength());}
+    u32 Sav1::partyOtNameOffset(u8 slot) const { return OFS_PARTY + 8 + (6 * PK1::PARTY_LENGTH) + (slot * nameLength());}
+    u32 Sav1::partyNicknameOffset(u8 slot) const { return OFS_PARTY + 8 + (6 * PK1::PARTY_LENGTH) + ((6 + slot) * nameLength());}
 
     u32 Sav1::boxStart(u8 box) const
     {
@@ -243,7 +246,7 @@ namespace pksm
         std::copy(&data[partyOtNameOffset(slot)], &data[partyOtNameOffset(slot)] + nameLength(), buffer + 3 + PK1::PARTY_LENGTH);
         std::copy(&data[partyNicknameOffset(slot)], &data[partyNicknameOffset(slot)] + nameLength(), buffer + 3 + PK1::PARTY_LENGTH + nameLength());
 
-        return PKX::getPKM<Generation::ONE>(buffer, japanese ? PK1::JP_LENGTH_WITH_NAMES : PK1::EN_LENGTH_WITH_NAMES);
+        return PKX::getPKM<Generation::ONE>(buffer, PK1Length());
     }
     std::unique_ptr<PKX> Sav1::pkm(u8 box, u8 slot) const
     {
@@ -258,7 +261,7 @@ namespace pksm
         std::copy(&data[boxOtNameOffset(box, slot)], &data[boxOtNameOffset(box, slot)] + nameLength(), buffer + 3 + PK1::PARTY_LENGTH);
         std::copy(&data[boxNicknameOffset(box, slot)], &data[boxNicknameOffset(box, slot)] + nameLength(), buffer + 3 + PK1::PARTY_LENGTH + nameLength());
         
-        auto pk1 = PKX::getPKM<Generation::ONE>(buffer, japanese ? PK1::JP_LENGTH_WITH_NAMES : PK1::EN_LENGTH_WITH_NAMES);
+        auto pk1 = PKX::getPKM<Generation::ONE>(buffer, PK1Length());
         pk1->updatePartyData();
         return pk1;
     }
@@ -297,7 +300,7 @@ namespace pksm
 
     void Sav1::trade(PKX& pk, const Date& date) const {}
 
-    std::unique_ptr<PKX> Sav1::emptyPkm() const { return PKX::getPKM<Generation::ONE>(nullptr, japanese ? PK1::JP_LENGTH_WITH_NAMES : PK1::EN_LENGTH_WITH_NAMES); }
+    std::unique_ptr<PKX> Sav1::emptyPkm() const { return PKX::getPKM<Generation::ONE>(nullptr, PK1Length()); }
 
     void Sav1::dex(const PKX& pk)
     {
@@ -308,27 +311,27 @@ namespace pksm
     }
     bool Sav1::getCaught(Species species) const
     {
-        int byteOffset = (japanese ? 0x259E : 0x25A3) + (u8(species) / 8);
-        u8 bitIndex    = 7 - (u8(species) % 8);
-        return FlagUtil::getFlag(data.get(), byteOffset, bitIndex);
+        int flag = u8(species) - 1;
+        int ofs = flag >> 3;
+        return FlagUtil::getFlag(data.get() + (japanese ? 0x259E : 0x25A3), ofs, flag & 7);
     }
     void Sav1::setCaught(Species species, bool caught)
     {
-        int byteOffset = (japanese ? 0x259E : 0x25A3) + (u8(species) / 8);
-        u8 bitIndex    = 7 - (u8(species) % 8);
-        FlagUtil::setFlag(data.get(), byteOffset, bitIndex, caught);
+        int flag = u8(species) - 1;
+        int ofs = flag >> 3;
+        FlagUtil::setFlag(data.get() + (japanese ? 0x259E : 0x25A3), ofs, flag & 7, caught);
     }
     bool Sav1::getSeen(Species species) const
     {
-        int byteOffset = (japanese ? 0x25B1 : 0x25B6) + (u8(species) / 8);
-        u8 bitIndex    = 7 - (u8(species) % 8);
-        return FlagUtil::getFlag(data.get(), byteOffset, bitIndex);
+        int flag = u8(species) - 1;
+        int ofs = flag >> 3;
+        return FlagUtil::getFlag(data.get() + (japanese ? 0x25B1 : 0x25B6), ofs, flag & 7);
     }
     void Sav1::setSeen(Species species, bool seen)
     {
-        int byteOffset = (japanese ? 0x25B1 : 0x25B6) + (u8(species) / 8);
-        u8 bitIndex    = 7 - (u8(species) % 8);
-        FlagUtil::setFlag(data.get(), byteOffset, bitIndex, seen);
+        int flag = u8(species) - 1;
+        int ofs = flag >> 3;
+        FlagUtil::setFlag(data.get() + (japanese ? 0x25B1 : 0x25B6), ofs, flag & 7, seen);
     }
     int Sav1::dexSeen() const
     {
@@ -368,6 +371,7 @@ namespace pksm
         data[OFS_PARTY] = count;
     }
 
+    int Sav1::maxSlot() const { return maxBoxes() * (japanese ? 30 : 20); }
     int Sav1::maxBoxes() const { return japanese ? 8 : 12; }
 
     void Sav1::item(const Item& tItem, Pouch pouch, u16 slot)
@@ -433,7 +437,7 @@ namespace pksm
         std::map<Sav::Pouch, std::vector<int>> items = {
             {Pouch::NormalItem,
                 {0, 1, 2, 3, 4, 442, 450, 81, 18, 19, 20, 21, 22, 23, 24, 25, 26, 17, 78, 79, 103,
-                    82, 83, 84, 45, 46, 47, 48, 49, 50, 102, 101, 872, 128, 60, 85, 876, 92, 63, 27,
+                    82, 83, 84, 45, 46, 47, 48, 49, 50, 102, 101, 872, 60, 85, 876, 92, 63, 27,
                     28, 29, 55, 76, 77, 56, 30, 31, 32, 873, 877, 57, 58, 59, 61, 444, 875, 471,
                     874, 651, 878, 216, 445, 446, 447, 51, 38, 39, 40, 41, 420, 421, 422, 423, 424,
                     328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343,

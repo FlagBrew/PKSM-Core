@@ -278,6 +278,8 @@ namespace pksm
 
     bool PKX::originGen3(void) const { return (Generation)version() == Generation::THREE; }
 
+    bool PKX::originGen2(void) const { return (Generation)version() == Generation::TWO; }
+
     bool PKX::originGen1(void) const { return (Generation)version() == Generation::ONE; }
 
     Generation PKX::originGen(void) const { return (Generation)version(); }
@@ -428,6 +430,7 @@ namespace pksm
         switch (generation())
         {
             case Generation::ONE:
+            case Generation::TWO:
             case Generation::THREE:
             case Generation::FOUR:
             case Generation::FIVE:
@@ -438,7 +441,6 @@ namespace pksm
             case Generation::EIGHT:
                 return u32(SID() << 16 | TID()) % 1000000;
             case Generation::UNUSED:
-            case Generation::TWO:
                 return 0;
         }
         return 0;
@@ -470,6 +472,8 @@ namespace pksm
         {
             case Generation::ONE:
                 return getPKM<Generation::ONE>(data, length, directAccess);
+            case Generation::TWO:
+                return getPKM<Generation::TWO>(data, length, directAccess);
             case Generation::THREE:
                 return getPKM<Generation::THREE>(data, length, directAccess);
             case Generation::FOUR:
@@ -485,7 +489,6 @@ namespace pksm
             case Generation::EIGHT:
                 return getPKM<Generation::EIGHT>(data, length, directAccess);
             case Generation::UNUSED:
-            case Generation::TWO:
                 return nullptr;
         }
         return nullptr;
@@ -586,6 +589,12 @@ namespace pksm
                    ? std::unique_ptr<PK1>(static_cast<PK1*>(clone().release()))
                    : nullptr;
     }
+    std::unique_ptr<PK2> PKX::convertToG2(Sav&) const
+    {
+        return generation() == Generation::TWO
+                   ? std::unique_ptr<PK2>(static_cast<PK2*>(clone().release()))
+                   : nullptr;
+    }
     std::unique_ptr<PK3> PKX::convertToG3(Sav&) const
     {
         return generation() == Generation::THREE
@@ -643,7 +652,11 @@ namespace pksm
             {
                 case Generation::ONE:
                     boxlen = (language() == Language::JPN ? PK1::JP_LENGTH_WITH_NAMES
-                                                         : PK1::EN_LENGTH_WITH_NAMES);
+                                                         : PK1::INT_LENGTH_WITH_NAMES);
+                    break;
+                case Generation::TWO:
+                    boxlen = (language() == Language::JPN ? PK2::JP_LENGTH_WITH_NAMES
+                                                        : PK2::INT_LENGTH_WITH_NAMES);
                     break;
                 case Generation::THREE:
                     boxlen = PK3::BOX_LENGTH;

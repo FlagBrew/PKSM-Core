@@ -104,6 +104,9 @@ namespace StringUtils
     [[nodiscard]] std::string getString1(const u8* data, int ofs, int len, pksm::Language lang);
     void setString1(u8* data, const std::string_view& v, int ofs, int len, pksm::Language lang, int padTo = 0,
         u8 padWith = 0x50);
+    [[nodiscard]] std::string getString2(const u8* data, int ofs, int len, pksm::Language lang);
+    void setString2(u8* data, const std::string_view& v, int ofs, int len, pksm::Language lang, int padTo = 0,
+        u8 padWith = 0x50);
     
     std::string getTradeOT(pksm::Language lang);
 

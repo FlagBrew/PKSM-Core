@@ -26,6 +26,7 @@
 
 #include "utils/utils.hpp"
 #include "g1text.hpp"
+#include "g2text.hpp"
 #include "g3text.hpp"
 #include "g4text.hpp"
 #include "utils/endian.hpp"
@@ -1118,13 +1119,13 @@ std::string StringUtils::getTradeOT(pksm::Language lang) {
 // TODO: trade OT 
 std::string StringUtils::getString1(const u8* data, int ofs, int len, pksm::Language lang)
 {
-    auto& characters = lang == pksm::Language::JPN ? pksm::internal::G1_JP : pksm::internal::G1_EN;
-    std::u16string outString;
-
     if (data[ofs] == 0x5D)
     {
         return getTradeOT(lang);
     }
+
+    auto& characters = lang == pksm::Language::JPN ? pksm::internal::G1_JP : pksm::internal::G1_EN;
+    std::u16string outString;
 
     for (size_t i = 0; i < (size_t)len; i++)
     {
@@ -1172,6 +1173,106 @@ void StringUtils::setString1(u8* data, const std::string_view& v, int ofs, int l
                 data[ofs + outPos] = codePoint;
             }
         }
+    }
+
+    if (outPos < (size_t)len)
+    {
+        data[ofs + outPos] = 0x50;
+    }
+
+    while (outPos < (size_t)padTo)
+    {
+        data[ofs + outPos] = padWith;
+        outPos++;
+    }
+}
+
+std::string StringUtils::getString2(const u8* data, int ofs, int len, pksm::Language lang)
+{
+    // every language other than KOR is the same as last gen, and as well the case of the trade ot char is handled there
+    if (lang != pksm::Language::KOR || data[ofs] == 0x5D) return getString1(data, ofs, len, lang);
+
+    std::u16string outString;
+    size_t inPos = 0;
+
+    while (inPos < (size_t)len)
+    {
+        if (data[ofs + inPos] <= 0xB)
+        {
+            auto& characters = pksm::internal::GSC2U_KOR[data[ofs + inPos++]];
+            auto pos = characters.find(data[ofs + inPos]);
+            if (pos != characters.end())
+            {
+                outString += pos->second;
+            }
+        }
+        else {
+            auto& characters = pksm::internal::G1_EN;
+            auto pos = characters.find(data[ofs + inPos]);
+            if (pos != characters.end())
+            {
+                if (pos->second == '\0')
+                    break;
+                if (pos->second == pksm::internal::tradeOTChar)
+                    continue;
+                outString += pos->second;
+            }
+        }
+        inPos++;
+    }
+
+    return StringUtils::UTF16toUTF8(outString);
+}
+
+void StringUtils::setString2(u8* data, const std::string_view& v, int ofs, int len, pksm::Language lang, int padTo,
+    u8 padWith)
+{
+    if (lang != pksm::Language::KOR || v == getTradeOT(lang) || v.at(0) == pksm::internal::tradeOTChar) 
+    {
+        setString1(data, v, ofs, len, lang, padTo, padWith);
+        return;
+    }
+
+    // fun fact: this sucks
+
+    size_t outPos = 0;
+    std::u16string str = StringUtils::UTF8toUTF16(v);
+    StringUtils::toFullWidth(str);
+    auto& charactersEN = pksm::internal::G1_EN;
+
+    // this needs to be declared now so the compiler and IDE don't throw a fit when goto skips a declaration
+    u16 codePoint;
+
+    // we won't reverse-search the maps because that's a LOT of characters to go through, but we will have to search each map regardless
+    for (; outPos < std::min((size_t)len, str.size()); outPos++)
+    {
+        int index = 0;
+        while (index < pksm::internal::U2GSC_KOR.size())
+        {
+            auto& characters = pksm::internal::U2GSC_KOR[index];
+            auto pos = characters.find(str[outPos]);
+            if (pos != characters.end())
+            {
+                data[ofs + outPos++] = index;
+                data[ofs + outPos] = pos->second;
+                goto outerLoop;
+            }
+        }
+        
+        codePoint = 256;
+        for (auto it = charactersEN.begin(); it != charactersEN.end(); it++)
+        {
+            if (it->second == str[outPos])
+            {
+                codePoint = it->first;
+            }
+        }
+        if (codePoint < 256)
+        {
+            data[ofs + outPos] = codePoint;
+        }
+
+        outerLoop:;
     }
 
     if (outPos < (size_t)len)

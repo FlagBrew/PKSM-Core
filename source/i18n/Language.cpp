@@ -33,9 +33,9 @@ namespace pksm
 {
     namespace internal
     {
-        constexpr std::array<Language, 6> G3Langs = {Language::JPN, Language::ENG, Language::FRE,
+        constexpr std::array<Language, 6> G13Langs = {Language::JPN, Language::ENG, Language::FRE,
             Language::GER, Language::SPA, Language::ITA};
-        constexpr std::array<Language, 7> G4Langs = {Language::JPN, Language::ENG, Language::FRE,
+        constexpr std::array<Language, 7> G24Langs = {Language::JPN, Language::ENG, Language::FRE,
             Language::GER, Language::SPA, Language::ITA, Language::KOR};
         constexpr std::array<Language, 9> G7Langs = {Language::JPN, Language::ENG, Language::FRE,
             Language::GER, Language::SPA, Language::ITA, Language::KOR, Language::CHS,
@@ -46,20 +46,20 @@ namespace pksm
     {
         switch (gen)
         {
-            // case Generation::ONE
-            // case Generation::TWO
+            case Generation::ONE:
             case Generation::THREE:
-                if (std::find(internal::G3Langs.begin(), internal::G3Langs.end(), orig) !=
-                    internal::G3Langs.end())
+                if (std::find(internal::G13Langs.begin(), internal::G13Langs.end(), orig) !=
+                    internal::G13Langs.end())
                 {
                     return orig;
                 }
                 return Language::ENG;
+            case Generation::TWO:
             case Generation::FOUR:
             case Generation::FIVE:
             case Generation::SIX:
-                if (std::find(internal::G4Langs.begin(), internal::G4Langs.end(), orig) !=
-                    internal::G4Langs.end())
+                if (std::find(internal::G24Langs.begin(), internal::G24Langs.end(), orig) !=
+                    internal::G24Langs.end())
                 {
                     return orig;
                 }
@@ -75,8 +75,6 @@ namespace pksm
                 }
                 return Language::ENG;
             case Generation::UNUSED:
-            case Generation::ONE:
-            case Generation::TWO:
                 break;
         }
         return Language::ENG;

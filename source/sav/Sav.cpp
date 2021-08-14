@@ -27,6 +27,7 @@
 #include "sav/Sav.hpp"
 #include "pkx/PB7.hpp"
 #include "pkx/PK1.hpp"
+#include "pkx/PK2.hpp"
 #include "pkx/PK3.hpp"
 #include "pkx/PK4.hpp"
 #include "pkx/PK5.hpp"
@@ -35,6 +36,7 @@
 #include "pkx/PK8.hpp"
 #include "pkx/PKX.hpp"
 #include "sav/Sav1.hpp"
+#include "sav/Sav2.hpp"
 #include "sav/SavB2W2.hpp"
 #include "sav/SavBW.hpp"
 #include "sav/SavDP.hpp"
@@ -71,6 +73,7 @@ namespace pksm
             case 0x20000:
                 return checkGBAType(dt);
             case 0x8000:
+            case 0x10000:
                 return checkGBType(dt);
             case 0xB8800:
             case 0x100000:
@@ -90,6 +93,12 @@ namespace pksm
     }
     std::unique_ptr<Sav> Sav::checkGBType(std::shared_ptr<u8[]> dt)
     {
+        u32 versionAndLanguage = Sav2::getVersion(dt);
+
+        if ((versionAndLanguage & 0x0000FF) == 1) {
+            return std::make_unique<Sav2>(dt, versionAndLanguage >> 8);
+        }
+
         switch (Sav1::getVersion(dt))
         {
             case Game::RGB:
@@ -209,6 +218,8 @@ namespace pksm
         {
             case Generation::ONE:
                 return pk.convertToG1(*this);
+            case Generation::TWO:
+                return pk.convertToG2(*this);
             case Generation::THREE:
                 return pk.convertToG3(*this);
             case Generation::FOUR:
@@ -224,7 +235,6 @@ namespace pksm
             case Generation::EIGHT:
                 return pk.convertToG8(*this);
             case Generation::UNUSED:
-            case Generation::TWO:
                 return nullptr;
         }
         return nullptr;
@@ -259,6 +269,7 @@ namespace pksm
         switch (generation())
         {
             case Generation::ONE:
+            case Generation::TWO:
             case Generation::THREE:
             case Generation::FOUR:
             case Generation::FIVE:
@@ -269,7 +280,6 @@ namespace pksm
             case Generation::EIGHT:
                 return u32(SID() << 16 | TID()) % 1000000;
             case Generation::UNUSED:
-            case Generation::TWO:
                 return 0;
         }
         return 0;

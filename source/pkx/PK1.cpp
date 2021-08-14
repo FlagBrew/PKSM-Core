@@ -25,6 +25,7 @@
  */
 
 #include "pkx/PK1.hpp"
+#include "pkx/PK2.hpp"
 #include "pkx/PK3.hpp"
 #include "pkx/PK4.hpp"
 #include "pkx/PK5.hpp"
@@ -43,7 +44,7 @@
 namespace pksm
 {
     PK1::PK1(PrivateConstructor, u8* dt, bool japanese, bool directAccess)
-        : PKX(dt, japanese ? JP_LENGTH_WITH_NAMES : EN_LENGTH_WITH_NAMES, directAccess)
+        : PKX(dt, japanese ? JP_LENGTH_WITH_NAMES : INT_LENGTH_WITH_NAMES, directAccess)
     {
         this->japanese = japanese;
         // TODO: other language detection, which involves characters not used in the English keyboard
@@ -60,7 +61,7 @@ namespace pksm
 
     std::unique_ptr<PKX> PK1::clone() const
     {
-        return PKX::getPKM<Generation::ONE>(const_cast<u8*>(data), japanese ? JP_LENGTH_WITH_NAMES : EN_LENGTH_WITH_NAMES);
+        return PKX::getPKM<Generation::ONE>(const_cast<u8*>(data), japanese ? JP_LENGTH_WITH_NAMES : INT_LENGTH_WITH_NAMES);
     }
 
     u16 PK1::TID() const
@@ -120,13 +121,13 @@ namespace pksm
         speciesID1(SpeciesConverter::nationalToG1(v));
     }
     // yes, Gen I pokemon data stores catch rate, and yes it's actually important for Gen II importing
-    u16 PK1::catchRate() const
+    u8 PK1::catchRate() const
     {
-        return BigEndian::convertTo<u16>(shiftedData + 7);
+        return shiftedData[7];
     }
-    void PK1::catchRate(u16 v)
+    void PK1::catchRate(u8 v)
     {
-        BigEndian::convertFrom<u16>(shiftedData + 7, v);
+        shiftedData[7] = v;
     }
     // experience is actually 3 bytes
     u32 PK1::experience() const
@@ -235,11 +236,11 @@ namespace pksm
         experience(expTable(v - 1, expType()));
         boxLevel(v);
     }
+
+    // shininess doesn't exist until Gen II, but the GUI is probably gonna use colored sprites, so why not
     bool PK1::shiny() const
     {
-        u8 atkEV = ev(Stat::ATK);
-        return (ev(Stat::DEF) == 10) && (ev(Stat::SPD) == 10) && (ev(Stat::SPATK) == 10) && (
-            atkEV == 2 || atkEV == 3 || atkEV == 6 || atkEV == 7 || atkEV == 10 || atkEV == 11 || atkEV == 14 || atkEV == 15);
+        return (ev(Stat::DEF) == 10) && (ev(Stat::SPD) == 10) && (ev(Stat::SPATK) == 10) && (((ev(Stat::ATK) & 0x02) >> 1) == 1);
     }
     void PK1::shiny(bool v)
     {

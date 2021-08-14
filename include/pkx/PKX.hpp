@@ -52,6 +52,7 @@ namespace pksm
 {
     class Sav;
     class PK1;
+    class PK2;
     class PK3;
     class PK4;
     class PK5;
@@ -109,15 +110,19 @@ namespace pksm
             std::unique_ptr<Pkm>>
             getPKM(u8* data, size_t length, bool directAccess = false)
         {
-            if constexpr (std::is_same_v<typename GenToPkx<Generation::ONE>::PKX, std::remove_cvref_t<Pkm>>)
+            if constexpr (std::is_same_v<typename GenToPkx<Generation::ONE>::PKX,
+                              std::remove_cvref_t<Pkm>> ||
+                          std::is_same_v<typename GenToPkx<Generation::TWO>::PKX,
+                              std::remove_cvref_t<Pkm>>)
             {
-                if (Pkm::JP_LENGTH_WITH_NAMES == length || Pkm::EN_LENGTH_WITH_NAMES == length)
+                if (Pkm::JP_LENGTH_WITH_NAMES == length || Pkm::INT_LENGTH_WITH_NAMES == length)
                 {
-                    return std::make_unique<Pkm>(
-                        PrivateConstructor{}, data, length == Pkm::JP_LENGTH_WITH_NAMES, directAccess);
+                    return std::make_unique<Pkm>(PrivateConstructor{}, data,
+                        length == Pkm::JP_LENGTH_WITH_NAMES, directAccess);
                 }
             }
-            else {
+            else
+            {
                 if (Pkm::PARTY_LENGTH == length || Pkm::BOX_LENGTH == length)
                 {
                     return std::make_unique<Pkm>(
@@ -146,6 +151,7 @@ namespace pksm
         [[nodiscard]] virtual bool isEncrypted() const = 0;
 
         [[nodiscard]] virtual std::unique_ptr<PK1> convertToG1(Sav& save) const;
+        [[nodiscard]] virtual std::unique_ptr<PK2> convertToG2(Sav& save) const;
         [[nodiscard]] virtual std::unique_ptr<PK3> convertToG3(Sav& save) const;
         [[nodiscard]] virtual std::unique_ptr<PK4> convertToG4(Sav& save) const;
         [[nodiscard]] virtual std::unique_ptr<PK5> convertToG5(Sav& save) const;
@@ -162,6 +168,7 @@ namespace pksm
         [[nodiscard]] bool originGen5(void) const;
         [[nodiscard]] bool originGen4(void) const;
         [[nodiscard]] bool originGen3(void) const;
+        [[nodiscard]] bool originGen2(void) const;
         [[nodiscard]] bool originGen1(void) const;
         [[nodiscard]] Generation originGen(void) const;
         void fixMoves(void);

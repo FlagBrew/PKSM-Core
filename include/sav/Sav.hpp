@@ -68,7 +68,9 @@ namespace pksm
             E,
             FRLG,
             RGB,
-            Y
+            Y,
+            GS,
+            C
         } game;
 
         int Box, Party, PokeDex, WondercardData, WondercardFlags;

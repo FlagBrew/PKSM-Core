@@ -24,8 +24,8 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef SAV1_HPP
-#define SAV1_HPP
+#ifndef SAV2_HPP
+#define SAV2_HPP
 
 #include "personal/personal.hpp"
 #include "sav/Sav.hpp"
@@ -33,14 +33,18 @@
 
 namespace pksm
 {
-    class Sav1 : public Sav
+    class Sav2 : public Sav
     {
     protected:
         bool japanese;
+        bool korean;
         Language lang;
-        GameVersion versionOfGame = GameVersion::RD; // not even PKHeX tries to do better
+        GameVersion versionOfGame;
         u8 maxPkmInBox;
-        u32 boxSize, OFS_PARTY, OFS_BAG, OFS_PC_ITEMS;
+        u32 boxSize, OFS_PARTY, OFS_PC_ITEMS, OFS_CURRENT_BOX, OFS_CURRENT_BOX_INDEX, OFS_GENDER,
+            OFS_JOHTO_BADGES, OFS_POKEDEX_CAUGHT, OFS_POKEDEX_SEEN, OFS_BOX_NAMES, OFS_TM_POUCH,
+            OFS_ITEMS, OFS_KEY_ITEMS, OFS_BALLS, OFS_CHANGED_BOX, OFS_CHECKSUM_ONE, OFS_MONEY,
+            OFS_CHECKSUM_TWO, OFS_CHECKSUM_END, OFS_TIME_PLAYED, OFS_PALETTE, OFS_TID, OFS_NAME;
 
         void fixBoxes(void);
 
@@ -49,13 +53,14 @@ namespace pksm
         [[nodiscard]] bool getSeen(Species species) const;
         void setSeen(Species species, bool seen);
 
-        [[nodiscard]] static u8 calculateChecksum(const u8* data, size_t len);
+        [[nodiscard]] static u16 calculateChecksum(u8* start, const u8* end);
 
     public:
-        Sav1(std::shared_ptr<u8[]> data, u32 length);
-        Sav1(std::shared_ptr<u8[]> data);
+        Sav2(std::shared_ptr<u8[]> data, u32 length, u16 versionAndLanguage);
+        Sav2(std::shared_ptr<u8[]> data, u16 versionAndLanguage);
 
-        [[nodiscard]] static Game getVersion(std::shared_ptr<u8[]> dt);
+        [[nodiscard]] static u32 getVersion(std::shared_ptr<u8[]> dt);
+        [[nodiscard]] static bool validList(std::shared_ptr<u8[]> dt, size_t ofs, u8 slot);
 
         void finishEditing(void) override;
         void beginEditing(void) override {}
@@ -64,10 +69,10 @@ namespace pksm
         void TID(u16 v) override;
         [[nodiscard]] u16 SID(void) const override { return 0; }
         void SID(u16 v) override {}
-        [[nodiscard]] GameVersion version(void) const override { return versionOfGame; }
-        void version(GameVersion v) override { versionOfGame = v; };
-        [[nodiscard]] Gender gender(void) const override { return Gender::Male; }
-        void gender(Gender v) override {}
+        [[nodiscard]] GameVersion version(void) const override;
+        void version(GameVersion v) override;
+        [[nodiscard]] Gender gender(void) const override;
+        void gender(Gender v) override;
         [[nodiscard]] u8 subRegion(void) const override { return 0; }
         void subRegion(u8) override {}
         [[nodiscard]] u8 country(void) const override { return 0; }
@@ -104,7 +109,7 @@ namespace pksm
         [[nodiscard]] u32 boxStart(u8 box) const;
         [[nodiscard]] u32 boxDataStart(u8 box) const;
         [[nodiscard]] u8 nameLength(void) const;
-        [[nodiscard]] u8 PK1Length(void) const;
+        [[nodiscard]] u8 PK2Length(void) const;
 
         [[nodiscard]] std::unique_ptr<PKX> pkm(u8 slot) const override;
         [[nodiscard]] std::unique_ptr<PKX> pkm(u8 box, u8 slot) const override;
@@ -122,11 +127,8 @@ namespace pksm
         void mysteryGift(const WCX&, int&) override {}
         [[nodiscard]] std::unique_ptr<WCX> mysteryGift(int pos) const override { return nullptr; }
         void cryptBoxData(bool crypted) override {}
-        [[nodiscard]] std::string boxName(u8 box) const override
-        {
-            return "Box " + std::to_string(box + 1);
-        }
-        void boxName(u8 box, const std::string_view& name) override {}
+        [[nodiscard]] std::string boxName(u8 box) const override;
+        void boxName(u8 box, const std::string_view& name) override;
         [[nodiscard]] u8 boxWallpaper(u8 box) const override { return 0; }
         void boxWallpaper(u8 box, u8 v) override {}
         [[nodiscard]] u8 partyCount(void) const override;
@@ -139,14 +141,14 @@ namespace pksm
         [[nodiscard]] int maxSlot(void) const override;
         [[nodiscard]] int maxBoxes(void) const override;
         [[nodiscard]] size_t maxWondercards(void) const override { return 0; }
-        [[nodiscard]] Generation generation(void) const override { return Generation::ONE; }
+        [[nodiscard]] Generation generation(void) const override { return Generation::TWO; }
 
         void item(const Item& tItem, Pouch pouch, u16 slot) override;
         [[nodiscard]] std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
         [[nodiscard]] std::vector<std::pair<Pouch, int>> pouches(void) const override;
         [[nodiscard]] std::map<Pouch, std::vector<int>> validItems(void) const override;
-        // Gen I Item IDs
-        [[nodiscard]] std::map<Pouch, std::vector<int>> validItems1(void) const;
+        // Gen II Item IDs
+        [[nodiscard]] std::map<Pouch, std::vector<int>> validItems2(void) const;
         void fixItemLists(void);
     };
 }

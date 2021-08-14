@@ -892,6 +892,7 @@ namespace pksm::internal
             {pksm::Move::Extrasensory, 30}, {pksm::Move::Covet, 40}, {pksm::Move::Tailwind, 30},
             {pksm::Move::AirSlash, 20}, {pksm::Move::DrainPunch, 5}}};
 
+    // no pp difference in Gen I and II moves until Gen IV
     constexpr std::array<std::pair<pksm::Move, u8>, 25> PPDiff_G123 = {{{pksm::Move::SwordsDance, 30},
         {pksm::Move::VineWhip, 15}, {pksm::Move::JumpKick, 25}, {pksm::Move::Thrash, 20},
         {pksm::Move::Submission, 25}, {pksm::Move::Absorb, 20}, {pksm::Move::MegaDrain, 10},

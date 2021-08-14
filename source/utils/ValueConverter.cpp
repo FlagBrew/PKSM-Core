@@ -27,6 +27,7 @@
 #include "utils/ValueConverter.hpp"
 #include "enums/Species.hpp"
 #include "g1values.hpp"
+#include "g2values.hpp"
 #include "g3values.hpp"
 #include <algorithm>
 
@@ -87,6 +88,27 @@ namespace pksm
             return 0;
         }
         return std::distance(internal::g1ToItem.begin(), it);
+    }
+
+    u16 ItemConverter::g2ToNational(u8 v)
+    {
+        //"v < internal::g2ToItem.size()" is always true due to a size of 256
+        return internal::g2ToItem[v];
+    }
+
+    u8 ItemConverter::nationalToG2(u16 v)
+    {
+        if (v == 0)
+        {
+            return 0;
+        }
+
+        auto it = std::find(internal::g2ToItem.begin(), internal::g2ToItem.end(), v);
+        if (it == internal::g2ToItem.end())
+        {
+            return 0;
+        }
+        return std::distance(internal::g2ToItem.begin(), it);
     }
 
     u16 ItemConverter::g3ToNational(u16 v)

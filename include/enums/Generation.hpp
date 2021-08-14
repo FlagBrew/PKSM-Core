@@ -46,7 +46,7 @@ namespace pksm
             enum class GenerationEnum : u32
             {
                 ONE                  = 7,
-                TWO [[maybe_unused]] = 8,
+                TWO                  = 8,
                 THREE                = 6,
                 FOUR                 = 0,
                 FIVE                 = 1,
@@ -238,6 +238,10 @@ namespace pksm
             if (str == "1")
             {
                 return Generation::ONE;
+            }
+            else if (str == "2")
+            {
+                return Generation::TWO;
             }
             else if (str == "3")
             {
