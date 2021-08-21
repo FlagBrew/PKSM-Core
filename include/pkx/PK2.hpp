@@ -118,6 +118,7 @@ namespace pksm
         void nickname(const std::string_view& v) override;
         [[nodiscard]] Language language(void) const override;
         void language(Language v) override;
+        void languageOverrideLimits(Language v);
         // [[nodiscard]] bool flagIsBadEgg(void) const;
         // void flagIsBadEgg(bool v);
         // [[nodiscard]] bool flagHasSpecies(void) const;

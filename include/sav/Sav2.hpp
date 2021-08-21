@@ -42,7 +42,7 @@ namespace pksm
         GameVersion versionOfGame;
         u8 maxPkmInBox;
         u32 boxSize, OFS_PARTY, OFS_PC_ITEMS, OFS_CURRENT_BOX, OFS_CURRENT_BOX_INDEX, OFS_GENDER,
-            OFS_JOHTO_BADGES, OFS_POKEDEX_CAUGHT, OFS_POKEDEX_SEEN, OFS_BOX_NAMES, OFS_TM_POUCH,
+            OFS_BADGES, OFS_POKEDEX_CAUGHT, OFS_POKEDEX_SEEN, OFS_BOX_NAMES, OFS_TM_POUCH,
             OFS_ITEMS, OFS_KEY_ITEMS, OFS_BALLS, OFS_CHANGED_BOX, OFS_CHECKSUM_ONE, OFS_MONEY,
             OFS_CHECKSUM_TWO, OFS_CHECKSUM_END, OFS_TIME_PLAYED, OFS_PALETTE, OFS_TID, OFS_NAME;
 
@@ -57,7 +57,6 @@ namespace pksm
 
     public:
         Sav2(std::shared_ptr<u8[]> data, u32 length, u16 versionAndLanguage);
-        Sav2(std::shared_ptr<u8[]> data, u16 versionAndLanguage);
 
         [[nodiscard]] static u32 getVersion(std::shared_ptr<u8[]> dt);
         [[nodiscard]] static bool validList(std::shared_ptr<u8[]> dt, size_t ofs, u8 slot);
@@ -147,8 +146,14 @@ namespace pksm
         [[nodiscard]] std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
         [[nodiscard]] std::vector<std::pair<Pouch, int>> pouches(void) const override;
         [[nodiscard]] std::map<Pouch, std::vector<int>> validItems(void) const override;
+
         // Gen II Item IDs
         [[nodiscard]] std::map<Pouch, std::vector<int>> validItems2(void) const;
+
+        // apparently weird stuff happens if you ignore this
+        [[nodiscard]] u8 pouchEntryCount(Pouch pouch) const;
+        void pouchEntryCount(Pouch pouch, u8 v);
+
         void fixItemLists(void);
     };
 }

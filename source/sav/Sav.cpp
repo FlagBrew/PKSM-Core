@@ -74,7 +74,10 @@ namespace pksm
                 return checkGBAType(dt);
             case 0x8000:
             case 0x10000:
-                return checkGBType(dt);
+            // Gen II VC saves
+            case 0x8010:
+            case 0x10010:
+                return checkGBType(dt, length);
             case 0xB8800:
             case 0x100000:
                 return std::make_unique<SavLGPE>(dt, length);
@@ -91,12 +94,12 @@ namespace pksm
                 return std::unique_ptr<Sav>(nullptr);
         }
     }
-    std::unique_ptr<Sav> Sav::checkGBType(std::shared_ptr<u8[]> dt)
+    std::unique_ptr<Sav> Sav::checkGBType(std::shared_ptr<u8[]> dt, size_t length)
     {
         u32 versionAndLanguage = Sav2::getVersion(dt);
 
         if ((versionAndLanguage & 0x0000FF) == 1) {
-            return std::make_unique<Sav2>(dt, versionAndLanguage >> 8);
+            return std::make_unique<Sav2>(dt, length, versionAndLanguage >> 8);
         }
 
         switch (Sav1::getVersion(dt))

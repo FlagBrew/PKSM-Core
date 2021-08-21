@@ -31,7 +31,7 @@ namespace i18n
 {
     struct Locations
     {
-        //std::map<u16, std::string> locations2;
+        std::map<u16, std::string> locations2;
         std::map<u16, std::string> locations3;
         std::map<u16, std::string> locations4;
         std::map<u16, std::string> locations5;
@@ -46,7 +46,7 @@ namespace i18n
     void initLocation(pksm::Language lang)
     {
         Locations tmp;
-        //load(lang, "/locations2.txt", tmp.locations2);
+        load(lang, "/locations2.txt", tmp.locations2);
         load(lang, "/locations3.txt", tmp.locations3);
         load(lang, "/locations4.txt", tmp.locations4);
         load(lang, "/locations5.txt", tmp.locations5);
@@ -66,14 +66,12 @@ namespace i18n
         {
             switch (gen)
             {
-                /*
                 case pksm::Generation::TWO:
                     if (locationss[lang].locations2.count(v) > 0)
                     {
                         return locationss[lang].locations2[v];
                     }
                     break;
-                */
                 case pksm::Generation::THREE:
                     if (locationss[lang].locations3.count(v) > 0)
                     {
@@ -118,7 +116,6 @@ namespace i18n
                     break;
                 case pksm::Generation::UNUSED:
                 case pksm::Generation::ONE:
-                case pksm::Generation::TWO:
                     break;
             }
         }
@@ -132,8 +129,8 @@ namespace i18n
         {
             switch (g)
             {
-                //case pksm::Generation::TWO:
-                //    return locationss[lang].locations2;
+                case pksm::Generation::TWO:
+                    return locationss[lang].locations2;
                 case pksm::Generation::THREE:
                     return locationss[lang].locations3;
                 case pksm::Generation::FOUR:
@@ -150,7 +147,6 @@ namespace i18n
                     return locationss[lang].locations8;
                 case pksm::Generation::UNUSED:
                 case pksm::Generation::ONE:
-                case pksm::Generation::TWO:
                     break;
             }
         }

@@ -58,7 +58,7 @@ namespace pksm
             OFS_TIME_PLAYED       = 0x204D;
             OFS_PALETTE           = 0x2065;
             OFS_MONEY             = 0x23D3;
-            OFS_JOHTO_BADGES      = 0x23DC;
+            OFS_BADGES            = 0x23DC;
             OFS_TM_POUCH          = 0x23DE;
             OFS_ITEMS             = 0x2417;
             OFS_KEY_ITEMS         = 0x2441;
@@ -87,7 +87,7 @@ namespace pksm
             if (versionOfGame == GameVersion::C)
             {
                 OFS_MONEY             = 0x23BE;
-                OFS_JOHTO_BADGES      = 0x23C7;
+                OFS_BADGES            = 0x23C7;
                 OFS_TM_POUCH          = 0x23C9;
                 OFS_ITEMS             = 0x2402;
                 OFS_KEY_ITEMS         = 0x242C;
@@ -104,7 +104,7 @@ namespace pksm
             else
             {
                 OFS_MONEY             = 0x23BC;
-                OFS_JOHTO_BADGES      = 0x23C5;
+                OFS_BADGES            = 0x23C5;
                 OFS_TM_POUCH          = 0x23C7;
                 OFS_ITEMS             = 0x2400;
                 OFS_KEY_ITEMS         = 0x242A;
@@ -127,7 +127,7 @@ namespace pksm
                 OFS_TIME_PLAYED       = 0x2052;
                 OFS_PALETTE           = 0x206A;
                 OFS_MONEY             = 0x23DC;
-                OFS_JOHTO_BADGES      = 0x23E5;
+                OFS_BADGES            = 0x23E5;
                 OFS_TM_POUCH          = 0x23E7;
                 OFS_ITEMS             = 0x2420;
                 OFS_KEY_ITEMS         = 0x244A;
@@ -149,7 +149,7 @@ namespace pksm
                 OFS_TIME_PLAYED       = 0x2053;
                 OFS_PALETTE           = 0x206B;
                 OFS_MONEY             = 0x23DB;
-                OFS_JOHTO_BADGES      = 0x23E4;
+                OFS_BADGES            = 0x23E4;
                 OFS_TM_POUCH          = 0x23E6;
                 OFS_ITEMS             = 0x241F;
                 OFS_KEY_ITEMS         = 0x2449;
@@ -167,13 +167,6 @@ namespace pksm
                 OFS_GENDER            = 0xFFFFFFFF;
             }
         }
-    }
-
-    Sav2::Sav2(std::shared_ptr<u8[]> data, u16 versionAndLanguage)
-        : Sav2(data, versionAndLanguage == ((u8(GameVersion::C) << 8) | u8(Language::JPN)) ? 0x10000
-                                                                                            : 0x8000,
-               versionAndLanguage)
-    {
     }
 
     u32 Sav2::getVersion(std::shared_ptr<u8[]> dt)
@@ -362,9 +355,9 @@ namespace pksm
 
     u8 Sav2::badges() const
     {
-        u8 sum        = 0;
-        u8 badgeFlags = data[OFS_JOHTO_BADGES];
-        for (int i = 0; i < 8; i++)
+        u8 sum         = 0;
+        u16 badgeFlags = BigEndian::convertTo<u16>(&data[OFS_BADGES]);
+        for (int i = 0; i < 16; i++)
         {
             sum += (badgeFlags & (1 << i)) >> i;
         }
@@ -443,7 +436,7 @@ namespace pksm
 
         // has to be done now, since you can't do it in the PK2 initializer because of the nullptr case
         auto pk2 = PKX::getPKM<Generation::TWO>(buffer, PK2Length());
-        if (language() == Language::KOR) pk2->language(Language::KOR);
+        if (language() == Language::KOR) pk2->languageOverrideLimits(Language::KOR);
 
         return pk2;
     }
@@ -624,11 +617,17 @@ namespace pksm
         data[OFS_PARTY]             = count;
     }
 
-    int Sav2::maxSlot() const { return maxBoxes() * (japanese ? 30 : 20); }
+    // needs to be fixed after GUI is fixed
+    int Sav2::maxSlot() const { return maxBoxes() * /*(japanese ? 30 : 20)*/ 30; }
+
     int Sav2::maxBoxes() const { return japanese ? 9 : 14; }
 
     void Sav2::item(const Item& tItem, Pouch pouch, u16 slot)
     {
+        if (slot >= pouchEntryCount(pouch))
+        {
+            pouchEntryCount(pouch, slot);
+        }
         Item2 item = static_cast<Item2>(tItem);
         auto write = item.bytes();
         int index = 0;  // for TMs
@@ -656,6 +655,10 @@ namespace pksm
     }
     std::unique_ptr<Item> Sav2::item(Pouch pouch, u16 slot) const
     {
+        if (slot >= pouchEntryCount(pouch))
+        {
+            return std::make_unique<Item2>(nullptr);
+        }
         std::unique_ptr<Item2> returnVal;
         std::array<u8, 2> itemData;
         switch (pouch)
@@ -776,32 +779,74 @@ namespace pksm
             items[Pouch::PCItem].end(), items[Pouch::Ball].begin(), items[Pouch::Ball].end());
         return items;
     }
+
+    u8 Sav2::pouchEntryCount(Pouch pouch) const
+    {
+        switch (pouch)
+        {
+            // the TM/HM pocket is a bytefield for all of the TMs and HMs
+            case Pouch::TM:
+                return 255;
+            case Pouch::NormalItem:
+                return data[OFS_ITEMS] > 20 ? 0 : data[OFS_ITEMS];
+            case Pouch::KeyItem:
+                return data[OFS_KEY_ITEMS] > 26 ? 0 : data[OFS_KEY_ITEMS];
+            case Pouch::Ball:
+                return data[OFS_BALLS] > 12 ? 0 : data[OFS_BALLS];
+            case Pouch::PCItem:
+                return data[OFS_PC_ITEMS] > 50 ? 0 : data[OFS_PC_ITEMS];
+            default:
+                return 0;
+        }
+    }
+    void Sav2::pouchEntryCount(Pouch pouch, u8 v)
+    {
+        switch (pouch)
+        {
+            case Pouch::NormalItem:
+                data[OFS_ITEMS] = v;
+                break;
+            case Pouch::KeyItem:
+                data[OFS_KEY_ITEMS] = v;
+                break;
+            case Pouch::Ball:
+                data[OFS_BALLS] = v;
+                break;
+            case Pouch::PCItem:
+                data[OFS_PC_ITEMS] = v;
+                break;
+            case Pouch::TM:
+            default:
+                return;
+        }
+    }
+
     void Sav2::fixItemLists()
     {
-        // the TM pouch is different and has neither a terminator nor count
+        // the TM pouch has neither a terminator nor a count
 
         u8 count = 0;
         while (count < 20 && item(Pouch::NormalItem, count)->id() != 0)
         {
             count++;
         }
-        data[OFS_ITEMS]                   = count;
+        pouchEntryCount(Pouch::NormalItem, count);
         data[OFS_ITEMS + 1 + (count * 2)] = 0xFF;
 
         count = 0;
-        while (count < 20 && item(Pouch::KeyItem, count)->id() != 0)
+        while (count < 26 && item(Pouch::KeyItem, count)->id() != 0)
         {
             count++;
         }
-        data[OFS_KEY_ITEMS]             = count;
+        pouchEntryCount(Pouch::KeyItem, count);
         data[OFS_KEY_ITEMS + 1 + count] = 0xFF;
 
         count = 0;
-        while (count < 20 && item(Pouch::Ball, count)->id() != 0)
+        while (count < 12 && item(Pouch::Ball, count)->id() != 0)
         {
             count++;
         }
-        data[OFS_BALLS]                   = count;
+        pouchEntryCount(Pouch::Ball, count);
         data[OFS_BALLS + 1 + (count * 2)] = 0xFF;
 
         count = 0;
@@ -809,7 +854,7 @@ namespace pksm
         {
             count++;
         }
-        data[OFS_PC_ITEMS]                   = count;
+        pouchEntryCount(Pouch::PCItem, count);
         data[OFS_PC_ITEMS + 1 + (count * 2)] = 0xFF;
     }
 }

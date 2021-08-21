@@ -128,6 +128,14 @@ namespace pksm
         }
     }
 
+    // do not use, only for use when building a PK2
+    void PK2::languageOverrideLimits(Language v)
+    {
+        japanese = v == Language::JPN;
+        korean = v == Language::KOR;
+        lang = v;
+    }
+
     std::string PK2::otName() const
     {
         return StringUtils::getString2(shiftedData, 48, japanese ? 6 : 11, lang);
