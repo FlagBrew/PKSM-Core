@@ -77,18 +77,14 @@ namespace pksm
 
         [[nodiscard]] std::string_view extension() const override { return ".pk2"; }
 
-        // TODO: below, especially Gen VII
-        [[nodiscard]] std::unique_ptr<PK1> convertToG1(Sav& save) const override { return nullptr; }
-        [[nodiscard]] std::unique_ptr<PK3> convertToG3(Sav& save) const override { return nullptr; }
-        [[nodiscard]] std::unique_ptr<PK4> convertToG4(Sav& save) const override { return nullptr; }
-        [[nodiscard]] std::unique_ptr<PK5> convertToG5(Sav& save) const override { return nullptr; }
-        [[nodiscard]] std::unique_ptr<PK6> convertToG6(Sav& save) const override { return nullptr; }
-        [[nodiscard]] std::unique_ptr<PK7> convertToG7(Sav& save) const override { return nullptr; }
-        [[nodiscard]] std::unique_ptr<PB7> convertToLGPE(Sav& save) const override
-        {
-            return nullptr;
-        }
-        [[nodiscard]] std::unique_ptr<PK8> convertToG8(Sav& save) const override { return nullptr; }
+        [[nodiscard]] std::unique_ptr<PK1> convertToG1(Sav& save) const override;
+        [[nodiscard]] std::unique_ptr<PK3> convertToG3(Sav& save) const override;
+        [[nodiscard]] std::unique_ptr<PK4> convertToG4(Sav& save) const override;
+        [[nodiscard]] std::unique_ptr<PK5> convertToG5(Sav& save) const override;
+        [[nodiscard]] std::unique_ptr<PK6> convertToG6(Sav& save) const override;
+        [[nodiscard]] std::unique_ptr<PK7> convertToG7(Sav& save) const override;
+        // [[nodiscard]] std::unique_ptr<PB7> convertToLGPE(Sav& save) const override;
+        [[nodiscard]] std::unique_ptr<PK8> convertToG8(Sav& save) const override;
 
         [[nodiscard]] std::unique_ptr<PKX> clone(void) const override;
 
@@ -186,7 +182,7 @@ namespace pksm
         void alternativeForm(u16 v) override;
         // u8 shinyLeaf(void) const;
         // void shinyLeaf(u8 v);
-        [[nodiscard]] Nature nature(void) const override { return Nature::Bashful; }
+        [[nodiscard]] Nature nature(void) const override;
         void nature(Nature v) override {}
         // bool hiddenAbility(void) const;
         // void hiddenAbility(bool v);

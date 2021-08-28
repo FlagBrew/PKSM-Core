@@ -1116,7 +1116,6 @@ std::string StringUtils::getTradeOT(pksm::Language lang) {
 }
 
 // TODO: japanese character conversions done by Transporter
-// TODO: trade OT 
 std::string StringUtils::getString1(const u8* data, int ofs, int len, pksm::Language lang)
 {
     if (data[ofs] == 0x5D)
@@ -1246,7 +1245,7 @@ void StringUtils::setString2(u8* data, const std::string_view& v, int ofs, int l
     // we won't reverse-search the maps because that's a LOT of characters to go through, but we will have to search each map regardless
     for (; outPos < std::min((size_t)len, str.size()); outPos++)
     {
-        int index = 0;
+        size_t index = 0;
         while (index < pksm::internal::U2GSC_KOR.size())
         {
             auto& characters = pksm::internal::U2GSC_KOR[index];

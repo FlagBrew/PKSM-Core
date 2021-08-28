@@ -76,18 +76,14 @@ namespace pksm
 
         [[nodiscard]] std::string_view extension() const override { return ".pk1"; }
 
-        // TODO: below, especially Gen VII
-        [[nodiscard]] std::unique_ptr<PK2> convertToG2(Sav& save) const override { return nullptr; }
-        [[nodiscard]] std::unique_ptr<PK3> convertToG3(Sav& save) const override { return nullptr; }
-        [[nodiscard]] std::unique_ptr<PK4> convertToG4(Sav& save) const override { return nullptr; }
-        [[nodiscard]] std::unique_ptr<PK5> convertToG5(Sav& save) const override { return nullptr; }
-        [[nodiscard]] std::unique_ptr<PK6> convertToG6(Sav& save) const override { return nullptr; }
-        [[nodiscard]] std::unique_ptr<PK7> convertToG7(Sav& save) const override { return nullptr; }
-        [[nodiscard]] std::unique_ptr<PB7> convertToLGPE(Sav& save) const override
-        {
-            return nullptr;
-        }
-        [[nodiscard]] std::unique_ptr<PK8> convertToG8(Sav& save) const override { return nullptr; }
+        [[nodiscard]] std::unique_ptr<PK2> convertToG2(Sav& save) const override;
+        [[nodiscard]] std::unique_ptr<PK3> convertToG3(Sav& save) const override;
+        [[nodiscard]] std::unique_ptr<PK4> convertToG4(Sav& save) const override;
+        [[nodiscard]] std::unique_ptr<PK5> convertToG5(Sav& save) const override;
+        [[nodiscard]] std::unique_ptr<PK6> convertToG6(Sav& save) const override;
+        [[nodiscard]] std::unique_ptr<PK7> convertToG7(Sav& save) const override;
+        // [[nodiscard]] std::unique_ptr<PB7> convertToLGPE(Sav& save) const override;
+        [[nodiscard]] std::unique_ptr<PK8> convertToG8(Sav& save) const override;
 
         [[nodiscard]] std::unique_ptr<PKX> clone(void) const override;
 
@@ -181,13 +177,13 @@ namespace pksm
         void nicknamed(bool v) override {}
         [[nodiscard]] bool fatefulEncounter(void) const override { return false; }
         void fatefulEncounter(bool v) override {}
-        [[nodiscard]] Gender gender(void) const override { return Gender::Genderless; }
-        void gender(Gender g) override {}
+        [[nodiscard]] Gender gender(void) const override;
+        void gender(Gender g) override;
         [[nodiscard]] u16 alternativeForm(void) const override { return 0; }
         void alternativeForm(u16 v) override {}
         // u8 shinyLeaf(void) const;
         // void shinyLeaf(u8 v);
-        [[nodiscard]] Nature nature(void) const override { return Nature::Bashful; }
+        [[nodiscard]] Nature nature(void) const override;
         void nature(Nature v) override {}
         // bool hiddenAbility(void) const;
         // void hiddenAbility(bool v);
@@ -274,7 +270,10 @@ namespace pksm
         {
             return PersonalRGBY::type2(u8(species()));
         }
-        [[nodiscard]] inline u8 genderType(void) const override { return 0; }
+        [[nodiscard]] inline u8 genderType(void) const override
+        { 
+            return PersonalGSC::gender(u8(species()));
+        }
         [[nodiscard]] inline u8 baseFriendship(void) const override { return 0; }
         [[nodiscard]] inline u8 baseCatchRate(void) const
         {

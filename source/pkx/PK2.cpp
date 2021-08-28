@@ -33,6 +33,7 @@
 #include "pkx/PK6.hpp"
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
+#include "sav/Sav.hpp"
 #include "utils/ValueConverter.hpp"
 #include "utils/crypto.hpp"
 #include "utils/endian.hpp"
@@ -70,6 +71,227 @@ namespace pksm
         lang = japanese ? Language::JPN : Language::ENG;
 
         shiftedData = data + 3;
+    }
+
+    std::unique_ptr<PK1> PK2::convertToG1(Sav &save) const
+    {
+        auto pk1 = PKX::getPKM<Generation::ONE>(nullptr, japanese ? PK1::JP_LENGTH_WITH_NAMES : PK1::INT_LENGTH_WITH_NAMES);
+
+        pk1->species(species());
+        pk1->TID(TID());
+        pk1->experience(experience());
+        pk1->egg(false);
+        pk1->otFriendship(70);
+        pk1->language(language());
+        pk1->statExperience(Stat::HP, ev(Stat::HP));
+        pk1->statExperience(Stat::ATK, ev(Stat::ATK));
+        pk1->statExperience(Stat::DEF, ev(Stat::DEF));
+        pk1->statExperience(Stat::SPD, ev(Stat::SPD));
+        pk1->statExperience(Stat::SPATK, ev(Stat::SPATK));
+        pk1->move(0, move(0));
+        pk1->move(1, move(1));
+        pk1->move(2, move(2));
+        pk1->move(3, move(3));
+        pk1->PPUp(0, PPUp(0));
+        pk1->PPUp(1, PPUp(1));
+        pk1->PPUp(2, PPUp(2));
+        pk1->PPUp(3, PPUp(3));
+        pk1->iv(Stat::ATK, iv(Stat::ATK));
+        pk1->iv(Stat::DEF, iv(Stat::DEF));
+        pk1->iv(Stat::SPD, iv(Stat::SPD));
+        pk1->iv(Stat::SPATK, iv(Stat::SPATK));
+        pk1->otName(otName());
+        pk1->nickname(nickname());
+        pk1->catchRate(heldItem2());
+
+        pk1->fixMoves();
+        return pk1;
+    }
+
+    std::unique_ptr<PK3> PK2::convertToG3(Sav &save) const
+    {
+        if (auto pk7 = convertToG7(save))
+        {
+            if (auto pk6 = pk7->convertToG6(save))
+            {
+                if (auto pk5 = pk6->convertToG5(save))
+                {
+                    if (auto pk4 = pk5->convertToG4(save))
+                    {
+                        return pk4->convertToG3(save);
+                    }
+                }
+            }
+        }
+        return nullptr;
+    }
+
+    std::unique_ptr<PK4> PK2::convertToG4(Sav &save) const
+    {
+        if (auto pk7 = convertToG7(save))
+        {
+            if (auto pk6 = pk7->convertToG6(save))
+            {
+                if (auto pk5 = pk6->convertToG5(save))
+                {
+                    return pk5->convertToG4(save);
+                }
+            }
+        }
+        return nullptr;
+    }
+
+    std::unique_ptr<PK5> PK2::convertToG5(Sav &save) const
+    {
+        if (auto pk7 = convertToG7(save))
+        {
+            if (auto pk6 = pk7->convertToG6(save))
+            {
+                return pk6->convertToG5(save);
+            }
+        }
+        return nullptr;
+    }
+
+    std::unique_ptr<PK6> PK2::convertToG6(Sav &save) const
+    {
+        if (auto pk7 = convertToG7(save))
+        {
+            return pk7->convertToG6(save);
+        }
+        return nullptr;
+    }
+
+    std::unique_ptr<PK7> PK2::convertToG7(Sav &save) const
+    {
+        auto pk7 = PKX::getPKM<Generation::SEVEN>(nullptr, PK7::BOX_LENGTH);
+
+        pk7->encryptionConstant(randomNumber(0, 0xFFFFFFFF));
+        pk7->species(species());
+        pk7->TID(TID());
+        pk7->experience(experience());
+        pk7->metLevel(level());
+        pk7->nature(nature());
+        pk7->PID(randomNumber(0, 0xFFFFFFFF));
+        pk7->ball(ball());
+        pk7->metDate(Date::today());
+        pk7->version(version());
+
+        // cannot transfer Dizzy Punch
+        pk7->move(0, move(0) == Move::DizzyPunch ? Move::None : move(0));
+        pk7->move(1, move(1) == Move::DizzyPunch ? Move::None : move(1));
+        pk7->move(2, move(2) == Move::DizzyPunch ? Move::None : move(2));
+        pk7->move(3, move(3) == Move::DizzyPunch ? Move::None : move(3));
+        pk7->PPUp(0, PPUp(0));
+        pk7->PPUp(1, PPUp(1));
+        pk7->PPUp(2, PPUp(2));
+        pk7->PPUp(3, PPUp(3));
+
+        pk7->metLocation(0x7541);
+        pk7->gender(gender());
+        pk7->nicknamed(false);
+        pk7->alternativeForm(alternativeForm());
+
+        pk7->currentHandler(1);
+        pk7->htName(save.otName());
+        pk7->htGender(save.gender());
+
+        pk7->consoleRegion(save.consoleRegion());
+        pk7->country(save.country());
+        pk7->region(save.subRegion());
+        pk7->geoCountry(0, save.country());
+        pk7->geoRegion(0, save.subRegion());
+
+        pk7->healPP();
+        pk7->language(language());
+        pk7->nickname(species().localize(pk7->language()));
+        
+        pk7->otFriendship(PersonalSMUSUM::baseFriendship(u16(species())));
+        pk7->htFriendship(pk7->otFriendship());
+
+        if (species() == Species::Mew || species() == Species::Celebi)
+        {
+            u8 imperfectStat = randomNumber(0, 5);
+            u8 imperfectIV = randomNumber(0, 31);
+            for (u8 i = 0; i < 6; i++)
+            {
+                if (i == imperfectStat) pk7->iv(Stat{i}, imperfectIV);
+                else pk7->iv(Stat{i}, 31);
+            }
+        }
+        else
+        {
+            u8 imperfectStats[3] = {0};
+            do {
+                for (u8 i = 0; i < 3; i++)
+                {
+                    imperfectStats[i] = randomNumber(0, 5);
+                }
+            } while (imperfectStats[0] == imperfectStats[1] || imperfectStats[0] == imperfectStats[2] || imperfectStats[1] == imperfectStats[2]);
+            for (u8 i = 0; i < 6; i++)
+            {
+                if (i == imperfectStats[0] || i == imperfectStats[1] || i == imperfectStats[2]) pk7->iv(Stat{i}, randomNumber(0, 31));
+                else pk7->iv(Stat{i}, 31);
+            }
+        }
+
+        if (pk7->shiny() && !shiny())
+        {
+            pk7->PID(pk7->PID() ^ 0x10000000);
+        }
+        else if (!pk7->shiny() && shiny())
+        {
+            pk7->PID(u32(((pk7->TID() ^ (pk7->PID() & 0xFFFF)) << 16) | (pk7->PID() & 0xFFFF)));
+        }
+
+        // always has hidden ability unless it doesn't exist
+        switch (species())
+        {
+            case Species::Gastly:
+            case Species::Haunter:
+            case Species::Gengar:
+            case Species::Koffing:
+            case Species::Weezing:
+            case Species::Mew:
+            case Species::Misdreavus:
+            case Species::Unown:
+            case Species::Celebi:
+                pk7->abilityNumber(1);
+                pk7->ability(pk7->abilities(0));
+                break;
+            default:
+                pk7->abilityNumber(4);
+                pk7->ability(pk7->abilities(2));
+        }
+
+        // TODO: fix nickname
+        if (species() == Species::Mew || species() == Species::Celebi)
+        {
+            pk7->fatefulEncounter(true);
+        }
+        else if (!nicknamed())
+        {
+            pk7->nicknamed(true);
+            pk7->nickname(nickname());
+        }
+
+        pk7->htMemory(4);
+        pk7->htTextVar(0);
+        pk7->htIntensity(1);
+        pk7->htFeeling(randomNumber(0, 9));
+
+        pk7->fixMoves();
+        pk7->refreshChecksum();
+        return pk7;
+    }
+
+    std::unique_ptr<PK8> PK2::convertToG8(Sav &save) const
+    {
+        if (auto pk7 = convertToG7(save))
+        {
+            return pk7->convertToG8(save);
+        }
+        return nullptr;
     }
 
     GameVersion PK2::version() const
@@ -191,6 +413,8 @@ namespace pksm
         shiftedData[8] = v >> 16;
         shiftedData[9] = (v >> 8) & 0x00FF;
         shiftedData[10] = v & 0x0000FF;
+
+        shiftedData[3] = level();
     }
     u8 PK2::otFriendship() const
     {
@@ -303,7 +527,7 @@ namespace pksm
             case 0:
                 return Gender::Male;
             default:
-                return (iv(Stat::ATK) << 4) < genderType() ? Gender::Female : Gender::Male;
+                return iv(Stat::ATK) > (genderType() >> 4) ? Gender::Male : Gender::Female;
         }
     }
     void PK2::gender(Gender g)
@@ -315,7 +539,7 @@ namespace pksm
             case 0:
                 return;
             default:
-                iv(Stat::ATK, g ? (genderType() >> 4) : ((genderType() >> 4) - 1));
+                iv(Stat::ATK, g ? (genderType() >> 4) : ((genderType() >> 4) + 1));
         }
     }
     u16 PK2::alternativeForm() const
@@ -329,6 +553,11 @@ namespace pksm
     void PK2::alternativeForm(u16 v)
     {
         //TODO
+    }
+
+    Nature PK2::nature() const
+    {
+        return Nature{u8(experience() % 25)};
     }
 
     // this data is generated in Crystal, preserved in Gold and Silver
@@ -424,7 +653,7 @@ namespace pksm
     }
     bool PK2::shiny() const
     {
-        return (ev(Stat::DEF) == 10) && (ev(Stat::SPD) == 10) && (ev(Stat::SPATK) == 10) && (((ev(Stat::ATK) & 0x02) >> 1) == 1);
+        return (iv(Stat::DEF) == 10) && (iv(Stat::SPD) == 10) && (iv(Stat::SPATK) == 10) && (((iv(Stat::ATK) & 0x02) >> 1) == 1);
     }
     void PK2::shiny(bool v)
     {
