@@ -452,9 +452,23 @@ namespace pksm
     }
     bool PK1::nicknamed() const
     {
-        std::string target = species().localize(language());
-        return nickname() != StringUtils::toUpper(target);
-        // TODO: fix the fact that this sucks because this would flag every pokemon that's not Japanese, English, or German
+        if (japanese)
+        {
+            std::string target = species().localize(language());
+            return nickname() != StringUtils::toUpper(target);
+        }
+        else
+        {
+            for (u8 i = u8(Language::ENG); i <= u8(Language::SPA); i++)
+            {
+                if (i != u8(Language::UNUSED))
+                {
+                    std::string target = species().localize(Language{i});
+                    if (nickname() == StringUtils::toUpper(target)) return false;
+                }
+            }
+        }
+        return true;
     }
     Gender PK1::gender() const
     {

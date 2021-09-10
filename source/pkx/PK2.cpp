@@ -497,9 +497,23 @@ namespace pksm
     }
     bool PK2::nicknamed() const
     {
-        std::string target = species().localize(language());
-        return nickname() != StringUtils::toUpper(target);
-        // TODO: fix this sucking because it'd falsely flag SPA, FRA, and ITA
+        if (japanese || korean)
+        {
+            std::string target = species().localize(language());
+            return nickname() != StringUtils::toUpper(target);
+        }
+        else
+        {
+            for (u8 i = u8(Language::ENG); i <= u8(Language::SPA); i++)
+            {
+                if (i != u8(Language::UNUSED))
+                {
+                    std::string target = species().localize(Language{i});
+                    if (nickname() == StringUtils::toUpper(target)) return false;
+                }
+            }
+        }
+        return true;
     }
     Gender PK2::gender() const
     {
