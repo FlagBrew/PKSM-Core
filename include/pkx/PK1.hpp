@@ -215,8 +215,8 @@ namespace pksm
         // [[nodiscard]] u8 characteristic(void) const;
 
         void refreshChecksum(void) override {}
-        [[nodiscard]] Type hpType(void) const override { return Type::Normal; }
-        void hpType(Type v) override {}
+        [[nodiscard]] Type hpType(void) const override;
+        void hpType(Type v) override;
         [[nodiscard]] u16 TSV(void) const override { return 0; }
         [[nodiscard]] u16 PSV(void) const override { return 0xFFFF; }
         [[nodiscard]] u8 level(void) const override;
@@ -274,7 +274,7 @@ namespace pksm
         { 
             return PersonalGSC::gender(u8(species()));
         }
-        [[nodiscard]] inline u8 baseFriendship(void) const override { return 0; }
+        [[nodiscard]] inline u8 baseFriendship(void) const override { return 70; }
         [[nodiscard]] inline u8 baseCatchRate(void) const
         {
             return PersonalRGBY::catchRate(u8(species()));

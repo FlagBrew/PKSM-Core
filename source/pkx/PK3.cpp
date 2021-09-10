@@ -25,6 +25,8 @@
  */
 
 #include "pkx/PK3.hpp"
+#include "pkx/PK1.hpp"
+#include "pkx/PK2.hpp"
 #include "pkx/PK4.hpp"
 #include "pkx/PK5.hpp"
 #include "pkx/PK6.hpp"
@@ -450,6 +452,56 @@ namespace pksm
         {
             LittleEndian::convertFrom<u16>(data + 0x58 + u8(stat) * 2, v);
         }
+    }
+
+    std::unique_ptr<PK1> PK3::convertToG1(Sav& save) const
+    {
+        if (auto pk2 = convertToG2(save))
+        {
+            return pk2->convertToG1(save);
+        }
+        return nullptr;
+    }
+
+    std::unique_ptr<PK2> PK3::convertToG2(Sav&) const
+    {
+        auto pk2 = PKX::getPKM<Generation::TWO>(nullptr, japanese() ? PK1::JP_LENGTH_WITH_NAMES : PK1::INT_LENGTH_WITH_NAMES);
+        
+        pk2->species(species());
+        pk2->TID(TID());
+        pk2->experience(experience());
+        pk2->egg(false);
+        pk2->otFriendship(otFriendship());
+        pk2->language(language());
+        
+        // approximate an equivalent stat experience for an ev, by squaring
+        pk2->statExperience(Stat::HP, ev(Stat::HP) * ev(Stat::HP));
+        pk2->statExperience(Stat::ATK, ev(Stat::ATK) * ev(Stat::SPATK));
+        pk2->statExperience(Stat::DEF, ev(Stat::DEF) * ev(Stat::DEF));
+        pk2->statExperience(Stat::SPD, ev(Stat::SPD) * ev(Stat::SPD));
+        pk2->statExperience(Stat::SPATK, ev(Stat::SPATK) * ev(Stat::SPATK));
+
+        pk2->move(0, move(0));
+        pk2->move(1, move(1));
+        pk2->move(2, move(2));
+        pk2->move(3, move(3));
+        pk2->PPUp(0, PPUp(0));
+        pk2->PPUp(1, PPUp(1));
+        pk2->PPUp(2, PPUp(2));
+        pk2->PPUp(3, PPUp(3));
+
+        // approximate an equivalent dv for an iv, by dividing by two
+        // unfortunately the hp dv is determined by the other dvs
+        pk2->iv(Stat::ATK, iv(Stat::ATK) >> 1);
+        pk2->iv(Stat::DEF, iv(Stat::DEF) >> 1);
+        pk2->iv(Stat::SPD, iv(Stat::SPD) >> 1);
+        pk2->iv(Stat::SPATK, iv(Stat::SPATK) >> 1);
+
+        pk2->otName(otName());
+        pk2->nickname(nickname());
+
+        pk2->fixMoves();
+        return pk2;
     }
 
     std::unique_ptr<PK4> PK3::convertToG4(Sav&) const

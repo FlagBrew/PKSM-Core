@@ -110,6 +110,9 @@ namespace StringUtils
     
     std::string getTradeOT(pksm::Language lang);
 
+    pksm::Language guessLanguage12(const std::string_view& v);
+    std::string fixJapaneseNameTransporter(const std::string_view& v);
+
     [[nodiscard]] std::vector<u16> stringToG4(const std::string_view& v);
     std::string& toLower(std::string& in);
     [[nodiscard]] std::string toLower(const std::string_view& in);

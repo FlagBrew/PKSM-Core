@@ -68,6 +68,8 @@ namespace pksm
 
         static u8 getUnownForm(u32 pid);
 
+        [[nodiscard]] std::unique_ptr<PK1> convertToG1(Sav& save) const override;
+        [[nodiscard]] std::unique_ptr<PK2> convertToG2(Sav& save) const override;
         [[nodiscard]] std::unique_ptr<PK4> convertToG4(Sav& save) const override;
         [[nodiscard]] std::unique_ptr<PK5> convertToG5(Sav& save) const override;
         [[nodiscard]] std::unique_ptr<PK6> convertToG6(Sav& save) const override;

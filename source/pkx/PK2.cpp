@@ -24,7 +24,6 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "gui/gui.hpp"
 #include "pkx/PK1.hpp"
 #include "pkx/PK2.hpp"
 #include "pkx/PK3.hpp"
@@ -49,31 +48,11 @@ namespace pksm
         : PKX(dt, japanese ? JP_LENGTH_WITH_NAMES : INT_LENGTH_WITH_NAMES, directAccess)
     {
         this->japanese = japanese;
-
-        /*
-        // detects korean by looking at the first byte of OT name to see if it's a korean codepoint page index
-        if (!japanese)
-        {
-            for (int i = 0; i < 5; i++)
-            {
-                if (dt[PARTY_LENGTH + (2 * i)] <= 0xB)
-                {
-                    korean = true;
-                    break;
-                }
-            }
-        }
-
-        // TODO: other language detection, which involves characters not used in the English keyboard
-        lang = japanese ? Language::JPN : (korean ? Language::KOR : Language::ENG);
-        */
-       
         lang = japanese ? Language::JPN : Language::ENG;
-
         shiftedData = data + 3;
     }
 
-    std::unique_ptr<PK1> PK2::convertToG1(Sav &save) const
+    std::unique_ptr<PK1> PK2::convertToG1(Sav &) const
     {
         auto pk1 = PKX::getPKM<Generation::ONE>(nullptr, japanese ? PK1::JP_LENGTH_WITH_NAMES : PK1::INT_LENGTH_WITH_NAMES);
 
@@ -264,7 +243,6 @@ namespace pksm
                 pk7->ability(pk7->abilities(2));
         }
 
-        // TODO: fix nickname
         if (species() == Species::Mew || species() == Species::Celebi)
         {
             pk7->fatefulEncounter(true);
@@ -272,8 +250,11 @@ namespace pksm
         else if (!nicknamed())
         {
             pk7->nicknamed(true);
-            pk7->nickname(nickname());
+            pk7->nickname(japanese ? StringUtils::fixJapaneseNameTransporter(nickname()) : nickname());
         }
+
+        pk7->otName(japanese ? StringUtils::fixJapaneseNameTransporter(otName()) : otName());
+        pk7->otGender(otGender());
 
         pk7->htMemory(4);
         pk7->htTextVar(0);
@@ -375,6 +356,10 @@ namespace pksm
     {
         shiftedData[0] = u8(v);
         if (!egg()) data[1] = u8(v);
+
+        // do this now rather than never
+        data[0] = 1;
+        data[2] = 0xFF;
     }
 
     u8 PK2::heldItem2() const
@@ -514,7 +499,7 @@ namespace pksm
     {
         std::string target = species().localize(language());
         return nickname() != StringUtils::toUpper(target);
-        // TODO: fix the fact that this sucks because this would flag every pokemon that's not JP, EN, or KOR
+        // TODO: fix this sucking because it'd falsely flag SPA, FRA, and ITA
     }
     Gender PK2::gender() const
     {
@@ -552,7 +537,7 @@ namespace pksm
     }
     void PK2::alternativeForm(u16 v)
     {
-        //TODO
+        // TODO
     }
 
     Nature PK2::nature() const
@@ -636,7 +621,7 @@ namespace pksm
     }
     void PK2::hpType(Type v)
     {
-        //TODO
+        // TODO
     }
 
     u8 PK2::level() const

@@ -65,6 +65,8 @@ namespace pksm
 
         [[nodiscard]] std::string_view extension() const override { return ".pk4"; }
 
+        [[nodiscard]] std::unique_ptr<PK1> convertToG1(Sav& save) const override;
+        [[nodiscard]] std::unique_ptr<PK2> convertToG2(Sav& save) const override;
         [[nodiscard]] std::unique_ptr<PK3> convertToG3(Sav& save) const override;
         [[nodiscard]] std::unique_ptr<PK5> convertToG5(Sav& save) const override;
         [[nodiscard]] std::unique_ptr<PK6> convertToG6(Sav& save) const override;

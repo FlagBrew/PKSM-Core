@@ -25,6 +25,8 @@
  */
 
 #include "pkx/PK5.hpp"
+#include "pkx/PK1.hpp"
+#include "pkx/PK2.hpp"
 #include "pkx/PK3.hpp"
 #include "pkx/PK4.hpp"
 #include "pkx/PK6.hpp"
@@ -803,6 +805,33 @@ namespace pksm
         {
             *(data + 0x8C) = v;
         }
+    }
+
+    std::unique_ptr<PK1> PK5::convertToG1(Sav& save) const
+    {
+        if (auto pk4 = convertToG4(save))
+        {
+            if (auto pk3 = pk4->convertToG3(save))
+            {
+                if (auto pk2 = pk3->convertToG2(save))
+                {
+                    return pk2->convertToG1(save);
+                }
+            }
+        }
+        return nullptr;
+    }
+
+    std::unique_ptr<PK2> PK5::convertToG2(Sav& save) const
+    {
+        if (auto pk4 = convertToG4(save))
+        {
+            if (auto pk3 = pk4->convertToG3(save))
+            {
+                return pk3->convertToG2(save);
+            }
+        }
+        return nullptr;
     }
 
     std::unique_ptr<PK4> PK5::convertToG4(Sav& save) const

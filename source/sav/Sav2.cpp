@@ -24,7 +24,6 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "gui/gui.hpp"
 #include "sav/Sav2.hpp"
 #include "pkx/PK2.hpp"
 #include "pkx/PKX.hpp"
@@ -167,6 +166,8 @@ namespace pksm
                 OFS_GENDER            = 0xFFFFFFFF;
             }
         }
+
+        if (lang == Language::ENG) lang = StringUtils::guessLanguage12(otName());
     }
 
     u32 Sav2::getVersion(std::shared_ptr<u8[]> dt)
@@ -250,11 +251,8 @@ namespace pksm
                 }
             }
             
-            // gets here
             boxCount(i, numPkm);
-            // gets here
-            boxSpecies(i);  // sus
-            // doesn't get here
+            boxSpecies(i);
         }
     }
 
@@ -437,6 +435,7 @@ namespace pksm
         // has to be done now, since you can't do it in the PK2 initializer because of the nullptr case
         auto pk2 = PKX::getPKM<Generation::TWO>(buffer, PK2Length());
         if (language() == Language::KOR) pk2->languageOverrideLimits(Language::KOR);
+        else if (language() != Language::JPN) pk2->language(StringUtils::guessLanguage12(pk2->nickname()));
 
         return pk2;
     }
@@ -461,6 +460,7 @@ namespace pksm
         pk2->updatePartyData();
 
         if (language() == Language::KOR) pk2->language(Language::KOR);
+        else if (language() != Language::JPN) pk2->language(StringUtils::guessLanguage12(pk2->nickname()));
 
         return pk2;
     }

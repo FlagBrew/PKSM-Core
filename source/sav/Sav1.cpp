@@ -43,10 +43,8 @@ namespace pksm
     {
         // checks if two boxes are valid
         japanese     = ((data[0x2ED5] <= 30) && (data[0x2ED5 + 1 + data[0x2ED5]] == 0xFF)) && ((data[0x302D] <= 30) && (data[0x302D + 1 + data[0x302D]] == 0xFF));
-
-        // [French or German] can also be detected by umlaut characters, which aren't in the other
-        // keyboards. And obviously when finding umlauts German would be the first guess. meh later
-        lang         = japanese ? Language::JPN : Language::ENG;
+        
+        lang         = japanese ? Language::JPN : StringUtils::guessLanguage12(otName());
 
         maxPkmInBox  = japanese ? 30 : 20;
         boxSize      = japanese ? 0x566 : 0x462;
@@ -246,7 +244,10 @@ namespace pksm
         std::copy(&data[partyOtNameOffset(slot)], &data[partyOtNameOffset(slot)] + nameLength(), buffer + 3 + PK1::PARTY_LENGTH);
         std::copy(&data[partyNicknameOffset(slot)], &data[partyNicknameOffset(slot)] + nameLength(), buffer + 3 + PK1::PARTY_LENGTH + nameLength());
 
-        return PKX::getPKM<Generation::ONE>(buffer, PK1Length());
+        auto pk1 = PKX::getPKM<Generation::ONE>(buffer, PK1Length());
+        if (language() != Language::JPN) pk1->language(StringUtils::guessLanguage12(pk1->nickname()));
+
+        return pk1;
     }
     std::unique_ptr<PKX> Sav1::pkm(u8 box, u8 slot) const
     {
@@ -263,6 +264,8 @@ namespace pksm
         
         auto pk1 = PKX::getPKM<Generation::ONE>(buffer, PK1Length());
         pk1->updatePartyData();
+        if (language() != Language::JPN) pk1->language(StringUtils::guessLanguage12(pk1->nickname()));
+
         return pk1;
     }
     void Sav1::pkm(const PKX& pk, u8 slot)

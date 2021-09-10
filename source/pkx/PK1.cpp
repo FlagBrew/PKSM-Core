@@ -48,12 +48,11 @@ namespace pksm
         : PKX(dt, japanese ? JP_LENGTH_WITH_NAMES : INT_LENGTH_WITH_NAMES, directAccess)
     {
         this->japanese = japanese;
-        // TODO: other language detection, which involves characters not used in the English keyboard and reading dt
         lang = japanese ? Language::JPN : Language::ENG;
         shiftedData = data + 3;
     }
 
-    std::unique_ptr<PK2> PK1::convertToG2(Sav &save) const
+    std::unique_ptr<PK2> PK1::convertToG2(Sav &) const
     {
         auto pk2 = PKX::getPKM<Generation::TWO>(nullptr, japanese ? PK2::JP_LENGTH_WITH_NAMES : PK2::INT_LENGTH_WITH_NAMES);
 
@@ -189,7 +188,7 @@ namespace pksm
         pk7->metLocation(0x753D);
         pk7->gender(gender());
         pk7->nicknamed(false);
-        pk7->otName(otName());
+        pk7->otName(japanese ? StringUtils::fixJapaneseNameTransporter(otName()) : otName());
 
         pk7->currentHandler(1);
         pk7->htName(save.otName());
@@ -260,7 +259,6 @@ namespace pksm
                 pk7->ability(pk7->abilities(2));
         }
 
-        // TODO: fix nickname
         if (species() == Species::Mew)
         {
             pk7->fatefulEncounter(true);
@@ -268,7 +266,7 @@ namespace pksm
         else if (!nicknamed())
         {
             pk7->nicknamed(true);
-            pk7->nickname(nickname());
+            pk7->nickname(japanese ? StringUtils::fixJapaneseNameTransporter(nickname()) : nickname());
         }
 
         pk7->htMemory(4);
@@ -341,6 +339,10 @@ namespace pksm
         data[1] = v;
         shiftedData[0] = v;
         writeG1Types();
+
+        // do this now rather than never
+        data[0] = 1;
+        data[2] = 0xFF;
     }
 
     Species PK1::species() const
@@ -452,7 +454,7 @@ namespace pksm
     {
         std::string target = species().localize(language());
         return nickname() != StringUtils::toUpper(target);
-        // TODO: fix the fact that this sucks because this would flag every pokemon that's not Japanese or English
+        // TODO: fix the fact that this sucks because this would flag every pokemon that's not Japanese, English, or German
     }
     Gender PK1::gender() const
     {
@@ -477,13 +479,24 @@ namespace pksm
             case 0:
                 return;
             default:
-                iv(Stat::ATK, g ? (genderType() >> 4) : ((genderType() >> 4) + 1));
+                // TODO
+                return;
         }
     }
     Nature PK1::nature() const
     {
         return Nature{u8(experience() % 25)};
     }
+
+    Type PK1::hpType() const
+    {
+        return Type{u8((((iv(Stat::ATK) & 0x3) << 2) | (iv(Stat::DEF) & 0x3)) + 1)};
+    }
+    void PK1::hpType(Type v)
+    {
+        // TODO
+    }
+
     u8 PK1::level() const
     {
         u8 i      = 1;

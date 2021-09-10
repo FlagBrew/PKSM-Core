@@ -25,6 +25,8 @@
  */
 
 #include "pkx/PK7.hpp"
+#include "pkx/PK1.hpp"
+#include "pkx/PK2.hpp"
 #include "pkx/PK3.hpp"
 #include "pkx/PK4.hpp"
 #include "pkx/PK5.hpp"
@@ -685,6 +687,45 @@ namespace pksm
         if (u8(nature()) % 5 + 1 == u8(stat))
             mult--;
         return calc * mult / 10;
+    }
+
+    std::unique_ptr<PK1> PK7::convertToG1(Sav& save) const
+    {
+        if (auto pk6 = convertToG6(save))
+        {
+            if (auto pk5 = pk6->convertToG5(save))
+            {
+                if (auto pk4 = pk5->convertToG4(save))
+                {
+                    if (auto pk3 = pk4->convertToG3(save))
+                    {
+                        if (auto pk2 = pk3->convertToG2(save))
+                        {
+                            return pk2->convertToG1(save);
+                        }
+                    }
+                }
+            }
+        }
+        return nullptr;
+    }
+
+    std::unique_ptr<PK2> PK7::convertToG2(Sav& save) const
+    {
+        if (auto pk6 = convertToG6(save))
+        {
+            if (auto pk5 = pk6->convertToG5(save))
+            {
+                if (auto pk4 = pk5->convertToG4(save))
+                {
+                    if (auto pk3 = pk4->convertToG3(save))
+                    {
+                        return pk3->convertToG2(save);
+                    }
+                }
+            }
+        }
+        return nullptr;
     }
 
     std::unique_ptr<PK3> PK7::convertToG3(Sav& save) const

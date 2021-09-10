@@ -1093,7 +1093,56 @@ void StringUtils::setString3(
     }
 }
 
-std::string StringUtils::getTradeOT(pksm::Language lang) {
+// The only guessable languages are German, Japanese, and Korean, and German is guessable only if an umlaut is found.
+// Japanese and Korean should already be filtered out by this point, so this is essentially "German or not". "not" is returned as English.
+pksm::Language StringUtils::guessLanguage12(const std::string_view& v)
+{
+    std::u16string str = StringUtils::UTF8toUTF16(v);
+    for (int i = 0; i < str.size(); i++)
+    {
+        switch (str[i])
+        {
+            case u'Ä':
+            case u'Ö':
+            case u'Ü':
+            case u'ä':
+            case u'ö':
+            case u'ü':
+                return pksm::Language::GER;
+        }
+    }
+    return pksm::Language::ENG;
+}
+
+std::string StringUtils::fixJapaneseNameTransporter(const std::string_view& v)
+{
+    std::u16string str = StringUtils::UTF8toUTF16(v);
+    std::u16string outStr;
+    for (int i = 0; i < str.size(); i++)
+    {
+        switch (str[i])
+        {
+            case u'ベ':
+                outStr += u'べ';
+                break;
+            case u'ペ':
+                outStr += u'ぺ';
+                break;
+            case u'ヘ':
+                outStr += u'へ';
+                break;
+            case u'リ':
+                outStr += u'り';
+                break;
+            default:
+                outStr += str[i];
+        }
+    }
+    return StringUtils::UTF16toUTF8(outStr);
+}
+
+std::string StringUtils::getTradeOT(pksm::Language lang)
+{
     switch (lang)
     {
         case pksm::Language::JPN:
@@ -1115,7 +1164,6 @@ std::string StringUtils::getTradeOT(pksm::Language lang) {
     }
 }
 
-// TODO: japanese character conversions done by Transporter
 std::string StringUtils::getString1(const u8* data, int ofs, int len, pksm::Language lang)
 {
     if (data[ofs] == 0x5D)
