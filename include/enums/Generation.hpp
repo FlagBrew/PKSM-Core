@@ -42,7 +42,6 @@ namespace pksm
 
         private:
             // values MUST remain consistent
-            // ONE and TWO to have maybe_unused removed in the future
             enum class GenerationEnum : u32
             {
                 ONE                  = 7,

@@ -1098,7 +1098,7 @@ void StringUtils::setString3(
 pksm::Language StringUtils::guessLanguage12(const std::string_view& v)
 {
     std::u16string str = StringUtils::UTF8toUTF16(v);
-    for (int i = 0; i < str.size(); i++)
+    for (u32 i = 0; i < str.size(); i++)
     {
         switch (str[i])
         {
@@ -1118,7 +1118,7 @@ std::string StringUtils::fixJapaneseNameTransporter(const std::string_view& v)
 {
     std::u16string str = StringUtils::UTF8toUTF16(v);
     std::u16string outStr;
-    for (int i = 0; i < str.size(); i++)
+    for (u32 i = 0; i < str.size(); i++)
     {
         switch (str[i])
         {

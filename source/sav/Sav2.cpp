@@ -466,7 +466,6 @@ namespace pksm
     }
     void Sav2::pkm(const PKX& pk, u8 slot)
     {
-        // this and the other one will need Gen II handling
         if (pk.generation() == Generation::TWO &&
             ((pk.language() != Language::JPN) ^ (language() == Language::JPN)) &&
             ((pk.language() != Language::KOR) ^ (language() == Language::KOR)))

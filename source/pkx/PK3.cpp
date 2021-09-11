@@ -476,7 +476,7 @@ namespace pksm
         
         // approximate an equivalent stat experience for an ev, by squaring
         pk2->statExperience(Stat::HP, ev(Stat::HP) * ev(Stat::HP));
-        pk2->statExperience(Stat::ATK, ev(Stat::ATK) * ev(Stat::SPATK));
+        pk2->statExperience(Stat::ATK, ev(Stat::ATK) * ev(Stat::ATK));
         pk2->statExperience(Stat::DEF, ev(Stat::DEF) * ev(Stat::DEF));
         pk2->statExperience(Stat::SPD, ev(Stat::SPD) * ev(Stat::SPD));
         pk2->statExperience(Stat::SPATK, ev(Stat::SPATK) * ev(Stat::SPATK));

@@ -115,12 +115,6 @@ namespace pksm
         [[nodiscard]] Language language(void) const override;
         void language(Language v) override;
         void languageOverrideLimits(Language v);
-        // [[nodiscard]] bool flagIsBadEgg(void) const;
-        // void flagIsBadEgg(bool v);
-        // [[nodiscard]] bool flagHasSpecies(void) const;
-        // void flagHasSpecies(bool v);
-        // [[nodiscard]] bool flagIsEgg(void) const;
-        // void flagIsEgg(bool v);
         [[nodiscard]] std::string otName(void) const override;
         void otName(const std::string_view& v) override;
         [[nodiscard]] u16 markValue(void) const override { return 0; }
@@ -143,8 +137,6 @@ namespace pksm
         void otFriendship(u8 v) override;
         [[nodiscard]] Ability ability(void) const override { return Ability::None; }
         void ability(Ability v) override {}
-        // [[nodiscard]] bool abilityBit(void) const;
-        // void abilityBit(bool v);
 
         // EVs in Gen I and II are u16s
         [[nodiscard]] u8 ev(Stat ev) const override { return 0; }
@@ -157,8 +149,6 @@ namespace pksm
         [[nodiscard]] bool hasRibbon(Ribbon rib) const override { return false; }
         [[nodiscard]] bool ribbon(Ribbon rib) const override { return false; }
         void ribbon(Ribbon rib, bool v) override {}
-        // [[nodiscard]] u8 contestRibbonCount(u8 contest) const;
-        // void contestRibbonCount(u8 contest, u8 count);
 
         [[nodiscard]] Move move(u8 move) const override;
         void move(u8 move, Move v) override;
@@ -180,12 +170,8 @@ namespace pksm
         void gender(Gender g) override;
         [[nodiscard]] u16 alternativeForm(void) const override;
         void alternativeForm(u16 v) override;
-        // u8 shinyLeaf(void) const;
-        // void shinyLeaf(u8 v);
         [[nodiscard]] Nature nature(void) const override;
         void nature(Nature v) override {}
-        // bool hiddenAbility(void) const;
-        // void hiddenAbility(bool v);
 
         [[nodiscard]] bool hyperTrain(Stat) const override { return false; }
         void hyperTrain(Stat, bool) override {}
@@ -216,9 +202,6 @@ namespace pksm
         // 1: Morning, 2: Day, 3: Night
         [[nodiscard]] u8 metTime() const;
         void metTime(u8 v);
-        // [[nodiscard]] u8 encounterType(void) const;
-        // void encounterType(u8 v);
-        // [[nodiscard]] u8 characteristic(void) const;
 
         void refreshChecksum(void) override {}
         [[nodiscard]] Type hpType(void) const override;

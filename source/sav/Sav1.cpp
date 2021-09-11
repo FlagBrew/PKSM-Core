@@ -270,7 +270,6 @@ namespace pksm
     }
     void Sav1::pkm(const PKX& pk, u8 slot)
     {
-        // this and the other one will need Gen II handling
         if (pk.generation() == Generation::ONE && ((pk.language() != Language::JPN) ^ (language() == Language::JPN)))
         {
             auto pk1 = pk.partyClone();
