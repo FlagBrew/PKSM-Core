@@ -40,7 +40,8 @@ namespace pksm
         Language lang;
         GameVersion versionOfGame = GameVersion::RD; // not even PKHeX tries to do better
         u8 maxPkmInBox;
-        u32 boxSize, OFS_PARTY, OFS_BAG, OFS_PC_ITEMS;
+        u16 boxSize, mainDataLength, bankBoxesSize, OFS_DEX_CAUGHT, OFS_DEX_SEEN, OFS_BAG, OFS_MONEY, OFS_BADGES,
+        OFS_TID, OFS_PC_ITEMS, OFS_CURRENT_BOX_INDEX, OFS_HOURS, OFS_PARTY, OFS_CURRENT_BOX, OFS_MAIN_DATA_SUM, OFS_BANK2_BOX_SUMS, OFS_BANK3_BOX_SUMS;
 
         void fixBoxes(void);
 
@@ -49,11 +50,8 @@ namespace pksm
         [[nodiscard]] bool getSeen(Species species) const;
         void setSeen(Species species, bool seen);
 
-        [[nodiscard]] static u8 calculateChecksum(const u8* data, size_t len);
-
     public:
         Sav1(std::shared_ptr<u8[]> data, u32 length);
-        Sav1(std::shared_ptr<u8[]> data);
 
         [[nodiscard]] static Game getVersion(std::shared_ptr<u8[]> dt);
 
@@ -112,7 +110,7 @@ namespace pksm
         void pkm(const PKX& pk, u8 slot) override;
         void pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade) override;
 
-        void trade(PKX& pk, const Date& date = Date::today()) const override;
+        void trade(PKX& pk, const Date& date = Date::today()) const override {}
         [[nodiscard]] std::unique_ptr<PKX> emptyPkm(void) const override;
 
         void dex(const PKX& pk) override;

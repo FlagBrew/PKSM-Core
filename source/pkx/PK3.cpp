@@ -32,6 +32,7 @@
 #include "pkx/PK6.hpp"
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
+#include "sav/Sav.hpp"
 #include "utils/ValueConverter.hpp"
 #include "utils/crypto.hpp"
 #include "utils/endian.hpp"
@@ -463,7 +464,7 @@ namespace pksm
         return nullptr;
     }
 
-    std::unique_ptr<PK2> PK3::convertToG2(Sav&) const
+    std::unique_ptr<PK2> PK3::convertToG2(Sav &save) const
     {
         auto pk2 = PKX::getPKM<Generation::TWO>(nullptr, japanese() ? PK1::JP_LENGTH_WITH_NAMES : PK1::INT_LENGTH_WITH_NAMES);
         
@@ -481,14 +482,18 @@ namespace pksm
         pk2->statExperience(Stat::SPD, ev(Stat::SPD) * ev(Stat::SPD));
         pk2->statExperience(Stat::SPATK, ev(Stat::SPATK) * ev(Stat::SPATK));
 
-        pk2->move(0, move(0));
-        pk2->move(1, move(1));
-        pk2->move(2, move(2));
-        pk2->move(3, move(3));
-        pk2->PPUp(0, PPUp(0));
-        pk2->PPUp(1, PPUp(1));
-        pk2->PPUp(2, PPUp(2));
-        pk2->PPUp(3, PPUp(3));
+        for (int i = 0; i < 4; i++)
+        {
+            if (move(i) > save.maxMove())
+            {
+                pk2->move(i, Move::None);
+            }
+            else
+            {
+                pk2->move(i, move(i));
+                pk2->PPUp(i, PPUp(i));
+            }
+        }
 
         // approximate an equivalent dv for an iv, by dividing by two
         // unfortunately the hp dv is determined by the other dvs

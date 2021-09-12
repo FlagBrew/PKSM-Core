@@ -48,6 +48,8 @@ namespace pksm::crypto
     [[nodiscard]] u16 ccitt16(const u8* buf, size_t len);
     [[nodiscard]] u16 crc16(const u8* buf, size_t len);
     [[nodiscard]] u16 crc16_noinvert(const u8* buf, size_t len);
+    [[nodiscard]] u8 diff8(const u8* buf, size_t len);
+    [[nodiscard]] u16 bytewiseSum16(const u8* buf, size_t len);
     // Length must be a multiple of 4
     [[nodiscard]] u32 sum32(const u8* buf, size_t len);
 

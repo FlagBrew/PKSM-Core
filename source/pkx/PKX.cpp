@@ -647,42 +647,42 @@ namespace pksm
         }
         else
         {
-            size_t boxlen;
+            size_t partylen;
             switch (generation())
             {
                 case Generation::ONE:
-                    boxlen = (language() == Language::JPN ? PK1::JP_LENGTH_WITH_NAMES
+                    partylen = (language() == Language::JPN ? PK1::JP_LENGTH_WITH_NAMES
                                                          : PK1::INT_LENGTH_WITH_NAMES);
                     break;
                 case Generation::TWO:
-                    boxlen = (language() == Language::JPN ? PK2::JP_LENGTH_WITH_NAMES
+                    partylen = (language() == Language::JPN ? PK2::JP_LENGTH_WITH_NAMES
                                                         : PK2::INT_LENGTH_WITH_NAMES);
                     break;
                 case Generation::THREE:
-                    boxlen = PK3::BOX_LENGTH;
+                    partylen = PK3::PARTY_LENGTH;
                     break;
                 case Generation::FOUR:
-                    boxlen = PK4::BOX_LENGTH;
+                    partylen = PK4::PARTY_LENGTH;
                     break;
                 case Generation::FIVE:
-                    boxlen = PK5::BOX_LENGTH;
+                    partylen = PK5::PARTY_LENGTH;
                     break;
                 case Generation::SIX:
-                    boxlen = PK6::BOX_LENGTH;
+                    partylen = PK6::PARTY_LENGTH;
                     break;
                 case Generation::SEVEN:
-                    boxlen = PK7::BOX_LENGTH;
+                    partylen = PK7::PARTY_LENGTH;
                     break;
                 case Generation::LGPE:
-                    boxlen = PB7::BOX_LENGTH;
+                    partylen = PB7::PARTY_LENGTH;
                     break;
                 case Generation::EIGHT:
-                    boxlen = PK8::BOX_LENGTH;
+                    partylen = PK8::PARTY_LENGTH;
                     break;
                 default:
-                    boxlen = 0;
+                    partylen = 0;
             }
-            auto ret = PKX::getPKM(generation(), nullptr, boxlen);
+            auto ret = PKX::getPKM(generation(), nullptr, partylen);
             std::copy(data, data + getLength(), ret->rawData());
             ret->updatePartyData();
             return ret;

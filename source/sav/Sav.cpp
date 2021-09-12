@@ -96,18 +96,18 @@ namespace pksm
     }
     std::unique_ptr<Sav> Sav::checkGBType(std::shared_ptr<u8[]> dt, size_t length)
     {
-        u32 versionAndLanguage = Sav2::getVersion(dt);
+        std::tuple<GameVersion, Language, bool> versionAndLanguage = Sav2::getVersion(dt);
 
-        if ((versionAndLanguage & 0x0000FF) == 1) {
-            return std::make_unique<Sav2>(dt, length, versionAndLanguage >> 8);
+        if (get<2>(versionAndLanguage)) {
+            return std::make_unique<Sav2>(dt, length, versionAndLanguage);
         }
 
         switch (Sav1::getVersion(dt))
         {
             case Game::RGB:
-                return std::make_unique<Sav1>(dt);
+                return std::make_unique<Sav1>(dt, length);
             case Game::Y:
-                return std::make_unique<Sav1>(dt);  // in case anyone wants to
+                return std::make_unique<Sav1>(dt, length);  // in case anyone wants to
             default:
                 return std::unique_ptr<Sav>(nullptr);
         }

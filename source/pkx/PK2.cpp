@@ -52,7 +52,7 @@ namespace pksm
         shiftedData = data + 3;
     }
 
-    std::unique_ptr<PK1> PK2::convertToG1(Sav &) const
+    std::unique_ptr<PK1> PK2::convertToG1(Sav &save) const
     {
         auto pk1 = PKX::getPKM<Generation::ONE>(nullptr, japanese ? PK1::JP_LENGTH_WITH_NAMES : PK1::INT_LENGTH_WITH_NAMES);
 
@@ -62,19 +62,25 @@ namespace pksm
         pk1->egg(false);
         pk1->otFriendship(70);
         pk1->language(language());
-        pk1->statExperience(Stat::HP, ev(Stat::HP));
-        pk1->statExperience(Stat::ATK, ev(Stat::ATK));
-        pk1->statExperience(Stat::DEF, ev(Stat::DEF));
-        pk1->statExperience(Stat::SPD, ev(Stat::SPD));
-        pk1->statExperience(Stat::SPATK, ev(Stat::SPATK));
-        pk1->move(0, move(0));
-        pk1->move(1, move(1));
-        pk1->move(2, move(2));
-        pk1->move(3, move(3));
-        pk1->PPUp(0, PPUp(0));
-        pk1->PPUp(1, PPUp(1));
-        pk1->PPUp(2, PPUp(2));
-        pk1->PPUp(3, PPUp(3));
+        pk1->statExperience(Stat::HP, statExperience(Stat::HP));
+        pk1->statExperience(Stat::ATK, statExperience(Stat::ATK));
+        pk1->statExperience(Stat::DEF, statExperience(Stat::DEF));
+        pk1->statExperience(Stat::SPD, statExperience(Stat::SPD));
+        pk1->statExperience(Stat::SPATK, statExperience(Stat::SPATK));
+
+        for (int i = 0; i < 4; i++)
+        {
+            if (move(i) > save.maxMove())
+            {
+                pk1->move(i, Move::None);
+            }
+            else
+            {
+                pk1->move(i, move(i));
+                pk1->PPUp(i, PPUp(i));
+            }
+        }
+
         pk1->iv(Stat::ATK, iv(Stat::ATK));
         pk1->iv(Stat::DEF, iv(Stat::DEF));
         pk1->iv(Stat::SPD, iv(Stat::SPD));
@@ -235,12 +241,10 @@ namespace pksm
             case Species::Misdreavus:
             case Species::Unown:
             case Species::Celebi:
-                pk7->abilityNumber(1);
-                pk7->ability(pk7->abilities(0));
+                pk7->setAbility(0);
                 break;
             default:
-                pk7->abilityNumber(4);
-                pk7->ability(pk7->abilities(2));
+                pk7->setAbility(2);
         }
 
         if (species() == Species::Mew || species() == Species::Celebi)
@@ -551,7 +555,15 @@ namespace pksm
     }
     void PK2::alternativeForm(u16 v)
     {
-        // TODO
+        if (species() == Species::Unown)
+        {
+            v %= 26;
+            v *= 10;
+            iv(Stat::ATK, (iv(Stat::ATK) & 0x9) | ((v & 0xC0) >> 5));
+            iv(Stat::DEF, (iv(Stat::DEF) & 0x9) | ((v & 0x30) >> 3));
+            iv(Stat::SPD, (iv(Stat::SPD) & 0x9) | ((v & 0x0C) >> 1));
+            iv(Stat::SPATK, (iv(Stat::SPATK) & 0x9) | ((v & 0x03) << 1));
+        }
     }
 
     Nature PK2::nature() const
@@ -635,7 +647,12 @@ namespace pksm
     }
     void PK2::hpType(Type v)
     {
-        // TODO
+        if (v == Type::Normal || v >= Type::Fairy) return;
+
+        u8 noNormal = u8(v) - 1;
+        noNormal %= 16; // just in case
+        iv(Stat::ATK, (iv(Stat::ATK) & 0xC) | (noNormal >> 2));
+        iv(Stat::DEF, (iv(Stat::DEF) & 0xC) | (noNormal & 0x3));
     }
 
     u8 PK2::level() const

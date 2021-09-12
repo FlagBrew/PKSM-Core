@@ -62,11 +62,11 @@ namespace pksm
         pk2->egg(false);
         pk2->otFriendship(pk2->baseFriendship());
         pk2->language(language());
-        pk2->statExperience(Stat::HP, ev(Stat::HP));
-        pk2->statExperience(Stat::ATK, ev(Stat::ATK));
-        pk2->statExperience(Stat::DEF, ev(Stat::DEF));
-        pk2->statExperience(Stat::SPD, ev(Stat::SPD));
-        pk2->statExperience(Stat::SPATK, ev(Stat::SPATK));
+        pk2->statExperience(Stat::HP, statExperience(Stat::HP));
+        pk2->statExperience(Stat::ATK, statExperience(Stat::ATK));
+        pk2->statExperience(Stat::DEF, statExperience(Stat::DEF));
+        pk2->statExperience(Stat::SPD, statExperience(Stat::SPD));
+        pk2->statExperience(Stat::SPATK, statExperience(Stat::SPATK));
         pk2->move(0, move(0));
         pk2->move(1, move(1));
         pk2->move(2, move(2));
@@ -220,12 +220,14 @@ namespace pksm
         else
         {
             u8 imperfectStats[3] = {0};
-            do {
+            do
+            {
                 for (u8 i = 0; i < 3; i++)
                 {
                     imperfectStats[i] = randomNumber(0, 5);
                 }
             } while (imperfectStats[0] == imperfectStats[1] || imperfectStats[0] == imperfectStats[2] || imperfectStats[1] == imperfectStats[2]);
+            
             for (u8 i = 0; i < 6; i++)
             {
                 if (i == imperfectStats[0] || i == imperfectStats[1] || i == imperfectStats[2]) pk7->iv(Stat{i}, randomNumber(0, 31));
@@ -251,12 +253,10 @@ namespace pksm
             case Species::Koffing:
             case Species::Weezing:
             case Species::Mew:
-                pk7->abilityNumber(1);
-                pk7->ability(pk7->abilities(0));
+                pk7->setAbility(0);
                 break;
             default:
-                pk7->abilityNumber(4);
-                pk7->ability(pk7->abilities(2));
+                pk7->setAbility(2);
         }
 
         if (species() == Species::Mew)
@@ -493,8 +493,7 @@ namespace pksm
             case 0:
                 return;
             default:
-                // TODO
-                return;
+                iv(Stat::ATK, g ? (genderType() >> 4) : ((genderType() >> 4) + 1));
         }
     }
     Nature PK1::nature() const
@@ -508,7 +507,12 @@ namespace pksm
     }
     void PK1::hpType(Type v)
     {
-        // TODO
+        if (v <= Type::Normal || v >= Type::Fairy) return;
+
+        u8 noNormal = u8(v) - 1;
+        noNormal %= 16; // just in case
+        iv(Stat::ATK, (iv(Stat::ATK) & 0xC) | (noNormal >> 2));
+        iv(Stat::DEF, (iv(Stat::DEF) & 0xC) | (noNormal & 0x3));
     }
 
     u8 PK1::level() const

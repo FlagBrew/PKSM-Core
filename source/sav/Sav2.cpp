@@ -40,10 +40,10 @@
 namespace pksm
 {
     // the language class and version necessarily need to be found, may as well use them
-    Sav2::Sav2(std::shared_ptr<u8[]> data, u32 length, u16 versionAndLanguage) : Sav(data, length)
+    Sav2::Sav2(std::shared_ptr<u8[]> data, u32 length, std::tuple<GameVersion, Language, bool> versionAndLanguage) : Sav(data, length)
     {
-        versionOfGame = GameVersion{u8(versionAndLanguage >> 8)};
-        lang          = Language(versionAndLanguage & 0x00FF);
+        versionOfGame = get<0>(versionAndLanguage);
+        lang          = get<1>(versionAndLanguage);
         japanese      = lang == Language::JPN;
         korean        = lang == Language::KOR;
         maxPkmInBox   = japanese ? 30 : 20;
@@ -170,48 +170,48 @@ namespace pksm
         if (lang == Language::ENG) lang = StringUtils::guessLanguage12(otName());
     }
 
-    u32 Sav2::getVersion(std::shared_ptr<u8[]> dt)
+    std::tuple<GameVersion, Language, bool> Sav2::getVersion(std::shared_ptr<u8[]> dt)
     {
-        u8 returnVersion  = 0;
-        u8 returnLanguage = 0;
-        u8 saveFound      = 0;
+        GameVersion returnVersion = GameVersion::INVALID;
+        Language returnLanguage   = Language::None;
+        bool saveFound            = false;
 
         if (validList(dt, 0x288A, 20) && validList(dt, 0x2D6C, 20))
         {
-            returnVersion  = u8(GameVersion::GD);
-            returnLanguage = u8(Language::ENG); // as well as all other languages not enumerated
-            saveFound      = 1;
+            returnVersion  = GameVersion::GD;
+            returnLanguage = Language::ENG; // as well as all other languages not enumerated
+            saveFound      = true;
         }
         else if (validList(dt, 0x2865, 20) && validList(dt, 0x2D10, 20))
         {
-            returnVersion  = u8(GameVersion::C);
-            returnLanguage = u8(Language::ENG);
-            saveFound      = 1;
+            returnVersion  = GameVersion::C;
+            returnLanguage = Language::ENG;
+            saveFound      = true;
         }
         else if (validList(dt, 0x2D10, 30))
         {
             if (validList(dt, 0x283E, 30))
             {
-                returnVersion  = u8(GameVersion::GD);
-                returnLanguage = u8(Language::JPN);
-                saveFound      = 1;
+                returnVersion  = GameVersion::GD;
+                returnLanguage = Language::JPN;
+                saveFound      = true;
             }
             else if (validList(dt, 0x281A, 30))
             {
-                returnVersion  = u8(GameVersion::C);
-                returnLanguage = u8(Language::JPN);
-                saveFound      = 1;
+                returnVersion  = GameVersion::C;
+                returnLanguage = Language::JPN;
+                saveFound      = true;
             }
         }
         else if (validList(dt, 0x28CC, 20) && validList(dt, 0x2DAE, 20))
         {
-            returnVersion  = u8(GameVersion::GD);
-            returnLanguage = u8(Language::KOR);
-            saveFound      = 1;
+            returnVersion  = GameVersion::GD;
+            returnLanguage = Language::KOR;
+            saveFound      = true;
         }
         // there is no KOR crystal
 
-        return (returnVersion << 16) | (returnLanguage << 8) | saveFound;
+        return {returnVersion, returnLanguage, saveFound};
     }
 
     bool Sav2::validList(std::shared_ptr<u8[]> dt, size_t ofs, u8 slot)
@@ -256,16 +256,6 @@ namespace pksm
         }
     }
 
-    u16 Sav2::calculateChecksum(u8* start, const u8* end)
-    {
-        u16 sum = 0;
-        while (start <= end)
-        {
-            sum += *(start++);
-        }
-        return sum;
-    }
-
     void Sav2::finishEditing()
     {
         // we just pretend the secondary data copy doesn't exist, it's never used as long as we get
@@ -279,7 +269,7 @@ namespace pksm
 
         // no, i don't know why only the checksum is little-endian. also idk why PKHeX destroys the
         // checksum for the secondary data copy
-        int checksum = calculateChecksum(&data[OFS_TID], &data[OFS_CHECKSUM_END]);
+        u16 checksum = crypto::bytewiseSum16(&data[OFS_TID], &data[OFS_CHECKSUM_END] - &data[OFS_TID] + 1);
         LittleEndian::convertFrom<u16>(&data[OFS_CHECKSUM_ONE], checksum);
         LittleEndian::convertFrom<u16>(&data[OFS_CHECKSUM_TWO], checksum);
     }
@@ -323,8 +313,7 @@ namespace pksm
     Language Sav2::language() const { return lang; }
     void Sav2::language(Language v)
     {
-        if (((lang == Language::JPN) ^ (v != Language::JPN)) &&
-            ((lang == Language::KOR) ^ (v != Language::KOR)))
+        if (((lang == Language::JPN) == (v == Language::JPN)) && ((lang == Language::KOR) == (v == Language::KOR)))
         {
             lang = v;
         }
@@ -423,7 +412,8 @@ namespace pksm
     // species
     std::unique_ptr<PKX> Sav2::pkm(u8 slot) const
     {
-        u8 buffer[PK2Length()] = {0x01, data[OFS_PARTY + 1 + slot], 0xFF};
+        // using the larger of the two sizes to not dynamically allocate
+        u8 buffer[PK2::INT_LENGTH_WITH_NAMES] = {0x01, data[OFS_PARTY + 1 + slot], 0xFF};
 
         std::copy(
             &data[partyOffset(slot)], &data[partyOffset(slot)] + PK2::PARTY_LENGTH, buffer + 3);
@@ -446,7 +436,7 @@ namespace pksm
             return emptyPkm();
         }
 
-        u8 buffer[PK2Length()] = {0x01, data[boxStart(box) + 1 + slot], 0xFF};
+        u8 buffer[PK2::INT_LENGTH_WITH_NAMES] = {0x01, data[boxStart(box) + 1 + slot], 0xFF};
 
         std::copy(
             &data[boxOffset(box, slot)], &data[boxOffset(box, slot)] + PK2::BOX_LENGTH, buffer + 3);
@@ -466,19 +456,23 @@ namespace pksm
     }
     void Sav2::pkm(const PKX& pk, u8 slot)
     {
-        if (pk.generation() == Generation::TWO &&
-            ((pk.language() != Language::JPN) ^ (language() == Language::JPN)) &&
-            ((pk.language() != Language::KOR) ^ (language() == Language::KOR)))
+        if (pk.generation() == Generation::TWO)
         {
             auto pk2 = pk.partyClone();
-            std::copy(pk2->rawData() + 3, pk2->rawData() + 3 + PK2::PARTY_LENGTH,
-                &data[partyOffset(slot)]);
-            std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH,
-                pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(),
-                &data[partyOtNameOffset(slot)]);
-            std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(),
-                pk2->rawData() + 3 + PK2::PARTY_LENGTH + 2 * nameLength(),
-                &data[partyNicknameOffset(slot)]);
+
+            std::copy(pk2->rawData() + 3, pk2->rawData() + 3 + PK2::PARTY_LENGTH, &data[partyOffset(slot)]);
+
+            if (((language() == Language::JPN) != (pk2->language() == Language::JPN)) || ((language() == Language::KOR) != (pk2->language() == Language::KOR)))
+            {
+                pk2->nickname(pk2->species().localize(language()));
+                pk2->otName(StringUtils::getTradeOT(language()));
+            }
+            else
+            {
+                std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH, pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(), &data[partyOtNameOffset(slot)]);
+                std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(), pk2->rawData() + 3 + PK2::PARTY_LENGTH + 2 * nameLength(), &data[partyNicknameOffset(slot)]);
+            }
+
             data[OFS_PARTY + 1 + slot] = pk2->rawData()[1];
         }
     }
@@ -495,19 +489,23 @@ namespace pksm
             {
                 trade(*pk2);
             }
-            std::copy(pk2->rawData() + 3, pk2->rawData() + 3 + PK2::BOX_LENGTH,
-                &data[boxOffset(box, slot)]);
-            std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH,
-                pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(),
-                &data[boxOtNameOffset(box, slot)]);
-            std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(),
-                pk2->rawData() + 3 + PK2::PARTY_LENGTH + 2 * nameLength(),
-                &data[boxNicknameOffset(box, slot)]);
+
+            std::copy(pk2->rawData() + 3, pk2->rawData() + 3 + PK2::BOX_LENGTH, &data[boxOffset(box, slot)]);
+
+            if (((language() == Language::JPN) != (pk2->language() == Language::JPN)) || ((language() == Language::KOR) != (pk2->language() == Language::KOR)))
+            {
+                pk2->nickname(pk2->species().localize(language()));
+                pk2->otName(StringUtils::getTradeOT(language()));
+            }
+            else
+            {
+                std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH, pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(), &data[boxOtNameOffset(box, slot)]);
+                std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(), pk2->rawData() + 3 + PK2::PARTY_LENGTH + 2 * nameLength(), &data[boxNicknameOffset(box, slot)]);
+            }
+
             data[boxStart(box) + 1 + slot] = pk2->rawData()[1];
         }
     }
-
-    void Sav2::trade(PKX& pk, const Date& date) const {}
 
     std::unique_ptr<PKX> Sav2::emptyPkm() const
     {
@@ -532,6 +530,21 @@ namespace pksm
         int flag = u8(species) - 1;
         int ofs  = flag >> 3;
         FlagUtil::setFlag(data.get() + OFS_POKEDEX_CAUGHT, ofs, flag & 7, caught);
+
+        if (species == Species::Unown)
+        {
+            // set the form of Unown seen in the Pokedex to A
+            if (data[OFS_POKEDEX_SEEN + 0x1F + 28] == 0)
+            {
+                data[OFS_POKEDEX_SEEN + 0x1F + 28] = 1;
+            }
+            
+            // set all the caught flags for Unown forms (allegedly to prevent crash)
+            for (int i = 1; i <= 26; i++)
+            {
+                data[OFS_POKEDEX_SEEN + 0x1F + i] = i;
+            }
+        }
     }
     bool Sav2::getSeen(Species species) const
     {
@@ -544,6 +557,12 @@ namespace pksm
         int flag = u8(species) - 1;
         int ofs  = flag >> 3;
         FlagUtil::setFlag(data.get() + OFS_POKEDEX_SEEN, ofs, flag & 7, seen);
+
+        if (species == Species::Unown && data[OFS_POKEDEX_SEEN + 0x1F + 28] == 0)
+        {
+            // set the form of Unown seen in the Pokedex to A
+            data[OFS_POKEDEX_SEEN + 0x1F + 28] = 1; // A
+        }
     }
     int Sav2::dexSeen() const
     {
@@ -616,8 +635,7 @@ namespace pksm
         data[OFS_PARTY]             = count;
     }
 
-    // needs to be fixed after GUI is fixed
-    int Sav2::maxSlot() const { return maxBoxes() * /*(japanese ? 30 : 20)*/ 30; }
+    int Sav2::maxSlot() const { return maxBoxes() * (japanese ? 30 : 20); }
 
     int Sav2::maxBoxes() const { return japanese ? 9 : 14; }
 
