@@ -329,8 +329,10 @@ namespace pksm
     }
     void PK2::language(Language v)
     {
-        if (((lang == Language::JPN) ^ (v != Language::JPN)) && ((lang == Language::KOR) ^ (v != Language::KOR)))
+        // korean has a page for INT characters
+        if (((lang == Language::JPN) == (v == Language::JPN)) && (lang != Language::KOR))
         {
+            korean = v == Language::KOR;
             lang = v;
         }
     }

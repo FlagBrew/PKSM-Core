@@ -422,8 +422,9 @@ namespace pksm
         std::copy(&data[partyNicknameOffset(slot)], &data[partyNicknameOffset(slot)] + nameLength(),
             buffer + 3 + PK2::PARTY_LENGTH + nameLength());
 
-        // has to be done now, since you can't do it in the PK2 initializer because of the nullptr case
         auto pk2 = PKX::getPKM<Generation::TWO>(buffer, PK2Length());
+
+        // has to be done now, since you can't do it in the PK2 initializer because of the nullptr case
         if (language() == Language::KOR) pk2->languageOverrideLimits(Language::KOR);
         else if (language() != Language::JPN) pk2->language(StringUtils::guessLanguage12(pk2->nickname()));
 
@@ -462,16 +463,15 @@ namespace pksm
 
             std::copy(pk2->rawData() + 3, pk2->rawData() + 3 + PK2::PARTY_LENGTH, &data[partyOffset(slot)]);
 
-            if (((language() == Language::JPN) != (pk2->language() == Language::JPN)) || ((language() == Language::KOR) != (pk2->language() == Language::KOR)))
+            // korean has a page for INT characters
+            if (((language() == Language::JPN) != (pk2->language() == Language::JPN)) || ((pk2->language() == Language::KOR) && (language() != Language::KOR)))
             {
                 pk2->nickname(pk2->species().localize(language()));
                 pk2->otName(StringUtils::getTradeOT(language()));
             }
-            else
-            {
-                std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH, pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(), &data[partyOtNameOffset(slot)]);
-                std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(), pk2->rawData() + 3 + PK2::PARTY_LENGTH + 2 * nameLength(), &data[partyNicknameOffset(slot)]);
-            }
+
+            std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH, pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(), &data[partyOtNameOffset(slot)]);
+            std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(), pk2->rawData() + 3 + PK2::PARTY_LENGTH + 2 * nameLength(), &data[partyNicknameOffset(slot)]);
 
             data[OFS_PARTY + 1 + slot] = pk2->rawData()[1];
         }
@@ -492,16 +492,14 @@ namespace pksm
 
             std::copy(pk2->rawData() + 3, pk2->rawData() + 3 + PK2::BOX_LENGTH, &data[boxOffset(box, slot)]);
 
-            if (((language() == Language::JPN) != (pk2->language() == Language::JPN)) || ((language() == Language::KOR) != (pk2->language() == Language::KOR)))
+            if (((language() == Language::JPN) != (pk2->language() == Language::JPN)) || ((pk2->language() == Language::KOR) && (language() != Language::KOR)))
             {
-                pk2->nickname(pk2->species().localize(language()));
+                pk2->nickname(StringUtils::toUpper(pk2->species().localize(language())));
                 pk2->otName(StringUtils::getTradeOT(language()));
             }
-            else
-            {
-                std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH, pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(), &data[boxOtNameOffset(box, slot)]);
-                std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(), pk2->rawData() + 3 + PK2::PARTY_LENGTH + 2 * nameLength(), &data[boxNicknameOffset(box, slot)]);
-            }
+
+            std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH, pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(), &data[boxOtNameOffset(box, slot)]);
+            std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(), pk2->rawData() + 3 + PK2::PARTY_LENGTH + 2 * nameLength(), &data[boxNicknameOffset(box, slot)]);
 
             data[boxStart(box) + 1 + slot] = pk2->rawData()[1];
         }
@@ -635,7 +633,7 @@ namespace pksm
         data[OFS_PARTY]             = count;
     }
 
-    int Sav2::maxSlot() const { return maxBoxes() * (japanese ? 30 : 20); }
+    int Sav2::maxSlot() const { return maxBoxes() * maxPkmInBox; }
 
     int Sav2::maxBoxes() const { return japanese ? 9 : 14; }
 

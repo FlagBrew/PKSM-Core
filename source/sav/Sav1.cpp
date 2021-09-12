@@ -276,7 +276,7 @@ namespace pksm
 
             if ((pk.language() == Language::JPN) != (language() == Language::JPN))
             {
-                pk1->nickname(pk1->species().localize(language()));
+                pk1->nickname(StringUtils::toUpper(pk1->species().localize(language())));
                 pk1->otName(StringUtils::getTradeOT(language()));
             }
             else
@@ -307,14 +307,12 @@ namespace pksm
 
             if ((pk.language() == Language::JPN) != (language() == Language::JPN))
             {
-                pk1->nickname(pk1->species().localize(language()));
+                pk1->nickname(StringUtils::toUpper(pk1->species().localize(language())));
                 pk1->otName(StringUtils::getTradeOT(language()));
             }
-            else
-            {
-                std::copy(pk1->rawData() + 3 + PK1::PARTY_LENGTH, pk1->rawData() + 3 + PK1::PARTY_LENGTH + nameLength(), &data[boxOtNameOffset(box, slot)]);
-                std::copy(pk1->rawData() + 3 + PK1::PARTY_LENGTH + nameLength(), pk1->rawData() + 3 + PK1::PARTY_LENGTH + 2 * nameLength(), &data[boxNicknameOffset(box, slot)]);
-            }
+            
+            std::copy(pk1->rawData() + 3 + PK1::PARTY_LENGTH, pk1->rawData() + 3 + PK1::PARTY_LENGTH + nameLength(), &data[boxOtNameOffset(box, slot)]);
+            std::copy(pk1->rawData() + 3 + PK1::PARTY_LENGTH + nameLength(), pk1->rawData() + 3 + PK1::PARTY_LENGTH + 2 * nameLength(), &data[boxNicknameOffset(box, slot)]);
 
             data[boxStart(box) + 1 + slot] = pk1->rawData()[3];
         }

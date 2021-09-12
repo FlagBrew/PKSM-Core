@@ -315,7 +315,7 @@ namespace pksm
     }
     void PK1::language(Language v)
     {
-        // save data is too different to allow converting anything between japanese and another language
+        // data is too different to allow converting anything between japanese and another language
         if (lang != Language::JPN && v != Language::JPN)
         {
             lang = v;
