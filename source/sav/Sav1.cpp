@@ -276,8 +276,13 @@ namespace pksm
 
             if ((pk.language() == Language::JPN) != (language() == Language::JPN))
             {
-                pk1->nickname(StringUtils::toUpper(pk1->species().localize(language())));
-                pk1->otName(StringUtils::getTradeOT(language()));
+                u8 otName[11] = {0};
+                StringUtils::setString1(otName, StringUtils::getTradeOT(language()), 0, nameLength(), language());
+                u8 nickname[11] = {0};
+                StringUtils::setString1(nickname, StringUtils::toUpper(pk1->species().localize(language())), 0, nameLength(), language());
+
+                std::copy(otName, otName + nameLength(), &data[partyOtNameOffset(slot)]);
+                std::copy(nickname, nickname + nameLength(), &data[partyNicknameOffset(slot)]);
             }
             else
             {
@@ -307,12 +312,19 @@ namespace pksm
 
             if ((pk.language() == Language::JPN) != (language() == Language::JPN))
             {
-                pk1->nickname(StringUtils::toUpper(pk1->species().localize(language())));
-                pk1->otName(StringUtils::getTradeOT(language()));
+                u8 otName[11] = {0};
+                StringUtils::setString1(otName, StringUtils::getTradeOT(language()), 0, nameLength(), language());
+                u8 nickname[11] = {0};
+                StringUtils::setString1(nickname, StringUtils::toUpper(pk1->species().localize(language())), 0, nameLength(), language());
+
+                std::copy(otName, otName + nameLength(), &data[boxOtNameOffset(box, slot)]);
+                std::copy(nickname, nickname + nameLength(), &data[boxNicknameOffset(box, slot)]);
             }
-            
-            std::copy(pk1->rawData() + 3 + PK1::PARTY_LENGTH, pk1->rawData() + 3 + PK1::PARTY_LENGTH + nameLength(), &data[boxOtNameOffset(box, slot)]);
-            std::copy(pk1->rawData() + 3 + PK1::PARTY_LENGTH + nameLength(), pk1->rawData() + 3 + PK1::PARTY_LENGTH + 2 * nameLength(), &data[boxNicknameOffset(box, slot)]);
+            else
+            {
+                std::copy(pk1->rawData() + 3 + PK1::PARTY_LENGTH, pk1->rawData() + 3 + PK1::PARTY_LENGTH + nameLength(), &data[boxOtNameOffset(box, slot)]);
+                std::copy(pk1->rawData() + 3 + PK1::PARTY_LENGTH + nameLength(), pk1->rawData() + 3 + PK1::PARTY_LENGTH + 2 * nameLength(), &data[boxNicknameOffset(box, slot)]);
+            }
 
             data[boxStart(box) + 1 + slot] = pk1->rawData()[3];
         }
