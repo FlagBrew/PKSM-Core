@@ -437,8 +437,8 @@ namespace pksm
     Language PK5::language(void) const { return Language(data[0x17]); }
     void PK5::language(Language v) { data[0x17] = u8(v); }
 
-    u8 PK5::ev(Stat ev) const { return data[0x18 + u8(ev)]; }
-    void PK5::ev(Stat ev, u8 v) { data[0x18 + u8(ev)] = v; }
+    u16 PK5::ev(Stat ev) const { return data[0x18 + u8(ev)]; }
+    void PK5::ev(Stat ev, u16 v) { data[0x18 + u8(ev)] = v; }
 
     u8 PK5::contest(u8 contest) const { return data[0x1E + contest]; }
     void PK5::contest(u8 contest, u8 v) { data[0x1E + contest] = v; }

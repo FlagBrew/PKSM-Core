@@ -382,8 +382,8 @@ namespace pksm
     u16 PK8::alternativeForm(void) const { return LittleEndian::convertTo<u16>(data + 0x24); }
     void PK8::alternativeForm(u16 v) { LittleEndian::convertFrom<u16>(data + 0x24, v); }
 
-    u8 PK8::ev(Stat ev) const { return data[0x26 + u8(ev)]; }
-    void PK8::ev(Stat ev, u8 v) { data[0x26 + u8(ev)] = v; }
+    u16 PK8::ev(Stat ev) const { return data[0x26 + u8(ev)]; }
+    void PK8::ev(Stat ev, u16 v) { data[0x26 + u8(ev)] = v; }
 
     u8 PK8::contest(u8 contest) const { return data[0x2C + contest]; }
     void PK8::contest(u8 contest, u8 v) { data[0x2C + contest] = v; }

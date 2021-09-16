@@ -466,13 +466,18 @@ namespace pksm
             // korean has a page for INT characters
             if (((language() == Language::JPN) != (pk2->language() == Language::JPN)) || ((pk2->language() == Language::KOR) && (language() != Language::KOR)))
             {
-                u8 otName[11] = {0};
-                StringUtils::setString2(otName, StringUtils::getTradeOT(language()), 0, nameLength(), language());
-                u8 nickname[11] = {0};
-                StringUtils::setString2(nickname, StringUtils::toUpper(pk2->species().localize(language())), 0, nameLength(), language());
-
-                std::copy(otName, otName + nameLength(), &data[partyOtNameOffset(slot)]);
-                std::copy(nickname, nickname + nameLength(), &data[partyNicknameOffset(slot)]);
+                StringUtils::setString2(&data[partyNicknameOffset(slot)], StringUtils::toUpper(pk2->species().localize(language())), 0, nameLength(), language());
+                
+                // check if it's the trade ot byte
+                if (pk2->rawData()[3 + PK2::PARTY_LENGTH] == 0x5D)
+                {
+                    data[partyOtNameOffset(slot)] = 0x5D;
+                    data[partyOtNameOffset(slot) + 1] = 0x50;
+                }
+                else
+                {
+                    StringUtils::setString2(&data[partyOtNameOffset(slot)], StringUtils::getTradeOT(language()), 0, nameLength(), language());
+                }
             }
             else
             {
@@ -501,13 +506,17 @@ namespace pksm
 
             if (((language() == Language::JPN) != (pk2->language() == Language::JPN)) || ((pk2->language() == Language::KOR) && (language() != Language::KOR)))
             {
-                u8 otName[11] = {0};
-                StringUtils::setString2(otName, StringUtils::getTradeOT(language()), 0, nameLength(), language());
-                u8 nickname[11] = {0};
-                StringUtils::setString2(nickname, StringUtils::toUpper(pk2->species().localize(language())), 0, nameLength(), language());
-
-                std::copy(otName, otName + nameLength(), &data[boxOtNameOffset(box, slot)]);
-                std::copy(nickname, nickname + nameLength(), &data[boxNicknameOffset(box, slot)]);
+                StringUtils::setString2(&data[boxNicknameOffset(box, slot)], StringUtils::toUpper(pk2->species().localize(language())), 0, nameLength(), language());
+                
+                if (pk2->rawData()[3 + PK2::BOX_LENGTH] == 0x5D)
+                {
+                    data[boxOtNameOffset(box, slot)] = 0x5D;
+                    data[boxOtNameOffset(box, slot) + 1] = 0x50;
+                }
+                else
+                {
+                    StringUtils::setString2(&data[boxOtNameOffset(box, slot)], StringUtils::toUpper(StringUtils::getTradeOT(language())), 0, nameLength(), language());
+                }
             }
             else
             {

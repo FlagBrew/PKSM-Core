@@ -36,27 +36,80 @@
 #include <stdarg.h>
 #include <string.h>
 #include <string>
+#include <type_traits>
 #include <vector>
+
+namespace NumberFormatUtils
+{
+    // Binary-Coded Decimal (BCD) conversions
+    template <typename T>
+    constexpr T BigEndianBCDtoUInteger(const u8* src, size_t arrayLength)
+    {
+        static_assert(std::is_integral_v<T> && std::is_unsigned_v<T>);
+        T out = 0;
+        T j = 1;
+        for (int i = arrayLength - 1; i >= 0; i--, j *= 100)
+        {
+            out += ((src[i] & 0x0F) * j) + (((src[i] & 0xF0) >> 4) * (j * 10));
+        }
+        return out;
+    }
+    template <typename T, size_t arrayLength = sizeof(T)>
+    constexpr std::array<u8, arrayLength> UIntegerToBigEndianBCD(T src)
+    {
+        static_assert(std::is_integral_v<T> && std::is_unsigned_v<T>);
+        std::array<u8, arrayLength> out;
+        for (int i = arrayLength - 1; i >= 0; i--, src /= 100)
+        {
+            out[i] = (((src / 10) % 10) << 4) | (src % 10);
+        }
+        return out;
+    }
+    // Little-Endian BCD stuff is currently (hopefully permanently) unused
+    template <typename T>
+    constexpr T LittleEndianBCDtoUInteger(const u8* src, size_t arrayLength)
+    {
+        static_assert(std::is_integral_v<T> && std::is_unsigned_v<T>);
+        T out = 0;
+        T j = 1;
+        for (int i = 0; i < arrayLength; i++, j *= 100)
+        {
+            out += (((src[i] & 0xF0) >> 4) * j) + ((src[i] & 0x0F) * (j * 10));
+        }
+        return out;
+    }
+    template <typename T, size_t arrayLength = sizeof(T)>
+    constexpr std::array<u8, arrayLength> UIntegerToLittleEndianBCD(T src)
+    {
+        static_assert(std::is_integral_v<T> && std::is_unsigned_v<T>);
+        std::array<u8, arrayLength> out;
+        for (int i = 0; i < arrayLength; i++, src /= 100)
+        {
+            out[i] = ((src % 10) << 4) | ((src / 10) % 10);
+        }
+        return out;
+    }
+}
 
 namespace StringUtils
 {
     // Standard UTF-8/16/32 conversions
-    [[nodiscard]] std::u16string UTF8toUTF16(const std::string_view& src); // done
-    [[nodiscard]] std::string UTF16toUTF8(const std::u16string_view& src); // done
+    [[nodiscard]] std::u16string UTF8toUTF16(const std::string_view& src);
+    [[nodiscard]] std::string UTF16toUTF8(const std::u16string_view& src);
 
-    [[nodiscard]] std::u32string UTF8toUTF32(const std::string_view& src); // done
-    [[nodiscard]] std::string UTF32toUTF8(const std::u32string_view& src); // done
+    [[nodiscard]] std::u32string UTF8toUTF32(const std::string_view& src);
+    [[nodiscard]] std::string UTF32toUTF8(const std::u32string_view& src);
 
-    [[nodiscard]] std::u32string UTF16toUTF32(const std::u16string_view& src); // done
-    [[nodiscard]] std::u16string UTF32toUTF16(const std::u32string_view& src); // done
+    [[nodiscard]] std::u32string UTF16toUTF32(const std::u16string_view& src);
+    [[nodiscard]] std::u16string UTF32toUTF16(const std::u32string_view& src);
 
     // UCS-2 is UTF-16 without the extended codepage(s). This is the format used in recent Pokémon
     // games. It can be seen as the valid UTF-16 codepoints between 0x0000 and 0xFFFF, inclusive.
     // Note that passing a UTF-8 string that contains only codepoints in that region to UTF8toUTF16
     // will also result in a UCS-2 string.
-    [[nodiscard]] std::u16string UTF8toUCS2(const std::string_view& src);     // done
-    [[nodiscard]] std::u16string UTF16toUCS2(const std::u16string_view& src); // done
-    [[nodiscard]] std::u16string UTF32toUCS2(const std::u32string_view& src); // done
+    [[nodiscard]] std::u16string UTF8toUCS2(const std::string_view& src);
+    [[nodiscard]] std::u16string UTF16toUCS2(const std::u16string_view& src);
+    [[nodiscard]] std::u16string UTF32toUCS2(const std::u32string_view& src);
     [[nodiscard]] inline std::string UCS2toUTF8(const std::u16string_view& src)
     {
         return UTF16toUTF8(src);
@@ -70,19 +123,29 @@ namespace StringUtils
         return UTF16toUTF32(src);
     }
 
+    [[nodiscard]] std::pair<std::array<char, 4>, size_t> codepointToUTF8(char32_t codepoint);
+    [[nodiscard]] std::pair<std::array<char16_t, 2>, size_t> codepointToUTF16(char32_t codepoint);
+    [[nodiscard]] u16 codepointToUCS2(char32_t codepoint);
+
+    [[nodiscard]] char32_t UTF8toCodepoint(const char* data, size_t maxSize);
+    [[nodiscard]] char32_t UTF16toCodepoint(const char16_t* data, size_t maxSize);
+    [[nodiscard]] inline char32_t UCS2toCodepoint(const char16_t* data)
+    {
+        return UTF16toCodepoint(data, 1);
+    }
+
     // All of these take a pointer to a buffer with a UCS-2 little-endian char16_t array at data +
     // ofs, terminated by term, and turn them into the format indicated by the method name.
     [[nodiscard]] std::u32string getU32String(
-        const u8* data, int ofs, int len, char16_t term = u'\0'); // done
+        const u8* data, int ofs, int len, char16_t term = u'\0');
     [[nodiscard]] std::u16string getUCS2String(
-        const u8* data, int ofs, int len, char16_t term = u'\0'); // done
+        const u8* data, int ofs, int len, char16_t term = u'\0');
     [[nodiscard]] inline std::u16string getU16String(
         const u8* data, int ofs, int len, char16_t term = u'\0')
     {
         return getUCS2String(data, ofs, len, term);
     }
-    [[nodiscard]] std::string getString(
-        const u8* data, int ofs, int len, char16_t term = u'\0'); // done
+    [[nodiscard]] std::string getString(const u8* data, int ofs, int len, char16_t term = u'\0');
 
     // All of these take a pointer to a buffer with a UCS-2 char16_t array at data + ofs and write
     // the given string to them, replacing unrepresentable codepoints with 0xFFFD, and using
@@ -101,13 +164,15 @@ namespace StringUtils
     [[nodiscard]] std::string getString3(const u8* data, int ofs, int len, bool jp);
     void setString3(u8* data, const std::string_view& v, int ofs, int len, bool jp, int padTo = 0,
         u8 padWith = 0xFF);
-    [[nodiscard]] std::string getString1(const u8* data, int ofs, int len, pksm::Language lang);
-    void setString1(u8* data, const std::string_view& v, int ofs, int len, pksm::Language lang, int padTo = 0,
-        u8 padWith = 0x50);
-    [[nodiscard]] std::string getString2(const u8* data, int ofs, int len, pksm::Language lang);
-    void setString2(u8* data, const std::string_view& v, int ofs, int len, pksm::Language lang, int padTo = 0,
-        u8 padWith = 0x50);
-    
+    [[nodiscard]] std::string getString1(const u8* data, int ofs, int len, pksm::Language lang,
+        bool transporter = false);
+    void setString1(u8* data, const std::string_view& v, int ofs, int len, pksm::Language lang,
+        int padTo = 0, u8 padWith = 0x50);
+    [[nodiscard]] std::string getString2(const u8* data, int ofs, int len, pksm::Language lang,
+        bool transporter = false);
+    void setString2(u8* data, const std::string_view& v, int ofs, int len, pksm::Language lang,
+        int padTo = 0, u8 padWith = 0x50);
+
     std::string getTradeOT(pksm::Language lang);
 
     pksm::Language guessLanguage12(const std::string_view& v);

@@ -118,8 +118,8 @@ namespace pksm
         void gender(Gender g) override;
         u16 alternativeForm(void) const override;
         void alternativeForm(u16 v) override;
-        u8 ev(Stat ev) const override;
-        void ev(Stat ev, u8 v) override;
+        u16 ev(Stat ev) const override;
+        void ev(Stat ev, u16 v) override;
         u8 contest(u8 contest) const override;
         void contest(u8 contest, u8 v) override;
 

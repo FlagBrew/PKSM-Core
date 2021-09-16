@@ -215,7 +215,7 @@ namespace pksm
 
     u8 WB7::otFeeling(void) const { return data[0xE4]; }
 
-    u8 WB7::ev(Stat index) const { return data[0xE5 + u8(index)]; }
+    u16 WB7::ev(Stat index) const { return data[0xE5 + u8(index)]; }
 
     std::string WB7::nickname(Language lang) const
     {

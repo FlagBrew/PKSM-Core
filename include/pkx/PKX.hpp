@@ -120,6 +120,10 @@ namespace pksm
                     return std::make_unique<Pkm>(PrivateConstructor{}, data,
                         length == Pkm::JP_LENGTH_WITH_NAMES, directAccess);
                 }
+                else if (data == nullptr)
+                {
+                    return std::make_unique<Pkm>(PrivateConstructor{}, data, false, directAccess);
+                }
             }
             else
             {
@@ -127,6 +131,10 @@ namespace pksm
                 {
                     return std::make_unique<Pkm>(
                         PrivateConstructor{}, data, length == Pkm::PARTY_LENGTH, directAccess);
+                }
+                else if (data == nullptr)
+                {
+                    return std::make_unique<Pkm>(PrivateConstructor{}, data, false, directAccess);
                 }
             }
             return nullptr;
@@ -213,8 +221,8 @@ namespace pksm
         void gender(Gender g) override                          = 0;
         [[nodiscard]] u16 alternativeForm(void) const override  = 0;
         void alternativeForm(u16 v) override                    = 0;
-        [[nodiscard]] virtual u8 ev(Stat ev) const              = 0;
-        virtual void ev(Stat ev, u8 v)                          = 0;
+        [[nodiscard]] virtual u16 ev(Stat ev) const             = 0;
+        virtual void ev(Stat ev, u16 v)                         = 0;
         [[nodiscard]] virtual u8 contest(u8 contest) const      = 0;
         virtual void contest(u8 contest, u8 v)                  = 0;
         [[nodiscard]] virtual u8 pkrs(void) const               = 0;

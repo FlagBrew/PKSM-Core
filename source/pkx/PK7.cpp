@@ -275,8 +275,8 @@ namespace pksm
     u16 PK7::alternativeForm(void) const { return data[0x1D] >> 3; }
     void PK7::alternativeForm(u16 v) { data[0x1D] = (data[0x1D] & 0x07) | (v << 3); }
 
-    u8 PK7::ev(Stat ev) const { return data[0x1E + u8(ev)]; }
-    void PK7::ev(Stat ev, u8 v) { data[0x1E + u8(ev)] = v; }
+    u16 PK7::ev(Stat ev) const { return data[0x1E + u8(ev)]; }
+    void PK7::ev(Stat ev, u16 v) { data[0x1E + u8(ev)] = v; }
 
     u8 PK7::contest(u8 contest) const { return data[0x24 + contest]; }
     void PK7::contest(u8 contest, u8 v) { data[0x24 + contest] = v; }

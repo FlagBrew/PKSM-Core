@@ -62,11 +62,11 @@ namespace pksm
         pk2->egg(false);
         pk2->otFriendship(pk2->baseFriendship());
         pk2->language(language());
-        pk2->statExperience(Stat::HP, statExperience(Stat::HP));
-        pk2->statExperience(Stat::ATK, statExperience(Stat::ATK));
-        pk2->statExperience(Stat::DEF, statExperience(Stat::DEF));
-        pk2->statExperience(Stat::SPD, statExperience(Stat::SPD));
-        pk2->statExperience(Stat::SPATK, statExperience(Stat::SPATK));
+        pk2->ev(Stat::HP, ev(Stat::HP));
+        pk2->ev(Stat::ATK, ev(Stat::ATK));
+        pk2->ev(Stat::DEF, ev(Stat::DEF));
+        pk2->ev(Stat::SPD, ev(Stat::SPD));
+        pk2->ev(Stat::SPATK, ev(Stat::SPATK));
         pk2->move(0, move(0));
         pk2->move(1, move(1));
         pk2->move(2, move(2));
@@ -266,7 +266,7 @@ namespace pksm
         else if (!nicknamed())
         {
             pk7->nicknamed(true);
-            pk7->nickname(japanese ? StringUtils::fixJapaneseNameTransporter(nickname()) : nickname());
+            pk7->nickname(japanese ? StringUtils::fixJapaneseNameTransporter(nicknameTransporter()) : nicknameTransporter());
         }
 
         pk7->htMemory(4);
@@ -304,6 +304,10 @@ namespace pksm
     std::string PK1::nickname() const
     {
         return StringUtils::getString1(shiftedData, 44 + (japanese ? 6 : 11), japanese ? 6 : 11, lang);
+    }
+    std::string PK1::nicknameTransporter() const
+    {
+        return StringUtils::getString1(shiftedData, 44 + (japanese ? 6 : 11), japanese ? 6 : 11, lang, true);
     }
     void PK1::nickname(const std::string_view& v)
     {
@@ -373,15 +377,15 @@ namespace pksm
         shiftedData[15] = (v >> 8) & 0x00FF;
         shiftedData[16] = v & 0x0000FF;
     }
-    u16 PK1::statExperience(Stat se) const
+    u16 PK1::ev(Stat ev) const
     {
-        if (se == Stat::SPDEF) se = Stat::SPATK;
-        return BigEndian::convertTo<u16>(shiftedData + 17 + 2 * u8(se));
+        if (ev == Stat::SPDEF) ev = Stat::SPATK;
+        return BigEndian::convertTo<u16>(shiftedData + 17 + 2 * u8(ev));
     }
-    void PK1::statExperience(Stat se, u16 v)
+    void PK1::ev(Stat ev, u16 v)
     {
-        if (se == Stat::SPDEF) se = Stat::SPATK;
-        BigEndian::convertFrom<u16>(shiftedData + 17 + 2 * u8(se), v);
+        if (ev == Stat::SPDEF) ev = Stat::SPATK;
+        BigEndian::convertFrom<u16>(shiftedData + 17 + 2 * u8(ev), v);
     }
 
     Move PK1::move(u8 move) const
@@ -573,7 +577,7 @@ namespace pksm
             default:
                 base = 0;
         }
-        u16 EV = u16(std::min(255, int(std::sqrt(statExperience(stat)))) >> 2);
+        u16 EV = u16(std::min(255, int(std::sqrt(ev(stat)))) >> 2);
         u16 mid = u16(((2 * (base + iv(stat)) + EV) * level() / 100) + 5);
         if (stat == Stat::HP) return mid + 5 + level();
         return mid;

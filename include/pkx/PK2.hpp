@@ -111,6 +111,7 @@ namespace pksm
         [[nodiscard]] u16 SID(void) const override { return 0; }
         void SID(u16 v) override {}
         [[nodiscard]] std::string nickname(void) const override;
+        [[nodiscard]] std::string nicknameTransporter(void) const;
         void nickname(const std::string_view& v) override;
         [[nodiscard]] Language language(void) const override;
         void language(Language v) override;
@@ -139,10 +140,8 @@ namespace pksm
         void ability(Ability v) override {}
 
         // EVs in Gen I and II are u16s
-        [[nodiscard]] u8 ev(Stat ev) const override { return 0; }
-        void ev(Stat ev, u8 v) override {}
-        [[nodiscard]] u16 statExperience(Stat se) const;
-        void statExperience(Stat se, u16 v);
+        [[nodiscard]] u16 ev(Stat ev) const override;
+        void ev(Stat ev, u16 v) override;
 
         [[nodiscard]] u8 contest(u8 contest) const override { return 0; }
         void contest(u8 contest, u8 v) override {}

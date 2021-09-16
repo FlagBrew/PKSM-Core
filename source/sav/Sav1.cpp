@@ -172,25 +172,12 @@ namespace pksm
     // why did they use BCD
     u32 Sav1::money() const
     {
-        u32 bcdValue = (BigEndian::convertTo<u16>(&data[OFS_MONEY]) << 8) |
-                       data[OFS_MONEY + 2];
-        return (((bcdValue & 0xF00000) >> 20) * 100000) + (((bcdValue & 0x0F0000) >> 16) * 10000) +
-               (((bcdValue & 0x00F000) >> 12) * 1000) + (((bcdValue & 0x000F00) >> 8) * 100) +
-               (((bcdValue & 0x0000F0) >> 4) * 10) + (bcdValue & 0x00000F);
+        return NumberFormatUtils::BigEndianBCDtoUInteger<u32>(&data[OFS_MONEY], 3);
     }
     void Sav1::money(u32 v)
     {
-        u32 result = 0;
-        if (v > 999999) v = 999999;
-        result |= (v / 100000) << 20;
-        result |= ((v / 10000) % 10) << 16;
-        result |= ((v / 1000) % 10) << 12;
-        result |= ((v / 100) % 10) << 8;
-        result |= ((v / 10) % 10) << 4;
-        result |= v % 10;
-        BigEndian::convertFrom<u16>(
-            &data[OFS_MONEY], u16((result & 0xFFFF00) >> 8));
-        data[OFS_MONEY + 2] = u8(result & 0x0000FF);
+        std::array<u8, 3> bcd = NumberFormatUtils::UIntegerToBigEndianBCD<u32, 3>(v);
+        std::copy(bcd.begin(), bcd.end(), &data[OFS_MONEY]);
     }
     u8 Sav1::badges() const
     {
@@ -276,13 +263,18 @@ namespace pksm
 
             if ((pk.language() == Language::JPN) != (language() == Language::JPN))
             {
-                u8 otName[11] = {0};
-                StringUtils::setString1(otName, StringUtils::getTradeOT(language()), 0, nameLength(), language());
-                u8 nickname[11] = {0};
-                StringUtils::setString1(nickname, StringUtils::toUpper(pk1->species().localize(language())), 0, nameLength(), language());
-
-                std::copy(otName, otName + nameLength(), &data[partyOtNameOffset(slot)]);
-                std::copy(nickname, nickname + nameLength(), &data[partyNicknameOffset(slot)]);
+                StringUtils::setString1(&data[partyNicknameOffset(slot)], StringUtils::toUpper(pk1->species().localize(language())), 0, nameLength(), language());
+                
+                // check if it's the trade ot byte
+                if (pk1->rawData()[3 + PK1::PARTY_LENGTH] == 0x5D)
+                {
+                    data[partyOtNameOffset(slot)] = 0x5D;
+                    data[partyOtNameOffset(slot) + 1] = 0x50;
+                }
+                else
+                {
+                    StringUtils::setString1(&data[partyOtNameOffset(slot)], StringUtils::getTradeOT(language()), 0, nameLength(), language());
+                }
             }
             else
             {
@@ -312,13 +304,17 @@ namespace pksm
 
             if ((pk.language() == Language::JPN) != (language() == Language::JPN))
             {
-                u8 otName[11] = {0};
-                StringUtils::setString1(otName, StringUtils::getTradeOT(language()), 0, nameLength(), language());
-                u8 nickname[11] = {0};
-                StringUtils::setString1(nickname, StringUtils::toUpper(pk1->species().localize(language())), 0, nameLength(), language());
-
-                std::copy(otName, otName + nameLength(), &data[boxOtNameOffset(box, slot)]);
-                std::copy(nickname, nickname + nameLength(), &data[boxNicknameOffset(box, slot)]);
+                StringUtils::setString1(&data[boxNicknameOffset(box, slot)], StringUtils::toUpper(pk1->species().localize(language())), 0, nameLength(), language());
+                
+                if (pk1->rawData()[3 + PK1::BOX_LENGTH] == 0x5D)
+                {
+                    data[boxOtNameOffset(box, slot)] = 0x5D;
+                    data[boxOtNameOffset(box, slot) + 1] = 0x50;
+                }
+                else
+                {
+                    StringUtils::setString1(&data[boxOtNameOffset(box, slot)], StringUtils::toUpper(StringUtils::getTradeOT(language())), 0, nameLength(), language());
+                }
             }
             else
             {

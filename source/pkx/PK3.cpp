@@ -274,8 +274,8 @@ namespace pksm
     u8 PK3::PP(u8 move) const { return data[0x34 + move]; }
     void PK3::PP(u8 move, u8 v) { data[0x34 + move] = v; }
 
-    u8 PK3::ev(Stat ev) const { return data[0x38 + u8(ev)]; }
-    void PK3::ev(Stat ev, u8 v) { data[0x38 + u8(ev)] = v; }
+    u16 PK3::ev(Stat ev) const { return data[0x38 + u8(ev)]; }
+    void PK3::ev(Stat ev, u16 v) { data[0x38 + u8(ev)] = v; }
 
     u8 PK3::contest(u8 contest) const { return data[0x3E + contest]; }
     void PK3::contest(u8 contest, u8 v) { data[0x3E + contest] = v; }
@@ -476,11 +476,11 @@ namespace pksm
         pk2->language(language());
         
         // approximate an equivalent stat experience for an ev, by squaring
-        pk2->statExperience(Stat::HP, ev(Stat::HP) * ev(Stat::HP));
-        pk2->statExperience(Stat::ATK, ev(Stat::ATK) * ev(Stat::ATK));
-        pk2->statExperience(Stat::DEF, ev(Stat::DEF) * ev(Stat::DEF));
-        pk2->statExperience(Stat::SPD, ev(Stat::SPD) * ev(Stat::SPD));
-        pk2->statExperience(Stat::SPATK, ev(Stat::SPATK) * ev(Stat::SPATK));
+        pk2->ev(Stat::HP, ev(Stat::HP) * ev(Stat::HP));
+        pk2->ev(Stat::ATK, ev(Stat::ATK) * ev(Stat::ATK));
+        pk2->ev(Stat::DEF, ev(Stat::DEF) * ev(Stat::DEF));
+        pk2->ev(Stat::SPD, ev(Stat::SPD) * ev(Stat::SPD));
+        pk2->ev(Stat::SPATK, ev(Stat::SPATK) * ev(Stat::SPATK));
 
         for (int i = 0; i < 4; i++)
         {

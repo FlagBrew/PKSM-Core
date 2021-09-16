@@ -386,7 +386,7 @@ namespace pksm
 
     Gender WC8::otGender(void) const { return Gender{data[0x272]}; }
 
-    u8 WC8::ev(Stat index) const { return data[0x273 + u8(index)]; }
+    u16 WC8::ev(Stat index) const { return data[0x273 + u8(index)]; }
 
     u8 WC8::otIntensity(void) const { return data[0x279]; }
 

@@ -151,8 +151,8 @@ namespace pksm
     u16 PB7::alternativeForm(void) const { return data[0x1D] >> 3; }
     void PB7::alternativeForm(u16 v) { data[0x1D] = (data[0x1D] & 0x07) | (v << 3); }
 
-    u8 PB7::ev(Stat ev) const { return data[0x1E + u8(ev)]; }
-    void PB7::ev(Stat ev, u8 v) { data[0x1E + u8(ev)] = v; }
+    u16 PB7::ev(Stat ev) const { return data[0x1E + u8(ev)]; }
+    void PB7::ev(Stat ev, u16 v) { data[0x1E + u8(ev)] = v; }
 
     u8 PB7::awakened(Stat stat) const { return data[0x24 + u8(stat)]; }
     void PB7::awakened(Stat stat, u8 v) { data[0x24 + u8(stat)] = v; }

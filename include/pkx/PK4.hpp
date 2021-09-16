@@ -116,8 +116,8 @@ namespace pksm
         void markValue(u16 v) override;
         [[nodiscard]] Language language(void) const override;
         void language(Language v) override;
-        [[nodiscard]] u8 ev(Stat ev) const override;
-        void ev(Stat ev, u8 v) override;
+        [[nodiscard]] u16 ev(Stat ev) const override;
+        void ev(Stat ev, u16 v) override;
         [[nodiscard]] u8 contest(u8 contest) const override;
         void contest(u8 contest, u8 v) override;
         [[nodiscard]] bool hasRibbon(Ribbon rib) const override;

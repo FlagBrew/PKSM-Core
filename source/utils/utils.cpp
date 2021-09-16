@@ -575,45 +575,10 @@ std::string StringUtils::UTF32toUTF8(const std::u32string_view& src)
 {
     std::string ret;
     ret.reserve(src.size()); // Length *must* be greater than or equal to this.
-    char addChar[5] = {'\0'};
     for (const char32_t codepoint : src)
     {
-        if (codepoint < 0x0000'0080)
-        {
-            addChar[0] = codepoint;
-            addChar[1] = '\0';
-        }
-        else if (codepoint < 0x0000'0800)
-        {
-            addChar[0] = 0xC0 | ((codepoint >> 6) & 0x1F);
-            addChar[1] = 0x80 | (codepoint & 0x3F);
-            addChar[2] = '\0';
-        }
-        else if (codepoint < 0x0001'0000)
-        {
-            addChar[0] = 0xE0 | ((codepoint >> 12) & 0x0F);
-            addChar[1] = 0x80 | ((codepoint >> 6) & 0x3F);
-            addChar[2] = 0x80 | (codepoint & 0x3F);
-            addChar[3] = '\0';
-        }
-        // Current maximum codepoint is defined to be U+10FFFF
-        else if (codepoint < 0x0011'0000)
-        {
-            addChar[0] = 0xF0 | ((codepoint >> 18) & 0x07);
-            addChar[1] = 0x80 | ((codepoint >> 12) & 0x3F);
-            addChar[2] = 0x80 | ((codepoint >> 6) & 0x3F);
-            addChar[3] = 0x80 | (codepoint & 0x3F);
-            addChar[4] = '\0';
-        }
-        else
-        {
-            addChar[0] = 0xE0 | ((0xFFFD >> 12) & 0x1F);
-            addChar[1] = 0x80 | ((0xFFFD >> 6) & 0x3F);
-            addChar[2] = 0x80 | (0xFFFD & 0x3F);
-            addChar[3] = '\0';
-        }
-
-        ret.append(addChar);
+        auto val = codepointToUTF8(codepoint);
+        ret.append(val.first.data(), val.second);
     }
     return ret;
 }
@@ -624,21 +589,8 @@ std::u16string StringUtils::UTF32toUTF16(const std::u32string_view& src)
     ret.reserve(src.size());
     for (char32_t codepoint : src)
     {
-        if (codepoint <= 0x0000'D7FF || (codepoint >= 0x0000'E000 && codepoint < 0x0001'0000))
-        {
-            ret.push_back(codepoint);
-        }
-        // Current maximum codepoint is defined to be U+10FFFF
-        else if (codepoint >= 0x0001'0000 && codepoint < 0x0011'0000)
-        {
-            codepoint -= 0x10000; // Make it fit in 20 bits
-            ret.push_back(0xD800 | ((codepoint >> 10) & 0x03FF));
-            ret.push_back(0xDC00 | (codepoint & 0x03FF));
-        }
-        else
-        {
-            ret.push_back(0xFFFD);
-        }
+        auto val = codepointToUTF16(codepoint);
+        ret.append(val.first.data(), val.second);
     }
     return ret;
 }
@@ -648,16 +600,120 @@ std::u16string StringUtils::UTF32toUCS2(const std::u32string_view& src)
     std::u16string ret;
     for (const char32_t& codepoint : src)
     {
-        if (codepoint <= 0x0000'D7FF || (codepoint >= 0x0000'E000 && codepoint < 0x0001'0000))
-        {
-            ret.push_back(codepoint);
-        }
-        else
-        {
-            ret.push_back(0xFFFD);
-        }
+        ret.push_back(codepointToUCS2(codepoint));
     }
     return ret;
+}
+
+std::pair<std::array<char, 4>, size_t> StringUtils::codepointToUTF8(char32_t codepoint)
+{
+    if (codepoint < 0x0000'0080)
+    {
+        return {{(char)codepoint, 0, 0, 0}, 1};
+    }
+    else if (codepoint < 0x0000'0800)
+    {
+        return {
+            {(char)(0xC0 | ((codepoint >> 6) & 0x1F)), (char)(0x80 | (codepoint & 0x3F)), 0, 0}, 2};
+    }
+    else if (codepoint < 0x0001'0000)
+    {
+        return {{(char)(0xE0 | ((codepoint >> 12) & 0x0F)),
+                    (char)(0x80 | ((codepoint >> 6) & 0x3F)), (char)(0x80 | (codepoint & 0x3F)), 0},
+            3};
+    }
+    // Current maximum codepoint is defined to be U+10FFFF
+    else if (codepoint < 0x0011'0000)
+    {
+        return {
+            {(char)(0xF0 | ((codepoint >> 18) & 0x07)), (char)(0x80 | ((codepoint >> 12) & 0x3F)),
+                (char)(0x80 | ((codepoint >> 6) & 0x3F)), (char)(0x80 | (codepoint & 0x3F))},
+            4};
+    }
+    else
+    {
+        return {{(char)(0xE0 | ((0xFFFD >> 12) & 0x1F)), (char)(0x80 | ((0xFFFD >> 6) & 0x3F)),
+                    (char)(0x80 | (0xFFFD & 0x3F)), 0},
+            3};
+    }
+}
+
+std::pair<std::array<char16_t, 2>, size_t> StringUtils::codepointToUTF16(char32_t codepoint)
+{
+    if (codepoint <= 0x0000'D7FF || (codepoint >= 0x0000'E000 && codepoint < 0x0001'0000))
+    {
+        return {{(u16)codepoint, 0}, 1};
+    }
+    // Current maximum codepoint is defined to be U+10FFFF
+    else if (codepoint >= 0x0001'0000 && codepoint < 0x0011'0000)
+    {
+        codepoint -= 0x10000; // Make it fit in 20 bits
+        return {
+            {(u16)(0xD800 | ((codepoint >> 10) & 0x3FF)), (u16)(0xDC00 | (codepoint & 0x03FF))}, 2};
+    }
+    else
+    {
+        return {{0xFFFD, 0}, 1};
+    }
+}
+
+u16 StringUtils::codepointToUCS2(char32_t codepoint)
+{
+    if (codepoint <= 0x0000'D7FF || (codepoint >= 0x0000'E000 && codepoint < 0x0001'0000))
+    {
+        return codepoint;
+    }
+    else
+    {
+        return 0xFFFD;
+    }
+}
+
+char32_t StringUtils::UTF8toCodepoint(const char* src, size_t maxSize)
+{
+    char32_t codepoint = 0xFFFD;
+    if ((src[0] & 0xF8) == 0xF0 && 3 < maxSize && (src[1] & 0xC0) == 0x80 &&
+        (src[2] & 0xC0) == 0x80 && (src[3] & 0xC0) == 0x80)
+    {
+        codepoint = src[0] & 0x07;
+        codepoint = codepoint << 6 | (src[1] & 0x3F);
+        codepoint = codepoint << 6 | (src[2] & 0x3F);
+        codepoint = codepoint << 6 | (src[3] & 0x3F);
+    }
+    else if ((src[0] & 0xF0) == 0xE0 && 2 < maxSize && (src[1] & 0xC0) == 0x80 &&
+             (src[2] & 0xC0) == 0x80)
+    {
+        codepoint = src[0] & 0x0F;
+        codepoint = codepoint << 6 | (src[1] & 0x3F);
+        codepoint = codepoint << 6 | (src[2] & 0x3F);
+    }
+    else if ((src[0] & 0xE0) == 0xC0 && 1 < maxSize && (src[1] & 0xC0) == 0x80)
+    {
+        codepoint = src[0] & 0x1F;
+        codepoint = codepoint << 6 | (src[1] & 0x3F);
+    }
+    else if (!(src[0] & 0x80))
+    {
+        codepoint = src[0];
+    }
+
+    return codepoint;
+}
+
+char32_t StringUtils::UTF16toCodepoint(const char16_t* src, size_t maxSize)
+{
+    char32_t codepoint = 0xFFFD;
+    if (src[0] <= 0xD7FF || src[0] >= 0xE000)
+    {
+        codepoint = src[0];
+    }
+    else if (((src[0] & 0xFC00) == 0xD800) && 1 < maxSize && ((src[1] & 0xFC00) == 0xDC00))
+    {
+        codepoint = (char32_t(src[0] & 0x03FF) << 10) | (src[1] & 0x03FF);
+        codepoint += 0x10000; // 20->21 bits
+    }
+
+    return codepoint;
 }
 
 std::u32string StringUtils::getU32String(const u8* data, int ofs, int len, char16_t term)
@@ -696,40 +752,11 @@ std::string StringUtils::getString(const u8* data, int ofs, int len, char16_t te
 {
     std::string ret;
     ret.reserve(len);
-    char addChar[4] = {'\0'};
     for (int i = 0; i < len; i++)
     {
         char16_t codeunit = LittleEndian::convertTo<char16_t>(data + ofs + i * 2);
-        if (codeunit == term)
-        {
-            return ret;
-        }
-        else if (codeunit < 0x0080)
-        {
-            addChar[0] = codeunit;
-            addChar[1] = '\0';
-        }
-        else if (codeunit < 0x0800)
-        {
-            addChar[0] = 0xC0 | ((codeunit >> 6) & 0x1F);
-            addChar[1] = 0x80 | (codeunit & 0x3F);
-            addChar[2] = '\0';
-        }
-        else if (codeunit <= 0xD7FF || codeunit >= 0xE000)
-        {
-            addChar[0] = 0xE0 | ((codeunit >> 12) & 0x0F);
-            addChar[1] = 0x80 | ((codeunit >> 6) & 0x3F);
-            addChar[2] = 0x80 | (codeunit & 0x3F);
-            addChar[3] = '\0';
-        }
-        else
-        {
-            addChar[0] = 0xE0 | ((0xFFFD >> 12) & 0x0F);
-            addChar[1] = 0x80 | ((0xFFFD >> 6) & 0x3F);
-            addChar[2] = 0x80 | (0xFFFD & 0x3F);
-            addChar[3] = '\0';
-        }
-        ret.append(addChar);
+        auto val          = codepointToUTF8((char32_t)codeunit);
+        ret.append(val.first.data(), val.second);
     }
     return ret;
 }
@@ -831,7 +858,6 @@ std::string StringUtils::getString4(const u8* data, int ofs, int len)
 {
     std::string output;
     len *= 2;
-    char addChar[4];
     for (u8 i = 0; i < len; i += 2)
     {
         u16 temp = LittleEndian::convertTo<u16>(data + ofs + i);
@@ -848,25 +874,8 @@ std::string StringUtils::getString4(const u8* data, int ofs, int len)
             pksm::internal::G4Chars[std::distance(pksm::internal::G4Values.begin(), found)];
         if (codepoint == 0xFFFF)
             break;
-        if (codepoint < 0x0080)
-        {
-            addChar[0] = codepoint;
-            addChar[1] = '\0';
-        }
-        else if (codepoint < 0x0800)
-        {
-            addChar[0] = 0xC0 | ((codepoint >> 6) & 0x1F);
-            addChar[1] = 0x80 | (codepoint & 0x3F);
-            addChar[2] = '\0';
-        }
-        else
-        {
-            addChar[0] = 0xE0 | ((codepoint >> 12) & 0x0F);
-            addChar[1] = 0x80 | ((codepoint >> 6) & 0x3F);
-            addChar[2] = 0x80 | (codepoint & 0x3F);
-            addChar[3] = '\0';
-        }
-        output.append(addChar);
+        auto val = codepointToUTF8((char32_t)codepoint);
+        output.append(val.first.data(), val.second);
     }
     return output;
 }
@@ -1093,8 +1102,9 @@ void StringUtils::setString3(
     }
 }
 
-// The only guessable languages are German, Japanese, and Korean, and German is guessable only if an umlaut is found.
-// Japanese and Korean should already be filtered out by this point, so this is essentially "German or not". "not" is returned as English.
+// The only guessable languages are German, Japanese, and Korean, and German is guessable only if an
+// umlaut is found. Japanese and Korean should already be filtered out by this point, so this is
+// essentially "German or not". "not" is returned as English.
 pksm::Language StringUtils::guessLanguage12(const std::string_view& v)
 {
     std::u16string str = StringUtils::UTF8toUTF16(v);
@@ -1164,61 +1174,93 @@ std::string StringUtils::getTradeOT(pksm::Language lang)
     }
 }
 
-std::string StringUtils::getString1(const u8* data, int ofs, int len, pksm::Language lang)
+std::string StringUtils::getString1(const u8* data, int ofs, int len, pksm::Language lang, bool transporter)
 {
     if (data[ofs] == 0x5D)
     {
-        return getTradeOT(lang);
+        return transporter ? getTradeOT(lang) : StringUtils::toUpper(getTradeOT(lang));
     }
 
-    auto& characters = lang == pksm::Language::JPN ? pksm::internal::G1_JP : pksm::internal::G1_EN;
     std::u16string outString;
 
-    for (size_t i = 0; i < (size_t)len; i++)
+    if (lang == pksm::Language::JPN)
     {
-        auto pos = characters.find(data[i + ofs]);
-        if (pos != characters.end())
+        for (size_t i = 0; i < (size_t)len; i++)
         {
-            if (pos->second == '\0')
+            auto found = std::find(
+                pksm::internal::G1JPVals.begin(), pksm::internal::G1JPVals.end(), data[i + ofs]);
+            if (found == pksm::internal::G1JPVals.end())
+            {
+                break; // treat invalid character as terminator
+            }
+            char16_t codepoint =
+                pksm::internal::G1JPChars[std::distance(pksm::internal::G1JPVals.begin(), found)];
+            if (codepoint == u'\0')
                 break;
-            if (pos->second == pksm::internal::tradeOTChar)
+            if (codepoint == pksm::internal::tradeOTChar)
                 continue;
-            outString += pos->second;
+
+            outString.push_back(codepoint);
+        }
+    }
+    else
+    {
+        for (size_t i = 0; i < (size_t)len; i++)
+        {
+            auto found = std::find(
+                pksm::internal::G1ENVals.begin(), pksm::internal::G1ENVals.end(), data[i + ofs]);
+            if (found == pksm::internal::G1ENVals.end())
+            {
+                break; // treat invalid character as terminator
+            }
+            char16_t codepoint =
+                pksm::internal::G1ENChars[std::distance(pksm::internal::G1ENVals.begin(), found)];
+            if (codepoint == u'\0')
+                break;
+            if (codepoint == pksm::internal::tradeOTChar)
+                continue;
+
+            outString.push_back(codepoint);
         }
     }
 
     return StringUtils::UTF16toUTF8(outString);
 }
 
-void StringUtils::setString1(u8* data, const std::string_view& v, int ofs, int len, pksm::Language lang, int padTo,
-        u8 padWith)
+void StringUtils::setString1(u8* data, const std::string_view& v, int ofs, int len,
+    pksm::Language lang, int padTo, u8 padWith)
 {
     size_t outPos = 0;
-    if (v == getTradeOT(lang) || v.at(0) == pksm::internal::tradeOTChar)
+    
+    std::u16string str = StringUtils::UTF8toUTF16(v);
+    if (lang == pksm::Language::JPN)
     {
-        data[ofs + outPos] = 0x5D;
-        outPos++;
+        str = StringUtils::toFullWidth(str);
+        
+        for (; outPos < std::min((size_t)len, str.size()); outPos++)
+        {
+            auto found = std::find(pksm::internal::G1JPChars.begin(),
+                pksm::internal::G1JPChars.end(), str[outPos]);
+            if (found == pksm::internal::G1JPChars.end())
+            {
+                break; // treat invalid as terminator
+            }
+            data[ofs + outPos] = pksm::internal::G1JPVals[std::distance(
+                pksm::internal::G1JPChars.begin(), found)];
+        }
     }
     else
     {
-        auto& characters = lang == pksm::Language::JPN ? pksm::internal::G1_JP : pksm::internal::G1_EN;
-        std::u16string str = StringUtils::UTF8toUTF16(v);
-        if (lang == pksm::Language::JPN) str = StringUtils::toFullWidth(str);
-
         for (; outPos < std::min((size_t)len, str.size()); outPos++)
         {
-            u16 codePoint = 256;
-            for (auto it = characters.begin(); it != characters.end(); it++)
+            auto found = std::find(pksm::internal::G1ENChars.begin(),
+                pksm::internal::G1ENChars.end(), str[outPos]);
+            if (found == pksm::internal::G1ENChars.end())
             {
-                if (it->second == str[outPos])
-                {
-                    codePoint = it->first;
-                }
+                break; // treat invalid as terminator
             }
-            if (codePoint < 256)
-            {
-                data[ofs + outPos] = codePoint;
-            }
+            data[ofs + outPos] = pksm::internal::G1ENVals[std::distance(
+                pksm::internal::G1ENChars.begin(), found)];
         }
     }
 
@@ -1234,10 +1276,12 @@ void StringUtils::setString1(u8* data, const std::string_view& v, int ofs, int l
     }
 }
 
-std::string StringUtils::getString2(const u8* data, int ofs, int len, pksm::Language lang)
+std::string StringUtils::getString2(const u8* data, int ofs, int len, pksm::Language lang, bool transporter)
 {
-    // every language other than KOR is the same as last gen, and as well the case of the trade ot char is handled there
-    if (lang != pksm::Language::KOR || data[ofs] == 0x5D) return getString1(data, ofs, len, lang);
+    // every language other than KOR is the same as last gen, and as well the case of the trade ot
+    // char is handled there
+    if (lang != pksm::Language::KOR || data[ofs] == 0x5D)
+        return getString1(data, ofs, len, lang, transporter);
 
     std::u16string outString;
     size_t inPos = 0;
@@ -1246,80 +1290,85 @@ std::string StringUtils::getString2(const u8* data, int ofs, int len, pksm::Lang
     {
         if (data[ofs + inPos] <= 0xB)
         {
-            auto& characters = pksm::internal::GSC2U_KOR[data[ofs + inPos++]];
-            auto pos = characters.find(data[ofs + inPos]);
-            if (pos != characters.end())
+            auto found = std::find(pksm::internal::G2KORVals.begin(),
+                pksm::internal::G2KORVals.end(), BigEndian::convertTo<u16>(data + ofs + inPos));
+            if (found == pksm::internal::G2KORVals.end())
             {
-                outString += pos->second;
+                break; // treat invalid value as terminator
             }
+
+            inPos += 2;
+
+            outString.push_back(pksm::internal::G2KORChars[std::distance(
+                pksm::internal::G2KORVals.begin(), found)]);
         }
-        else {
-            auto& characters = pksm::internal::G1_EN;
-            auto pos = characters.find(data[ofs + inPos]);
-            if (pos != characters.end())
+        else
+        {
+            auto found = std::find(pksm::internal::G1ENVals.begin(), pksm::internal::G1ENVals.end(),
+                data[ofs + inPos]);
+            if (found == pksm::internal::G1ENVals.end())
             {
-                if (pos->second == '\0')
-                    break;
-                if (pos->second == pksm::internal::tradeOTChar)
-                    continue;
-                outString += pos->second;
+                break; // treat invalid value as terminator
             }
+
+            inPos++;
+
+            char16_t codepoint =
+                pksm::internal::G1ENChars[std::distance(pksm::internal::G1ENVals.begin(), found)];
+
+            if (codepoint == u'\0')
+            {
+                break;
+            }
+            else if (codepoint == pksm::internal::tradeOTChar)
+            {
+                continue;
+            }
+
+            outString.push_back(codepoint);
         }
-        inPos++;
     }
 
     return StringUtils::UTF16toUTF8(outString);
 }
 
-void StringUtils::setString2(u8* data, const std::string_view& v, int ofs, int len, pksm::Language lang, int padTo,
-    u8 padWith)
+void StringUtils::setString2(u8* data, const std::string_view& v, int ofs, int len,
+    pksm::Language lang, int padTo, u8 padWith)
 {
-    if (lang != pksm::Language::KOR || v == getTradeOT(lang) || v.at(0) == pksm::internal::tradeOTChar) 
+    if (lang != pksm::Language::KOR)
     {
         setString1(data, v, ofs, len, lang, padTo, padWith);
         return;
     }
 
-    // fun fact: this sucks
-
-    size_t outPos = 0;
+    size_t inPos       = 0;
+    size_t outPos      = 0;
     std::u16string str = StringUtils::UTF8toUTF16(v);
     StringUtils::toFullWidth(str);
-    auto& charactersEN = pksm::internal::G1_EN;
 
-    // this needs to be declared now so the compiler and IDE don't throw a fit when goto skips a declaration
-    u16 codePoint;
-
-    // we won't reverse-search the maps because that's a LOT of characters to go through, but we will have to search each map regardless
     for (; outPos < std::min((size_t)len, str.size()); outPos++)
     {
-        size_t index = 0;
-        while (index < pksm::internal::U2GSC_KOR.size())
+        auto found = std::find(
+            pksm::internal::G2KORChars.begin(), pksm::internal::G2KORChars.end(), str[inPos++]);
+        if (found == pksm::internal::G2KORChars.end())
         {
-            auto& characters = pksm::internal::U2GSC_KOR[index];
-            auto pos = characters.find(str[outPos]);
-            if (pos != characters.end())
+            auto found = std::find(
+                pksm::internal::G1ENChars.begin(), pksm::internal::G1ENChars.end(), str[inPos - 1]);
+            if (found == pksm::internal::G1ENChars.end())
             {
-                data[ofs + outPos++] = index;
-                data[ofs + outPos] = pos->second;
-                goto outerLoop;
+                break; // treat invalid character as terminator
             }
-        }
-        
-        codePoint = 256;
-        for (auto it = charactersEN.begin(); it != charactersEN.end(); it++)
-        {
-            if (it->second == str[outPos])
-            {
-                codePoint = it->first;
-            }
-        }
-        if (codePoint < 256)
-        {
-            data[ofs + outPos] = codePoint;
-        }
 
-        outerLoop:;
+            data[ofs + outPos] =
+                pksm::internal::G1ENVals[std::distance(pksm::internal::G1ENChars.begin(), found)];
+        }
+        else
+        {
+            u16 val =
+                pksm::internal::G2KORVals[std::distance(pksm::internal::G2KORChars.begin(), found)];
+            BigEndian::convertFrom<u16>(data, val);
+            outPos++; // needs to be incremented twice, not just once
+        }
     }
 
     if (outPos < (size_t)len)
