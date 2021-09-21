@@ -1267,6 +1267,7 @@ void StringUtils::setString1(u8* data, const std::string_view& v, int ofs, int l
     if (outPos < (size_t)len)
     {
         data[ofs + outPos] = 0x50;
+        outPos++;
     }
 
     while (outPos < (size_t)padTo)
@@ -1374,6 +1375,7 @@ void StringUtils::setString2(u8* data, const std::string_view& v, int ofs, int l
     if (outPos < (size_t)len)
     {
         data[ofs + outPos] = 0x50;
+        outPos++;
     }
 
     while (outPos < (size_t)padTo)
