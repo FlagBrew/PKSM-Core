@@ -39,58 +39,6 @@
 #include <type_traits>
 #include <vector>
 
-namespace NumberFormatUtils
-{
-    // Binary-Coded Decimal (BCD) conversions
-    template <typename T>
-    constexpr T BigEndianBCDtoUInteger(const u8* src, size_t arrayLength)
-    {
-        static_assert(std::is_integral_v<T> && std::is_unsigned_v<T>);
-        T out = 0;
-        T j = 1;
-        for (int i = arrayLength - 1; i >= 0; i--, j *= 100)
-        {
-            out += ((src[i] & 0x0F) * j) + (((src[i] & 0xF0) >> 4) * (j * 10));
-        }
-        return out;
-    }
-    template <typename T, size_t arrayLength = sizeof(T)>
-    constexpr std::array<u8, arrayLength> UIntegerToBigEndianBCD(T src)
-    {
-        static_assert(std::is_integral_v<T> && std::is_unsigned_v<T>);
-        std::array<u8, arrayLength> out;
-        for (int i = arrayLength - 1; i >= 0; i--, src /= 100)
-        {
-            out[i] = (((src / 10) % 10) << 4) | (src % 10);
-        }
-        return out;
-    }
-    // Little-Endian BCD stuff is currently (hopefully permanently) unused
-    template <typename T>
-    constexpr T LittleEndianBCDtoUInteger(const u8* src, size_t arrayLength)
-    {
-        static_assert(std::is_integral_v<T> && std::is_unsigned_v<T>);
-        T out = 0;
-        T j = 1;
-        for (int i = 0; i < arrayLength; i++, j *= 100)
-        {
-            out += (((src[i] & 0xF0) >> 4) * j) + ((src[i] & 0x0F) * (j * 10));
-        }
-        return out;
-    }
-    template <typename T, size_t arrayLength = sizeof(T)>
-    constexpr std::array<u8, arrayLength> UIntegerToLittleEndianBCD(T src)
-    {
-        static_assert(std::is_integral_v<T> && std::is_unsigned_v<T>);
-        std::array<u8, arrayLength> out;
-        for (int i = 0; i < arrayLength; i++, src /= 100)
-        {
-            out[i] = ((src % 10) << 4) | ((src / 10) % 10);
-        }
-        return out;
-    }
-}
-
 namespace StringUtils
 {
     // Standard UTF-8/16/32 conversions

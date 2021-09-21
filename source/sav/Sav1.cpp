@@ -171,12 +171,11 @@ namespace pksm
     // why did they use BCD
     u32 Sav1::money() const
     {
-        return NumberFormatUtils::BigEndianBCDtoUInteger<u32>(&data[OFS_MONEY], 3);
+        return BigEndian::BCDtoUInteger<u32, 3>(&data[OFS_MONEY]);
     }
     void Sav1::money(u32 v)
     {
-        std::array<u8, 3> bcd = NumberFormatUtils::UIntegerToBigEndianBCD<u32, 3>(v);
-        std::copy(bcd.begin(), bcd.end(), &data[OFS_MONEY]);
+        BigEndian::UIntegerToBCD<u32, 3>(&data[OFS_MONEY], v);
     }
     u8 Sav1::badges() const
     {
