@@ -1174,6 +1174,21 @@ std::string StringUtils::getTradeOT(pksm::Language lang)
     }
 }
 
+void StringUtils::gbStringFailsafe(u8* data, int ofs, int len)
+{
+    if (data[ofs + len] != 0x50)
+    {
+        if (std::find(&data[ofs], &data[ofs + len], 0x50) == &data[ofs + len])
+        {
+            data[ofs + len] = 0x50;
+        }
+        else if (data[ofs + len] != 0)
+        {
+            data[ofs + len] = 0;
+        }
+    }
+}
+
 std::string StringUtils::getString1(const u8* data, int ofs, int len, pksm::Language lang, bool transporter)
 {
     if (data[ofs] == 0x5D)
@@ -1275,6 +1290,8 @@ void StringUtils::setString1(u8* data, const std::string_view& v, int ofs, int l
         data[ofs + outPos] = padWith;
         outPos++;
     }
+
+    StringUtils::gbStringFailsafe(data, ofs, len);
 }
 
 std::string StringUtils::getString2(const u8* data, int ofs, int len, pksm::Language lang, bool transporter)
@@ -1383,4 +1400,6 @@ void StringUtils::setString2(u8* data, const std::string_view& v, int ofs, int l
         data[ofs + outPos] = padWith;
         outPos++;
     }
+    
+    StringUtils::gbStringFailsafe(data, ofs, len);
 }

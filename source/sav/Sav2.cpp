@@ -422,6 +422,9 @@ namespace pksm
         std::copy(&data[partyNicknameOffset(slot)], &data[partyNicknameOffset(slot)] + nameLength(),
             buffer + 3 + PK2::PARTY_LENGTH + nameLength());
 
+        StringUtils::gbStringFailsafe(buffer, 3 + PK2::PARTY_LENGTH, nameLength());
+        StringUtils::gbStringFailsafe(buffer, 3 + PK2::PARTY_LENGTH + nameLength(), nameLength());
+
         auto pk2 = PKX::getPKM<Generation::TWO>(buffer, PK2Length());
 
         // has to be done now, since you can't do it in the PK2 initializer because of the nullptr case
@@ -446,6 +449,9 @@ namespace pksm
         std::copy(&data[boxNicknameOffset(box, slot)],
             &data[boxNicknameOffset(box, slot)] + nameLength(),
             buffer + 3 + PK2::PARTY_LENGTH + nameLength());
+
+        StringUtils::gbStringFailsafe(buffer, 3 + PK2::PARTY_LENGTH, nameLength());
+        StringUtils::gbStringFailsafe(buffer, 3 + PK2::PARTY_LENGTH + nameLength(), nameLength());
 
         auto pk2 = PKX::getPKM<Generation::TWO>(buffer, PK2Length());
         pk2->updatePartyData();

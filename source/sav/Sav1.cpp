@@ -165,8 +165,7 @@ namespace pksm
     }
     void Sav1::otName(const std::string_view& v)
     {
-        StringUtils::setString1(
-            data.get(), v, 0x2598, japanese ? 6 : 8, lang);
+        StringUtils::setString1(data.get(), v, 0x2598, japanese ? 6 : 8, lang);
     }
 
     // why did they use BCD
@@ -229,6 +228,9 @@ namespace pksm
         std::copy(&data[partyOtNameOffset(slot)], &data[partyOtNameOffset(slot)] + nameLength(), buffer + 3 + PK1::PARTY_LENGTH);
         std::copy(&data[partyNicknameOffset(slot)], &data[partyNicknameOffset(slot)] + nameLength(), buffer + 3 + PK1::PARTY_LENGTH + nameLength());
 
+        StringUtils::gbStringFailsafe(buffer, 3 + PK1::PARTY_LENGTH, nameLength());
+        StringUtils::gbStringFailsafe(buffer, 3 + PK1::PARTY_LENGTH + nameLength(), nameLength());
+
         auto pk1 = PKX::getPKM<Generation::ONE>(buffer, PK1Length());
         if (language() != Language::JPN) pk1->language(StringUtils::guessLanguage12(pk1->nickname()));
 
@@ -247,6 +249,9 @@ namespace pksm
         std::copy(&data[boxOtNameOffset(box, slot)], &data[boxOtNameOffset(box, slot)] + nameLength(), buffer + 3 + PK1::PARTY_LENGTH);
         std::copy(&data[boxNicknameOffset(box, slot)], &data[boxNicknameOffset(box, slot)] + nameLength(), buffer + 3 + PK1::PARTY_LENGTH + nameLength());
         
+        StringUtils::gbStringFailsafe(buffer, 3 + PK1::PARTY_LENGTH, nameLength());
+        StringUtils::gbStringFailsafe(buffer, 3 + PK1::PARTY_LENGTH + nameLength(), nameLength());
+
         auto pk1 = PKX::getPKM<Generation::ONE>(buffer, PK1Length());
         pk1->updatePartyData();
         if (language() != Language::JPN) pk1->language(StringUtils::guessLanguage12(pk1->nickname()));
