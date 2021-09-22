@@ -1176,15 +1176,15 @@ std::string StringUtils::getTradeOT(pksm::Language lang)
 
 void StringUtils::gbStringFailsafe(u8* data, int ofs, int len)
 {
-    if (data[ofs + len] != 0x50)
+    if (data[ofs + len - 1] != 0x50)
     {
         if (std::find(&data[ofs], &data[ofs + len], 0x50) == &data[ofs + len])
         {
-            data[ofs + len] = 0x50;
+            data[ofs + len - 1] = 0x50;
         }
-        else if (data[ofs + len] != 0)
+        else if (data[ofs + len - 1] != 0)
         {
-            data[ofs + len] = 0;
+            data[ofs + len - 1] = 0;
         }
     }
 }

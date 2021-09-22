@@ -351,12 +351,12 @@ namespace pksm
         return sum;
     }
 
-    u16 Sav2::playedHours() const { return u16(data[OFS_TIME_PLAYED]); }
-    void Sav2::playedHours(u16 v) { data[OFS_TIME_PLAYED] = u8(v); }
-    u8 Sav2::playedMinutes() const { return data[OFS_TIME_PLAYED + 1]; }
-    void Sav2::playedMinutes(u8 v) { data[OFS_TIME_PLAYED + 1] = v; }
-    u8 Sav2::playedSeconds() const { return data[OFS_TIME_PLAYED + 2]; }
-    void Sav2::playedSeconds(u8 v) { data[OFS_TIME_PLAYED + 2] = v; }
+    u16 Sav2::playedHours() const { return BigEndian::convertTo<u16>(&data[OFS_TIME_PLAYED]); }
+    void Sav2::playedHours(u16 v) { BigEndian::convertFrom<u16>(&data[OFS_TIME_PLAYED], v); }
+    u8 Sav2::playedMinutes() const { return data[OFS_TIME_PLAYED + 2]; }
+    void Sav2::playedMinutes(u8 v) { data[OFS_TIME_PLAYED + 2] = v; }
+    u8 Sav2::playedSeconds() const { return data[OFS_TIME_PLAYED + 3]; }
+    void Sav2::playedSeconds(u8 v) { data[OFS_TIME_PLAYED + 3] = v; }
 
     u8 Sav2::currentBox() const { return data[OFS_CURRENT_BOX_INDEX] & 0x7F; }
     void Sav2::currentBox(u8 v)
@@ -670,7 +670,7 @@ namespace pksm
     {
         if (slot >= pouchEntryCount(pouch))
         {
-            pouchEntryCount(pouch, slot);
+            pouchEntryCount(pouch, slot + 1);
         }
         Item2 item = static_cast<Item2>(tItem);
         auto write = item.bytes();

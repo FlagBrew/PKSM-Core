@@ -495,12 +495,19 @@ namespace pksm
             }
         }
 
-        // approximate an equivalent dv for an iv, by dividing by two
-        // unfortunately the hp dv is determined by the other dvs
-        pk2->iv(Stat::ATK, iv(Stat::ATK) >> 1);
-        pk2->iv(Stat::DEF, iv(Stat::DEF) >> 1);
-        pk2->iv(Stat::SPD, iv(Stat::SPD) >> 1);
-        pk2->iv(Stat::SPATK, iv(Stat::SPATK) >> 1);
+        if (shiny())
+        {
+            pk2->shiny(true);
+        }
+        else
+        {
+            // approximate an equivalent dv for an iv, by dividing by two
+            // unfortunately the hp dv is determined by the other dvs
+            pk2->iv(Stat::ATK, iv(Stat::ATK) >> 1);
+            pk2->iv(Stat::DEF, iv(Stat::DEF) >> 1);
+            pk2->iv(Stat::SPD, iv(Stat::SPD) >> 1);
+            pk2->iv(Stat::SPATK, iv(Stat::SPATK) >> 1);
+        }
 
         pk2->otName(otName());
         pk2->nickname(nickname());
