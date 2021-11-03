@@ -364,7 +364,7 @@ namespace BigEndian
     {
         static_assert(std::is_integral_v<T> && std::is_unsigned_v<T>);
         T out = 0;
-        T j = 1;
+        T j   = 1;
         for (int i = arrayLength - 1; i >= 0; i--, j *= 100)
         {
             out += ((src[i] & 0x0F) * j) + (((src[i] & 0xF0) >> 4) * (j * 10));
@@ -697,7 +697,7 @@ namespace LittleEndian
     {
         static_assert(std::is_integral_v<T> && std::is_unsigned_v<T>);
         T out = 0;
-        T j = 1;
+        T j   = 1;
         for (int i = 0; i < arrayLength; i++, j *= 100)
         {
             out += (((src[i] & 0xF0) >> 4) * j) + ((src[i] & 0x0F) * (j * 10));

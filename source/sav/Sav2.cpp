@@ -40,7 +40,9 @@
 namespace pksm
 {
     // the language class and version necessarily need to be found, may as well use them
-    Sav2::Sav2(std::shared_ptr<u8[]> data, u32 length, std::tuple<GameVersion, Language, bool> versionAndLanguage) : Sav(data, length)
+    Sav2::Sav2(std::shared_ptr<u8[]> data, u32 length,
+        std::tuple<GameVersion, Language, bool> versionAndLanguage)
+        : Sav(data, length)
     {
         versionOfGame = get<0>(versionAndLanguage);
         lang          = get<1>(versionAndLanguage);
@@ -167,7 +169,8 @@ namespace pksm
             }
         }
 
-        if (lang == Language::ENG) lang = StringUtils::guessLanguage12(otName());
+        if (lang == Language::ENG)
+            lang = StringUtils::guessLanguage12(otName());
     }
 
     std::tuple<GameVersion, Language, bool> Sav2::getVersion(std::shared_ptr<u8[]> dt)
@@ -250,7 +253,7 @@ namespace pksm
                     j      = maxPkmInBox; // reset loop
                 }
             }
-            
+
             boxCount(i, numPkm);
             boxSpecies(i);
         }
@@ -269,7 +272,8 @@ namespace pksm
 
         // no, i don't know why only the checksum is little-endian. also idk why PKHeX destroys the
         // checksum for the secondary data copy
-        u16 checksum = crypto::bytewiseSum16(&data[OFS_TID], &data[OFS_CHECKSUM_END] - &data[OFS_TID] + 1);
+        u16 checksum =
+            crypto::bytewiseSum16(&data[OFS_TID], &data[OFS_CHECKSUM_END] - &data[OFS_TID] + 1);
         LittleEndian::convertFrom<u16>(&data[OFS_CHECKSUM_ONE], checksum);
         LittleEndian::convertFrom<u16>(&data[OFS_CHECKSUM_TWO], checksum);
     }
@@ -277,10 +281,7 @@ namespace pksm
     u16 Sav2::TID() const { return BigEndian::convertTo<u16>(&data[OFS_TID]); }
     void Sav2::TID(u16 v) { BigEndian::convertFrom<u16>(&data[OFS_TID], v); }
 
-    GameVersion Sav2::version() const
-    {
-        return versionOfGame;
-    }
+    GameVersion Sav2::version() const { return versionOfGame; }
     void Sav2::version(GameVersion v)
     {
         if ((v == GameVersion::C) ^ (versionOfGame != GameVersion::C))
@@ -293,7 +294,8 @@ namespace pksm
     {
         if (versionOfGame == GameVersion::C)
         {
-            if (data[OFS_GENDER] > 1) return Gender::Male;
+            if (data[OFS_GENDER] > 1)
+                return Gender::Male;
             return Gender{data[OFS_GENDER]};
         }
         return Gender::Male;
@@ -302,7 +304,8 @@ namespace pksm
     {
         if (versionOfGame == GameVersion::C)
         {
-            if (v <= Gender::Female) data[OFS_GENDER] = u8(v);
+            if (v <= Gender::Female)
+                data[OFS_GENDER] = u8(v);
 
             // this is the palette used to draw the player, always 0 (red) for male and 1 (blue)
             // for female. it's present and 0 in Gold and Silver
@@ -313,7 +316,8 @@ namespace pksm
     Language Sav2::language() const { return lang; }
     void Sav2::language(Language v)
     {
-        if (((lang == Language::JPN) == (v == Language::JPN)) && ((lang == Language::KOR) == (v == Language::KOR)))
+        if (((lang == Language::JPN) == (v == Language::JPN)) &&
+            ((lang == Language::KOR) == (v == Language::KOR)))
         {
             lang = v;
         }
@@ -388,7 +392,8 @@ namespace pksm
 
     u32 Sav2::boxStart(u8 box) const
     {
-        if (!japanese) {
+        if (!japanese)
+        {
             if (box < maxBoxes() / 2)
             {
                 return 0x4000 + (box * boxSize);
@@ -397,7 +402,8 @@ namespace pksm
             return 0x6000 + (box * boxSize);
         }
         // huh
-        else {
+        else
+        {
             if (box < 6)
             {
                 return 0x4000 + (box * boxSize);
@@ -427,9 +433,12 @@ namespace pksm
 
         auto pk2 = PKX::getPKM<Generation::TWO>(buffer, PK2Length());
 
-        // has to be done now, since you can't do it in the PK2 initializer because of the nullptr case
-        if (language() == Language::KOR) pk2->languageOverrideLimits(Language::KOR);
-        else if (language() != Language::JPN) pk2->language(StringUtils::guessLanguage12(pk2->nickname()));
+        // has to be done now, since you can't do it in the PK2 initializer because of the nullptr
+        // case
+        if (language() == Language::KOR)
+            pk2->languageOverrideLimits(Language::KOR);
+        else if (language() != Language::JPN)
+            pk2->language(StringUtils::guessLanguage12(pk2->nickname()));
 
         return pk2;
     }
@@ -456,8 +465,10 @@ namespace pksm
         auto pk2 = PKX::getPKM<Generation::TWO>(buffer, PK2Length());
         pk2->updatePartyData();
 
-        if (language() == Language::KOR) pk2->language(Language::KOR);
-        else if (language() != Language::JPN) pk2->language(StringUtils::guessLanguage12(pk2->nickname()));
+        if (language() == Language::KOR)
+            pk2->language(Language::KOR);
+        else if (language() != Language::JPN)
+            pk2->language(StringUtils::guessLanguage12(pk2->nickname()));
 
         return pk2;
     }
@@ -467,28 +478,37 @@ namespace pksm
         {
             auto pk2 = pk.partyClone();
 
-            std::copy(pk2->rawData() + 3, pk2->rawData() + 3 + PK2::PARTY_LENGTH, &data[partyOffset(slot)]);
+            std::copy(pk2->rawData() + 3, pk2->rawData() + 3 + PK2::PARTY_LENGTH,
+                &data[partyOffset(slot)]);
 
             // korean has a page for INT characters
-            if (((language() == Language::JPN) != (pk2->language() == Language::JPN)) || ((pk2->language() == Language::KOR) && (language() != Language::KOR)))
+            if (((language() == Language::JPN) != (pk2->language() == Language::JPN)) ||
+                ((pk2->language() == Language::KOR) && (language() != Language::KOR)))
             {
-                StringUtils::setString2(&data[partyNicknameOffset(slot)], StringUtils::toUpper(pk2->species().localize(language())), 0, nameLength(), language());
-                
+                StringUtils::setString2(&data[partyNicknameOffset(slot)],
+                    StringUtils::toUpper(pk2->species().localize(language())), 0, nameLength(),
+                    language());
+
                 // check if it's the trade ot byte
                 if (pk2->rawData()[3 + PK2::PARTY_LENGTH] == 0x5D)
                 {
-                    data[partyOtNameOffset(slot)] = 0x5D;
+                    data[partyOtNameOffset(slot)]     = 0x5D;
                     data[partyOtNameOffset(slot) + 1] = 0x50;
                 }
                 else
                 {
-                    StringUtils::setString2(&data[partyOtNameOffset(slot)], StringUtils::getTradeOT(language()), 0, nameLength(), language());
+                    StringUtils::setString2(&data[partyOtNameOffset(slot)],
+                        StringUtils::getTradeOT(language()), 0, nameLength(), language());
                 }
             }
             else
             {
-                std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH, pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(), &data[partyOtNameOffset(slot)]);
-                std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(), pk2->rawData() + 3 + PK2::PARTY_LENGTH + 2 * nameLength(), &data[partyNicknameOffset(slot)]);
+                std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH,
+                    pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(),
+                    &data[partyOtNameOffset(slot)]);
+                std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(),
+                    pk2->rawData() + 3 + PK2::PARTY_LENGTH + 2 * nameLength(),
+                    &data[partyNicknameOffset(slot)]);
             }
 
             data[OFS_PARTY + 1 + slot] = pk2->rawData()[1];
@@ -508,26 +528,36 @@ namespace pksm
                 trade(*pk2);
             }
 
-            std::copy(pk2->rawData() + 3, pk2->rawData() + 3 + PK2::BOX_LENGTH, &data[boxOffset(box, slot)]);
+            std::copy(pk2->rawData() + 3, pk2->rawData() + 3 + PK2::BOX_LENGTH,
+                &data[boxOffset(box, slot)]);
 
-            if (((language() == Language::JPN) != (pk2->language() == Language::JPN)) || ((pk2->language() == Language::KOR) && (language() != Language::KOR)))
+            if (((language() == Language::JPN) != (pk2->language() == Language::JPN)) ||
+                ((pk2->language() == Language::KOR) && (language() != Language::KOR)))
             {
-                StringUtils::setString2(&data[boxNicknameOffset(box, slot)], StringUtils::toUpper(pk2->species().localize(language())), 0, nameLength(), language());
-                
+                StringUtils::setString2(&data[boxNicknameOffset(box, slot)],
+                    StringUtils::toUpper(pk2->species().localize(language())), 0, nameLength(),
+                    language());
+
                 if (pk2->rawData()[3 + PK2::BOX_LENGTH] == 0x5D)
                 {
-                    data[boxOtNameOffset(box, slot)] = 0x5D;
+                    data[boxOtNameOffset(box, slot)]     = 0x5D;
                     data[boxOtNameOffset(box, slot) + 1] = 0x50;
                 }
                 else
                 {
-                    StringUtils::setString2(&data[boxOtNameOffset(box, slot)], StringUtils::toUpper(StringUtils::getTradeOT(language())), 0, nameLength(), language());
+                    StringUtils::setString2(&data[boxOtNameOffset(box, slot)],
+                        StringUtils::toUpper(StringUtils::getTradeOT(language())), 0, nameLength(),
+                        language());
                 }
             }
             else
             {
-                std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH, pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(), &data[boxOtNameOffset(box, slot)]);
-                std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(), pk2->rawData() + 3 + PK2::PARTY_LENGTH + 2 * nameLength(), &data[boxNicknameOffset(box, slot)]);
+                std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH,
+                    pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(),
+                    &data[boxOtNameOffset(box, slot)]);
+                std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(),
+                    pk2->rawData() + 3 + PK2::PARTY_LENGTH + 2 * nameLength(),
+                    &data[boxNicknameOffset(box, slot)]);
             }
 
             data[boxStart(box) + 1 + slot] = pk2->rawData()[1];
@@ -565,7 +595,7 @@ namespace pksm
             {
                 data[OFS_POKEDEX_SEEN + 0x1F + 28] = 1;
             }
-            
+
             // set all the caught flags for Unown forms (allegedly to prevent crash)
             for (int i = 1; i <= 26; i++)
             {
@@ -611,8 +641,8 @@ namespace pksm
     void Sav2::boxName(u8 box, const std::string_view& name)
     {
         int boxNameLength = korean ? 17 : 9;
-        StringUtils::setString2(
-            data.get(), name, OFS_BOX_NAMES + (box * boxNameLength), boxNameLength, lang, boxNameLength);
+        StringUtils::setString2(data.get(), name, OFS_BOX_NAMES + (box * boxNameLength),
+            boxNameLength, lang, boxNameLength);
     }
 
     u8 Sav2::partyCount() const { return data[OFS_PARTY]; }
@@ -624,7 +654,8 @@ namespace pksm
         u8 count = 0;
         while (count < maxPkmInBox)
         {
-            if (pkm(box, count)->species() == Species::None) break;
+            if (pkm(box, count)->species() == Species::None)
+                break;
 
             if (pkm(box, count)->egg())
             {
@@ -645,7 +676,8 @@ namespace pksm
         u8 count = 0;
         while (count < 6)
         {
-            if (pkm(count)->species() == Species::None) break;
+            if (pkm(count)->species() == Species::None)
+                break;
 
             if (pkm(count)->egg())
             {
@@ -674,11 +706,12 @@ namespace pksm
         }
         Item2 item = static_cast<Item2>(tItem);
         auto write = item.bytes();
-        int index = 0;  // for TMs
+        int index  = 0; // for TMs
         switch (pouch)
         {
             case Pouch::TM:
-                while (validItems2()[Pouch::TM][index] != write[0]) index++;
+                while (validItems2()[Pouch::TM][index] != write[0])
+                    index++;
                 data[OFS_TM_POUCH + index] = write[1];
                 break;
             case Pouch::NormalItem:
@@ -711,7 +744,7 @@ namespace pksm
                 // apparently they store the counts of the TMs
                 itemData[0] = validItems2()[Pouch::TM][slot];
                 itemData[1] = data[OFS_TM_POUCH + slot];
-                returnVal = std::make_unique<Item2>(itemData.data());
+                returnVal   = std::make_unique<Item2>(itemData.data());
                 break;
             case Pouch::NormalItem:
                 returnVal = std::make_unique<Item2>(&data[OFS_ITEMS + 1 + (slot * 2)]);
@@ -719,7 +752,7 @@ namespace pksm
             case Pouch::KeyItem:
                 itemData[0] = data[OFS_KEY_ITEMS + 1 + slot];
                 itemData[1] = 1;
-                returnVal = std::make_unique<Item2>(itemData.data());
+                returnVal   = std::make_unique<Item2>(itemData.data());
                 break;
             case Pouch::Ball:
                 returnVal = std::make_unique<Item2>(&data[OFS_BALLS + 1 + (slot * 2)]);
@@ -743,11 +776,10 @@ namespace pksm
     std::map<Sav::Pouch, std::vector<int>> Sav2::validItems2() const
     {
         std::map<Sav::Pouch, std::vector<int>> items = {
-            {Pouch::TM,
-                {191, 192, 193, 194, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206,
-                    207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 221,
-                    222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235,
-                    236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249}},
+            {Pouch::TM, {191, 192, 193, 194, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206,
+                            207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 221,
+                            222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235,
+                            236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249}},
             {Pouch::NormalItem,
                 {3, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 26, 27, 28,
                     29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 46, 47, 48, 49,
@@ -759,9 +791,7 @@ namespace pksm
                     187, 188, 189}},
             {Pouch::KeyItem,
                 {7, 54, 55, 58, 59, 61, 66, 67, 68, 69, 71, 127, 128, 130, 133, 134, 175, 178}},
-            {Pouch::Ball,
-                {1, 2, 4, 5, 157, 159, 160, 161, 164, 165, 166}},
-            {Pouch::PCItem, {}}};
+            {Pouch::Ball, {1, 2, 4, 5, 157, 159, 160, 161, 164, 165, 166}}, {Pouch::PCItem, {}}};
 
         // Crystal added four key items
         if (version() == GameVersion::C)
@@ -786,11 +816,10 @@ namespace pksm
     std::map<Sav::Pouch, std::vector<int>> Sav2::validItems() const
     {
         std::map<Sav::Pouch, std::vector<int>> items = {
-            {Pouch::TM,
-                {328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342,
-                    343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356,
-                    357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370,
-                    371, 372, 373, 374, 375, 376, 377, 420, 421, 422, 423, 424, 425, 426}},
+            {Pouch::TM, {328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342,
+                            343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356,
+                            357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370,
+                            371, 372, 373, 374, 375, 376, 377, 420, 421, 422, 423, 424, 425, 426}},
             {Pouch::NormalItem,
                 {213, 81, 18, 19, 20, 21, 22, 23, 24, 25, 26, 17, 78, 79, 41, 82, 83, 84, 45, 46,
                     47, 48, 256, 49, 50, 60, 85, 257, 92, 63, 27, 28, 29, 55, 76, 77, 56, 30, 31,
@@ -799,12 +828,9 @@ namespace pksm
                     248, 490, 241, 491, 489, 240, 473, 259, 228, 246, 242, 157, 88, 89, 229, 247,
                     504, 239, 258, 230, 34, 35, 36, 37, 238, 231, 90, 91, 249, 43, 232, 233, 250,
                     234, 154, 235, 44, 236, 80, 252, 155, 158}},
-            {Pouch::KeyItem,
-                {450, 444, 445, 446, 447, 478, 464, 456, 484, 482, 475, 481, 479, 476,
-                    480, 477, 483}},
-            {Pouch::Ball,
-                {1, 2, 3, 4, 495, 493, 494, 492, 497, 498, 496}},
-            {Pouch::PCItem, {}}};
+            {Pouch::KeyItem, {450, 444, 445, 446, 447, 478, 464, 456, 484, 482, 475, 481, 479, 476,
+                                 480, 477, 483}},
+            {Pouch::Ball, {1, 2, 3, 4, 495, 493, 494, 492, 497, 498, 496}}, {Pouch::PCItem, {}}};
 
         if (version() == GameVersion::C)
         {

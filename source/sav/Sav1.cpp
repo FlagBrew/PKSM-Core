@@ -42,14 +42,15 @@ namespace pksm
     Sav1::Sav1(std::shared_ptr<u8[]> data, u32 length) : Sav(data, length)
     {
         // checks if two boxes are valid
-        japanese              = ((data[0x2ED5] <= 30) && (data[0x2ED5 + 1 + data[0x2ED5]] == 0xFF)) && ((data[0x302D] <= 30) && (data[0x302D + 1 + data[0x302D]] == 0xFF));
+        japanese = ((data[0x2ED5] <= 30) && (data[0x2ED5 + 1 + data[0x2ED5]] == 0xFF)) &&
+                   ((data[0x302D] <= 30) && (data[0x302D + 1 + data[0x302D]] == 0xFF));
 
-        lang                  = japanese ? Language::JPN : StringUtils::guessLanguage12(otName());
+        lang = japanese ? Language::JPN : StringUtils::guessLanguage12(otName());
 
-        maxPkmInBox           = japanese ? 30 : 20;
-        boxSize               = japanese ? 0x566 : 0x462;
-        mainDataLength        = japanese ? 0xFFC : 0xF8B;
-        bankBoxesSize         = boxSize * (japanese ? 4 : 6);
+        maxPkmInBox    = japanese ? 30 : 20;
+        boxSize        = japanese ? 0x566 : 0x462;
+        mainDataLength = japanese ? 0xFFC : 0xF8B;
+        bankBoxesSize  = boxSize * (japanese ? 4 : 6);
 
         OFS_DEX_CAUGHT        = japanese ? 0x259E : 0x25A3;
         OFS_DEX_SEEN          = japanese ? 0x25B1 : 0x25B6;
@@ -64,8 +65,8 @@ namespace pksm
         OFS_CURRENT_BOX       = japanese ? 0x302D : 0x30C0;
         OFS_MAIN_DATA_SUM     = japanese ? 0x3594 : 0x3523;
 
-        OFS_BANK2_BOX_SUMS    = 0x4000 + bankBoxesSize;
-        OFS_BANK3_BOX_SUMS    = 0x6000 + bankBoxesSize;
+        OFS_BANK2_BOX_SUMS = 0x4000 + bankBoxesSize;
+        OFS_BANK3_BOX_SUMS = 0x6000 + bankBoxesSize;
     }
     Sav::Game Sav1::getVersion(std::shared_ptr<u8[]> dt)
     {
@@ -75,10 +76,7 @@ namespace pksm
     }
 
     // max length of string + terminator
-    u8 Sav1::nameLength() const
-    {
-        return japanese ? 6 : 11;
-    }
+    u8 Sav1::nameLength() const { return japanese ? 6 : 11; }
 
     u8 Sav1::PK1Length() const
     {
@@ -132,24 +130,24 @@ namespace pksm
         {
             if (box < (maxBoxes() / 2))
             {
-                data[OFS_BANK2_BOX_SUMS + 1 + box] = crypto::diff8(&data[boxDataStart(box)], boxSize);
+                data[OFS_BANK2_BOX_SUMS + 1 + box] =
+                    crypto::diff8(&data[boxDataStart(box)], boxSize);
             }
             else
             {
-                data[OFS_BANK3_BOX_SUMS + 1 + box] = crypto::diff8(&data[boxDataStart(box)], boxSize);
+                data[OFS_BANK3_BOX_SUMS + 1 + box] =
+                    crypto::diff8(&data[boxDataStart(box)], boxSize);
             }
         }
-        std::copy(&data[boxStart(currentBox())], &data[boxStart(currentBox())] + boxSize, &data[OFS_CURRENT_BOX]);
-        data[OFS_MAIN_DATA_SUM] = crypto::diff8(&data[0x2598], mainDataLength);
+        std::copy(&data[boxStart(currentBox())], &data[boxStart(currentBox())] + boxSize,
+            &data[OFS_CURRENT_BOX]);
+        data[OFS_MAIN_DATA_SUM]  = crypto::diff8(&data[0x2598], mainDataLength);
         data[OFS_BANK2_BOX_SUMS] = crypto::diff8(&data[0x4000], bankBoxesSize);
         data[OFS_BANK3_BOX_SUMS] = crypto::diff8(&data[0x6000], bankBoxesSize);
     }
     u16 Sav1::TID() const { return BigEndian::convertTo<u16>(&data[OFS_TID]); }
     void Sav1::TID(u16 v) { BigEndian::convertFrom<u16>(&data[OFS_TID], v); }
-    Language Sav1::language() const
-    {
-        return lang;
-    }
+    Language Sav1::language() const { return lang; }
     void Sav1::language(Language v)
     {
         if (lang != Language::JPN && v != Language::JPN)
@@ -169,14 +167,8 @@ namespace pksm
     }
 
     // why did they use BCD
-    u32 Sav1::money() const
-    {
-        return BigEndian::BCDtoUInteger<u32, 3>(&data[OFS_MONEY]);
-    }
-    void Sav1::money(u32 v)
-    {
-        BigEndian::UIntegerToBCD<u32, 3>(&data[OFS_MONEY], v);
-    }
+    u32 Sav1::money() const { return BigEndian::BCDtoUInteger<u32, 3>(&data[OFS_MONEY]); }
+    void Sav1::money(u32 v) { BigEndian::UIntegerToBCD<u32, 3>(&data[OFS_MONEY], v); }
     u8 Sav1::badges() const
     {
         u8 sum        = 0;
@@ -195,16 +187,32 @@ namespace pksm
     void Sav1::playedSeconds(u8 v) { data[OFS_HOURS + 3] = v; }
 
     u8 Sav1::currentBox() const { return data[OFS_CURRENT_BOX_INDEX] & 0x7F; }
-    void Sav1::currentBox(u8 v) { data[OFS_CURRENT_BOX_INDEX] = (data[OFS_CURRENT_BOX_INDEX] & 0x80) | (v & 0x7F); }
+    void Sav1::currentBox(u8 v)
+    {
+        data[OFS_CURRENT_BOX_INDEX] = (data[OFS_CURRENT_BOX_INDEX] & 0x80) | (v & 0x7F);
+    }
     u32 Sav1::boxOffset(u8 box, u8 slot) const
     {
         return boxDataStart(box) + (slot * PK1::BOX_LENGTH);
     }
-    u32 Sav1::boxOtNameOffset(u8 box, u8 slot) const {return boxDataStart(box) + (maxPkmInBox * PK1::BOX_LENGTH) + (slot * nameLength());}
-    u32 Sav1::boxNicknameOffset(u8 box, u8 slot) const {return boxDataStart(box) + (maxPkmInBox * PK1::BOX_LENGTH) + ((maxPkmInBox + slot) * nameLength());}
+    u32 Sav1::boxOtNameOffset(u8 box, u8 slot) const
+    {
+        return boxDataStart(box) + (maxPkmInBox * PK1::BOX_LENGTH) + (slot * nameLength());
+    }
+    u32 Sav1::boxNicknameOffset(u8 box, u8 slot) const
+    {
+        return boxDataStart(box) + (maxPkmInBox * PK1::BOX_LENGTH) +
+               ((maxPkmInBox + slot) * nameLength());
+    }
     u32 Sav1::partyOffset(u8 slot) const { return OFS_PARTY + 8 + (slot * PK1::PARTY_LENGTH); }
-    u32 Sav1::partyOtNameOffset(u8 slot) const { return OFS_PARTY + 8 + (6 * PK1::PARTY_LENGTH) + (slot * nameLength());}
-    u32 Sav1::partyNicknameOffset(u8 slot) const { return OFS_PARTY + 8 + (6 * PK1::PARTY_LENGTH) + ((6 + slot) * nameLength());}
+    u32 Sav1::partyOtNameOffset(u8 slot) const
+    {
+        return OFS_PARTY + 8 + (6 * PK1::PARTY_LENGTH) + (slot * nameLength());
+    }
+    u32 Sav1::partyNicknameOffset(u8 slot) const
+    {
+        return OFS_PARTY + 8 + (6 * PK1::PARTY_LENGTH) + ((6 + slot) * nameLength());
+    }
 
     u32 Sav1::boxStart(u8 box) const
     {
@@ -217,21 +225,26 @@ namespace pksm
     }
     u32 Sav1::boxDataStart(u8 box) const { return boxStart(box) + maxPkmInBox + 2; }
 
-    // the PK1 and PK2 formats used by the community start with magic bytes, the second being species
+    // the PK1 and PK2 formats used by the community start with magic bytes, the second being
+    // species
     std::unique_ptr<PKX> Sav1::pkm(u8 slot) const
     {
         // using the larger of the two sizes to not dynamically allocate
         u8 buffer[PK1::INT_LENGTH_WITH_NAMES] = {0x01, data[partyOffset(slot)], 0xFF};
 
-        std::copy(&data[partyOffset(slot)], &data[partyOffset(slot)] + PK1::PARTY_LENGTH, buffer + 3);
-        std::copy(&data[partyOtNameOffset(slot)], &data[partyOtNameOffset(slot)] + nameLength(), buffer + 3 + PK1::PARTY_LENGTH);
-        std::copy(&data[partyNicknameOffset(slot)], &data[partyNicknameOffset(slot)] + nameLength(), buffer + 3 + PK1::PARTY_LENGTH + nameLength());
+        std::copy(
+            &data[partyOffset(slot)], &data[partyOffset(slot)] + PK1::PARTY_LENGTH, buffer + 3);
+        std::copy(&data[partyOtNameOffset(slot)], &data[partyOtNameOffset(slot)] + nameLength(),
+            buffer + 3 + PK1::PARTY_LENGTH);
+        std::copy(&data[partyNicknameOffset(slot)], &data[partyNicknameOffset(slot)] + nameLength(),
+            buffer + 3 + PK1::PARTY_LENGTH + nameLength());
 
         StringUtils::gbStringFailsafe(buffer, 3 + PK1::PARTY_LENGTH, nameLength());
         StringUtils::gbStringFailsafe(buffer, 3 + PK1::PARTY_LENGTH + nameLength(), nameLength());
 
         auto pk1 = PKX::getPKM<Generation::ONE>(buffer, PK1Length());
-        if (language() != Language::JPN) pk1->language(StringUtils::guessLanguage12(pk1->nickname()));
+        if (language() != Language::JPN)
+            pk1->language(StringUtils::guessLanguage12(pk1->nickname()));
 
         return pk1;
     }
@@ -244,16 +257,21 @@ namespace pksm
 
         u8 buffer[PK1::INT_LENGTH_WITH_NAMES] = {0x01, data[boxOffset(box, slot)], 0xFF};
 
-        std::copy(&data[boxOffset(box, slot)], &data[boxOffset(box, slot)] + PK1::BOX_LENGTH, buffer + 3);
-        std::copy(&data[boxOtNameOffset(box, slot)], &data[boxOtNameOffset(box, slot)] + nameLength(), buffer + 3 + PK1::PARTY_LENGTH);
-        std::copy(&data[boxNicknameOffset(box, slot)], &data[boxNicknameOffset(box, slot)] + nameLength(), buffer + 3 + PK1::PARTY_LENGTH + nameLength());
-        
+        std::copy(
+            &data[boxOffset(box, slot)], &data[boxOffset(box, slot)] + PK1::BOX_LENGTH, buffer + 3);
+        std::copy(&data[boxOtNameOffset(box, slot)],
+            &data[boxOtNameOffset(box, slot)] + nameLength(), buffer + 3 + PK1::PARTY_LENGTH);
+        std::copy(&data[boxNicknameOffset(box, slot)],
+            &data[boxNicknameOffset(box, slot)] + nameLength(),
+            buffer + 3 + PK1::PARTY_LENGTH + nameLength());
+
         StringUtils::gbStringFailsafe(buffer, 3 + PK1::PARTY_LENGTH, nameLength());
         StringUtils::gbStringFailsafe(buffer, 3 + PK1::PARTY_LENGTH + nameLength(), nameLength());
 
         auto pk1 = PKX::getPKM<Generation::ONE>(buffer, PK1Length());
         pk1->updatePartyData();
-        if (language() != Language::JPN) pk1->language(StringUtils::guessLanguage12(pk1->nickname()));
+        if (language() != Language::JPN)
+            pk1->language(StringUtils::guessLanguage12(pk1->nickname()));
 
         return pk1;
     }
@@ -263,27 +281,35 @@ namespace pksm
         {
             auto pk1 = pk.partyClone();
 
-            std::copy(pk1->rawData() + 3, pk1->rawData() + 3 + PK1::PARTY_LENGTH, &data[partyOffset(slot)]);
+            std::copy(pk1->rawData() + 3, pk1->rawData() + 3 + PK1::PARTY_LENGTH,
+                &data[partyOffset(slot)]);
 
             if ((pk.language() == Language::JPN) != (language() == Language::JPN))
             {
-                StringUtils::setString1(&data[partyNicknameOffset(slot)], StringUtils::toUpper(pk1->species().localize(language())), 0, nameLength(), language());
-                
+                StringUtils::setString1(&data[partyNicknameOffset(slot)],
+                    StringUtils::toUpper(pk1->species().localize(language())), 0, nameLength(),
+                    language());
+
                 // check if it's the trade ot byte
                 if (pk1->rawData()[3 + PK1::PARTY_LENGTH] == 0x5D)
                 {
-                    data[partyOtNameOffset(slot)] = 0x5D;
+                    data[partyOtNameOffset(slot)]     = 0x5D;
                     data[partyOtNameOffset(slot) + 1] = 0x50;
                 }
                 else
                 {
-                    StringUtils::setString1(&data[partyOtNameOffset(slot)], StringUtils::getTradeOT(language()), 0, nameLength(), language());
+                    StringUtils::setString1(&data[partyOtNameOffset(slot)],
+                        StringUtils::getTradeOT(language()), 0, nameLength(), language());
                 }
             }
             else
             {
-                std::copy(pk1->rawData() + 3 + PK1::PARTY_LENGTH, pk1->rawData() + 3 + PK1::PARTY_LENGTH + nameLength(), &data[partyOtNameOffset(slot)]);
-                std::copy(pk1->rawData() + 3 + PK1::PARTY_LENGTH + nameLength(), pk1->rawData() + 3 + PK1::PARTY_LENGTH + 2 * nameLength(), &data[partyNicknameOffset(slot)]);
+                std::copy(pk1->rawData() + 3 + PK1::PARTY_LENGTH,
+                    pk1->rawData() + 3 + PK1::PARTY_LENGTH + nameLength(),
+                    &data[partyOtNameOffset(slot)]);
+                std::copy(pk1->rawData() + 3 + PK1::PARTY_LENGTH + nameLength(),
+                    pk1->rawData() + 3 + PK1::PARTY_LENGTH + 2 * nameLength(),
+                    &data[partyNicknameOffset(slot)]);
             }
 
             data[OFS_PARTY + 1 + slot] = pk1->rawData()[1];
@@ -297,40 +323,52 @@ namespace pksm
         }
         if (pk.generation() == Generation::ONE)
         {
-            auto pk1 = pk.clone();  // note that partyClone and clone are equivalent
+            auto pk1 = pk.clone(); // note that partyClone and clone are equivalent
             if (applyTrade)
             {
                 trade(*pk1);
             }
             static_cast<PK1*>(pk1.get())->boxLevel(pk1->level());
 
-            std::copy(pk1->rawData() + 3, pk1->rawData() + 3 + PK1::BOX_LENGTH, &data[boxOffset(box, slot)]);
+            std::copy(pk1->rawData() + 3, pk1->rawData() + 3 + PK1::BOX_LENGTH,
+                &data[boxOffset(box, slot)]);
 
             if ((pk.language() == Language::JPN) != (language() == Language::JPN))
             {
-                StringUtils::setString1(&data[boxNicknameOffset(box, slot)], StringUtils::toUpper(pk1->species().localize(language())), 0, nameLength(), language());
-                
+                StringUtils::setString1(&data[boxNicknameOffset(box, slot)],
+                    StringUtils::toUpper(pk1->species().localize(language())), 0, nameLength(),
+                    language());
+
                 if (pk1->rawData()[3 + PK1::BOX_LENGTH] == 0x5D)
                 {
-                    data[boxOtNameOffset(box, slot)] = 0x5D;
+                    data[boxOtNameOffset(box, slot)]     = 0x5D;
                     data[boxOtNameOffset(box, slot) + 1] = 0x50;
                 }
                 else
                 {
-                    StringUtils::setString1(&data[boxOtNameOffset(box, slot)], StringUtils::toUpper(StringUtils::getTradeOT(language())), 0, nameLength(), language());
+                    StringUtils::setString1(&data[boxOtNameOffset(box, slot)],
+                        StringUtils::toUpper(StringUtils::getTradeOT(language())), 0, nameLength(),
+                        language());
                 }
             }
             else
             {
-                std::copy(pk1->rawData() + 3 + PK1::PARTY_LENGTH, pk1->rawData() + 3 + PK1::PARTY_LENGTH + nameLength(), &data[boxOtNameOffset(box, slot)]);
-                std::copy(pk1->rawData() + 3 + PK1::PARTY_LENGTH + nameLength(), pk1->rawData() + 3 + PK1::PARTY_LENGTH + 2 * nameLength(), &data[boxNicknameOffset(box, slot)]);
+                std::copy(pk1->rawData() + 3 + PK1::PARTY_LENGTH,
+                    pk1->rawData() + 3 + PK1::PARTY_LENGTH + nameLength(),
+                    &data[boxOtNameOffset(box, slot)]);
+                std::copy(pk1->rawData() + 3 + PK1::PARTY_LENGTH + nameLength(),
+                    pk1->rawData() + 3 + PK1::PARTY_LENGTH + 2 * nameLength(),
+                    &data[boxNicknameOffset(box, slot)]);
             }
 
             data[boxStart(box) + 1 + slot] = pk1->rawData()[3];
         }
     }
 
-    std::unique_ptr<PKX> Sav1::emptyPkm() const { return PKX::getPKM<Generation::ONE>(nullptr, PK1Length()); }
+    std::unique_ptr<PKX> Sav1::emptyPkm() const
+    {
+        return PKX::getPKM<Generation::ONE>(nullptr, PK1Length());
+    }
 
     void Sav1::dex(const PKX& pk)
     {
@@ -342,25 +380,25 @@ namespace pksm
     bool Sav1::getCaught(Species species) const
     {
         int flag = u8(species) - 1;
-        int ofs = flag >> 3;
+        int ofs  = flag >> 3;
         return FlagUtil::getFlag(data.get() + OFS_DEX_CAUGHT, ofs, flag & 7);
     }
     void Sav1::setCaught(Species species, bool caught)
     {
         int flag = u8(species) - 1;
-        int ofs = flag >> 3;
+        int ofs  = flag >> 3;
         FlagUtil::setFlag(data.get() + OFS_DEX_CAUGHT, ofs, flag & 7, caught);
     }
     bool Sav1::getSeen(Species species) const
     {
         int flag = u8(species) - 1;
-        int ofs = flag >> 3;
+        int ofs  = flag >> 3;
         return FlagUtil::getFlag(data.get() + OFS_DEX_SEEN, ofs, flag & 7);
     }
     void Sav1::setSeen(Species species, bool seen)
     {
         int flag = u8(species) - 1;
-        int ofs = flag >> 3;
+        int ofs  = flag >> 3;
         FlagUtil::setFlag(data.get() + OFS_DEX_SEEN, ofs, flag & 7, seen);
     }
     int Sav1::dexSeen() const
@@ -387,7 +425,7 @@ namespace pksm
             count++;
         }
         data[boxStart(box) + 1 + count] = 0xFF;
-        data[boxStart(box)] = count;
+        data[boxStart(box)]             = count;
     }
     void Sav1::partySpecies()
     {
@@ -398,7 +436,7 @@ namespace pksm
             count++;
         }
         data[OFS_PARTY + 1 + count] = 0xFF;
-        data[OFS_PARTY] = count;
+        data[OFS_PARTY]             = count;
     }
 
     int Sav1::maxSlot() const { return maxBoxes() * maxPkmInBox; }
@@ -467,13 +505,13 @@ namespace pksm
         std::map<Sav::Pouch, std::vector<int>> items = {
             {Pouch::NormalItem,
                 {0, 1, 2, 3, 4, 442, 450, 81, 18, 19, 20, 21, 22, 23, 24, 25, 26, 17, 78, 79, 103,
-                    82, 83, 84, 45, 46, 47, 48, 49, 50, 102, 101, 872, 60, 85, 876, 92, 63, 27,
-                    28, 29, 55, 76, 77, 56, 30, 31, 32, 873, 877, 57, 58, 59, 61, 444, 875, 471,
-                    874, 651, 878, 216, 445, 446, 447, 51, 38, 39, 40, 41, 420, 421, 422, 423, 424,
-                    328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343,
-                    344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359,
-                    360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375,
-                    376, 377}},
+                    82, 83, 84, 45, 46, 47, 48, 49, 50, 102, 101, 872, 60, 85, 876, 92, 63, 27, 28,
+                    29, 55, 76, 77, 56, 30, 31, 32, 873, 877, 57, 58, 59, 61, 444, 875, 471, 874,
+                    651, 878, 216, 445, 446, 447, 51, 38, 39, 40, 41, 420, 421, 422, 423, 424, 328,
+                    329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344,
+                    345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360,
+                    361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376,
+                    377}},
             {Pouch::PCItem, {}}};
         items[Pouch::PCItem].insert(items[Pouch::PCItem].end(), items[Pouch::NormalItem].begin(),
             items[Pouch::NormalItem].end());
@@ -486,7 +524,7 @@ namespace pksm
         {
             count++;
         }
-        data[OFS_BAG] = count;
+        data[OFS_BAG]                   = count;
         data[OFS_BAG + 1 + (count * 2)] = 0xFF;
 
         count = 0;
@@ -494,7 +532,7 @@ namespace pksm
         {
             count++;
         }
-        data[OFS_PC_ITEMS] = count;
+        data[OFS_PC_ITEMS]                   = count;
         data[OFS_PC_ITEMS + 1 + (count * 2)] = 0xFF;
     }
 }

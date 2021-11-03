@@ -37,9 +37,9 @@
 #include "enums/Species.hpp"
 #include "enums/Stat.hpp"
 #include "pkx/IPKFilterable.hpp"
+#include <array>
 #include <bitset>
 #include <string>
-#include <vector>
 
 #define MAKE_DEFN(name, type)                                                                      \
 public:                                                                                            \
@@ -82,9 +82,9 @@ public:                                                                         
     void name##Inversed(indextype which, bool v) { name##Inverse[size_t(which)] = v; }             \
                                                                                                    \
 private:                                                                                           \
-    std::vector<type> type##name      = std::vector<type>(amount, type());                         \
-    std::bitset<amount> name##Bool    = std::bitset<amount>(0);                                    \
-    std::bitset<amount> name##Inverse = std::bitset<amount>(0)
+    std::array<type, amount> type##name = std::array<type, amount>();                              \
+    std::bitset<amount> name##Bool      = std::bitset<amount>(0);                                  \
+    std::bitset<amount> name##Inverse   = std::bitset<amount>(0)
 
 #define MAKE_NUM_DEFN_CONSTANT(name, type, amount, indextype)                                      \
 public:                                                                                            \
@@ -99,9 +99,9 @@ public:                                                                         
     void name##Inversed(indextype which, bool v) { name##Inverse[size_t(which)] = v; }             \
                                                                                                    \
 private:                                                                                           \
-    std::vector<type> type##name      = std::vector<type>(amount, type());                         \
-    std::bitset<amount> name##Bool    = std::bitset<amount>(0);                                    \
-    std::bitset<amount> name##Inverse = std::bitset<amount>(0)
+    std::array<type, amount> type##name = std::array<type, amount>();                              \
+    std::bitset<amount> name##Bool      = std::bitset<amount>(0);                                  \
+    std::bitset<amount> name##Inverse   = std::bitset<amount>(0)
 
 namespace pksm
 {

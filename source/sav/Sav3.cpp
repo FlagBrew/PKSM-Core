@@ -418,7 +418,10 @@ namespace pksm
 
     void Sav3::trade(PKX&, const Date&) const {}
 
-    std::unique_ptr<PKX> Sav3::emptyPkm() const { return PKX::getPKM<Generation::THREE>(nullptr, PK3::BOX_LENGTH); }
+    std::unique_ptr<PKX> Sav3::emptyPkm() const
+    {
+        return PKX::getPKM<Generation::THREE>(nullptr, PK3::BOX_LENGTH);
+    }
 
     bool Sav3::canSetDex(Species species)
     {

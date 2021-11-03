@@ -83,7 +83,8 @@ namespace pksm
 
     std::unique_ptr<PKX> PB7::clone(void) const
     {
-        return PKX::getPKM<Generation::LGPE>(const_cast<u8*>(data), isParty() ? PARTY_LENGTH : BOX_LENGTH);
+        return PKX::getPKM<Generation::LGPE>(
+            const_cast<u8*>(data), isParty() ? PARTY_LENGTH : BOX_LENGTH);
     }
 
     Generation PB7::generation(void) const { return Generation::LGPE; }

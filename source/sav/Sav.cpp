@@ -98,7 +98,8 @@ namespace pksm
     {
         std::tuple<GameVersion, Language, bool> versionAndLanguage = Sav2::getVersion(dt);
 
-        if (get<2>(versionAndLanguage)) {
+        if (get<2>(versionAndLanguage))
+        {
             return std::make_unique<Sav2>(dt, length, versionAndLanguage);
         }
 
@@ -107,7 +108,7 @@ namespace pksm
             case Game::RGB:
                 return std::make_unique<Sav1>(dt, length);
             case Game::Y:
-                return std::make_unique<Sav1>(dt, length);  // in case anyone wants to
+                return std::make_unique<Sav1>(dt, length); // in case anyone wants to
             default:
                 return std::unique_ptr<Sav>(nullptr);
         }

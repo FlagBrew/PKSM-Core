@@ -207,7 +207,8 @@ namespace pksm
 
     std::unique_ptr<PKX> PK7::clone(void) const
     {
-        return PKX::getPKM<Generation::SEVEN>(const_cast<u8*>(data), isParty() ? PARTY_LENGTH : BOX_LENGTH);
+        return PKX::getPKM<Generation::SEVEN>(
+            const_cast<u8*>(data), isParty() ? PARTY_LENGTH : BOX_LENGTH);
     }
 
     Generation PK7::generation(void) const { return Generation::SEVEN; }

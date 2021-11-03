@@ -48,13 +48,14 @@ namespace pksm
         : PKX(dt, japanese ? JP_LENGTH_WITH_NAMES : INT_LENGTH_WITH_NAMES, directAccess)
     {
         this->japanese = japanese;
-        lang = japanese ? Language::JPN : Language::ENG;
-        shiftedData = data + 3;
+        lang           = japanese ? Language::JPN : Language::ENG;
+        shiftedData    = data + 3;
     }
 
-    std::unique_ptr<PK2> PK1::convertToG2(Sav &) const
+    std::unique_ptr<PK2> PK1::convertToG2(Sav&) const
     {
-        auto pk2 = PKX::getPKM<Generation::TWO>(nullptr, japanese ? PK2::JP_LENGTH_WITH_NAMES : PK2::INT_LENGTH_WITH_NAMES);
+        auto pk2 = PKX::getPKM<Generation::TWO>(
+            nullptr, japanese ? PK2::JP_LENGTH_WITH_NAMES : PK2::INT_LENGTH_WITH_NAMES);
 
         pk2->species(species());
         pk2->TID(TID());
@@ -85,21 +86,21 @@ namespace pksm
         // Teru-sama is a dummy item
         switch (catchRate())
         {
-            case 0x19: // Teru-sama
+            case 0x19:                // Teru-sama
                 pk2->heldItem2(0x92); // Leftovers
                 break;
-            case 0x2D: // Teru-sama
+            case 0x2D:                // Teru-sama
                 pk2->heldItem2(0x53); // Bitter Berry
                 break;
-            case 0x32: // Teru-sama
+            case 0x32:                // Teru-sama
                 pk2->heldItem2(0xAE); // Gold Berry
                 break;
-            case 0x5A: // Teru-sama
-            case 0x64: // Teru-sama
-            case 0x78: // Teru-sama
-            case 0x7F: // Card Key
-            case 0xBE: // Teru-sama
-            case 0xFF: // Cancel
+            case 0x5A:                // Teru-sama
+            case 0x64:                // Teru-sama
+            case 0x78:                // Teru-sama
+            case 0x7F:                // Card Key
+            case 0xBE:                // Teru-sama
+            case 0xFF:                // Cancel
                 pk2->heldItem2(0xAD); // Berry
                 break;
             default:
@@ -110,7 +111,7 @@ namespace pksm
         return pk2;
     }
 
-    std::unique_ptr<PK3> PK1::convertToG3(Sav &save) const
+    std::unique_ptr<PK3> PK1::convertToG3(Sav& save) const
     {
         if (auto pk7 = convertToG7(save))
         {
@@ -128,7 +129,7 @@ namespace pksm
         return nullptr;
     }
 
-    std::unique_ptr<PK4> PK1::convertToG4(Sav &save) const
+    std::unique_ptr<PK4> PK1::convertToG4(Sav& save) const
     {
         if (auto pk7 = convertToG7(save))
         {
@@ -143,7 +144,7 @@ namespace pksm
         return nullptr;
     }
 
-    std::unique_ptr<PK5> PK1::convertToG5(Sav &save) const
+    std::unique_ptr<PK5> PK1::convertToG5(Sav& save) const
     {
         if (auto pk7 = convertToG7(save))
         {
@@ -155,7 +156,7 @@ namespace pksm
         return nullptr;
     }
 
-    std::unique_ptr<PK6> PK1::convertToG6(Sav &save) const
+    std::unique_ptr<PK6> PK1::convertToG6(Sav& save) const
     {
         if (auto pk7 = convertToG7(save))
         {
@@ -164,7 +165,7 @@ namespace pksm
         return nullptr;
     }
 
-    std::unique_ptr<PK7> PK1::convertToG7(Sav &save) const
+    std::unique_ptr<PK7> PK1::convertToG7(Sav& save) const
     {
         auto pk7 = PKX::getPKM<Generation::SEVEN>(nullptr, PK7::BOX_LENGTH);
 
@@ -203,18 +204,20 @@ namespace pksm
         pk7->healPP();
         pk7->language(language());
         pk7->nickname(species().localize(pk7->language()));
-        
+
         pk7->otFriendship(PersonalSMUSUM::baseFriendship(u16(species())));
         pk7->htFriendship(pk7->otFriendship());
 
         if (species() == Species::Mew)
         {
             u8 imperfectStat = randomNumber(0, 5);
-            u8 imperfectIV = randomNumber(0, 31);
+            u8 imperfectIV   = randomNumber(0, 31);
             for (u8 i = 0; i < 6; i++)
             {
-                if (i == imperfectStat) pk7->iv(Stat{i}, imperfectIV);
-                else pk7->iv(Stat{i}, 31);
+                if (i == imperfectStat)
+                    pk7->iv(Stat{i}, imperfectIV);
+                else
+                    pk7->iv(Stat{i}, 31);
             }
         }
         else
@@ -226,12 +229,16 @@ namespace pksm
                 {
                     imperfectStats[i] = randomNumber(0, 5);
                 }
-            } while (imperfectStats[0] == imperfectStats[1] || imperfectStats[0] == imperfectStats[2] || imperfectStats[1] == imperfectStats[2]);
-            
+            } while (imperfectStats[0] == imperfectStats[1] ||
+                     imperfectStats[0] == imperfectStats[2] ||
+                     imperfectStats[1] == imperfectStats[2]);
+
             for (u8 i = 0; i < 6; i++)
             {
-                if (i == imperfectStats[0] || i == imperfectStats[1] || i == imperfectStats[2]) pk7->iv(Stat{i}, randomNumber(0, 31));
-                else pk7->iv(Stat{i}, 31);
+                if (i == imperfectStats[0] || i == imperfectStats[1] || i == imperfectStats[2])
+                    pk7->iv(Stat{i}, randomNumber(0, 31));
+                else
+                    pk7->iv(Stat{i}, 31);
             }
         }
 
@@ -243,7 +250,7 @@ namespace pksm
         {
             pk7->PID(u32(((pk7->TID() ^ (pk7->PID() & 0xFFFF)) << 16) | (pk7->PID() & 0xFFFF)));
         }
-        
+
         // always has hidden ability unless it doesn't exist
         switch (species())
         {
@@ -266,7 +273,8 @@ namespace pksm
         else if (!nicknamed())
         {
             pk7->nicknamed(true);
-            pk7->nickname(japanese ? StringUtils::fixJapaneseNameTransporter(nicknameTransporter()) : nicknameTransporter());
+            pk7->nickname(japanese ? StringUtils::fixJapaneseNameTransporter(nicknameTransporter())
+                                   : nicknameTransporter());
         }
 
         pk7->htMemory(4);
@@ -279,7 +287,7 @@ namespace pksm
         return pk7;
     }
 
-    std::unique_ptr<PK8> PK1::convertToG8(Sav &save) const
+    std::unique_ptr<PK8> PK1::convertToG8(Sav& save) const
     {
         if (auto pk7 = convertToG7(save))
         {
@@ -290,33 +298,28 @@ namespace pksm
 
     std::unique_ptr<PKX> PK1::clone() const
     {
-        return PKX::getPKM<Generation::ONE>(const_cast<u8*>(data), japanese ? JP_LENGTH_WITH_NAMES : INT_LENGTH_WITH_NAMES);
+        return PKX::getPKM<Generation::ONE>(
+            const_cast<u8*>(data), japanese ? JP_LENGTH_WITH_NAMES : INT_LENGTH_WITH_NAMES);
     }
 
-    u16 PK1::TID() const
-    {
-        return BigEndian::convertTo<u16>(shiftedData + 12);
-    }
-    void PK1::TID(u16 v)
-    {
-        BigEndian::convertFrom<u16>(shiftedData + 12, v);
-    }
+    u16 PK1::TID() const { return BigEndian::convertTo<u16>(shiftedData + 12); }
+    void PK1::TID(u16 v) { BigEndian::convertFrom<u16>(shiftedData + 12, v); }
     std::string PK1::nickname() const
     {
-        return StringUtils::getString1(shiftedData, 44 + (japanese ? 6 : 11), japanese ? 6 : 11, lang);
+        return StringUtils::getString1(
+            shiftedData, 44 + (japanese ? 6 : 11), japanese ? 6 : 11, lang);
     }
     std::string PK1::nicknameTransporter() const
     {
-        return StringUtils::getString1(shiftedData, 44 + (japanese ? 6 : 11), japanese ? 6 : 11, lang, true);
+        return StringUtils::getString1(
+            shiftedData, 44 + (japanese ? 6 : 11), japanese ? 6 : 11, lang, true);
     }
     void PK1::nickname(const std::string_view& v)
     {
-        StringUtils::setString1(shiftedData, v, 44 + (japanese ? 6 : 11), japanese ? 6 : 11, lang, japanese ? 6 : 11);
+        StringUtils::setString1(
+            shiftedData, v, 44 + (japanese ? 6 : 11), japanese ? 6 : 11, lang, japanese ? 6 : 11);
     }
-    Language PK1::language() const
-    {
-        return lang;
-    }
+    Language PK1::language() const { return lang; }
     void PK1::language(Language v)
     {
         // data is too different to allow converting anything between japanese and another language
@@ -334,13 +337,10 @@ namespace pksm
         StringUtils::setString1(shiftedData, v, 44, japanese ? 6 : 11, lang, japanese ? 6 : 11);
     }
 
-    u8 PK1::speciesID1() const
-    {
-        return shiftedData[0];
-    }
+    u8 PK1::speciesID1() const { return shiftedData[0]; }
     void PK1::speciesID1(u8 v)
     {
-        data[1] = v;
+        data[1]        = v;
         shiftedData[0] = v;
         writeG1Types();
 
@@ -349,28 +349,14 @@ namespace pksm
         data[2] = 0xFF;
     }
 
-    Species PK1::species() const
-    {
-        return SpeciesConverter::g1ToNational(speciesID1());
-    }
-    void PK1::species(Species v)
-    {
-        speciesID1(SpeciesConverter::nationalToG1(v));
-    }
-    // yes, Gen I pokemon data stores catch rate, and yes it's actually important for Gen II importing
-    u8 PK1::catchRate() const
-    {
-        return shiftedData[7];
-    }
-    void PK1::catchRate(u8 v)
-    {
-        shiftedData[7] = v;
-    }
+    Species PK1::species() const { return SpeciesConverter::g1ToNational(speciesID1()); }
+    void PK1::species(Species v) { speciesID1(SpeciesConverter::nationalToG1(v)); }
+    // yes, Gen I pokemon data stores catch rate, and yes it's actually important for Gen II
+    // importing
+    u8 PK1::catchRate() const { return shiftedData[7]; }
+    void PK1::catchRate(u8 v) { shiftedData[7] = v; }
     // experience is actually 3 bytes
-    u32 PK1::experience() const
-    {
-        return BigEndian::convertTo<u32>(shiftedData + 14) >> 8;
-    }
+    u32 PK1::experience() const { return BigEndian::convertTo<u32>(shiftedData + 14) >> 8; }
     void PK1::experience(u32 v)
     {
         shiftedData[14] = v >> 16;
@@ -379,35 +365,25 @@ namespace pksm
     }
     u16 PK1::ev(Stat ev) const
     {
-        if (ev == Stat::SPDEF) ev = Stat::SPATK;
+        if (ev == Stat::SPDEF)
+            ev = Stat::SPATK;
         return BigEndian::convertTo<u16>(shiftedData + 17 + 2 * u8(ev));
     }
     void PK1::ev(Stat ev, u16 v)
     {
-        if (ev == Stat::SPDEF) ev = Stat::SPATK;
+        if (ev == Stat::SPDEF)
+            ev = Stat::SPATK;
         BigEndian::convertFrom<u16>(shiftedData + 17 + 2 * u8(ev), v);
     }
 
-    Move PK1::move(u8 move) const
-    {
-        return Move{shiftedData[8 + move]};
-    }
-    void PK1::move(u8 move, Move v)
-    {
-        shiftedData[8 + move] = u8(v);
-    }
-    u8 PK1::PP(u8 move) const
-    {
-        return u8(shiftedData[29 + move] & 0x3F);
-    }
+    Move PK1::move(u8 move) const { return Move{shiftedData[8 + move]}; }
+    void PK1::move(u8 move, Move v) { shiftedData[8 + move] = u8(v); }
+    u8 PK1::PP(u8 move) const { return u8(shiftedData[29 + move] & 0x3F); }
     void PK1::PP(u8 move, u8 v)
     {
         shiftedData[29 + move] = u8((shiftedData[29 + move] & 0xC0) | (v & 0x3F));
     }
-    u8 PK1::PPUp(u8 move) const
-    {
-        return shiftedData[29 + move] >> 6;
-    }
+    u8 PK1::PPUp(u8 move) const { return shiftedData[29 + move] >> 6; }
     void PK1::PPUp(u8 move, u8 v)
     {
         shiftedData[29 + move] = u8((v & 0xC0) | (shiftedData[29 + move] & 0x3F));
@@ -417,7 +393,8 @@ namespace pksm
         switch (iv)
         {
             case Stat::HP:
-                return ((PK1::iv(Stat::ATK) & 0x01) << 3) | ((PK1::iv(Stat::DEF) & 0x01) << 2) | ((PK1::iv(Stat::SPD) & 0x01) << 1) | (PK1::iv(Stat::SPATK) & 0x01);
+                return ((PK1::iv(Stat::ATK) & 0x01) << 3) | ((PK1::iv(Stat::DEF) & 0x01) << 2) |
+                       ((PK1::iv(Stat::SPD) & 0x01) << 1) | (PK1::iv(Stat::SPATK) & 0x01);
             case Stat::ATK:
                 return (shiftedData[0x1B] & 0xF0) >> 4;
             case Stat::DEF:
@@ -433,7 +410,8 @@ namespace pksm
     }
     void PK1::iv(Stat iv, u8 v)
     {
-        if (v > 15) v = 15;
+        if (v > 15)
+            v = 15;
         switch (iv)
         {
             case Stat::ATK:
@@ -468,7 +446,8 @@ namespace pksm
                 if (i != u8(Language::UNUSED))
                 {
                     std::string target = species().localize(Language{i});
-                    if (nickname() == StringUtils::toUpper(target)) return false;
+                    if (nickname() == StringUtils::toUpper(target))
+                        return false;
                 }
             }
         }
@@ -500,10 +479,7 @@ namespace pksm
                 iv(Stat::ATK, g ? (genderType() >> 4) : ((genderType() >> 4) + 1));
         }
     }
-    Nature PK1::nature() const
-    {
-        return Nature{u8(experience() % 25)};
-    }
+    Nature PK1::nature() const { return Nature{u8(experience() % 25)}; }
 
     Type PK1::hpType() const
     {
@@ -511,7 +487,8 @@ namespace pksm
     }
     void PK1::hpType(Type v)
     {
-        if (v <= Type::Normal || v >= Type::Fairy) return;
+        if (v <= Type::Normal || v >= Type::Fairy)
+            return;
 
         u8 noNormal = u8(v) - 1;
         noNormal %= 16; // just in case
@@ -533,10 +510,12 @@ namespace pksm
         boxLevel(v);
     }
 
-    // shininess doesn't exist until Gen II, but the GUI is probably gonna use colored sprites, so why not
+    // shininess doesn't exist until Gen II, but the GUI is probably gonna use colored sprites, so
+    // why not
     bool PK1::shiny() const
     {
-        return (iv(Stat::DEF) == 10) && (iv(Stat::SPD) == 10) && (iv(Stat::SPATK) == 10) && (((iv(Stat::ATK) & 0x02) >> 1) == 1);
+        return (iv(Stat::DEF) == 10) && (iv(Stat::SPD) == 10) && (iv(Stat::SPATK) == 10) &&
+               (((iv(Stat::ATK) & 0x02) >> 1) == 1);
     }
     void PK1::shiny(bool v)
     {
@@ -548,10 +527,7 @@ namespace pksm
         }
         iv(Stat::ATK, v ? 7 : 8);
     }
-    u16 PK1::formSpecies() const
-    {
-        return u16(species());
-    }
+    u16 PK1::formSpecies() const { return u16(species()); }
     u16 PK1::stat(Stat stat) const
     {
         u16 base;
@@ -577,9 +553,10 @@ namespace pksm
             default:
                 base = 0;
         }
-        u16 EV = u16(std::min(255, int(std::sqrt(ev(stat)))) >> 2);
+        u16 EV  = u16(std::min(255, int(std::sqrt(ev(stat)))) >> 2);
         u16 mid = u16(((2 * (base + iv(stat)) + EV) * level() / 100) + 5);
-        if (stat == Stat::HP) return mid + 5 + level();
+        if (stat == Stat::HP)
+            return mid + 5 + level();
         return mid;
     }
 
@@ -589,37 +566,34 @@ namespace pksm
     }
     void PK1::partyCurrHP(u16 v)
     {
-        if (isParty()) BigEndian::convertFrom<u16>(shiftedData + 1, v);
+        if (isParty())
+            BigEndian::convertFrom<u16>(shiftedData + 1, v);
     }
     int PK1::partyStat(Stat stat) const
     {
-        if (!isParty()) return -1;
-        if (stat == Stat::SPDEF) stat = Stat::SPATK;
+        if (!isParty())
+            return -1;
+        if (stat == Stat::SPDEF)
+            stat = Stat::SPATK;
         return BigEndian::convertTo<u16>(shiftedData + 34 + 2 * u8(stat));
     }
     void PK1::partyStat(Stat stat, u16 v)
     {
-        if (isParty()) {
-            if (stat == Stat::SPDEF) stat = Stat::SPATK;
+        if (isParty())
+        {
+            if (stat == Stat::SPDEF)
+                stat = Stat::SPATK;
             BigEndian::convertFrom<u16>(shiftedData + 34 + 2 * u8(stat), v);
         }
     }
-    int PK1::partyLevel() const
-    {
-        return isParty() ? shiftedData[33] : -1;
-    }
+    int PK1::partyLevel() const { return isParty() ? shiftedData[33] : -1; }
     void PK1::partyLevel(u8 v)
     {
-        if (isParty()) shiftedData[33] = v;
+        if (isParty())
+            shiftedData[33] = v;
     }
-    int PK1::boxLevel() const
-    {
-        return shiftedData[3];
-    }
-    void PK1::boxLevel(u8 v)
-    {
-        shiftedData[3] = v;
-    }
+    int PK1::boxLevel() const { return shiftedData[3]; }
+    void PK1::boxLevel(u8 v) { shiftedData[3] = v; }
     void PK1::updatePartyData()
     {
         partyLevel(level());
@@ -631,8 +605,9 @@ namespace pksm
 
     void PK1::writeG1Types()
     {
-        shiftedData[5] = type1() < Type::Steel ? u8(type1()) : (20 + (u8(type1()) - u8(Type::Fire)));
-        shiftedData[6] = type2() < Type::Steel ? u8(type2()) : (20 + (u8(type2()) - u8(Type::Fire)));
-    }    
+        shiftedData[5] =
+            type1() < Type::Steel ? u8(type1()) : (20 + (u8(type1()) - u8(Type::Fire)));
+        shiftedData[6] =
+            type2() < Type::Steel ? u8(type2()) : (20 + (u8(type2()) - u8(Type::Fire)));
+    }
 }
-

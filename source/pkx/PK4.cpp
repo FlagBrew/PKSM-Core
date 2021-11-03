@@ -262,7 +262,8 @@ namespace pksm
 
     std::unique_ptr<PKX> PK4::clone(void) const
     {
-        return PKX::getPKM<Generation::FOUR>(const_cast<u8*>(data), isParty() ? PARTY_LENGTH : BOX_LENGTH);
+        return PKX::getPKM<Generation::FOUR>(
+            const_cast<u8*>(data), isParty() ? PARTY_LENGTH : BOX_LENGTH);
     }
 
     Generation PK4::generation(void) const { return Generation::FOUR; }

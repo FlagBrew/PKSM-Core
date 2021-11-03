@@ -153,8 +153,8 @@ namespace pksm
         {
             for (u8 slot = 0; slot < 30; slot++)
             {
-                std::unique_ptr<PKX> pk5 =
-                    PKX::getPKM<Generation::FIVE>(&data[boxOffset(box, slot)], PK5::BOX_LENGTH, true);
+                std::unique_ptr<PKX> pk5 = PKX::getPKM<Generation::FIVE>(
+                    &data[boxOffset(box, slot)], PK5::BOX_LENGTH, true);
                 if (!crypted)
                 {
                     pk5->encrypt();
@@ -354,7 +354,10 @@ namespace pksm
     u8 Sav5::partyCount(void) const { return data[Party + 4]; }
     void Sav5::partyCount(u8 v) { data[Party + 4] = v; }
 
-    std::unique_ptr<PKX> Sav5::emptyPkm() const { return PKX::getPKM<Generation::FIVE>(nullptr, PK5::BOX_LENGTH); }
+    std::unique_ptr<PKX> Sav5::emptyPkm() const
+    {
+        return PKX::getPKM<Generation::FIVE>(nullptr, PK5::BOX_LENGTH);
+    }
 
     int Sav5::currentGiftAmount(void) const
     {

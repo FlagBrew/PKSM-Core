@@ -27,6 +27,7 @@
 #include "pkx/PKX.hpp"
 #include "pkx/PB7.hpp"
 #include "pkx/PK1.hpp"
+#include "pkx/PK2.hpp"
 #include "pkx/PK3.hpp"
 #include "pkx/PK4.hpp"
 #include "pkx/PK5.hpp"
@@ -493,7 +494,7 @@ namespace pksm
         }
         return nullptr;
     }
-    
+
     bool PKX::operator==(const PKFilter& filter) const
     {
         if (filter.generationEnabled() &&
@@ -652,11 +653,11 @@ namespace pksm
             {
                 case Generation::ONE:
                     partylen = (language() == Language::JPN ? PK1::JP_LENGTH_WITH_NAMES
-                                                         : PK1::INT_LENGTH_WITH_NAMES);
+                                                            : PK1::INT_LENGTH_WITH_NAMES);
                     break;
                 case Generation::TWO:
                     partylen = (language() == Language::JPN ? PK2::JP_LENGTH_WITH_NAMES
-                                                        : PK2::INT_LENGTH_WITH_NAMES);
+                                                            : PK2::INT_LENGTH_WITH_NAMES);
                     break;
                 case Generation::THREE:
                     partylen = PK3::PARTY_LENGTH;

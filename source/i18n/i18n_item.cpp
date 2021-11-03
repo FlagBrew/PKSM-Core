@@ -68,7 +68,7 @@ namespace i18n
     void exitItem(pksm::Language lang) { items.erase(lang); }
 
     void exitItem1(pksm::Language lang) { items1.erase(lang); }
-    
+
     void exitItem2(pksm::Language lang) { items2.erase(lang); }
 
     void exitItem3(pksm::Language lang) { items3.erase(lang); }

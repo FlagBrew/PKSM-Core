@@ -40,8 +40,9 @@ namespace pksm
         Language lang;
         GameVersion versionOfGame = GameVersion::RD; // not even PKHeX tries to do better
         u8 maxPkmInBox;
-        u16 boxSize, mainDataLength, bankBoxesSize, OFS_DEX_CAUGHT, OFS_DEX_SEEN, OFS_BAG, OFS_MONEY, OFS_BADGES,
-        OFS_TID, OFS_PC_ITEMS, OFS_CURRENT_BOX_INDEX, OFS_HOURS, OFS_PARTY, OFS_CURRENT_BOX, OFS_MAIN_DATA_SUM, OFS_BANK2_BOX_SUMS, OFS_BANK3_BOX_SUMS;
+        u16 boxSize, mainDataLength, bankBoxesSize, OFS_DEX_CAUGHT, OFS_DEX_SEEN, OFS_BAG,
+            OFS_MONEY, OFS_BADGES, OFS_TID, OFS_PC_ITEMS, OFS_CURRENT_BOX_INDEX, OFS_HOURS,
+            OFS_PARTY, OFS_CURRENT_BOX, OFS_MAIN_DATA_SUM, OFS_BANK2_BOX_SUMS, OFS_BANK3_BOX_SUMS;
 
         void fixBoxes(void);
 

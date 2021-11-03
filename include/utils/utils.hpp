@@ -41,6 +41,7 @@
 
 namespace StringUtils
 {
+    static constexpr char32_t CODEPOINT_INVALID = 0xFFFD;
     // Standard UTF-8/16/32 conversions
     [[nodiscard]] std::u16string UTF8toUTF16(const std::string_view& src);
     [[nodiscard]] std::string UTF16toUTF8(const std::u16string_view& src);
@@ -75,9 +76,10 @@ namespace StringUtils
     [[nodiscard]] std::pair<std::array<char16_t, 2>, size_t> codepointToUTF16(char32_t codepoint);
     [[nodiscard]] u16 codepointToUCS2(char32_t codepoint);
 
-    [[nodiscard]] char32_t UTF8toCodepoint(const char* data, size_t maxSize);
-    [[nodiscard]] char32_t UTF16toCodepoint(const char16_t* data, size_t maxSize);
-    [[nodiscard]] inline char32_t UCS2toCodepoint(const char16_t* data)
+    [[nodiscard]] std::pair<char32_t, size_t> UTF8toCodepoint(const char* data, size_t maxSize);
+    [[nodiscard]] std::pair<char32_t, size_t> UTF16toCodepoint(
+        const char16_t* data, size_t maxSize);
+    [[nodiscard]] inline std::pair<char32_t, size_t> UCS2toCodepoint(const char16_t* data)
     {
         return UTF16toCodepoint(data, 1);
     }
@@ -112,12 +114,12 @@ namespace StringUtils
     [[nodiscard]] std::string getString3(const u8* data, int ofs, int len, bool jp);
     void setString3(u8* data, const std::string_view& v, int ofs, int len, bool jp, int padTo = 0,
         u8 padWith = 0xFF);
-    [[nodiscard]] std::string getString1(const u8* data, int ofs, int len, pksm::Language lang,
-        bool transporter = false);
+    [[nodiscard]] std::string getString1(
+        const u8* data, int ofs, int len, pksm::Language lang, bool transporter = false);
     void setString1(u8* data, const std::string_view& v, int ofs, int len, pksm::Language lang,
         int padTo = 0, u8 padWith = 0x50);
-    [[nodiscard]] std::string getString2(const u8* data, int ofs, int len, pksm::Language lang,
-        bool transporter = false);
+    [[nodiscard]] std::string getString2(
+        const u8* data, int ofs, int len, pksm::Language lang, bool transporter = false);
     void setString2(u8* data, const std::string_view& v, int ofs, int len, pksm::Language lang,
         int padTo = 0, u8 padWith = 0x50);
 
@@ -151,6 +153,238 @@ namespace StringUtils
      */
     [[nodiscard]] std::string transString67(const std::string_view& str);
     [[nodiscard]] std::u16string transString67(const std::u16string_view& str);
+
+    namespace internal
+    {
+        template <typename OrigType>
+        std::enable_if_t<std::is_convertible_v<OrigType, std::string_view> ||
+                             std::is_convertible_v<OrigType, std::u16string_view> ||
+                             std::is_convertible_v<OrigType, std::u32string_view>,
+            std::conditional_t<std::is_convertible_v<OrigType, std::string_view>, std::string_view,
+                std::conditional_t<std::is_convertible_v<OrigType, std::u16string_view>,
+                    std::u16string_view, std::u32string_view>>>
+            toView(OrigType&& x)
+        {
+            return x;
+        }
+        template <typename RetType, typename First, typename... Params>
+        void concatImpl(RetType& ret, First&& f, Params&&... rest)
+        {
+            static_assert(std::is_same_v<RetType, std::string> ||
+                          std::is_same_v<RetType, std::u16string> ||
+                          std::is_same_v<RetType, std::u32string>);
+            static_assert(std::is_convertible_v<First, std::string_view> ||
+                          std::is_convertible_v<First, std::u16string_view> ||
+                          std::is_convertible_v<First, std::u32string_view>);
+
+            static_assert(((std::is_convertible_v<Params, std::string_view> ||
+                            std::is_convertible_v<Params, std::u16string_view> ||
+                            std::is_convertible_v<Params, std::u32string_view>)&&...));
+
+            auto view = toView(std::forward<First>(f));
+
+            if constexpr (std::is_same_v<RetType, std::string> &&
+                          std::is_convertible_v<First, std::string_view>)
+            {
+                ret.append(view.data(), view.size());
+            }
+            else if constexpr (std::is_same_v<RetType, std::u16string> &&
+                               std::is_convertible_v<First, std::u16string_view>)
+            {
+                ret.append(view.data(), view.size());
+            }
+            else if constexpr (std::is_same_v<RetType, std::u32string> &&
+                               std::is_convertible_v<First, std::u32string_view>)
+            {
+                ret.append(view.data(), view.size());
+            }
+            else
+            {
+                size_t i = 0;
+                while (i < view.size())
+                {
+                    size_t iMod = 1;
+                    char32_t codepoint;
+                    if constexpr (std::is_same_v<decltype(view), std::string_view>)
+                    {
+                        std::tie(codepoint, iMod) =
+                            UTF8toCodepoint(view.data() + i, view.size() - i);
+                    }
+                    else if constexpr (std::is_same_v<decltype(view), std::u16string_view>)
+                    {
+                        std::tie(codepoint, iMod) =
+                            UTF16toCodepoint(view.data() + i, view.size() - i);
+                    }
+                    else if constexpr (std::is_same_v<decltype(view), std::u32string_view>)
+                    {
+                        codepoint = view[i];
+                    }
+
+                    if constexpr (std::is_same_v<RetType, std::string>)
+                    {
+                        auto [data, size] = codepointToUTF8(codepoint);
+                        ret.append(data.data(), size);
+                    }
+                    else if constexpr (std::is_same_v<RetType, std::u16string>)
+                    {
+                        auto [data, size] = codepointToUTF16(codepoint);
+                        ret.append(data.data(), size);
+                    }
+                    else if constexpr (std::is_same_v<RetType, std::u32string>)
+                    {
+                        ret += codepoint;
+                    }
+
+                    i += iMod;
+                }
+            }
+
+            if constexpr (sizeof...(rest) != 0)
+            {
+                concatImpl(ret, std::forward<Params>(rest)...);
+            }
+        }
+
+        template <typename StringType>
+        size_t concatMaxSizeInCodeUnits()
+        {
+            static_assert(std::is_same_v<StringType, std::string> ||
+                          std::is_same_v<StringType, std::u16string> ||
+                          std::is_same_v<StringType, std::u32string>);
+            return 0;
+        }
+
+        template <typename StringType, typename First, typename... Params>
+        size_t concatMaxSizeInCodeUnits(First&& f, Params&&... args)
+        {
+            static_assert(std::is_same_v<StringType, std::string> ||
+                          std::is_same_v<StringType, std::u16string> ||
+                          std::is_same_v<StringType, std::u32string>);
+            static_assert(std::is_convertible_v<First, std::string_view> ||
+                          std::is_convertible_v<First, std::u16string_view> ||
+                          std::is_convertible_v<First, std::u32string_view>);
+
+            if constexpr (std::is_same_v<StringType, std::string>)
+            {
+                if constexpr (std::is_convertible_v<First, std::string_view>)
+                {
+                    toView(std::forward<First>(f)).size() +
+                        concatMaxSizeInCodeUnits<StringType>(std::forward<Params>(args)...);
+                }
+                else if constexpr (std::is_convertible_v<First, std::u16string_view>)
+                {
+                    return toView(std::forward<First>(f)).size() * 2 +
+                           concatMaxSizeInCodeUnits<StringType>(std::forward<Params>(args)...);
+                }
+                else if constexpr (std::is_convertible_v<First, std::u32string_view>)
+                {
+                    return toView(std::forward<First>(f)).size() * 4 +
+                           concatMaxSizeInCodeUnits<StringType>(std::forward<Params>(args)...);
+                }
+            }
+            else if constexpr (std::is_same_v<StringType, std::u16string>)
+            {
+                if constexpr (std::is_convertible_v<First, std::u32string_view>)
+                {
+                    return toView(std::forward<First>(f)).size() * 2 +
+                           concatMaxSizeInCodeUnits<StringType>(std::forward<Params>(args)...);
+                }
+                return toView(std::forward<First>(f)).size() +
+                       concatMaxSizeInCodeUnits<StringType>(std::forward<Params>(args)...);
+            }
+            else if constexpr (std::is_same_v<StringType, std::u32string>)
+            {
+                return toView(std::forward<First>(f)).size() +
+                       concatMaxSizeInCodeUnits<StringType>(std::forward<Params>(args)...);
+            }
+        }
+    }
+
+    template <typename EncString, typename OrigString>
+    EncString convert(OrigString&& str)
+    {
+        static_assert(std::is_same_v<EncString, std::string> ||
+                      std::is_same_v<EncString, std::u16string> ||
+                      std::is_same_v<EncString, std::u32string>);
+        static_assert(std::is_convertible_v<OrigString, std::string_view> ||
+                      std::is_convertible_v<OrigString, std::u16string_view> ||
+                      std::is_convertible_v<OrigString, std::u32string_view>);
+
+        if constexpr (std::is_same_v<EncString, std::string>)
+        {
+            if constexpr (std::is_convertible_v<OrigString, std::string_view>)
+            {
+                return EncString(str);
+            }
+            else if constexpr (std::is_convertible_v<OrigString, std::u16string_view>)
+            {
+                return UTF16toUTF8(str);
+            }
+            else if constexpr (std::is_convertible_v<OrigString, std::u32string_view>)
+            {
+                return UTF32toUTF8(str);
+            }
+        }
+        else if constexpr (std::is_same_v<EncString, std::u16string>)
+        {
+            if constexpr (std::is_convertible_v<OrigString, std::string_view>)
+            {
+                return UTF8toUTF16(str);
+            }
+            else if constexpr (std::is_convertible_v<OrigString, std::u16string_view>)
+            {
+                return EncString(str);
+            }
+            else if constexpr (std::is_convertible_v<OrigString, std::u32string_view>)
+            {
+                return UTF32toUTF16(str);
+            }
+        }
+        else if constexpr (std::is_same_v<EncString, std::u32string>)
+        {
+            if constexpr (std::is_convertible_v<OrigString, std::string_view>)
+            {
+                return UTF8toUTF32(str);
+            }
+            else if constexpr (std::is_convertible_v<OrigString, std::u16string_view>)
+            {
+                return UTF16toUTF32(str);
+            }
+            else if constexpr (std::is_convertible_v<OrigString, std::u32string_view>)
+            {
+                return EncString(str);
+            }
+        }
+    }
+
+    template <typename RetType, bool ShrinkAfter = false, typename... Params>
+    RetType concat(Params&&... rest)
+    {
+        static_assert(std::is_same_v<RetType, std::string> ||
+                      std::is_same_v<RetType, std::u16string> ||
+                      std::is_same_v<RetType, std::u32string>);
+        static_assert(((std::is_convertible_v<Params, std::string_view> ||
+                        std::is_convertible_v<Params, std::u16string_view> ||
+                        std::is_convertible_v<Params, std::u32string_view>)&&...));
+
+        if constexpr (sizeof...(rest) == 0)
+        {
+            return RetType();
+        }
+
+        RetType ret;
+
+        ret.reserve(internal::concatMaxSizeInCodeUnits<RetType>(std::forward<Params>(rest)...));
+
+        internal::concatImpl(ret, rest...);
+
+        if constexpr (ShrinkAfter)
+        {
+            ret.shrink_to_fit();
+        }
+
+        return ret;
+    }
 }
 
 #endif

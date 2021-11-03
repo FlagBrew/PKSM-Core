@@ -28,28 +28,18 @@
 #define PK2_HPP
 
 #include "personal/personal.hpp"
-#include "pkx/PK1.hpp"
-#include "pkx/PK3.hpp"
-#include "pkx/PK4.hpp"
-#include "pkx/PK5.hpp"
-#include "pkx/PK6.hpp"
-#include "pkx/PK7.hpp"
-#include "pkx/PB7.hpp"
-#include "pkx/PK8.hpp"
 #include "pkx/PKX.hpp"
 
 namespace pksm
 {
     class PK2 : public PKX
     {
-    protected:
-        GameVersion versionOfGame = GameVersion::GD;
-
     private:
+        u8* shiftedData;
+        Language lang;
+        GameVersion versionOfGame = GameVersion::GD;
         bool japanese;
         bool korean = false;
-        Language lang;
-        u8* shiftedData;
 
         [[nodiscard]] int eggYear(void) const override { return 1900; }
         void eggYear(int) override {}
@@ -143,10 +133,10 @@ namespace pksm
         [[nodiscard]] u16 ev(Stat ev) const override;
         void ev(Stat ev, u16 v) override;
 
-        [[nodiscard]] u8 contest(u8 contest) const override { return 0; }
+        [[nodiscard]] u8 contest(u8) const override { return 0; }
         void contest(u8 contest, u8 v) override {}
-        [[nodiscard]] bool hasRibbon(Ribbon rib) const override { return false; }
-        [[nodiscard]] bool ribbon(Ribbon rib) const override { return false; }
+        [[nodiscard]] bool hasRibbon(Ribbon) const override { return false; }
+        [[nodiscard]] bool ribbon(Ribbon) const override { return false; }
         void ribbon(Ribbon rib, bool v) override {}
 
         [[nodiscard]] Move move(u8 move) const override;
@@ -263,7 +253,7 @@ namespace pksm
         {
             return PersonalGSC::expType(u8(species()));
         }
-        [[nodiscard]] inline Ability abilities(u8 n) const override { return Ability::None; }
+        [[nodiscard]] inline Ability abilities(u8) const override { return Ability::None; }
         [[nodiscard]] inline u16 formStatIndex(void) const override { return 0; }
     };
 }

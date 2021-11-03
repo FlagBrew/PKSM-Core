@@ -570,8 +570,8 @@ namespace pksm
                 {
                     return;
                 }
-                std::unique_ptr<PKX> pb7 =
-                    PKX::getPKM<Generation::LGPE>(&data[boxOffset(box, slot)], PB7::PARTY_LENGTH, true);
+                std::unique_ptr<PKX> pb7 = PKX::getPKM<Generation::LGPE>(
+                    &data[boxOffset(box, slot)], PB7::PARTY_LENGTH, true);
                 if (!crypted)
                 {
                     pb7->encrypt();

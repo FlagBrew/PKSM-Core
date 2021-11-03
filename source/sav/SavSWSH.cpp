@@ -509,12 +509,14 @@ namespace pksm
     std::unique_ptr<PKX> SavSWSH::pkm(u8 slot) const
     {
         u32 offset = partyOffset(slot);
-        return PKX::getPKM<Generation::EIGHT>(getBlock(Party)->decryptedData() + offset, PK8::PARTY_LENGTH);
+        return PKX::getPKM<Generation::EIGHT>(
+            getBlock(Party)->decryptedData() + offset, PK8::PARTY_LENGTH);
     }
     std::unique_ptr<PKX> SavSWSH::pkm(u8 box, u8 slot) const
     {
         u32 offset = boxOffset(box, slot);
-        return PKX::getPKM<Generation::EIGHT>(getBlock(Box)->decryptedData() + offset, PK8::PARTY_LENGTH);
+        return PKX::getPKM<Generation::EIGHT>(
+            getBlock(Box)->decryptedData() + offset, PK8::PARTY_LENGTH);
     }
 
     void SavSWSH::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)

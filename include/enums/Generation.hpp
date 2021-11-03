@@ -44,15 +44,15 @@ namespace pksm
             // values MUST remain consistent
             enum class GenerationEnum : u32
             {
-                ONE                  = 7,
-                TWO                  = 8,
-                THREE                = 6,
-                FOUR                 = 0,
-                FIVE                 = 1,
-                SIX                  = 2,
-                SEVEN                = 3,
-                LGPE                 = 4,
-                EIGHT                = 5,
+                ONE   = 7,
+                TWO   = 8,
+                THREE = 6,
+                FOUR  = 0,
+                FIVE  = 1,
+                SIX   = 2,
+                SEVEN = 3,
+                LGPE  = 4,
+                EIGHT = 5,
 
                 UNUSED [[maybe_unused]] = 0xFFFFFFFF
             } v;

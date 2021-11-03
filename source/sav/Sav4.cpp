@@ -290,8 +290,8 @@ namespace pksm
         {
             for (u8 slot = 0; slot < 30; slot++)
             {
-                std::unique_ptr<PKX> pk4 =
-                    PKX::getPKM<Generation::FOUR>(&data[boxOffset(box, slot)], PK4::BOX_LENGTH, true);
+                std::unique_ptr<PKX> pk4 = PKX::getPKM<Generation::FOUR>(
+                    &data[boxOffset(box, slot)], PK4::BOX_LENGTH, true);
                 if (!crypted)
                 {
                     pk4->encrypt();
@@ -750,7 +750,10 @@ namespace pksm
         return v;
     }
 
-    std::unique_ptr<PKX> Sav4::emptyPkm() const { return PKX::getPKM<Generation::FOUR>(nullptr, PK4::BOX_LENGTH); }
+    std::unique_ptr<PKX> Sav4::emptyPkm() const
+    {
+        return PKX::getPKM<Generation::FOUR>(nullptr, PK4::BOX_LENGTH);
+    }
 
     int Sav4::currentGiftAmount(void) const
     {

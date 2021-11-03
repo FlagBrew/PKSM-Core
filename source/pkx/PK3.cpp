@@ -158,7 +158,8 @@ namespace pksm
     std::unique_ptr<PKX> PK3::clone(void) const
     {
         // Can't use normal data constructor because of checksum encryption checks
-        std::unique_ptr<PK3> ret = PKX::getPKM<Generation::THREE>(nullptr, isParty() ? PARTY_LENGTH : BOX_LENGTH);
+        std::unique_ptr<PK3> ret =
+            PKX::getPKM<Generation::THREE>(nullptr, isParty() ? PARTY_LENGTH : BOX_LENGTH);
         std::copy(data, data + getLength(), ret->rawData());
         return ret;
     }
@@ -464,17 +465,18 @@ namespace pksm
         return nullptr;
     }
 
-    std::unique_ptr<PK2> PK3::convertToG2(Sav &save) const
+    std::unique_ptr<PK2> PK3::convertToG2(Sav& save) const
     {
-        auto pk2 = PKX::getPKM<Generation::TWO>(nullptr, japanese() ? PK1::JP_LENGTH_WITH_NAMES : PK1::INT_LENGTH_WITH_NAMES);
-        
+        auto pk2 = PKX::getPKM<Generation::TWO>(
+            nullptr, japanese() ? PK1::JP_LENGTH_WITH_NAMES : PK1::INT_LENGTH_WITH_NAMES);
+
         pk2->species(species());
         pk2->TID(TID());
         pk2->experience(experience());
         pk2->egg(false);
         pk2->otFriendship(otFriendship());
         pk2->language(language());
-        
+
         // approximate an equivalent stat experience for an ev, by squaring
         pk2->ev(Stat::HP, ev(Stat::HP) * ev(Stat::HP));
         pk2->ev(Stat::ATK, ev(Stat::ATK) * ev(Stat::ATK));
