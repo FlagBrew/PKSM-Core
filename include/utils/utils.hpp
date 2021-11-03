@@ -268,8 +268,8 @@ namespace StringUtils
             {
                 if constexpr (std::is_convertible_v<First, std::string_view>)
                 {
-                    toView(std::forward<First>(f)).size() +
-                        concatMaxSizeInCodeUnits<StringType>(std::forward<Params>(args)...);
+                    return toView(std::forward<First>(f)).size() +
+                           concatMaxSizeInCodeUnits<StringType>(std::forward<Params>(args)...);
                 }
                 else if constexpr (std::is_convertible_v<First, std::u16string_view>)
                 {
