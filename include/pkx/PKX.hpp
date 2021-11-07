@@ -90,7 +90,7 @@ namespace pksm
         u8* data;
 
     public:
-        static constexpr Species PKSM_MAX_SPECIES = Species::Zarude;
+        static constexpr Species PKSM_MAX_SPECIES = Species::Calyrex;
 
         [[nodiscard]] static std::unique_ptr<PKX> getPKM(
             Generation gen, u8* data, bool party = false, bool directAccess = false);
