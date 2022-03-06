@@ -92,7 +92,7 @@ namespace pksm
         u8* data;
 
     public:
-        static constexpr Species PKSM_MAX_SPECIES = Species::Zarude;
+        static constexpr Species PKSM_MAX_SPECIES = Species::Calyrex;
 
         // Returns null if length is not valid for that generation, and a party Pokemon depending on
         // length, or in Gen I and II a Japanese Pokemon depending on length
