@@ -1043,7 +1043,7 @@ void StringUtils::setString1(u8* data, const std::string_view& v, int ofs, int l
     {
         while (outPos < len && inPos < v.size())
         {
-            auto [codepoint, advance] = UTF8toCodepoint(v.data(), v.size() - inPos);
+            auto [codepoint, advance] = UTF8toCodepoint(v.data() + inPos, v.size() - inPos);
 
             codepoint = tofullwidth(codepointToUCS2(codepoint));
 
@@ -1063,7 +1063,7 @@ void StringUtils::setString1(u8* data, const std::string_view& v, int ofs, int l
     {
         while (outPos < len && inPos < v.size())
         {
-            auto [codepoint, advance] = UTF8toCodepoint(v.data(), v.size() - inPos);
+            auto [codepoint, advance] = UTF8toCodepoint(v.data() + inPos, v.size() - inPos);
 
             auto found = std::find(pksm::internal::G1ENChars.begin(),
                 pksm::internal::G1ENChars.end(), codepointToUCS2(codepoint));
@@ -1169,7 +1169,7 @@ void StringUtils::setString2(u8* data, const std::string_view& v, int ofs, int l
 
     while (outPos < len && inPos < v.size())
     {
-        auto [codepoint, advance] = UTF8toCodepoint(v.data(), v.size() - inPos);
+        auto [codepoint, advance] = UTF8toCodepoint(v.data() + inPos, v.size() - inPos);
 
         codepoint = tofullwidth(codepointToUCS2(codepoint));
 
