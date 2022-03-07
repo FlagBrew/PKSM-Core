@@ -621,6 +621,10 @@ std::string StringUtils::getString(const u8* data, int ofs, int len, char16_t te
     for (int i = 0; i < len; i++)
     {
         char16_t codeunit = LittleEndian::convertTo<char16_t>(data + ofs + i * 2);
+        if (codeunit == term)
+        {
+            break;
+        }
         auto [data, size] = codepointToUTF8((char32_t)codeunit);
         ret.append(data.data(), size);
     }
