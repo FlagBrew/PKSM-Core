@@ -350,7 +350,7 @@ namespace pksm
     }
     void PK2::otName(const std::string_view& v)
     {
-        StringUtils::setString2(shiftedData, v, 48, japanese ? 6 : 11, lang, japanese ? 6 : 11);
+        StringUtils::setString2(shiftedData, v, 48, japanese ? 6 : 11, lang, japanese ? 6 : 11, 0);
     }
 
     Species PK2::species() const { return Species{shiftedData[0]}; }
