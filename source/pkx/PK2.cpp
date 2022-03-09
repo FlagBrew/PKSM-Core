@@ -387,7 +387,7 @@ namespace pksm
         shiftedData[9]  = (v >> 8) & 0x00FF;
         shiftedData[10] = v & 0x0000FF;
 
-        shiftedData[3] = level();
+        shiftedData[31] = level();
     }
     u8 PK2::otFriendship() const { return shiftedData[27]; }
     void PK2::otFriendship(u8 v) { shiftedData[27] = v; }
