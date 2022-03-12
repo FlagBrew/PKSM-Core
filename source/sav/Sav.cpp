@@ -344,15 +344,24 @@ namespace pksm
         }
         else if (availableAbilities().count(pk.ability()) == 0)
         {
-            return BadTransferReason::ABILITY;
+            if (generation() > Generation::TWO && pk.generation() > Generation::TWO)
+            { 
+                return BadTransferReason::ABILITY;
+            }
         }
         else if (availableItems().count((int)pk.heldItem()) == 0)
         {
-            return BadTransferReason::ITEM;
+            if (generation() != Generation::ONE)
+            {
+                return BadTransferReason::ITEM;
+            }
         }
         else if (availableBalls().count(pk.ball()) == 0)
         {
-            return BadTransferReason::BALL;
+            if (generation() > Generation::TWO)
+            {
+                return BadTransferReason::BALL;
+            }
         }
         return BadTransferReason::OKAY;
     }
