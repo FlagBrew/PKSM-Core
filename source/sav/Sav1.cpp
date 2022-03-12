@@ -135,7 +135,7 @@ namespace pksm
             }
             else
             {
-                data[OFS_BANK3_BOX_SUMS + 1 + box] =
+                data[OFS_BANK3_BOX_SUMS + 1 + (box - (maxBoxes() / 2))] =
                     crypto::diff8(&data[boxDataStart(box)], boxSize);
             }
         }
