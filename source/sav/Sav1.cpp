@@ -107,7 +107,6 @@ namespace pksm
                     j      = maxPkmInBox; // reset loop
                 }
             }
-            boxCount(i, numPkm);
             boxSpecies(i);
         }
     }
@@ -311,8 +310,6 @@ namespace pksm
                     pk1->rawData() + 3 + PK1::PARTY_LENGTH + 2 * nameLength(),
                     &data[partyNicknameOffset(slot)]);
             }
-
-            data[OFS_PARTY + 1 + slot] = pk1->rawData()[1];
         }
     }
     void Sav1::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)
@@ -360,8 +357,6 @@ namespace pksm
                     pk1->rawData() + 3 + PK1::PARTY_LENGTH + 2 * nameLength(),
                     &data[boxNicknameOffset(box, slot)]);
             }
-
-            data[boxStart(box) + 1 + slot] = pk1->rawData()[3];
         }
     }
 
@@ -413,8 +408,6 @@ namespace pksm
     }
     u8 Sav1::partyCount() const { return data[OFS_PARTY]; }
     void Sav1::partyCount(u8 count) { data[OFS_PARTY] = count; }
-    u8 Sav1::boxCount(u8 box) const { return data[boxStart(box)]; }
-    void Sav1::boxCount(u8 box, u8 count) { data[boxStart(box)] = count; }
     void Sav1::boxSpecies(u8 box)
     {
         u8 count = 0;

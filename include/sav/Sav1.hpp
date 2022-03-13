@@ -130,8 +130,6 @@ namespace pksm
         void boxWallpaper(u8 box, u8 v) override {}
         [[nodiscard]] u8 partyCount(void) const override;
         void partyCount(u8 count) override;
-        [[nodiscard]] u8 boxCount(u8 box) const;
-        void boxCount(u8 box, u8 count);
         void boxSpecies(u8 box);
         void partySpecies(void);
 

@@ -253,8 +253,6 @@ namespace pksm
                     j      = maxPkmInBox; // reset loop
                 }
             }
-
-            boxCount(i, numPkm);
             boxSpecies(i);
         }
     }
@@ -263,7 +261,6 @@ namespace pksm
     {
         // we just pretend the secondary data copy doesn't exist, it's never used as long as we get
         // the checksum for the primary copy right
-
         fixBoxes();
         partySpecies();
         fixItemLists();
@@ -510,8 +507,6 @@ namespace pksm
                     pk2->rawData() + 3 + PK2::PARTY_LENGTH + 2 * nameLength(),
                     &data[partyNicknameOffset(slot)]);
             }
-
-            data[OFS_PARTY + 1 + slot] = pk2->rawData()[1];
         }
     }
     void Sav2::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)
@@ -559,8 +554,6 @@ namespace pksm
                     pk2->rawData() + 3 + PK2::PARTY_LENGTH + 2 * nameLength(),
                     &data[boxNicknameOffset(box, slot)]);
             }
-
-            data[boxStart(box) + 1 + slot] = pk2->rawData()[1];
         }
     }
 
@@ -647,8 +640,6 @@ namespace pksm
 
     u8 Sav2::partyCount() const { return data[OFS_PARTY]; }
     void Sav2::partyCount(u8 count) { data[OFS_PARTY] = count; }
-    u8 Sav2::boxCount(u8 box) const { return data[boxStart(box)]; }
-    void Sav2::boxCount(u8 box, u8 count) { data[boxStart(box)] = count; }
     void Sav2::boxSpecies(u8 box)
     {
         u8 count = 0;
