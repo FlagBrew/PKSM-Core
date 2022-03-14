@@ -507,6 +507,8 @@ namespace pksm
                     pk2->rawData() + 3 + PK2::PARTY_LENGTH + 2 * nameLength(),
                     &data[partyNicknameOffset(slot)]);
             }
+
+            data[OFS_PARTY + 1 + slot] = pk2->rawData()[1];
         }
     }
     void Sav2::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)
@@ -554,6 +556,8 @@ namespace pksm
                     pk2->rawData() + 3 + PK2::PARTY_LENGTH + 2 * nameLength(),
                     &data[boxNicknameOffset(box, slot)]);
             }
+
+            data[boxStart(box) + 1 + slot] = pk2->rawData()[1];
         }
     }
 
