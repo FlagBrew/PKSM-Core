@@ -77,6 +77,9 @@ namespace pksm
             // Gen II VC saves
             case 0x8010:
             case 0x10010:
+            // Emulator standard saves
+            case 0x8030:
+            case 0x10030:
                 return checkGBType(dt, length);
             case 0xB8800:
             case 0x100000:
