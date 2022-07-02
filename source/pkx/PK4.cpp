@@ -819,6 +819,7 @@ namespace pksm
         pk3->experience(egg() ? expTable(5, expType()) : experience());
         pk3->gender(gender());
         pk3->alternativeForm(alternativeForm());
+        pk3->nature(nature());
         pk3->egg(false);
         pk3->otFriendship(70);
         pk3->markValue(markValue());
