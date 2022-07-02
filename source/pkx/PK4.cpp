@@ -812,14 +812,14 @@ namespace pksm
     {
         auto pk3 = PKX::getPKM<Generation::THREE>(nullptr);
 
-        pk3->PID(PID());
+        // This sets gender, nature, and alternative form as well
+        pk3->PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
+            abilityNumber(), PID(), Generation::THREE));
+
         pk3->species(species());
         pk3->TID(TID());
         pk3->SID(SID());
         pk3->experience(egg() ? expTable(5, expType()) : experience());
-        pk3->gender(gender());
-        pk3->alternativeForm(alternativeForm());
-        pk3->nature(nature());
         pk3->egg(false);
         pk3->otFriendship(70);
         pk3->markValue(markValue());
