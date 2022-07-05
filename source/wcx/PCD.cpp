@@ -24,6 +24,7 @@
  *         reasonable ways as different from the original version.
  */
 
+#include <array>
 #include "wcx/PCD.hpp"
 #include "utils/endian.hpp"
 

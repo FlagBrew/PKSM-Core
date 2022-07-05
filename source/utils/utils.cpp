@@ -24,6 +24,7 @@
  *         reasonable ways as different from the original version.
  */
 
+#include <array>
 #include "utils/utils.hpp"
 #include "g1text.hpp"
 #include "g2text.hpp"
