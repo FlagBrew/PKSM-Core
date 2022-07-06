@@ -168,8 +168,8 @@ namespace pksm
         void fixMoves(void);
 
         [[nodiscard]] static u32 getRandomPID(Species species, Gender gender,
-            GameVersion originGame, Nature nature, u8 form, u8 abilityNum, u32 oldPid,
-            Generation gen);
+            GameVersion originGame, Nature nature, u8 form, u8 abilityNum, bool shiny, u16 tsv,
+            u32 oldPid, Generation gen);
         [[nodiscard]] static Gender genderFromRatio(u32 pid, u8 gt);
 
         // BLOCK A

@@ -360,22 +360,8 @@ namespace pksm
     {
         if (v == 1 || v == 2)
         {
-            if (shiny())
-            {
-                do
-                {
-                    PID(PKX::getRandomPID(species(), gender(), version(), nature(),
-                        alternativeForm(), v, PID(), generation()));
-                } while (!shiny());
-            }
-            else
-            {
-                do
-                {
-                    PID(PKX::getRandomPID(species(), gender(), version(), nature(),
-                        alternativeForm(), v, PID(), generation()));
-                } while (shiny());
-            }
+            PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), v,
+                shiny(), TSV(), PID(), generation()));
             hiddenAbility(false);
         }
         else // Hidden ability
@@ -511,22 +497,8 @@ namespace pksm
     void PK5::gender(Gender g)
     {
         data[0x40] = (data[0x40] & ~0x06) | (u8(g) << 1);
-        if (shiny())
-        {
-            do
-            {
-                PID(PKX::getRandomPID(species(), g, version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            } while (!shiny());
-        }
-        else
-        {
-            do
-            {
-                PID(PKX::getRandomPID(species(), g, version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            } while (shiny());
-        }
+        PID(PKX::getRandomPID(species(), g, version(), nature(), alternativeForm(), abilityNumber(),
+            shiny(), TSV(), PID(), generation()));
     }
 
     u16 PK5::alternativeForm(void) const { return data[0x40] >> 3; }
@@ -674,22 +646,8 @@ namespace pksm
     bool PK5::shiny(void) const { return TSV() == PSV(); }
     void PK5::shiny(bool v)
     {
-        if (v)
-        {
-            while (!shiny())
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            }
-        }
-        else
-        {
-            while (shiny())
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            }
-        }
+        PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
+            abilityNumber(), v, TSV(), PID(), generation()));
     }
 
     u16 PK5::formSpecies(void) const
