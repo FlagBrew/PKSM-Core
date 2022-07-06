@@ -507,7 +507,7 @@ namespace pksm
             case 0:
                 return;
             default:
-                iv(Stat::ATK, g ? (genderType() >> 4) : ((genderType() >> 4) + 1));
+                iv(Stat::ATK, (g == Gender::Female) ? (genderType() >> 4) : ((genderType() >> 4) + 1));
         }
     }
     u16 PK2::alternativeForm() const

@@ -476,7 +476,7 @@ namespace pksm
             case 0:
                 return;
             default:
-                iv(Stat::ATK, g ? (genderType() >> 4) : ((genderType() >> 4) + 1));
+                iv(Stat::ATK, (g == Gender::Female) ? (genderType() >> 4) : ((genderType() >> 4) + 1));
         }
     }
     Nature PK1::nature() const { return Nature{u8(experience() % 25)}; }
