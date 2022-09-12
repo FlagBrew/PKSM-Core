@@ -942,7 +942,13 @@ namespace pksm
         pk7->rawData()[0x72] &= 0xFC; // low 2 bits of super training
         pk7->rawData()[0xDE] = 0;     // gen 4 encounter type
 
-        pk7->markValue(markValue());
+        // marks get expanded from one bit to two.
+        u8 oldMarks = markValue();
+        u16 newMarks = 0;
+        for (int i = 0; i < 6; i++) {
+            newMarks |= ((oldMarks >> i) & 1) << (i << 1);
+        }
+        pk7->markValue(newMarks);
 
         switch (abilityNumber())
         {

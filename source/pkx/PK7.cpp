@@ -758,7 +758,14 @@ namespace pksm
         // markvalue field moved, clear old gen 7 data
         LittleEndian::convertFrom<u16>(pk6->rawData() + 0x16, 0);
 
-        pk6->markValue(markValue());
+        // marks get un-expanded from two bits to one.
+        u16 oldMarks = markValue();
+        u8 newMarks = 0;
+        for (int i = 0; i < 6; i++) {
+            // if any bits of old mark are on (including both, which is illegal), turn on new mark
+            newMarks |= (((oldMarks >> (i << 1)) & 3) ? 1 : 0) << i;
+        }
+        pk6->markValue(newMarks);
 
         switch (abilityNumber())
         {
