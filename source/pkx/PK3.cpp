@@ -820,7 +820,7 @@ namespace pksm
     }
     void PK3::hpType(Type v)
     {
-        if (v <= Type::Normal && v >= Type::Fairy)
+        if (v <= Type::Normal || v >= Type::Fairy)
         {
             return;
         }

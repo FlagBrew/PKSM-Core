@@ -170,11 +170,11 @@ namespace pksm
         auto pk7 = PKX::getPKM<Generation::SEVEN>(nullptr, PK7::BOX_LENGTH);
 
         pk7->encryptionConstant(randomNumber(0, 0xFFFFFFFF));
+        pk7->PID(randomNumber(0, 0xFFFFFFFF));
         pk7->species(species());
         pk7->TID(TID());
-        pk7->experience(experience());
+        pk7->level(level());
         pk7->nature(nature());
-        pk7->PID(randomNumber(0, 0xFFFFFFFF));
         pk7->ball(ball());
         pk7->metDate(Date::today());
         pk7->version(version());
@@ -480,6 +480,10 @@ namespace pksm
         }
     }
     Nature PK1::nature() const { return Nature{u8(experience() % 25)}; }
+    void PK1::nature(Nature v)
+    {
+        experience(experience() - (experience() % 25) + u8(v));
+    }
 
     Type PK1::hpType() const
     {
@@ -609,5 +613,52 @@ namespace pksm
             type1() < Type::Steel ? u8(type1()) : (20 + (u8(type1()) - u8(Type::Fire)));
         shiftedData[6] =
             type2() < Type::Steel ? u8(type2()) : (20 + (u8(type2()) - u8(Type::Fire)));
+    }
+
+
+    // gen 2 stuff because this is a gen 2 construct
+    u8 PK1::heldItem2() const
+    {
+        switch (catchRate())
+        {
+            case 0x19:                // Teru-sama
+                return 0x92;          // Leftovers
+            case 0x2D:                // Teru-sama
+                return 0x53;          // Bitter Berry
+            case 0x32:                // Teru-sama
+                return 0xAE;          // Gold Berry
+            case 0x5A:                // Teru-sama
+            case 0x64:                // Teru-sama
+            case 0x78:                // Teru-sama
+            case 0x7F:                // Card Key
+            case 0xBE:                // Teru-sama
+            case 0xFF:                // Cancel
+                return 0xAD;          // Berry
+            default:
+                return catchRate();
+        }
+    }
+    void PK1::heldItem2(u8 v)
+    {
+        catchRate(v);
+    }
+    u16 PK1::heldItem() const
+    {
+        return ItemConverter::g2ToNational(heldItem2());
+    }
+    void PK1::heldItem(u16 v)
+    {
+        catchRate(ItemConverter::nationalToG2(v));
+    }
+    void PK1::heldItem(const Item& item)
+    {
+        if (item.generation() == Generation::TWO)
+        {
+            heldItem2((static_cast<const Item2&>(item)).id2());
+        }
+        else
+        {
+            heldItem(item.id());
+        }
     }
 }

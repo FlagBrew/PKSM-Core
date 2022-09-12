@@ -160,7 +160,7 @@ namespace pksm
         [[nodiscard]] u16 alternativeForm(void) const override;
         void alternativeForm(u16 v) override;
         [[nodiscard]] Nature nature(void) const override;
-        void nature(Nature v) override {}
+        void nature(Nature v) override;
 
         [[nodiscard]] bool hyperTrain(Stat) const override { return false; }
         void hyperTrain(Stat, bool) override {}

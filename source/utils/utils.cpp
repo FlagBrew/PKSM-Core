@@ -1002,6 +1002,14 @@ std::string StringUtils::getString1(
                 break;
             if (codepoint == pksm::internal::tradeOTChar)
                 continue;
+            if (transporter) {
+                switch (codepoint)
+                {
+                    case u'?':
+                    case u'!':
+                        codepoint = u' ';
+                }
+            }
 
             auto [data, size] = codepointToUTF8(codepoint);
 
@@ -1024,6 +1032,18 @@ std::string StringUtils::getString1(
                 break;
             if (codepoint == pksm::internal::tradeOTChar)
                 continue;
+            if (transporter) {
+                switch (codepoint) {
+                    case u'[':
+                        codepoint = u'(';
+                        break;
+                    case u']':
+                        codepoint = u')';
+                        break;
+                    case u'×':
+                        codepoint = u'x';
+                }
+            }
 
             auto [data, size] = codepointToUTF8(codepoint);
 

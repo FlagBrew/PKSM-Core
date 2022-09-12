@@ -86,7 +86,7 @@ namespace pksm
         [[nodiscard]] u32 encryptionConstant(void) const override { return 0; }
         void encryptionConstant(u32 v) override {}
         // friendship is only a thing for Pikachu in Yellow, and not even PKHeX bothers
-        [[nodiscard]] u8 currentFriendship(void) const override { return 0; }
+        [[nodiscard]] u8 currentFriendship(void) const override { return baseFriendship(); }
         void currentFriendship(u8 v) override {}
         [[nodiscard]] u8 currentHandler(void) const override { return 0; }
         void currentHandler(u8) override {}
@@ -120,12 +120,14 @@ namespace pksm
         void species(Species v) override;
         [[nodiscard]] u8 catchRate(void) const;
         void catchRate(u8 v);
-        [[nodiscard]] u16 heldItem(void) const override { return 0; }
-        void heldItem(u16 v) override {}
-        void heldItem(const Item& item) override {}
+        [[nodiscard]] u8 heldItem2(void) const;
+        void heldItem2(u8 v);
+        [[nodiscard]] u16 heldItem(void) const override;
+        void heldItem(u16 v) override;
+        void heldItem(const Item& item) override;
         [[nodiscard]] u32 experience(void) const override;
         void experience(u32 v) override;
-        [[nodiscard]] u8 otFriendship(void) const override { return 0; }
+        [[nodiscard]] u8 otFriendship(void) const override { return baseFriendship(); }
         void otFriendship(u8 v) override {}
         [[nodiscard]] Ability ability(void) const override { return Ability::None; }
         void ability(Ability v) override {}
@@ -161,7 +163,7 @@ namespace pksm
         [[nodiscard]] u16 alternativeForm(void) const override { return 0; }
         void alternativeForm(u16 v) override {}
         [[nodiscard]] Nature nature(void) const override;
-        void nature(Nature v) override {}
+        void nature(Nature v) override;
 
         [[nodiscard]] bool hyperTrain(Stat) const override { return false; }
         void hyperTrain(Stat, bool) override {}

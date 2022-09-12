@@ -153,12 +153,12 @@ namespace pksm
         auto pk7 = PKX::getPKM<Generation::SEVEN>(nullptr, PK7::BOX_LENGTH);
 
         pk7->encryptionConstant(randomNumber(0, 0xFFFFFFFF));
+        pk7->PID(randomNumber(0, 0xFFFFFFFF));
         pk7->species(species());
         pk7->TID(TID());
-        pk7->experience(experience());
+        pk7->level(level());
         pk7->metLevel(level());
         pk7->nature(nature());
-        pk7->PID(randomNumber(0, 0xFFFFFFFF));
         pk7->ball(ball());
         pk7->metDate(Date::today());
         pk7->version(version());
@@ -259,7 +259,7 @@ namespace pksm
         {
             pk7->fatefulEncounter(true);
         }
-        else if (!nicknamed())
+        if (nicknamed())
         {
             pk7->nicknamed(true);
             pk7->nickname(japanese ? StringUtils::fixJapaneseNameTransporter(nicknameTransporter())
@@ -534,6 +534,10 @@ namespace pksm
     }
 
     Nature PK2::nature() const { return Nature{u8(experience() % 25)}; }
+    void PK2::nature(Nature v)
+    {
+        experience(experience() - (experience() % 25) + u8(v));
+    }
 
     // this data is generated in Crystal, preserved in Gold and Silver
     u16 PK2::catchData() const { return BigEndian::convertTo<u16>(shiftedData + 29); }
@@ -567,7 +571,7 @@ namespace pksm
     }
     void PK2::hpType(Type v)
     {
-        if (v == Type::Normal || v >= Type::Fairy)
+        if (v <= Type::Normal || v >= Type::Fairy)
             return;
 
         u8 noNormal = u8(v) - 1;
