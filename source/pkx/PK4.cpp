@@ -277,22 +277,8 @@ namespace pksm
     u8 PK4::abilityNumber(void) const { return 1 << (PID() & 1); }
     void PK4::abilityNumber(u8 v)
     {
-        if (shiny())
-        {
-            do
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
-                    v, PID(), generation()));
-            } while (!shiny());
-        }
-        else
-        {
-            do
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
-                    v, PID(), generation()));
-            } while (shiny());
-        }
+        PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), v,
+            shiny(), TSV(), PID(), generation()));
     }
 
     u32 PK4::PID(void) const { return LittleEndian::convertTo<u32>(data); }
@@ -420,22 +406,8 @@ namespace pksm
     void PK4::gender(Gender g)
     {
         data[0x40] = (data[0x40] & ~0x06) | (u8(g) << 1);
-        if (shiny())
-        {
-            do
-            {
-                PID(PKX::getRandomPID(species(), g, version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            } while (!shiny());
-        }
-        else
-        {
-            do
-            {
-                PID(PKX::getRandomPID(species(), g, version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            } while (shiny());
-        }
+        PID(PKX::getRandomPID(species(), g, version(), nature(), alternativeForm(), abilityNumber(),
+            shiny(), TSV(), PID(), generation()));
     }
 
     u16 PK4::alternativeForm(void) const { return data[0x40] >> 3; }
@@ -444,22 +416,8 @@ namespace pksm
     Nature PK4::nature(void) const { return Nature{u8(PID() % 25)}; }
     void PK4::nature(Nature v)
     {
-        if (shiny())
-        {
-            do
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), v, alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            } while (!shiny());
-        }
-        else
-        {
-            do
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), v, alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            } while (shiny());
-        }
+        PID(PKX::getRandomPID(species(), gender(), version(), v, alternativeForm(), abilityNumber(),
+            shiny(), TSV(), PID(), generation()));
     }
 
     u8 PK4::shinyLeaf(void) const { return data[0x41]; }
@@ -680,22 +638,8 @@ namespace pksm
     bool PK4::shiny(void) const { return TSV() == PSV(); }
     void PK4::shiny(bool v)
     {
-        if (v)
-        {
-            while (!shiny())
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            }
-        }
-        else
-        {
-            while (shiny())
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            }
-        }
+        PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
+            abilityNumber(), v, TSV(), PID(), generation()));
     }
 
     u16 PK4::formSpecies(void) const
@@ -836,13 +780,14 @@ namespace pksm
     {
         auto pk3 = PKX::getPKM<Generation::THREE>(nullptr, PK3::BOX_LENGTH);
 
-        pk3->PID(PID());
+        // This sets gender, nature, alternative form, and shininess as well
+        pk3->PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
+            abilityNumber(), shiny(), TSV(), PID(), Generation::THREE));
+
         pk3->species(species());
         pk3->TID(TID());
         pk3->SID(SID());
         pk3->experience(egg() ? expTable(5, expType()) : experience());
-        pk3->gender(gender());
-        pk3->alternativeForm(alternativeForm());
         pk3->egg(false);
         pk3->otFriendship(70);
         pk3->markValue(markValue());

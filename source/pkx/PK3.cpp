@@ -544,6 +544,7 @@ namespace pksm
         pk4->experience(egg() ? expTable(5, expType()) : experience());
         pk4->gender(gender());
         pk4->alternativeForm(alternativeForm());
+        pk4->nature(nature());
         pk4->egg(false);
         pk4->otFriendship(70);
         pk4->markValue(markValue());
@@ -760,8 +761,8 @@ namespace pksm
     Nature PK3::nature() const { return Nature{u8(PID() % 25)}; }
     void PK3::nature(Nature v)
     {
-        PID(PKX::getRandomPID(species(), gender(), version(), v, alternativeForm(),
-            abilityBit() ? 2 : 1, PID(), Generation::THREE));
+        PID(PKX::getRandomPID(species(), gender(), version(), v, alternativeForm(), abilityNumber(),
+            shiny(), TSV(), PID(), Generation::THREE));
     }
 
     Gender PK3::gender() const
@@ -780,8 +781,8 @@ namespace pksm
     }
     void PK3::gender(Gender v)
     {
-        PID(PKX::getRandomPID(species(), v, version(), nature(), alternativeForm(),
-            abilityBit() ? 2 : 1, PID(), Generation::THREE));
+        PID(PKX::getRandomPID(species(), v, version(), nature(), alternativeForm(), abilityNumber(),
+            shiny(), TSV(), PID(), Generation::THREE));
     }
 
     u16 PK3::alternativeForm() const
@@ -796,8 +797,8 @@ namespace pksm
     {
         if (species() == Species::Unown)
         {
-            PID(PKX::getRandomPID(species(), gender(), version(), nature(), v, abilityBit() ? 2 : 1,
-                PID(), Generation::THREE));
+            PID(PKX::getRandomPID(species(), gender(), version(), nature(), v, abilityNumber(),
+                shiny(), TSV(), PID(), Generation::THREE));
         }
     }
 
@@ -855,22 +856,8 @@ namespace pksm
     bool PK3::shiny(void) const { return TSV() == PSV(); }
     void PK3::shiny(bool v)
     {
-        if (v)
-        {
-            while (!shiny())
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            }
-        }
-        else
-        {
-            while (shiny())
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            }
-        }
+        PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
+            abilityNumber(), v, TSV(), PID(), generation()));
     }
 
     u16 PK3::formSpecies() const { return u16(species()); }
