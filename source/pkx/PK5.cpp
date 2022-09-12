@@ -678,6 +678,9 @@ namespace pksm
 
     u16 PK5::stat(Stat stat) const
     {
+        if (species() == Species::Shedinja && stat == Stat::HP) {
+            return 1;
+        }
         u16 calc;
         u8 mult = 10, basestat = 0;
 
