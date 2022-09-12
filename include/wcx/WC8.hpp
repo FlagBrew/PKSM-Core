@@ -93,7 +93,7 @@ namespace pksm
         [[nodiscard]] u8 ribbonValue(int index) const;
         [[nodiscard]] u8 iv(Stat index) const override;
         [[nodiscard]] Gender otGender(void) const;
-        [[nodiscard]] u8 ev(Stat index) const;
+        [[nodiscard]] u16 ev(Stat index) const;
         [[nodiscard]] bool shiny(void) const override;
         [[nodiscard]] Ability ability(void) const override;
         [[nodiscard]] Ball ball(void) const override;

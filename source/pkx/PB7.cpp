@@ -83,7 +83,8 @@ namespace pksm
 
     std::unique_ptr<PKX> PB7::clone(void) const
     {
-        return PKX::getPKM<Generation::LGPE>(const_cast<u8*>(data), isParty());
+        return PKX::getPKM<Generation::LGPE>(
+            const_cast<u8*>(data), isParty() ? PARTY_LENGTH : BOX_LENGTH);
     }
 
     Generation PB7::generation(void) const { return Generation::LGPE; }
@@ -151,8 +152,8 @@ namespace pksm
     u16 PB7::alternativeForm(void) const { return data[0x1D] >> 3; }
     void PB7::alternativeForm(u16 v) { data[0x1D] = (data[0x1D] & 0x07) | (v << 3); }
 
-    u8 PB7::ev(Stat ev) const { return data[0x1E + u8(ev)]; }
-    void PB7::ev(Stat ev, u8 v) { data[0x1E + u8(ev)] = v; }
+    u16 PB7::ev(Stat ev) const { return data[0x1E + u8(ev)]; }
+    void PB7::ev(Stat ev, u16 v) { data[0x1E + u8(ev)] = v; }
 
     u8 PB7::awakened(Stat stat) const { return data[0x24 + u8(stat)]; }
     void PB7::awakened(Stat stat, u8 v) { data[0x24 + u8(stat)] = v; }
@@ -401,22 +402,8 @@ namespace pksm
     bool PB7::shiny(void) const { return TSV() == PSV(); }
     void PB7::shiny(bool v)
     {
-        if (v)
-        {
-            while (!shiny())
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            }
-        }
-        else
-        {
-            while (shiny())
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            }
-        }
+        PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
+            abilityNumber(), v, TSV(), PID(), generation()));
     }
 
     u16 PB7::formSpecies(void) const
@@ -442,7 +429,7 @@ namespace pksm
         return tmpSpecies;
     }
 
-    u16 PB7::stat(Stat stat) const
+    u16 PB7::statImpl(Stat stat) const
     {
         u16 calc;
         u8 mult = 10, basestat = 0;
@@ -598,7 +585,7 @@ namespace pksm
 
     std::unique_ptr<PK8> PB7::convertToG8(Sav& save) const
     {
-        auto pk8 = PKX::getPKM<Generation::EIGHT>(nullptr, false);
+        auto pk8 = PKX::getPKM<Generation::EIGHT>(nullptr, PK8::BOX_LENGTH);
 
         // Note: Locale stuff does not transfer
         pk8->encryptionConstant(encryptionConstant());

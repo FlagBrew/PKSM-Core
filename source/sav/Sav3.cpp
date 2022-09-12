@@ -358,7 +358,7 @@ namespace pksm
 
     std::unique_ptr<PKX> Sav3::pkm(u8 slot) const
     {
-        return PKX::getPKM<Generation::THREE>(&data[partyOffset(slot)], true);
+        return PKX::getPKM<Generation::THREE>(&data[partyOffset(slot)], PK3::PARTY_LENGTH);
     }
     std::unique_ptr<PKX> Sav3::pkm(u8 box, u8 slot) const
     {
@@ -371,11 +371,11 @@ namespace pksm
             auto nextOut = std::copy(&data[offset], &data[(offset & 0xFFFFF000) | 0xF80], pkmData);
             u32 nextOffset = boxOffset(box + (slot + 1) / 30, (slot + 1) % 30);
             std::copy(&data[nextOffset & 0xFFFFF000], &data[nextOffset], nextOut);
-            return PKX::getPKM<Generation::THREE>(pkmData);
+            return PKX::getPKM<Generation::THREE>(pkmData, PK3::BOX_LENGTH);
         }
         else
         {
-            return PKX::getPKM<Generation::THREE>(&data[offset]);
+            return PKX::getPKM<Generation::THREE>(&data[offset], PK3::BOX_LENGTH);
         }
     }
 
@@ -418,7 +418,10 @@ namespace pksm
 
     void Sav3::trade(PKX&, const Date&) const {}
 
-    std::unique_ptr<PKX> Sav3::emptyPkm() const { return PKX::getPKM<Generation::THREE>(nullptr); }
+    std::unique_ptr<PKX> Sav3::emptyPkm() const
+    {
+        return PKX::getPKM<Generation::THREE>(nullptr, PK3::BOX_LENGTH);
+    }
 
     bool Sav3::canSetDex(Species species)
     {
@@ -525,7 +528,7 @@ namespace pksm
                 }
                 else
                 {
-                    pk3 = PKX::getPKM<Generation::THREE>(&data[offset], false, true);
+                    pk3 = PKX::getPKM<Generation::THREE>(&data[offset], PK3::BOX_LENGTH, true);
                 }
                 if (!crypted)
                 {

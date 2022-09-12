@@ -252,7 +252,7 @@ namespace pksm
 
     u8 WC7::otFeeling(void) const { return data[0xE4]; }
 
-    u8 WC7::ev(Stat index) const { return data[0xE5 + u8(index)]; }
+    u16 WC7::ev(Stat index) const { return data[0xE5 + u8(index)]; }
 
     bool WC7::hasRibbon(Ribbon rib) const { return OFFSET_OF(rib).first != RIBBON_ABSENT; }
 

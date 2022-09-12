@@ -62,6 +62,8 @@ namespace pksm
 
         [[nodiscard]] std::string_view extension() const override { return ".pk8"; }
 
+        // std::unique_ptr<PK1> convertToG1(Sav& save) const override;
+        // std::unique_ptr<PK2> convertToG2(Sav& save) const override;
         // std::unique_ptr<PK3> convertToG3(Sav& save) const override;
         // std::unique_ptr<PK4> convertToG4(Sav& save) const override;
         // std::unique_ptr<PK5> convertToG5(Sav& save) const override;
@@ -116,8 +118,8 @@ namespace pksm
         void gender(Gender g) override;
         u16 alternativeForm(void) const override;
         void alternativeForm(u16 v) override;
-        u8 ev(Stat ev) const override;
-        void ev(Stat ev, u8 v) override;
+        u16 ev(Stat ev) const override;
+        void ev(Stat ev, u16 v) override;
         u8 contest(u8 contest) const override;
         void contest(u8 contest, u8 v) override;
 
@@ -257,7 +259,6 @@ namespace pksm
         bool shiny(void) const override;
         void shiny(bool v) override;
         u16 formSpecies(void) const override;
-        u16 stat(Stat stat) const override;
 
         inline u8 baseHP(void) const override { return PersonalSWSH::baseHP(formSpecies()); }
         inline u8 baseAtk(void) const override { return PersonalSWSH::baseAtk(formSpecies()); }
@@ -288,6 +289,9 @@ namespace pksm
         {
             return PersonalSWSH::canLearnTR(formSpecies(), trID);
         }
+
+    private:
+        u16 statImpl(Stat stat) const override;
     };
 }
 

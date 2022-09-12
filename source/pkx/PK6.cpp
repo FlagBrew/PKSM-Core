@@ -25,6 +25,8 @@
  */
 
 #include "pkx/PK6.hpp"
+#include "pkx/PK1.hpp"
+#include "pkx/PK2.hpp"
 #include "pkx/PK3.hpp"
 #include "pkx/PK4.hpp"
 #include "pkx/PK5.hpp"
@@ -233,7 +235,8 @@ namespace pksm
 
     std::unique_ptr<PKX> PK6::clone(void) const
     {
-        return PKX::getPKM<Generation::SIX>(const_cast<u8*>(data), isParty());
+        return PKX::getPKM<Generation::SIX>(
+            const_cast<u8*>(data), isParty() ? PARTY_LENGTH : BOX_LENGTH);
     }
 
     Generation PK6::generation(void) const { return Generation::SIX; }
@@ -315,8 +318,8 @@ namespace pksm
     u16 PK6::alternativeForm(void) const { return data[0x1D] >> 3; }
     void PK6::alternativeForm(u16 v) { data[0x1D] = (data[0x1D] & 0x07) | (v << 3); }
 
-    u8 PK6::ev(Stat ev) const { return data[0x1E + u8(ev)]; }
-    void PK6::ev(Stat ev, u8 v) { data[0x1E + u8(ev)] = v; }
+    u16 PK6::ev(Stat ev) const { return data[0x1E + u8(ev)]; }
+    void PK6::ev(Stat ev, u16 v) { data[0x1E + u8(ev)] = v; }
 
     u8 PK6::contest(u8 contest) const { return data[0x24 + contest]; }
     void PK6::contest(u8 contest, u8 v) { data[0x24 + contest] = v; }
@@ -640,22 +643,8 @@ namespace pksm
     bool PK6::shiny(void) const { return TSV() == PSV(); }
     void PK6::shiny(bool v)
     {
-        if (v)
-        {
-            while (!shiny())
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            }
-        }
-        else
-        {
-            while (shiny())
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            }
-        }
+        PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
+            abilityNumber(), v, TSV(), PID(), generation()));
     }
 
     u16 PK6::formSpecies(void) const
@@ -681,7 +670,7 @@ namespace pksm
         return tmpSpecies;
     }
 
-    u16 PK6::stat(Stat stat) const
+    u16 PK6::statImpl(Stat stat) const
     {
         u16 calc;
         u8 mult = 10, basestat = 0;
@@ -770,6 +759,39 @@ namespace pksm
         }
     }
 
+    std::unique_ptr<PK1> PK6::convertToG1(Sav& save) const
+    {
+        if (auto pk5 = convertToG5(save))
+        {
+            if (auto pk4 = pk5->convertToG4(save))
+            {
+                if (auto pk3 = pk4->convertToG3(save))
+                {
+                    if (auto pk2 = pk3->convertToG2(save))
+                    {
+                        return pk2->convertToG1(save);
+                    }
+                }
+            }
+        }
+        return nullptr;
+    }
+
+    std::unique_ptr<PK2> PK6::convertToG2(Sav& save) const
+    {
+        if (auto pk5 = convertToG5(save))
+        {
+            if (auto pk4 = pk5->convertToG4(save))
+            {
+                if (auto pk3 = pk4->convertToG3(save))
+                {
+                    return pk3->convertToG2(save);
+                }
+            }
+        }
+        return nullptr;
+    }
+
     std::unique_ptr<PK3> PK6::convertToG3(Sav& save) const
     {
         if (auto pk5 = convertToG5(save))
@@ -793,7 +815,7 @@ namespace pksm
 
     std::unique_ptr<PK5> PK6::convertToG5(Sav& save) const
     {
-        auto pk5 = PKX::getPKM<Generation::FIVE>(nullptr);
+        auto pk5 = PKX::getPKM<Generation::FIVE>(nullptr, PK5::BOX_LENGTH);
 
         pk5->species(species());
         pk5->TID(TID());
@@ -905,7 +927,7 @@ namespace pksm
 
     std::unique_ptr<PK7> PK6::convertToG7(Sav& save) const
     {
-        auto pk7 = PKX::getPKM<Generation::SEVEN>(const_cast<u8*>(data));
+        auto pk7 = PKX::getPKM<Generation::SEVEN>(const_cast<u8*>(data), PK7::BOX_LENGTH);
 
         // markvalue field moved, clear old gen 6 data
         pk7->rawData()[0x2A] = 0;
@@ -920,7 +942,14 @@ namespace pksm
         pk7->rawData()[0x72] &= 0xFC; // low 2 bits of super training
         pk7->rawData()[0xDE] = 0;     // gen 4 encounter type
 
-        pk7->markValue(markValue());
+        // marks get expanded from one bit to two.
+        u8 oldMarks  = markValue();
+        u16 newMarks = 0;
+        for (int i = 0; i < 6; i++)
+        {
+            newMarks |= ((oldMarks >> i) & 1) << (i << 1);
+        }
+        pk7->markValue(newMarks);
 
         switch (abilityNumber())
         {

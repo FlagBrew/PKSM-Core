@@ -25,6 +25,8 @@
  */
 
 #include "pkx/PK5.hpp"
+#include "pkx/PK1.hpp"
+#include "pkx/PK2.hpp"
 #include "pkx/PK3.hpp"
 #include "pkx/PK4.hpp"
 #include "pkx/PK6.hpp"
@@ -344,7 +346,8 @@ namespace pksm
 
     std::unique_ptr<PKX> PK5::clone(void) const
     {
-        return PKX::getPKM<Generation::FIVE>(const_cast<u8*>(data), isParty());
+        return PKX::getPKM<Generation::FIVE>(
+            const_cast<u8*>(data), isParty() ? PARTY_LENGTH : BOX_LENGTH);
     }
 
     Generation PK5::generation(void) const { return Generation::FIVE; }
@@ -360,22 +363,8 @@ namespace pksm
     {
         if (v == 1 || v == 2)
         {
-            if (shiny())
-            {
-                do
-                {
-                    PID(PKX::getRandomPID(species(), gender(), version(), nature(),
-                        alternativeForm(), v, PID(), generation()));
-                } while (!shiny());
-            }
-            else
-            {
-                do
-                {
-                    PID(PKX::getRandomPID(species(), gender(), version(), nature(),
-                        alternativeForm(), v, PID(), generation()));
-                } while (shiny());
-            }
+            PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), v,
+                shiny(), TSV(), PID(), generation()));
             hiddenAbility(false);
         }
         else // Hidden ability
@@ -435,8 +424,8 @@ namespace pksm
     Language PK5::language(void) const { return Language(data[0x17]); }
     void PK5::language(Language v) { data[0x17] = u8(v); }
 
-    u8 PK5::ev(Stat ev) const { return data[0x18 + u8(ev)]; }
-    void PK5::ev(Stat ev, u8 v) { data[0x18 + u8(ev)] = v; }
+    u16 PK5::ev(Stat ev) const { return data[0x18 + u8(ev)]; }
+    void PK5::ev(Stat ev, u16 v) { data[0x18 + u8(ev)] = v; }
 
     u8 PK5::contest(u8 contest) const { return data[0x1E + contest]; }
     void PK5::contest(u8 contest, u8 v) { data[0x1E + contest] = v; }
@@ -511,22 +500,8 @@ namespace pksm
     void PK5::gender(Gender g)
     {
         data[0x40] = (data[0x40] & ~0x06) | (u8(g) << 1);
-        if (shiny())
-        {
-            do
-            {
-                PID(PKX::getRandomPID(species(), g, version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            } while (!shiny());
-        }
-        else
-        {
-            do
-            {
-                PID(PKX::getRandomPID(species(), g, version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            } while (shiny());
-        }
+        PID(PKX::getRandomPID(species(), g, version(), nature(), alternativeForm(), abilityNumber(),
+            shiny(), TSV(), PID(), generation()));
     }
 
     u16 PK5::alternativeForm(void) const { return data[0x40] >> 3; }
@@ -674,22 +649,8 @@ namespace pksm
     bool PK5::shiny(void) const { return TSV() == PSV(); }
     void PK5::shiny(bool v)
     {
-        if (v)
-        {
-            while (!shiny())
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            }
-        }
-        else
-        {
-            while (shiny())
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            }
-        }
+        PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
+            abilityNumber(), v, TSV(), PID(), generation()));
     }
 
     u16 PK5::formSpecies(void) const
@@ -715,7 +676,7 @@ namespace pksm
         return tmpSpecies;
     }
 
-    u16 PK5::stat(Stat stat) const
+    u16 PK5::statImpl(Stat stat) const
     {
         u16 calc;
         u8 mult = 10, basestat = 0;
@@ -805,9 +766,36 @@ namespace pksm
         }
     }
 
+    std::unique_ptr<PK1> PK5::convertToG1(Sav& save) const
+    {
+        if (auto pk4 = convertToG4(save))
+        {
+            if (auto pk3 = pk4->convertToG3(save))
+            {
+                if (auto pk2 = pk3->convertToG2(save))
+                {
+                    return pk2->convertToG1(save);
+                }
+            }
+        }
+        return nullptr;
+    }
+
+    std::unique_ptr<PK2> PK5::convertToG2(Sav& save) const
+    {
+        if (auto pk4 = convertToG4(save))
+        {
+            if (auto pk3 = pk4->convertToG3(save))
+            {
+                return pk3->convertToG2(save);
+            }
+        }
+        return nullptr;
+    }
+
     std::unique_ptr<PK4> PK5::convertToG4(Sav& save) const
     {
-        auto pk4 = PKX::getPKM<Generation::FOUR>(const_cast<u8*>(data));
+        auto pk4 = PKX::getPKM<Generation::FOUR>(const_cast<u8*>(data), PK4::BOX_LENGTH);
 
         // Clear nature field
         pk4->rawData()[0x41] = 0;
@@ -840,7 +828,7 @@ namespace pksm
 
     std::unique_ptr<PK6> PK5::convertToG6(Sav& save) const
     {
-        auto pk6 = PKX::getPKM<Generation::SIX>(nullptr);
+        auto pk6 = PKX::getPKM<Generation::SIX>(nullptr, PK6::BOX_LENGTH);
 
         pk6->encryptionConstant(PID());
         pk6->species(species());

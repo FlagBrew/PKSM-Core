@@ -31,6 +31,8 @@
 
 namespace pksm
 {
+    class PK1;
+    class PK2;
     class PK3;
     class PK4;
     class PK5;
@@ -42,6 +44,18 @@ namespace pksm
     template <pksm::Generation::EnumType g>
     struct GenToPkx
     {
+    };
+
+    template <>
+    struct GenToPkx<pksm::Generation::ONE>
+    {
+        using PKX = pksm::PK1;
+    };
+
+    template <>
+    struct GenToPkx<pksm::Generation::TWO>
+    {
+        using PKX = pksm::PK2;
     };
 
     template <>

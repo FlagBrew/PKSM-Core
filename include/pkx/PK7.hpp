@@ -62,6 +62,8 @@ namespace pksm
 
         [[nodiscard]] std::string_view extension() const override { return ".pk7"; }
 
+        [[nodiscard]] std::unique_ptr<PK1> convertToG1(Sav& save) const override;
+        [[nodiscard]] std::unique_ptr<PK2> convertToG2(Sav& save) const override;
         [[nodiscard]] std::unique_ptr<PK3> convertToG3(Sav& save) const override;
         [[nodiscard]] std::unique_ptr<PK4> convertToG4(Sav& save) const override;
         [[nodiscard]] std::unique_ptr<PK5> convertToG5(Sav& save) const override;
@@ -110,8 +112,8 @@ namespace pksm
         void gender(Gender g) override;
         [[nodiscard]] u16 alternativeForm(void) const override;
         void alternativeForm(u16 v) override;
-        [[nodiscard]] u8 ev(Stat ev) const override;
-        void ev(Stat ev, u8 v) override;
+        [[nodiscard]] u16 ev(Stat ev) const override;
+        void ev(Stat ev, u16 v) override;
         [[nodiscard]] u8 contest(u8 contest) const override;
         void contest(u8 contest, u8 v) override;
 
@@ -233,7 +235,6 @@ namespace pksm
         [[nodiscard]] bool shiny(void) const override;
         void shiny(bool v) override;
         [[nodiscard]] u16 formSpecies(void) const override;
-        [[nodiscard]] u16 stat(Stat stat) const override;
 
         [[nodiscard]] int partyCurrHP(void) const override;
         void partyCurrHP(u16 v) override;
@@ -295,6 +296,9 @@ namespace pksm
         {
             return PersonalSMUSUM::formStatIndex(formSpecies());
         }
+
+    private:
+        [[nodiscard]] u16 statImpl(Stat stat) const override;
     };
 }
 

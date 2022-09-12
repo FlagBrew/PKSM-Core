@@ -51,6 +51,8 @@
 namespace pksm
 {
     class Sav;
+    class PK1;
+    class PK2;
     class PK3;
     class PK4;
     class PK5;
@@ -92,24 +94,8 @@ namespace pksm
     public:
         static constexpr Species PKSM_MAX_SPECIES = Species::Calyrex;
 
-        [[nodiscard]] static std::unique_ptr<PKX> getPKM(
-            Generation gen, u8* data, bool party = false, bool directAccess = false);
-        template <Generation::EnumType g>
-        [[nodiscard]] static std::unique_ptr<typename GenToPkx<g>::PKX> getPKM(
-            u8* data, bool party = false, bool directAccess = false)
-        {
-            return getPKM<typename GenToPkx<g>::PKX>(data, party, directAccess);
-        }
-        template <typename Pkm>
-        [[nodiscard]] static std::enable_if_t<std::is_base_of_v<::pksm::PKX, Pkm>,
-            std::unique_ptr<Pkm>>
-            getPKM(u8* data, bool party = false, bool directAccess = false)
-        {
-            return std::make_unique<Pkm>(PrivateConstructor{}, data, party, directAccess);
-        }
-
         // Returns null if length is not valid for that generation, and a party Pokemon depending on
-        // length
+        // length, or in Gen I and II a Japanese Pokemon depending on length
         [[nodiscard]] static std::unique_ptr<PKX> getPKM(
             Generation gen, u8* data, size_t length, bool directAccess = false);
         template <Generation::EnumType g>
@@ -118,14 +104,38 @@ namespace pksm
         {
             return getPKM<typename GenToPkx<g>::PKX>(data, length, directAccess);
         }
+
         template <typename Pkm>
         [[nodiscard]] static std::enable_if_t<std::is_base_of_v<::pksm::PKX, Pkm>,
             std::unique_ptr<Pkm>>
             getPKM(u8* data, size_t length, bool directAccess = false)
         {
-            if (Pkm::PARTY_LENGTH == length || Pkm::BOX_LENGTH == length)
+            if constexpr (std::is_same_v<typename GenToPkx<Generation::ONE>::PKX,
+                              std::remove_cvref_t<Pkm>> ||
+                          std::is_same_v<typename GenToPkx<Generation::TWO>::PKX,
+                              std::remove_cvref_t<Pkm>>)
             {
-                return getPKM<Pkm>(data, length == Pkm::PARTY_LENGTH, directAccess);
+                if (Pkm::JP_LENGTH_WITH_NAMES == length || Pkm::INT_LENGTH_WITH_NAMES == length)
+                {
+                    return std::make_unique<Pkm>(PrivateConstructor{}, data,
+                        length == Pkm::JP_LENGTH_WITH_NAMES, directAccess);
+                }
+                else if (data == nullptr)
+                {
+                    return std::make_unique<Pkm>(PrivateConstructor{}, data, false, directAccess);
+                }
+            }
+            else
+            {
+                if (Pkm::PARTY_LENGTH == length || Pkm::BOX_LENGTH == length)
+                {
+                    return std::make_unique<Pkm>(
+                        PrivateConstructor{}, data, length == Pkm::PARTY_LENGTH, directAccess);
+                }
+                else if (data == nullptr)
+                {
+                    return std::make_unique<Pkm>(PrivateConstructor{}, data, false, directAccess);
+                }
             }
             return nullptr;
         }
@@ -148,6 +158,8 @@ namespace pksm
         virtual void encrypt(void)                     = 0;
         [[nodiscard]] virtual bool isEncrypted() const = 0;
 
+        [[nodiscard]] virtual std::unique_ptr<PK1> convertToG1(Sav& save) const;
+        [[nodiscard]] virtual std::unique_ptr<PK2> convertToG2(Sav& save) const;
         [[nodiscard]] virtual std::unique_ptr<PK3> convertToG3(Sav& save) const;
         [[nodiscard]] virtual std::unique_ptr<PK4> convertToG4(Sav& save) const;
         [[nodiscard]] virtual std::unique_ptr<PK5> convertToG5(Sav& save) const;
@@ -164,12 +176,14 @@ namespace pksm
         [[nodiscard]] bool originGen5(void) const;
         [[nodiscard]] bool originGen4(void) const;
         [[nodiscard]] bool originGen3(void) const;
+        [[nodiscard]] bool originGen2(void) const;
+        [[nodiscard]] bool originGen1(void) const;
         [[nodiscard]] Generation originGen(void) const;
         void fixMoves(void);
 
         [[nodiscard]] static u32 getRandomPID(Species species, Gender gender,
-            GameVersion originGame, Nature nature, u8 form, u8 abilityNum, u32 oldPid,
-            Generation gen);
+            GameVersion originGame, Nature nature, u8 form, u8 abilityNum, bool shiny, u16 tsv,
+            u32 oldPid, Generation gen);
         [[nodiscard]] static Gender genderFromRatio(u32 pid, u8 gt);
 
         // BLOCK A
@@ -207,8 +221,8 @@ namespace pksm
         void gender(Gender g) override                          = 0;
         [[nodiscard]] u16 alternativeForm(void) const override  = 0;
         void alternativeForm(u16 v) override                    = 0;
-        [[nodiscard]] virtual u8 ev(Stat ev) const              = 0;
-        virtual void ev(Stat ev, u8 v)                          = 0;
+        [[nodiscard]] virtual u16 ev(Stat ev) const             = 0;
+        virtual void ev(Stat ev, u16 v)                         = 0;
         [[nodiscard]] virtual u8 contest(u8 contest) const      = 0;
         virtual void contest(u8 contest, u8 v)                  = 0;
         [[nodiscard]] virtual u8 pkrs(void) const               = 0;
@@ -307,7 +321,14 @@ namespace pksm
         [[nodiscard]] bool shiny(void) const override     = 0;
         void shiny(bool v) override                       = 0;
         [[nodiscard]] virtual u16 formSpecies(void) const = 0;
-        [[nodiscard]] virtual u16 stat(Stat stat) const   = 0;
+        [[nodiscard]] u16 stat(Stat stat) const
+        {
+            if (species() == Species::Shedinja && stat == Stat::HP)
+            {
+                return 1;
+            }
+            return statImpl(stat);
+        }
 
         // Hehehehe... to be done
         // virtual u8 sleepTurns(void) const = 0;
@@ -348,6 +369,9 @@ namespace pksm
         [[nodiscard]] virtual u16 formStatIndex(void) const = 0;
 
         [[nodiscard]] bool isFilter() const final { return false; }
+
+    private:
+        [[nodiscard]] virtual u16 statImpl(Stat stat) const = 0;
     };
 }
 

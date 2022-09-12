@@ -32,6 +32,8 @@ namespace pksm
     {
         switch (generation())
         {
+            case Generation::ONE:
+            case Generation::TWO:
             case Generation::THREE:
             case Generation::FOUR:
             case Generation::FIVE:
@@ -42,8 +44,6 @@ namespace pksm
             case Generation::EIGHT:
                 return u32(SID() << 16 | TID()) % 1000000;
             case Generation::UNUSED:
-            case Generation::ONE:
-            case Generation::TWO:
                 return 0;
         }
         return 0;

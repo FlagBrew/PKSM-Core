@@ -42,18 +42,17 @@ namespace pksm
 
         private:
             // values MUST remain consistent
-            // ONE and TWO to have maybe_unused removed in the future
             enum class GenerationEnum : u32
             {
-                ONE [[maybe_unused]] = 7,
-                TWO [[maybe_unused]] = 8,
-                THREE                = 6,
-                FOUR                 = 0,
-                FIVE                 = 1,
-                SIX                  = 2,
-                SEVEN                = 3,
-                LGPE                 = 4,
-                EIGHT                = 5,
+                ONE   = 7,
+                TWO   = 8,
+                THREE = 6,
+                FOUR  = 0,
+                FIVE  = 1,
+                SIX   = 2,
+                SEVEN = 3,
+                LGPE  = 4,
+                EIGHT = 5,
 
                 UNUSED [[maybe_unused]] = 0xFFFFFFFF
             } v;
@@ -235,7 +234,15 @@ namespace pksm
 
         [[nodiscard]] static constexpr Generation fromString(const std::string_view& str)
         {
-            if (str == "3")
+            if (str == "1")
+            {
+                return Generation::ONE;
+            }
+            else if (str == "2")
+            {
+                return Generation::TWO;
+            }
+            else if (str == "3")
             {
                 return Generation::THREE;
             }

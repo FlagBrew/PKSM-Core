@@ -24,6 +24,7 @@
  *         reasonable ways as different from the original version.
  */
 
+#include <array>
 #include "i18n_internal.hpp"
 #include "utils/_map_macro.hpp"
 #include "utils/utils.hpp"
@@ -68,9 +69,11 @@ namespace i18n
 #endif
 
     std::list<initCallback> initCallbacks = {initAbility, initBall, initForm, initGame, initGeo,
-        initType, initItem, initItem3, initLocation, initMove, initNature, initRibbon, initSpecies};
+        initType, initItem, initItem1, initItem2, initItem3, initLocation, initMove, initNature,
+        initRibbon, initSpecies};
     std::list<exitCallback> exitCallbacks = {exitAbility, exitBall, exitForm, exitGame, exitGeo,
-        exitType, exitItem, exitItem3, exitLocation, exitMove, exitNature, exitRibbon, exitSpecies};
+        exitType, exitItem, exitItem1, exitItem2, exitItem3, exitLocation, exitMove, exitNature,
+        exitRibbon, exitSpecies};
 
     void init(pksm::Language lang)
     {

@@ -26,6 +26,8 @@
 
 #include "sav/Sav.hpp"
 #include "pkx/PB7.hpp"
+#include "pkx/PK1.hpp"
+#include "pkx/PK2.hpp"
 #include "pkx/PK3.hpp"
 #include "pkx/PK4.hpp"
 #include "pkx/PK5.hpp"
@@ -33,6 +35,8 @@
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
 #include "pkx/PKX.hpp"
+#include "sav/Sav1.hpp"
+#include "sav/Sav2.hpp"
 #include "sav/SavB2W2.hpp"
 #include "sav/SavBW.hpp"
 #include "sav/SavDP.hpp"
@@ -68,6 +72,15 @@ namespace pksm
                 return checkDSType(dt);
             case 0x20000:
                 return checkGBAType(dt);
+            case 0x8000:
+            case 0x10000:
+            // Gen II VC saves
+            case 0x8010:
+            case 0x10010:
+            // Emulator standard saves
+            case 0x8030:
+            case 0x10030:
+                return checkGBType(dt, length);
             case 0xB8800:
             case 0x100000:
                 return std::make_unique<SavLGPE>(dt, length);
@@ -80,6 +93,25 @@ namespace pksm
             case SavSWSH::SIZE_G8SWSH_3B:
             case SavSWSH::SIZE_G8SWSH_3C:
                 return std::make_unique<SavSWSH>(dt, length);
+            default:
+                return std::unique_ptr<Sav>(nullptr);
+        }
+    }
+    std::unique_ptr<Sav> Sav::checkGBType(std::shared_ptr<u8[]> dt, size_t length)
+    {
+        std::tuple<GameVersion, Language, bool> versionAndLanguage = Sav2::getVersion(dt);
+
+        if (get<2>(versionAndLanguage))
+        {
+            return std::make_unique<Sav2>(dt, length, versionAndLanguage);
+        }
+
+        switch (Sav1::getVersion(dt))
+        {
+            case Game::RGB:
+                return std::make_unique<Sav1>(dt, length);
+            case Game::Y:
+                return std::make_unique<Sav1>(dt, length); // in case anyone wants to
             default:
                 return std::unique_ptr<Sav>(nullptr);
         }
@@ -191,6 +223,10 @@ namespace pksm
     {
         switch (generation())
         {
+            case Generation::ONE:
+                return pk.convertToG1(*this);
+            case Generation::TWO:
+                return pk.convertToG2(*this);
             case Generation::THREE:
                 return pk.convertToG3(*this);
             case Generation::FOUR:
@@ -206,8 +242,6 @@ namespace pksm
             case Generation::EIGHT:
                 return pk.convertToG8(*this);
             case Generation::UNUSED:
-            case Generation::ONE:
-            case Generation::TWO:
                 return nullptr;
         }
         return nullptr;
@@ -241,6 +275,8 @@ namespace pksm
     {
         switch (generation())
         {
+            case Generation::ONE:
+            case Generation::TWO:
             case Generation::THREE:
             case Generation::FOUR:
             case Generation::FIVE:
@@ -251,8 +287,6 @@ namespace pksm
             case Generation::EIGHT:
                 return u32(SID() << 16 | TID()) % 1000000;
             case Generation::UNUSED:
-            case Generation::ONE:
-            case Generation::TWO:
                 return 0;
         }
         return 0;
@@ -313,15 +347,24 @@ namespace pksm
         }
         else if (availableAbilities().count(pk.ability()) == 0)
         {
-            return BadTransferReason::ABILITY;
+            if (generation() > Generation::TWO && pk.generation() > Generation::TWO)
+            { 
+                return BadTransferReason::ABILITY;
+            }
         }
         else if (availableItems().count((int)pk.heldItem()) == 0)
         {
-            return BadTransferReason::ITEM;
+            if (generation() != Generation::ONE)
+            {
+                return BadTransferReason::ITEM;
+            }
         }
         else if (availableBalls().count(pk.ball()) == 0)
         {
-            return BadTransferReason::BALL;
+            if (generation() > Generation::TWO)
+            {
+                return BadTransferReason::BALL;
+            }
         }
         return BadTransferReason::OKAY;
     }

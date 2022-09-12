@@ -101,6 +101,16 @@ namespace i18n
     [[nodiscard]] const std::string& item(pksm::Language lang, u16 value);
     [[nodiscard]] const std::vector<std::string>& rawItems(pksm::Language lang);
 
+    void initItem1(pksm::Language lang);
+    void exitItem1(pksm::Language lang);
+    [[nodiscard]] const std::string& item1(pksm::Language lang, u8 value);
+    [[nodiscard]] const std::vector<std::string>& rawItems1(pksm::Language lang);
+
+    void initItem2(pksm::Language lang);
+    void exitItem2(pksm::Language lang);
+    [[nodiscard]] const std::string& item2(pksm::Language lang, u8 value);
+    [[nodiscard]] const std::vector<std::string>& rawItems2(pksm::Language lang);
+
     void initItem3(pksm::Language lang);
     void exitItem3(pksm::Language lang);
     [[nodiscard]] const std::string& item3(pksm::Language lang, u16 value);

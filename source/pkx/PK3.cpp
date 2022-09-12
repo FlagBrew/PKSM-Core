@@ -25,11 +25,14 @@
  */
 
 #include "pkx/PK3.hpp"
+#include "pkx/PK1.hpp"
+#include "pkx/PK2.hpp"
 #include "pkx/PK4.hpp"
 #include "pkx/PK5.hpp"
 #include "pkx/PK6.hpp"
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
+#include "sav/Sav.hpp"
 #include "utils/ValueConverter.hpp"
 #include "utils/crypto.hpp"
 #include "utils/endian.hpp"
@@ -155,7 +158,8 @@ namespace pksm
     std::unique_ptr<PKX> PK3::clone(void) const
     {
         // Can't use normal data constructor because of checksum encryption checks
-        std::unique_ptr<PK3> ret = PKX::getPKM<Generation::THREE>(nullptr, isParty());
+        std::unique_ptr<PK3> ret =
+            PKX::getPKM<Generation::THREE>(nullptr, isParty() ? PARTY_LENGTH : BOX_LENGTH);
         std::copy(data, data + getLength(), ret->rawData());
         return ret;
     }
@@ -271,8 +275,8 @@ namespace pksm
     u8 PK3::PP(u8 move) const { return data[0x34 + move]; }
     void PK3::PP(u8 move, u8 v) { data[0x34 + move] = v; }
 
-    u8 PK3::ev(Stat ev) const { return data[0x38 + u8(ev)]; }
-    void PK3::ev(Stat ev, u8 v) { data[0x38 + u8(ev)] = v; }
+    u16 PK3::ev(Stat ev) const { return data[0x38 + u8(ev)]; }
+    void PK3::ev(Stat ev, u16 v) { data[0x38 + u8(ev)] = v; }
 
     u8 PK3::contest(u8 contest) const { return data[0x3E + contest]; }
     void PK3::contest(u8 contest, u8 v) { data[0x3E + contest] = v; }
@@ -452,6 +456,68 @@ namespace pksm
         }
     }
 
+    std::unique_ptr<PK1> PK3::convertToG1(Sav& save) const
+    {
+        if (auto pk2 = convertToG2(save))
+        {
+            return pk2->convertToG1(save);
+        }
+        return nullptr;
+    }
+
+    std::unique_ptr<PK2> PK3::convertToG2(Sav& save) const
+    {
+        auto pk2 = PKX::getPKM<Generation::TWO>(
+            nullptr, japanese() ? PK1::JP_LENGTH_WITH_NAMES : PK1::INT_LENGTH_WITH_NAMES);
+
+        pk2->species(species());
+        pk2->TID(TID());
+        pk2->experience(experience());
+        pk2->egg(false);
+        pk2->otFriendship(otFriendship());
+        pk2->language(language());
+
+        // approximate an equivalent stat experience for an ev, by squaring
+        pk2->ev(Stat::HP, ev(Stat::HP) * ev(Stat::HP));
+        pk2->ev(Stat::ATK, ev(Stat::ATK) * ev(Stat::ATK));
+        pk2->ev(Stat::DEF, ev(Stat::DEF) * ev(Stat::DEF));
+        pk2->ev(Stat::SPD, ev(Stat::SPD) * ev(Stat::SPD));
+        pk2->ev(Stat::SPATK, ev(Stat::SPATK) * ev(Stat::SPATK));
+
+        for (int i = 0; i < 4; i++)
+        {
+            if (move(i) > save.maxMove())
+            {
+                pk2->move(i, Move::None);
+            }
+            else
+            {
+                pk2->move(i, move(i));
+                pk2->PPUp(i, PPUp(i));
+            }
+        }
+
+        if (shiny())
+        {
+            pk2->shiny(true);
+        }
+        else
+        {
+            // approximate an equivalent dv for an iv, by dividing by two
+            // unfortunately the hp dv is determined by the other dvs
+            pk2->iv(Stat::ATK, iv(Stat::ATK) >> 1);
+            pk2->iv(Stat::DEF, iv(Stat::DEF) >> 1);
+            pk2->iv(Stat::SPD, iv(Stat::SPD) >> 1);
+            pk2->iv(Stat::SPATK, iv(Stat::SPATK) >> 1);
+        }
+
+        pk2->otName(otName());
+        pk2->nickname(nickname());
+
+        pk2->fixMoves();
+        return pk2;
+    }
+
     std::unique_ptr<PK4> PK3::convertToG4(Sav&) const
     {
         static constexpr std::array<std::array<u8, 18>, 7> trashBytes = {{
@@ -470,7 +536,7 @@ namespace pksm
                 0x0C, 0x02, 0xE0, 0xFF},
         }};
 
-        auto pk4 = PKX::getPKM<Generation::FOUR>(nullptr);
+        auto pk4 = PKX::getPKM<Generation::FOUR>(nullptr, PK4::BOX_LENGTH);
 
         pk4->species(species());
         pk4->TID(TID());
@@ -478,6 +544,7 @@ namespace pksm
         pk4->experience(egg() ? expTable(5, expType()) : experience());
         pk4->gender(gender());
         pk4->alternativeForm(alternativeForm());
+        pk4->nature(nature());
         pk4->egg(false);
         pk4->otFriendship(70);
         pk4->markValue(markValue());
@@ -578,7 +645,7 @@ namespace pksm
         pk4->otName(otName());
 
         // I use 0 for invalid items
-        pk4->heldItem(heldItem() == ItemConverter::G3_NOT_CONVERTIBLE ? 0 : heldItem());
+        pk4->heldItem(heldItem() == ItemConverter::ITEM_NOT_CONVERTIBLE ? 0 : heldItem());
 
         // Remove HM moves
         for (int i = 0; i < 4; i++)
@@ -694,8 +761,8 @@ namespace pksm
     Nature PK3::nature() const { return Nature{u8(PID() % 25)}; }
     void PK3::nature(Nature v)
     {
-        PID(PKX::getRandomPID(species(), gender(), version(), v, alternativeForm(),
-            abilityBit() ? 2 : 1, PID(), Generation::THREE));
+        PID(PKX::getRandomPID(species(), gender(), version(), v, alternativeForm(), abilityNumber(),
+            shiny(), TSV(), PID(), Generation::THREE));
     }
 
     Gender PK3::gender() const
@@ -714,8 +781,8 @@ namespace pksm
     }
     void PK3::gender(Gender v)
     {
-        PID(PKX::getRandomPID(species(), v, version(), nature(), alternativeForm(),
-            abilityBit() ? 2 : 1, PID(), Generation::THREE));
+        PID(PKX::getRandomPID(species(), v, version(), nature(), alternativeForm(), abilityNumber(),
+            shiny(), TSV(), PID(), Generation::THREE));
     }
 
     u16 PK3::alternativeForm() const
@@ -730,8 +797,8 @@ namespace pksm
     {
         if (species() == Species::Unown)
         {
-            PID(PKX::getRandomPID(species(), gender(), version(), nature(), v, abilityBit() ? 2 : 1,
-                PID(), Generation::THREE));
+            PID(PKX::getRandomPID(species(), gender(), version(), nature(), v, abilityNumber(),
+                shiny(), TSV(), PID(), Generation::THREE));
         }
     }
 
@@ -753,7 +820,7 @@ namespace pksm
     }
     void PK3::hpType(Type v)
     {
-        if (v <= Type::Normal && v >= Type::Fairy)
+        if (v <= Type::Normal || v >= Type::Fairy)
         {
             return;
         }
@@ -789,27 +856,13 @@ namespace pksm
     bool PK3::shiny(void) const { return TSV() == PSV(); }
     void PK3::shiny(bool v)
     {
-        if (v)
-        {
-            while (!shiny())
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            }
-        }
-        else
-        {
-            while (shiny())
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            }
-        }
+        PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
+            abilityNumber(), v, TSV(), PID(), generation()));
     }
 
     u16 PK3::formSpecies() const { return u16(species()); }
 
-    u16 PK3::stat(Stat stat) const
+    u16 PK3::statImpl(Stat stat) const
     {
         u16 calc;
         u8 mult = 10, basestat = 0;

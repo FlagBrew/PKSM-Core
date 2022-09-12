@@ -25,6 +25,8 @@
  */
 
 #include "pkx/PK4.hpp"
+#include "pkx/PK1.hpp"
+#include "pkx/PK2.hpp"
 #include "pkx/PK3.hpp"
 #include "pkx/PK5.hpp"
 #include "pkx/PK6.hpp"
@@ -260,7 +262,8 @@ namespace pksm
 
     std::unique_ptr<PKX> PK4::clone(void) const
     {
-        return PKX::getPKM<Generation::FOUR>(const_cast<u8*>(data), isParty());
+        return PKX::getPKM<Generation::FOUR>(
+            const_cast<u8*>(data), isParty() ? PARTY_LENGTH : BOX_LENGTH);
     }
 
     Generation PK4::generation(void) const { return Generation::FOUR; }
@@ -274,22 +277,8 @@ namespace pksm
     u8 PK4::abilityNumber(void) const { return 1 << (PID() & 1); }
     void PK4::abilityNumber(u8 v)
     {
-        if (shiny())
-        {
-            do
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
-                    v, PID(), generation()));
-            } while (!shiny());
-        }
-        else
-        {
-            do
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
-                    v, PID(), generation()));
-            } while (shiny());
-        }
+        PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), v,
+            shiny(), TSV(), PID(), generation()));
     }
 
     u32 PK4::PID(void) const { return LittleEndian::convertTo<u32>(data); }
@@ -341,8 +330,8 @@ namespace pksm
     Language PK4::language(void) const { return Language(data[0x17]); }
     void PK4::language(Language v) { data[0x17] = u8(v); }
 
-    u8 PK4::ev(Stat ev) const { return data[0x18 + u8(ev)]; }
-    void PK4::ev(Stat ev, u8 v) { data[0x18 + u8(ev)] = v; }
+    u16 PK4::ev(Stat ev) const { return data[0x18 + u8(ev)]; }
+    void PK4::ev(Stat ev, u16 v) { data[0x18 + u8(ev)] = v; }
 
     u8 PK4::contest(u8 contest) const { return data[0x1E + contest]; }
     void PK4::contest(u8 contest, u8 v) { data[0x1E + contest] = v; }
@@ -417,22 +406,8 @@ namespace pksm
     void PK4::gender(Gender g)
     {
         data[0x40] = (data[0x40] & ~0x06) | (u8(g) << 1);
-        if (shiny())
-        {
-            do
-            {
-                PID(PKX::getRandomPID(species(), g, version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            } while (!shiny());
-        }
-        else
-        {
-            do
-            {
-                PID(PKX::getRandomPID(species(), g, version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            } while (shiny());
-        }
+        PID(PKX::getRandomPID(species(), g, version(), nature(), alternativeForm(), abilityNumber(),
+            shiny(), TSV(), PID(), generation()));
     }
 
     u16 PK4::alternativeForm(void) const { return data[0x40] >> 3; }
@@ -441,22 +416,8 @@ namespace pksm
     Nature PK4::nature(void) const { return Nature{u8(PID() % 25)}; }
     void PK4::nature(Nature v)
     {
-        if (shiny())
-        {
-            do
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), v, alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            } while (!shiny());
-        }
-        else
-        {
-            do
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), v, alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            } while (shiny());
-        }
+        PID(PKX::getRandomPID(species(), gender(), version(), v, alternativeForm(), abilityNumber(),
+            shiny(), TSV(), PID(), generation()));
     }
 
     u8 PK4::shinyLeaf(void) const { return data[0x41]; }
@@ -677,22 +638,8 @@ namespace pksm
     bool PK4::shiny(void) const { return TSV() == PSV(); }
     void PK4::shiny(bool v)
     {
-        if (v)
-        {
-            while (!shiny())
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            }
-        }
-        else
-        {
-            while (shiny())
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            }
-        }
+        PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
+            abilityNumber(), v, TSV(), PID(), generation()));
     }
 
     u16 PK4::formSpecies(void) const
@@ -718,7 +665,7 @@ namespace pksm
         return tmpSpecies;
     }
 
-    u16 PK4::stat(Stat stat) const
+    u16 PK4::statImpl(Stat stat) const
     {
         u16 calc;
         u8 mult = 10, basestat = 0;
@@ -808,17 +755,39 @@ namespace pksm
         }
     }
 
+    std::unique_ptr<PK1> PK4::convertToG1(Sav& save) const
+    {
+        if (auto pk3 = convertToG3(save))
+        {
+            if (auto pk2 = pk3->convertToG2(save))
+            {
+                return pk2->convertToG1(save);
+            }
+        }
+        return nullptr;
+    }
+
+    std::unique_ptr<PK2> PK4::convertToG2(Sav& save) const
+    {
+        if (auto pk3 = convertToG3(save))
+        {
+            return pk3->convertToG2(save);
+        }
+        return nullptr;
+    }
+
     std::unique_ptr<PK3> PK4::convertToG3(Sav&) const
     {
-        auto pk3 = PKX::getPKM<Generation::THREE>(nullptr);
+        auto pk3 = PKX::getPKM<Generation::THREE>(nullptr, PK3::BOX_LENGTH);
 
-        pk3->PID(PID());
+        // This sets gender, nature, alternative form, and shininess as well
+        pk3->PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
+            abilityNumber(), shiny(), TSV(), PID(), Generation::THREE));
+
         pk3->species(species());
         pk3->TID(TID());
         pk3->SID(SID());
         pk3->experience(egg() ? expTable(5, expType()) : experience());
-        pk3->gender(gender());
-        pk3->alternativeForm(alternativeForm());
         pk3->egg(false);
         pk3->otFriendship(70);
         pk3->markValue(markValue());
@@ -919,7 +888,7 @@ namespace pksm
 
     std::unique_ptr<PK5> PK4::convertToG5(Sav&) const
     {
-        auto pk5 = PKX::getPKM<Generation::FIVE>(const_cast<u8*>(data));
+        auto pk5 = PKX::getPKM<Generation::FIVE>(const_cast<u8*>(data), PK5::BOX_LENGTH);
 
         // Clear HGSS data
         LittleEndian::convertFrom<u16>(pk5->rawData() + 0x86, 0);

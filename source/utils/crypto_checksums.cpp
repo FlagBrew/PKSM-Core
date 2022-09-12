@@ -87,6 +87,24 @@ namespace pksm::crypto
     u16 crc16(const u8* buf, size_t len) { return ~internal::crc16(buf, len, 0xFFFF); }
     u16 crc16_noinvert(const u8* buf, size_t len) { return internal::crc16(buf, len, 0); }
 
+    u8 diff8(const u8* buf, size_t len)
+    {
+        u8 val = 255;
+        for (size_t i = 0; i < len; i++)
+            val -= buf[i];
+        return val;
+    }
+
+    u16 bytewiseSum16(const u8* buf, size_t len)
+    {
+        u16 val = 0;
+        for (size_t i = 0; i < len; i++)
+        {
+            val += buf[i];
+        }
+        return val;
+    }
+
     u32 sum32(const u8* buf, size_t len)
     {
         u32 val = 0;

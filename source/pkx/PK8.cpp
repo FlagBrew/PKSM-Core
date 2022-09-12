@@ -294,7 +294,8 @@ namespace pksm
 
     std::unique_ptr<PKX> PK8::clone(void) const
     {
-        return PKX::getPKM<Generation::EIGHT>(const_cast<u8*>(data), isParty());
+        return PKX::getPKM<Generation::EIGHT>(
+            const_cast<u8*>(data), isParty() ? PARTY_LENGTH : BOX_LENGTH);
     }
 
     Generation PK8::generation(void) const { return Generation::EIGHT; }
@@ -382,8 +383,8 @@ namespace pksm
     u16 PK8::alternativeForm(void) const { return LittleEndian::convertTo<u16>(data + 0x24); }
     void PK8::alternativeForm(u16 v) { LittleEndian::convertFrom<u16>(data + 0x24, v); }
 
-    u8 PK8::ev(Stat ev) const { return data[0x26 + u8(ev)]; }
-    void PK8::ev(Stat ev, u8 v) { data[0x26 + u8(ev)] = v; }
+    u16 PK8::ev(Stat ev) const { return data[0x26 + u8(ev)]; }
+    void PK8::ev(Stat ev, u16 v) { data[0x26 + u8(ev)] = v; }
 
     u8 PK8::contest(u8 contest) const { return data[0x2C + contest]; }
     void PK8::contest(u8 contest, u8 v) { data[0x2C + contest] = v; }
@@ -797,22 +798,8 @@ namespace pksm
     bool PK8::shiny(void) const { return TSV() == PSV(); }
     void PK8::shiny(bool v)
     {
-        if (v)
-        {
-            while (!shiny())
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            }
-        }
-        else
-        {
-            while (shiny())
-            {
-                PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
-                    abilityNumber(), PID(), generation()));
-            }
-        }
+        PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
+            abilityNumber(), v, TSV(), PID(), generation()));
     }
 
     u16 PK8::formSpecies(void) const
@@ -838,7 +825,7 @@ namespace pksm
         return tmpSpecies;
     }
 
-    u16 PK8::stat(Stat stat) const
+    u16 PK8::statImpl(Stat stat) const
     {
         u16 calc;
         u8 mult = 10, basestat = 0;

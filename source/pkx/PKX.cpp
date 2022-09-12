@@ -26,6 +26,8 @@
 
 #include "pkx/PKX.hpp"
 #include "pkx/PB7.hpp"
+#include "pkx/PK1.hpp"
+#include "pkx/PK2.hpp"
 #include "pkx/PK3.hpp"
 #include "pkx/PK4.hpp"
 #include "pkx/PK5.hpp"
@@ -277,6 +279,10 @@ namespace pksm
 
     bool PKX::originGen3(void) const { return (Generation)version() == Generation::THREE; }
 
+    bool PKX::originGen2(void) const { return (Generation)version() == Generation::TWO; }
+
+    bool PKX::originGen1(void) const { return (Generation)version() == Generation::ONE; }
+
     Generation PKX::originGen(void) const { return (Generation)version(); }
 
     void PKX::fixMoves(void)
@@ -307,7 +313,7 @@ namespace pksm
     }
 
     u32 PKX::getRandomPID(Species species, Gender gender, GameVersion originGame, Nature nature,
-        u8 form, u8 abilityNum, u32 oldPid, Generation gen)
+        u8 form, u8 abilityNum, bool shiny, u16 tsv, u32 oldPid, Generation gen)
     {
         if (originGame >= GameVersion::X) // Origin game over gen 5
         {
@@ -352,6 +358,7 @@ namespace pksm
         bool g3unown  = (originGame <= GameVersion::LG || gen == Generation::THREE) &&
                        species == Species::Unown;
         u32 abilityBits = oldPid & (abilityNum == 2 ? 0x00010001 : 0);
+        int psvShift    = gen >= Generation::SIX ? 4 : 3;
         while (true)
         {
             u32 possiblePID = pksm::randomNumber(0, 0xFFFFFFFF);
@@ -368,6 +375,12 @@ namespace pksm
                 }
             }
             else if (abilityBits != (possiblePID & 0x00010001))
+            {
+                continue;
+            }
+
+            u16 psv = (possiblePID >> 16 ^ (possiblePID & 0xFFFF)) >> psvShift;
+            if ((tsv == psv) != shiny)
             {
                 continue;
             }
@@ -424,6 +437,8 @@ namespace pksm
     {
         switch (generation())
         {
+            case Generation::ONE:
+            case Generation::TWO:
             case Generation::THREE:
             case Generation::FOUR:
             case Generation::FIVE:
@@ -434,8 +449,6 @@ namespace pksm
             case Generation::EIGHT:
                 return u32(SID() << 16 | TID()) % 1000000;
             case Generation::UNUSED:
-            case Generation::ONE:
-            case Generation::TWO:
                 return 0;
         }
         return 0;
@@ -461,36 +474,14 @@ namespace pksm
         return 0;
     }
 
-    std::unique_ptr<PKX> PKX::getPKM(Generation gen, u8* data, bool party, bool directAccess)
-    {
-        switch (gen)
-        {
-            case Generation::THREE:
-                return getPKM<Generation::THREE>(data, party, directAccess);
-            case Generation::FOUR:
-                return getPKM<Generation::FOUR>(data, party, directAccess);
-            case Generation::FIVE:
-                return getPKM<Generation::FIVE>(data, party, directAccess);
-            case Generation::SIX:
-                return getPKM<Generation::SIX>(data, party, directAccess);
-            case Generation::SEVEN:
-                return getPKM<Generation::SEVEN>(data, party, directAccess);
-            case Generation::LGPE:
-                return getPKM<Generation::LGPE>(data, party, directAccess);
-            case Generation::EIGHT:
-                return getPKM<Generation::EIGHT>(data, party, directAccess);
-            case Generation::UNUSED:
-            case Generation::ONE:
-            case Generation::TWO:
-                return nullptr;
-        }
-        return nullptr;
-    }
-
     std::unique_ptr<PKX> PKX::getPKM(Generation gen, u8* data, size_t length, bool directAccess)
     {
         switch (gen)
         {
+            case Generation::ONE:
+                return getPKM<Generation::ONE>(data, length, directAccess);
+            case Generation::TWO:
+                return getPKM<Generation::TWO>(data, length, directAccess);
             case Generation::THREE:
                 return getPKM<Generation::THREE>(data, length, directAccess);
             case Generation::FOUR:
@@ -506,8 +497,6 @@ namespace pksm
             case Generation::EIGHT:
                 return getPKM<Generation::EIGHT>(data, length, directAccess);
             case Generation::UNUSED:
-            case Generation::ONE:
-            case Generation::TWO:
                 return nullptr;
         }
         return nullptr;
@@ -602,6 +591,18 @@ namespace pksm
         return true;
     }
 
+    std::unique_ptr<PK1> PKX::convertToG1(Sav&) const
+    {
+        return generation() == Generation::ONE
+                   ? std::unique_ptr<PK1>(static_cast<PK1*>(clone().release()))
+                   : nullptr;
+    }
+    std::unique_ptr<PK2> PKX::convertToG2(Sav&) const
+    {
+        return generation() == Generation::TWO
+                   ? std::unique_ptr<PK2>(static_cast<PK2*>(clone().release()))
+                   : nullptr;
+    }
     std::unique_ptr<PK3> PKX::convertToG3(Sav&) const
     {
         return generation() == Generation::THREE
@@ -654,7 +655,42 @@ namespace pksm
         }
         else
         {
-            auto ret = PKX::getPKM(generation(), nullptr, true);
+            size_t partylen;
+            switch (generation())
+            {
+                case Generation::ONE:
+                    partylen = (language() == Language::JPN ? PK1::JP_LENGTH_WITH_NAMES
+                                                            : PK1::INT_LENGTH_WITH_NAMES);
+                    break;
+                case Generation::TWO:
+                    partylen = (language() == Language::JPN ? PK2::JP_LENGTH_WITH_NAMES
+                                                            : PK2::INT_LENGTH_WITH_NAMES);
+                    break;
+                case Generation::THREE:
+                    partylen = PK3::PARTY_LENGTH;
+                    break;
+                case Generation::FOUR:
+                    partylen = PK4::PARTY_LENGTH;
+                    break;
+                case Generation::FIVE:
+                    partylen = PK5::PARTY_LENGTH;
+                    break;
+                case Generation::SIX:
+                    partylen = PK6::PARTY_LENGTH;
+                    break;
+                case Generation::SEVEN:
+                    partylen = PK7::PARTY_LENGTH;
+                    break;
+                case Generation::LGPE:
+                    partylen = PB7::PARTY_LENGTH;
+                    break;
+                case Generation::EIGHT:
+                    partylen = PK8::PARTY_LENGTH;
+                    break;
+                default:
+                    partylen = 0;
+            }
+            auto ret = PKX::getPKM(generation(), nullptr, partylen);
             std::copy(data, data + getLength(), ret->rawData());
             ret->updatePartyData();
             return ret;

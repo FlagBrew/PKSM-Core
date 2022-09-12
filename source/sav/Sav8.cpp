@@ -50,7 +50,10 @@ namespace pksm
         return *found;
     }
 
-    std::unique_ptr<PKX> Sav8::emptyPkm() const { return PKX::getPKM<Generation::EIGHT>(nullptr); }
+    std::unique_ptr<PKX> Sav8::emptyPkm() const
+    {
+        return PKX::getPKM<Generation::EIGHT>(nullptr, PK8::BOX_LENGTH);
+    }
 
     void Sav8::trade(PKX& pk, const Date& date) const
     {

@@ -34,6 +34,8 @@
 
 namespace pksm
 {
+    class Item1;
+    class Item2;
     class Item3;
     class Item4;
     class Item5;
@@ -53,6 +55,8 @@ namespace pksm
         [[nodiscard]] virtual std::vector<u8> bytes(void) const = 0;
         virtual void id(u16 id)                                 = 0;
         virtual void count(u16 id)                              = 0;
+        [[nodiscard]] virtual operator Item1(void) const;
+        [[nodiscard]] virtual operator Item2(void) const;
         [[nodiscard]] virtual operator Item3(void) const;
         [[nodiscard]] virtual operator Item4(void) const;
         [[nodiscard]] virtual operator Item5(void) const;
@@ -60,6 +64,66 @@ namespace pksm
         [[nodiscard]] virtual operator Item7(void) const;
         [[nodiscard]] virtual operator Item7b(void) const;
         [[nodiscard]] virtual operator Item8(void) const;
+    };
+
+    class Item1 : public Item
+    {
+    private:
+        std::array<u8, 2> itemData;
+
+    public:
+        Item1(u8* data = nullptr)
+        {
+            if (data)
+                std::copy(data, data + 2, itemData.data());
+            else
+                itemData = {0, 0};
+        }
+        [[nodiscard]] Generation generation(void) const override { return Generation::ONE; }
+        [[nodiscard]] u16 maxCount(void) const override { return 0xFF; }
+        [[nodiscard]] u16 id(void) const override
+        {
+            return ItemConverter::g1ToNational(itemData[0]);
+        }
+        void id(u16 v) override { itemData[0] = ItemConverter::nationalToG1(v); }
+        [[nodiscard]] u16 id1(void) const { return itemData[0]; }
+        void id1(u16 v) { itemData[0] = u8(v); }
+        [[nodiscard]] u16 count(void) const override { return itemData[1]; }
+        void count(u16 v) override { itemData[1] = u8(v); }
+        [[nodiscard]] std::vector<u8> bytes(void) const override
+        {
+            return std::vector<u8>{itemData.begin(), itemData.end()};
+        }
+    };
+
+    class Item2 : public Item
+    {
+    private:
+        std::array<u8, 2> itemData;
+
+    public:
+        Item2(u8* data = nullptr)
+        {
+            if (data)
+                std::copy(data, data + 2, itemData.data());
+            else
+                itemData = {0, 0};
+        }
+        [[nodiscard]] Generation generation(void) const override { return Generation::TWO; }
+        [[nodiscard]] u16 maxCount(void) const override { return 0xFF; }
+        [[nodiscard]] u16 id(void) const override
+        {
+            return ItemConverter::g2ToNational(itemData[0]);
+        }
+        void id(u16 v) override { itemData[0] = ItemConverter::nationalToG2(v); }
+        [[nodiscard]] u16 id2(void) const { return itemData[0]; }
+        void id2(u16 v) { itemData[0] = u8(v); }
+        [[nodiscard]] u16 count(void) const override { return itemData[1]; }
+        void count(u16 v) override { itemData[1] = u8(v); }
+        [[nodiscard]] std::vector<u8> bytes(void) const override
+        {
+            return std::vector<u8>{itemData.begin(), itemData.end()};
+        }
     };
 
     class Item3 : public Item

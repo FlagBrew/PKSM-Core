@@ -234,7 +234,7 @@ namespace pksm
         u32 off = partyOffset(slot);
         if (off != 0)
         {
-            return PKX::getPKM<Generation::LGPE>(&data[off], true);
+            return PKX::getPKM<Generation::LGPE>(&data[off], PB7::PARTY_LENGTH);
         }
         else
         {
@@ -244,7 +244,7 @@ namespace pksm
 
     std::unique_ptr<PKX> SavLGPE::pkm(u8 box, u8 slot) const
     {
-        return PKX::getPKM<Generation::LGPE>(&data[boxOffset(box, slot)], true);
+        return PKX::getPKM<Generation::LGPE>(&data[boxOffset(box, slot)], PB7::PARTY_LENGTH);
     }
 
     void SavLGPE::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)
@@ -332,7 +332,7 @@ namespace pksm
 
     std::unique_ptr<PKX> SavLGPE::emptyPkm() const
     {
-        return PKX::getPKM<Generation::LGPE>(nullptr, true);
+        return PKX::getPKM<Generation::LGPE>(nullptr, PB7::PARTY_LENGTH);
     }
 
     int SavLGPE::dexFormCount(int species) const
@@ -570,8 +570,8 @@ namespace pksm
                 {
                     return;
                 }
-                std::unique_ptr<PKX> pb7 =
-                    PKX::getPKM<Generation::LGPE>(&data[boxOffset(box, slot)], true, true);
+                std::unique_ptr<PKX> pb7 = PKX::getPKM<Generation::LGPE>(
+                    &data[boxOffset(box, slot)], PB7::PARTY_LENGTH, true);
                 if (!crypted)
                 {
                     pb7->encrypt();
@@ -591,7 +591,7 @@ namespace pksm
                 {
                     return;
                 }
-                auto pb7 = PKX::getPKM<Generation::LGPE>(nullptr, false);
+                auto pb7 = PKX::getPKM<Generation::LGPE>(nullptr, PB7::BOX_LENGTH);
                 pb7->species(wb7.species());
                 pb7->alternativeForm(wb7.alternativeForm());
                 if (wb7.level() > 0)

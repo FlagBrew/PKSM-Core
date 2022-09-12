@@ -28,6 +28,22 @@
 
 namespace pksm
 {
+    Item::operator Item1() const
+    {
+        Item1 ret;
+        ret.id(id());
+        ret.count(count());
+        return ret;
+    }
+
+    Item::operator Item2() const
+    {
+        Item2 ret;
+        ret.id(id());
+        ret.count(count());
+        return ret;
+    }
+
     Item::operator Item3() const
     {
         Item3 ret;

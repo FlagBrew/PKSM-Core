@@ -161,6 +161,34 @@ namespace pksm
         [[nodiscard]] Ability ability(u16 formSpecies, u8 n);
         [[nodiscard]] u8 formCount(u16 formSpecies);
     }
+
+    namespace PersonalGSC
+    {
+        [[nodiscard]] u8 baseHP(u8 species);
+        [[nodiscard]] u8 baseAtk(u8 species);
+        [[nodiscard]] u8 baseDef(u8 species);
+        [[nodiscard]] u8 baseSpe(u8 species);
+        [[nodiscard]] u8 baseSpa(u8 species);
+        [[nodiscard]] u8 baseSpd(u8 species);
+        [[nodiscard]] Type type1(u8 species);
+        [[nodiscard]] Type type2(u8 species);
+        [[nodiscard]] u8 gender(u8 species);
+        [[nodiscard]] u8 expType(u8 species);
+        [[nodiscard]] u8 formCount(u16 formSpecies);
+    }
+
+    namespace PersonalRGBY
+    {
+        [[nodiscard]] u8 baseHP(u8 species);
+        [[nodiscard]] u8 baseAtk(u8 species);
+        [[nodiscard]] u8 baseDef(u8 species);
+        [[nodiscard]] u8 baseSpe(u8 species);
+        [[nodiscard]] u8 baseSpad(u8 species);
+        [[nodiscard]] Type type1(u8 species);
+        [[nodiscard]] Type type2(u8 species);
+        [[nodiscard]] u8 catchRate(u8 species);
+        [[nodiscard]] u8 expType(u8 species);
+    }
 }
 
 #endif

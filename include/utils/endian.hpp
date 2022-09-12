@@ -357,6 +357,40 @@ namespace BigEndian
         }
         return ret;
     }
+
+    // Binary-Coded Decimal (BCD) conversions
+    template <typename T, size_t arrayLength>
+    constexpr T BCDtoUInteger(const u8* src)
+    {
+        static_assert(std::is_integral_v<T> && std::is_unsigned_v<T>);
+        T out = 0;
+        T j   = 1;
+        for (int i = arrayLength - 1; i >= 0; i--, j *= 100)
+        {
+            out += ((src[i] & 0x0F) * j) + (((src[i] & 0xF0) >> 4) * (j * 10));
+        }
+        return out;
+    }
+    template <typename T, size_t arrayLength = sizeof(T)>
+    constexpr std::array<u8, arrayLength> UIntegerToBCD(T src)
+    {
+        static_assert(std::is_integral_v<T> && std::is_unsigned_v<T>);
+        std::array<u8, arrayLength> out;
+        for (int i = arrayLength - 1; i >= 0; i--, src /= 100)
+        {
+            out[i] = (((src / 10) % 10) << 4) | (src % 10);
+        }
+        return out;
+    }
+    template <typename T, size_t arrayLength = sizeof(T)>
+    constexpr void UIntegerToBCD(u8* dest, T src)
+    {
+        static_assert(std::is_integral_v<T> && std::is_unsigned_v<T>);
+        for (int i = arrayLength - 1; i >= 0; i--, src /= 100)
+        {
+            dest[i] = (((src / 10) % 10) << 4) | (src % 10);
+        }
+    }
 }
 
 namespace LittleEndian
@@ -655,6 +689,40 @@ namespace LittleEndian
             ret[i] = convertTo<T>(from + i * sizeof(T));
         }
         return ret;
+    }
+
+    // Little-Endian BCD stuff is currently (hopefully permanently) unused
+    template <typename T, size_t arrayLength>
+    constexpr T BCDtoUInteger(const u8* src)
+    {
+        static_assert(std::is_integral_v<T> && std::is_unsigned_v<T>);
+        T out = 0;
+        T j   = 1;
+        for (int i = 0; i < arrayLength; i++, j *= 100)
+        {
+            out += (((src[i] & 0xF0) >> 4) * j) + ((src[i] & 0x0F) * (j * 10));
+        }
+        return out;
+    }
+    template <typename T, size_t arrayLength = sizeof(T)>
+    constexpr std::array<u8, arrayLength> UIntegerToBCD(T src)
+    {
+        static_assert(std::is_integral_v<T> && std::is_unsigned_v<T>);
+        std::array<u8, arrayLength> out;
+        for (int i = 0; i < arrayLength; i++, src /= 100)
+        {
+            out[i] = ((src % 10) << 4) | ((src / 10) % 10);
+        }
+        return out;
+    }
+    template <typename T, size_t arrayLength = sizeof(T)>
+    constexpr void UIntegerToBCD(u8* dest, T src)
+    {
+        static_assert(std::is_integral_v<T> && std::is_unsigned_v<T>);
+        for (int i = 0; i < arrayLength; i++, src /= 100)
+        {
+            dest[i] = ((src % 10) << 4) | ((src / 10) % 10);
+        }
     }
 }
 

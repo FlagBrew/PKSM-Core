@@ -68,6 +68,8 @@ namespace pksm
 
         static u8 getUnownForm(u32 pid);
 
+        [[nodiscard]] std::unique_ptr<PK1> convertToG1(Sav& save) const override;
+        [[nodiscard]] std::unique_ptr<PK2> convertToG2(Sav& save) const override;
         [[nodiscard]] std::unique_ptr<PK4> convertToG4(Sav& save) const override;
         [[nodiscard]] std::unique_ptr<PK5> convertToG5(Sav& save) const override;
         [[nodiscard]] std::unique_ptr<PK6> convertToG6(Sav& save) const override;
@@ -135,8 +137,8 @@ namespace pksm
         void ability(Ability v) override;
         [[nodiscard]] bool abilityBit(void) const;
         void abilityBit(bool v);
-        [[nodiscard]] u8 ev(Stat ev) const override;
-        void ev(Stat ev, u8 v) override;
+        [[nodiscard]] u16 ev(Stat ev) const override;
+        void ev(Stat ev, u16 v) override;
         [[nodiscard]] u8 contest(u8 contest) const override;
         void contest(u8 contest, u8 v) override;
         [[nodiscard]] bool hasRibbon(Ribbon rib) const override;
@@ -208,7 +210,6 @@ namespace pksm
         [[nodiscard]] bool shiny(void) const override;
         void shiny(bool v) override;
         [[nodiscard]] u16 formSpecies(void) const override;
-        [[nodiscard]] u16 stat(Stat stat) const override;
 
         [[nodiscard]] int partyCurrHP(void) const override;
         void partyCurrHP(u16 v) override;
@@ -267,6 +268,9 @@ namespace pksm
             return PersonalRSFRLGE::ability(formSpecies(), n);
         }
         [[nodiscard]] inline u16 formStatIndex(void) const override { return 0; }
+
+    private:
+        [[nodiscard]] u16 statImpl(Stat stat) const override;
     };
 }
 

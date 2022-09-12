@@ -105,7 +105,7 @@ namespace pksm
         [[nodiscard]] u16 metLocation(void) const override;
         [[nodiscard]] u8 contest(u8 index) const override;
         [[nodiscard]] u8 iv(Stat index) const override;
-        [[nodiscard]] u8 ev(Stat index) const;
+        [[nodiscard]] u16 ev(Stat index) const;
         [[nodiscard]] u16 additionalItem(void) const;
         [[nodiscard]] bool hasRibbon(Ribbon rib) const override;
         [[nodiscard]] bool ribbon(Ribbon rib) const override;
