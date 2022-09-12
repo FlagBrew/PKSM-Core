@@ -321,7 +321,14 @@ namespace pksm
         [[nodiscard]] bool shiny(void) const override     = 0;
         void shiny(bool v) override                       = 0;
         [[nodiscard]] virtual u16 formSpecies(void) const = 0;
-        [[nodiscard]] virtual u16 stat(Stat stat) const   = 0;
+        [[nodiscard]] u16 stat(Stat stat) const
+        {
+            if (species() == Species::Shedinja && stat == Stat::HP)
+            {
+                return 1;
+            }
+            return statImpl(stat);
+        }
 
         // Hehehehe... to be done
         // virtual u8 sleepTurns(void) const = 0;
@@ -362,6 +369,9 @@ namespace pksm
         [[nodiscard]] virtual u16 formStatIndex(void) const = 0;
 
         [[nodiscard]] bool isFilter() const final { return false; }
+
+    private:
+        [[nodiscard]] virtual u16 statImpl(Stat stat) const = 0;
     };
 }
 

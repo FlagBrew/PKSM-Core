@@ -507,7 +507,8 @@ namespace pksm
             case 0:
                 return;
             default:
-                iv(Stat::ATK, (g == Gender::Female) ? (genderType() >> 4) : ((genderType() >> 4) + 1));
+                iv(Stat::ATK,
+                    (g == Gender::Female) ? (genderType() >> 4) : ((genderType() >> 4) + 1));
         }
     }
     u16 PK2::alternativeForm() const
@@ -534,10 +535,7 @@ namespace pksm
     }
 
     Nature PK2::nature() const { return Nature{u8(experience() % 25)}; }
-    void PK2::nature(Nature v)
-    {
-        experience(experience() - (experience() % 25) + u8(v));
-    }
+    void PK2::nature(Nature v) { experience(experience() - (experience() % 25) + u8(v)); }
 
     // this data is generated in Crystal, preserved in Gold and Silver
     u16 PK2::catchData() const { return BigEndian::convertTo<u16>(shiftedData + 29); }
@@ -605,7 +603,7 @@ namespace pksm
         iv(Stat::ATK, v ? 7 : 8);
     }
     u16 PK2::formSpecies() const { return u16(species()); }
-    u16 PK2::stat(Stat stat) const
+    u16 PK2::statImpl(Stat stat) const
     {
         u16 base;
         switch (stat)

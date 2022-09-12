@@ -670,11 +670,8 @@ namespace pksm
         return tmpSpecies;
     }
 
-    u16 PK6::stat(Stat stat) const
+    u16 PK6::statImpl(Stat stat) const
     {
-        if (species() == Species::Shedinja && stat == Stat::HP) {
-            return 1;
-        }
         u16 calc;
         u8 mult = 10, basestat = 0;
 
@@ -946,9 +943,10 @@ namespace pksm
         pk7->rawData()[0xDE] = 0;     // gen 4 encounter type
 
         // marks get expanded from one bit to two.
-        u8 oldMarks = markValue();
+        u8 oldMarks  = markValue();
         u16 newMarks = 0;
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 6; i++)
+        {
             newMarks |= ((oldMarks >> i) & 1) << (i << 1);
         }
         pk7->markValue(newMarks);

@@ -210,7 +210,6 @@ namespace pksm
         [[nodiscard]] bool shiny(void) const override;
         void shiny(bool v) override;
         [[nodiscard]] u16 formSpecies(void) const override;
-        [[nodiscard]] u16 stat(Stat stat) const override;
 
         [[nodiscard]] int partyCurrHP(void) const override;
         void partyCurrHP(u16 v) override;
@@ -269,6 +268,9 @@ namespace pksm
             return PersonalRSFRLGE::ability(formSpecies(), n);
         }
         [[nodiscard]] inline u16 formStatIndex(void) const override { return 0; }
+
+    private:
+        [[nodiscard]] u16 statImpl(Stat stat) const override;
     };
 }
 

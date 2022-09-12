@@ -259,7 +259,6 @@ namespace pksm
         bool shiny(void) const override;
         void shiny(bool v) override;
         u16 formSpecies(void) const override;
-        u16 stat(Stat stat) const override;
 
         inline u8 baseHP(void) const override { return PersonalSWSH::baseHP(formSpecies()); }
         inline u8 baseAtk(void) const override { return PersonalSWSH::baseAtk(formSpecies()); }
@@ -290,6 +289,9 @@ namespace pksm
         {
             return PersonalSWSH::canLearnTR(formSpecies(), trID);
         }
+
+    private:
+        u16 statImpl(Stat stat) const override;
     };
 }
 

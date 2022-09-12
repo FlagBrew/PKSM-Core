@@ -862,11 +862,8 @@ namespace pksm
 
     u16 PK3::formSpecies() const { return u16(species()); }
 
-    u16 PK3::stat(Stat stat) const
+    u16 PK3::statImpl(Stat stat) const
     {
-        if (species() == Species::Shedinja && stat == Stat::HP) {
-            return 1;
-        }
         u16 calc;
         u8 mult = 10, basestat = 0;
 

@@ -630,11 +630,8 @@ namespace pksm
         return tmpSpecies;
     }
 
-    u16 PK7::stat(Stat stat) const
+    u16 PK7::statImpl(Stat stat) const
     {
-        if (species() == Species::Shedinja && stat == Stat::HP) {
-            return 1;
-        }
         u16 calc;
         u8 mult = 10, basestat = 0;
 
@@ -763,8 +760,9 @@ namespace pksm
 
         // marks get un-expanded from two bits to one.
         u16 oldMarks = markValue();
-        u8 newMarks = 0;
-        for (int i = 0; i < 6; i++) {
+        u8 newMarks  = 0;
+        for (int i = 0; i < 6; i++)
+        {
             // if any bits of old mark are on (including both, which is illegal), turn on new mark
             newMarks |= (((oldMarks >> (i << 1)) & 3) ? 1 : 0) << i;
         }

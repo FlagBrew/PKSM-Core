@@ -210,7 +210,6 @@ namespace pksm
         [[nodiscard]] bool shiny(void) const override;
         void shiny(bool v) override;
         [[nodiscard]] u16 formSpecies(void) const override;
-        [[nodiscard]] u16 stat(Stat stat) const override;
         [[nodiscard]] u16 CP(void) const;
 
         [[nodiscard]] int partyCurrHP(void) const override;
@@ -280,6 +279,9 @@ namespace pksm
         {
             return PersonalLGPE::formStatIndex(formSpecies());
         }
+
+    private:
+        [[nodiscard]] u16 statImpl(Stat stat) const override;
     };
 }
 
