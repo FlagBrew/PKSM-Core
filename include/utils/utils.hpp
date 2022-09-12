@@ -29,6 +29,7 @@
 
 #include "enums/Language.hpp"
 #include "utils/coretypes.h"
+#include <array>
 #include <codecvt>
 #include <locale>
 #include <memory>
