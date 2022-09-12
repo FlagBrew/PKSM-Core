@@ -848,12 +848,12 @@ namespace pksm
         pk3->ribbon(Ribbon::World, ribbon(Ribbon::World));
 
         // Contest ribbons
-        constexpr std::array<Ribbon, 20> contestRibbons = {Ribbon::G3Cool, Ribbon::G3CoolSuper,
-            Ribbon::G3CoolHyper, Ribbon::G3CoolMaster, Ribbon::G3Beauty, Ribbon::G3BeautySuper,
-            Ribbon::G3BeautyHyper, Ribbon::G3BeautyMaster, Ribbon::G3Cute, Ribbon::G3CuteSuper,
-            Ribbon::G3CuteHyper, Ribbon::G3CuteMaster, Ribbon::G3Smart, Ribbon::G3SmartSuper,
-            Ribbon::G3SmartHyper, Ribbon::G3SmartMaster, Ribbon::G3Tough, Ribbon::G3ToughSuper,
-            Ribbon::G3ToughHyper, Ribbon::G3ToughMaster};
+        static constexpr std::array<Ribbon, 20> contestRibbons = {Ribbon::G3Cool,
+            Ribbon::G3CoolSuper, Ribbon::G3CoolHyper, Ribbon::G3CoolMaster, Ribbon::G3Beauty,
+            Ribbon::G3BeautySuper, Ribbon::G3BeautyHyper, Ribbon::G3BeautyMaster, Ribbon::G3Cute,
+            Ribbon::G3CuteSuper, Ribbon::G3CuteHyper, Ribbon::G3CuteMaster, Ribbon::G3Smart,
+            Ribbon::G3SmartSuper, Ribbon::G3SmartHyper, Ribbon::G3SmartMaster, Ribbon::G3Tough,
+            Ribbon::G3ToughSuper, Ribbon::G3ToughHyper, Ribbon::G3ToughMaster};
         for (size_t i = 0; i < contestRibbons.size(); i++)
         {
             if (ribbon(contestRibbons[i]))
@@ -981,7 +981,7 @@ namespace pksm
 
     void PK4::updatePartyData()
     {
-        constexpr Stat stats[] = {
+        static constexpr Stat stats[] = {
             Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
         for (size_t i = 0; i < 6; i++)
         {

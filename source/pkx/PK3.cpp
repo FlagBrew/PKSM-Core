@@ -903,7 +903,7 @@ namespace pksm
 
     void PK3::updatePartyData()
     {
-        constexpr Stat stats[] = {
+        static constexpr Stat stats[] = {
             Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
         for (size_t i = 0; i < 6; i++)
         {

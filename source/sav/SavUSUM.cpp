@@ -58,8 +58,8 @@ namespace pksm
 
     void SavUSUM::resign(void)
     {
-        constexpr u8 blockCount = 39;
-        constexpr u32 csoff     = 0x6CA1A;
+        static constexpr u8 blockCount = 39;
+        static constexpr u32 csoff     = 0x6CA1A;
 
         for (u8 i = 0; i < blockCount; i++)
         {

@@ -57,8 +57,8 @@ namespace pksm
 
     void SavSUMO::resign(void)
     {
-        constexpr u8 blockCount = 37;
-        constexpr u32 csoff     = 0x6BC1A;
+        static constexpr u8 blockCount = 37;
+        static constexpr u32 csoff     = 0x6BC1A;
 
         for (u8 i = 0; i < blockCount; i++)
         {
@@ -71,9 +71,9 @@ namespace pksm
                 &data[csoff + i * 8], pksm::crypto::crc16(&data[chkofs[i]], chklen[i]));
         }
 
-        constexpr u32 checksumTableOffset = 0x6BC00;
-        constexpr u32 checksumTableLength = 0x140;
-        constexpr u32 memecryptoOffset    = 0x6BB00;
+        static constexpr u32 checksumTableOffset = 0x6BC00;
+        static constexpr u32 checksumTableLength = 0x140;
+        static constexpr u32 memecryptoOffset    = 0x6BB00;
 
         auto hash = crypto::sha256(&data[checksumTableOffset], checksumTableLength);
 

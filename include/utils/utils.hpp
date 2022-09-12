@@ -42,7 +42,7 @@
 
 namespace StringUtils
 {
-    static constexpr char32_t CODEPOINT_INVALID = 0xFFFD;
+    inline constexpr char32_t CODEPOINT_INVALID = 0xFFFD;
     // Standard UTF-8/16/32 conversions
     [[nodiscard]] std::u16string UTF8toUTF16(const std::string_view& src);
     [[nodiscard]] std::string UTF16toUTF8(const std::u16string_view& src);

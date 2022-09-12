@@ -665,16 +665,16 @@ namespace pksm
                 pk8->nickname(pk8->nicknamed() ? wc8.nickname(pk8->language())
                                                : pk8->species().localize(pk8->language()));
 
-                constexpr std::array<Ribbon, 98> RIBBONS_TO_TRANSFER = {Ribbon::ChampionKalos,
-                    Ribbon::ChampionG3Hoenn, Ribbon::ChampionSinnoh, Ribbon::BestFriends,
-                    Ribbon::Training, Ribbon::BattlerSkillful, Ribbon::BattlerExpert,
-                    Ribbon::Effort, Ribbon::Alert, Ribbon::Shock, Ribbon::Downcast,
-                    Ribbon::Careless, Ribbon::Relax, Ribbon::Snooze, Ribbon::Smile,
-                    Ribbon::Gorgeous, Ribbon::Royal, Ribbon::GorgeousRoyal, Ribbon::Artist,
-                    Ribbon::Footprint, Ribbon::Record, Ribbon::Legend, Ribbon::Country,
-                    Ribbon::National, Ribbon::Earth, Ribbon::World, Ribbon::Classic,
-                    Ribbon::Premier, Ribbon::Event, Ribbon::Birthday, Ribbon::Special,
-                    Ribbon::Souvenir, Ribbon::Wishing, Ribbon::ChampionBattle,
+                static constexpr std::array<Ribbon, 98> RIBBONS_TO_TRANSFER = {
+                    Ribbon::ChampionKalos, Ribbon::ChampionG3Hoenn, Ribbon::ChampionSinnoh,
+                    Ribbon::BestFriends, Ribbon::Training, Ribbon::BattlerSkillful,
+                    Ribbon::BattlerExpert, Ribbon::Effort, Ribbon::Alert, Ribbon::Shock,
+                    Ribbon::Downcast, Ribbon::Careless, Ribbon::Relax, Ribbon::Snooze,
+                    Ribbon::Smile, Ribbon::Gorgeous, Ribbon::Royal, Ribbon::GorgeousRoyal,
+                    Ribbon::Artist, Ribbon::Footprint, Ribbon::Record, Ribbon::Legend,
+                    Ribbon::Country, Ribbon::National, Ribbon::Earth, Ribbon::World,
+                    Ribbon::Classic, Ribbon::Premier, Ribbon::Event, Ribbon::Birthday,
+                    Ribbon::Special, Ribbon::Souvenir, Ribbon::Wishing, Ribbon::ChampionBattle,
                     Ribbon::ChampionRegional, Ribbon::ChampionNational, Ribbon::ChampionWorld,
                     Ribbon::MemoryContest, Ribbon::MemoryBattle, Ribbon::ChampionG6Hoenn,
                     Ribbon::ContestStar, Ribbon::MasterCoolness, Ribbon::MasterBeauty,

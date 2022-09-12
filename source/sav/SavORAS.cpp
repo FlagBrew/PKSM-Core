@@ -56,8 +56,8 @@ namespace pksm
 
     void SavORAS::resign(void)
     {
-        constexpr u8 blockCount = 58;
-        constexpr u32 csoff     = 0x75E1A;
+        static constexpr u8 blockCount = 58;
+        static constexpr u32 csoff     = 0x75E1A;
 
         for (u8 i = 0; i < blockCount; i++)
         {
