@@ -24,11 +24,11 @@
  *         reasonable ways as different from the original version.
  */
 
-#include <array>
 #include "i18n_internal.hpp"
 #include "utils/_map_macro.hpp"
 #include "utils/utils.hpp"
 #include <algorithm>
+#include <array>
 #include <functional>
 #include <list>
 

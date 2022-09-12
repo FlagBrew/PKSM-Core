@@ -24,7 +24,6 @@
  *         reasonable ways as different from the original version.
  */
 
-#include <array>
 #include "utils/utils.hpp"
 #include "g1text.hpp"
 #include "g2text.hpp"
@@ -32,6 +31,7 @@
 #include "g4text.hpp"
 #include "utils/endian.hpp"
 #include <algorithm>
+#include <array>
 #include <map>
 #include <queue>
 #include <vector>
@@ -1002,7 +1002,8 @@ std::string StringUtils::getString1(
                 break;
             if (codepoint == pksm::internal::tradeOTChar)
                 continue;
-            if (transporter) {
+            if (transporter)
+            {
                 switch (codepoint)
                 {
                     case u'?':
@@ -1032,8 +1033,10 @@ std::string StringUtils::getString1(
                 break;
             if (codepoint == pksm::internal::tradeOTChar)
                 continue;
-            if (transporter) {
-                switch (codepoint) {
+            if (transporter)
+            {
+                switch (codepoint)
+                {
                     case u'[':
                         codepoint = u'(';
                         break;

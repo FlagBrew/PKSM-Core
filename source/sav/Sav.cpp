@@ -348,7 +348,7 @@ namespace pksm
         else if (availableAbilities().count(pk.ability()) == 0)
         {
             if (generation() > Generation::TWO && pk.generation() > Generation::TWO)
-            { 
+            {
                 return BadTransferReason::ABILITY;
             }
         }

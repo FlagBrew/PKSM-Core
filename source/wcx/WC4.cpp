@@ -24,9 +24,9 @@
  *         reasonable ways as different from the original version.
  */
 
-#include <array>
 #include "wcx/WC4.hpp"
 #include "utils/endian.hpp"
+#include <array>
 
 pksm::WC4::WC4(u8* data) : PGT(data), name(StringUtils::getString4(data, 0x104, 0x24))
 {

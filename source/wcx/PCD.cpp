@@ -24,9 +24,9 @@
  *         reasonable ways as different from the original version.
  */
 
-#include <array>
 #include "wcx/PCD.hpp"
 #include "utils/endian.hpp"
+#include <array>
 
 pksm::PCD::PCD(u8* pcd) : PGT(pcd), name(StringUtils::getString4(pcd, 0x104, 0x24))
 {
