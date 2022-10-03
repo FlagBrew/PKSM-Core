@@ -45,6 +45,7 @@
 #include "utils/DateTime.hpp"
 #include "utils/coretypes.h"
 #include "utils/genToPkx.hpp"
+#include <concepts>
 #include <memory>
 #include <string>
 
@@ -105,10 +106,9 @@ namespace pksm
             return getPKM<typename GenToPkx<g>::PKX>(data, length, directAccess);
         }
 
-        template <typename Pkm>
-        [[nodiscard]] static std::enable_if_t<std::is_base_of_v<::pksm::PKX, Pkm>,
-            std::unique_ptr<Pkm>>
-            getPKM(u8* data, size_t length, bool directAccess = false)
+        template <std::derived_from<::pksm::PKX> Pkm>
+        [[nodiscard]] static std::unique_ptr<Pkm> getPKM(
+            u8* data, size_t length, bool directAccess = false)
         {
             if constexpr (std::is_same_v<typename GenToPkx<Generation::ONE>::PKX,
                               std::remove_cvref_t<Pkm>> ||

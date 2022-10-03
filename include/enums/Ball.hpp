@@ -29,6 +29,7 @@
 
 #include "enums/Language.hpp"
 #include "utils/coretypes.h"
+#include <concepts>
 #include <limits>
 #include <type_traits>
 
@@ -83,10 +84,9 @@ namespace pksm
             constexpr Ball_impl& operator=(Ball_impl&&) = default;
 
         public:
-            template <typename T>
+            template <std::integral T>
             constexpr explicit operator T() const noexcept
             {
-                static_assert(std::is_integral_v<T>);
                 return T(v);
             }
             constexpr operator BallEnum() const noexcept { return v; }
@@ -132,10 +132,9 @@ namespace pksm
         constexpr Ball() noexcept : impl(EnumType::INVALID) {}
         constexpr Ball(const internal::Ball_impl& impl) noexcept : impl(impl) {}
         constexpr explicit Ball(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v}) {}
-        template <typename T>
+        template <std::integral T>
         constexpr explicit operator T() const noexcept
         {
-            static_assert(std::is_integral_v<T>);
             return T(impl);
         }
         constexpr operator EnumType() const noexcept { return static_cast<EnumType>(impl); }

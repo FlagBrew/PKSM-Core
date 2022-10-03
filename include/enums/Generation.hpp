@@ -28,6 +28,7 @@
 #define GENERATION_HPP
 
 #include "utils/coretypes.h"
+#include <concepts>
 #include <string>
 #include <type_traits>
 
@@ -64,10 +65,9 @@ namespace pksm
             constexpr Generation_impl& operator=(Generation_impl&&) = default;
 
         public:
-            template <typename T>
+            template <std::integral T>
             constexpr explicit operator T() const noexcept
             {
-                static_assert(std::is_integral_v<T>);
                 return T(v);
             }
             constexpr explicit operator const char*() const noexcept
@@ -212,7 +212,7 @@ namespace pksm
             : impl(EnumType{v})
         {
         }
-        template <typename T>
+        template <std::integral T>
         constexpr explicit operator T() const noexcept
         {
             return T(impl);

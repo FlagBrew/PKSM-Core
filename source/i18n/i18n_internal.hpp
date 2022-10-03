@@ -86,7 +86,7 @@ namespace i18n
     std::string folder(pksm::Language lang);
 
     void load(pksm::Language lang, const std::string& name, std::vector<std::string>& array);
-    template <typename T>
+    template <std::integral T>
     void load(pksm::Language lang, const std::string& name, std::map<T, std::string>& map)
     {
         std::string path = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name)
@@ -113,7 +113,7 @@ namespace i18n
                     tmp = tmp.substr(0, tmp.find('\n'));
                     // 0 automatically deduces the base: 0x prefix makes it hexadecimal, 0 prefix
                     // makes it octal
-                    T val    = std::stoi(tmp.substr(0, tmp.find('|')), 0, 0);
+                    T val    = std::stoll(tmp.substr(0, tmp.find('|')), 0, 0);
                     map[val] = tmp.substr(0, tmp.find('\r')).substr(tmp.find('|') + 1);
                 }
                 else

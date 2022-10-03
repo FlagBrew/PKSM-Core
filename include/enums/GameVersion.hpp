@@ -29,6 +29,7 @@
 
 #include "enums/Generation.hpp"
 #include "utils/coretypes.h"
+#include <concepts>
 #include <limits>
 #include <type_traits>
 
@@ -127,10 +128,9 @@ namespace pksm
             constexpr GameVersion_impl& operator=(GameVersion_impl&&) = default;
 
         public:
-            template <typename T>
+            template <std::integral T>
             constexpr explicit operator T() const noexcept
             {
-                static_assert(std::is_integral_v<T>);
                 return T(v);
             }
             constexpr explicit operator pksm::Generation() const noexcept
@@ -247,10 +247,9 @@ namespace pksm
             : impl(EnumType{v})
         {
         }
-        template <typename T>
+        template <std::integral T>
         constexpr explicit operator T() const noexcept
         {
-            static_assert(std::is_integral_v<T>);
             return T(impl);
         }
         constexpr explicit operator pksm::Generation() const noexcept

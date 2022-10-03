@@ -29,6 +29,7 @@
 
 #include "enums/Language.hpp"
 #include "utils/coretypes.h"
+#include <concepts>
 #include <limits>
 #include <type_traits>
 
@@ -884,10 +885,9 @@ namespace pksm
             constexpr Move_impl& operator=(Move_impl&&) = default;
 
         public:
-            template <typename T>
+            template <std::integral T>
             constexpr explicit operator T() const noexcept
             {
-                static_assert(std::is_integral_v<T>);
                 return T(v);
             }
             constexpr operator MoveEnum() const noexcept { return v; }
@@ -933,10 +933,9 @@ namespace pksm
         constexpr Move() noexcept : impl(EnumType::INVALID) {}
         constexpr Move(const internal::Move_impl& impl) noexcept : impl(impl) {}
         constexpr explicit Move(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v}) {}
-        template <typename T>
+        template <std::integral T>
         constexpr explicit operator T() const noexcept
         {
-            static_assert(std::is_integral_v<T>);
             return T(impl);
         }
         constexpr operator EnumType() const noexcept { return static_cast<EnumType>(impl); }

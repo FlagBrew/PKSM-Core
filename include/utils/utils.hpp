@@ -31,6 +31,7 @@
 #include "utils/coretypes.h"
 #include <array>
 #include <codecvt>
+#include <concepts>
 #include <locale>
 #include <memory>
 #include <optional>
@@ -157,51 +158,42 @@ namespace StringUtils
 
     namespace internal
     {
-        template <typename OrigType>
-        std::enable_if_t<std::is_convertible_v<OrigType, std::string_view> ||
-                             std::is_convertible_v<OrigType, std::u16string_view> ||
-                             std::is_convertible_v<OrigType, std::u32string_view>,
-            std::conditional_t<std::is_convertible_v<OrigType, std::string_view>, std::string_view,
-                std::conditional_t<std::is_convertible_v<OrigType, std::u16string_view>,
-                    std::u16string_view, std::u32string_view>>>
-            toView(OrigType&& x)
-        {
-            return x;
-        }
+        // clang-format off
         template <typename RetType, typename First, typename... Params>
+        requires (std::same_as<std::string, RetType> || std::same_as<std::u16string, RetType> || std::same_as<std::u32string, RetType>) &&
+                 (std::convertible_to<First, std::string_view> || std::convertible_to<First, std::u16string_view> || std::convertible_to<First, std::u32string_view>) &&
+                 ((std::convertible_to<Params, std::string_view> || std::convertible_to<Params, std::u16string_view> || std::convertible_to<Params,std::u32string_view>)&&...)         
         void concatImpl(RetType& ret, First&& f, Params&&... rest)
+        // clang-format on
         {
-            static_assert(std::is_same_v<RetType, std::string> ||
-                          std::is_same_v<RetType, std::u16string> ||
-                          std::is_same_v<RetType, std::u32string>);
-            static_assert(std::is_convertible_v<First, std::string_view> ||
-                          std::is_convertible_v<First, std::u16string_view> ||
-                          std::is_convertible_v<First, std::u32string_view>);
-
-            static_assert(((std::is_convertible_v<Params, std::string_view> ||
-                            std::is_convertible_v<Params, std::u16string_view> ||
-                            std::is_convertible_v<Params, std::u32string_view>)&&...));
-
-            auto view = toView(std::forward<First>(f));
+            static constexpr auto toGenericView = [](First&& x)
+                -> std::conditional_t<std::is_convertible_v<First, std::string_view>,
+                    std::string_view,
+                    std::conditional_t<std::is_convertible_v<First, std::u16string_view>,
+                        std::u16string_view, std::u32string_view>> { return x; };
 
             if constexpr (std::is_same_v<RetType, std::string> &&
                           std::is_convertible_v<First, std::string_view>)
             {
+                std::string_view view{std::forward<First>(f)};
                 ret.append(view.data(), view.size());
             }
             else if constexpr (std::is_same_v<RetType, std::u16string> &&
                                std::is_convertible_v<First, std::u16string_view>)
             {
+                std::u16string_view view{std::forward<First>(f)};
                 ret.append(view.data(), view.size());
             }
             else if constexpr (std::is_same_v<RetType, std::u32string> &&
                                std::is_convertible_v<First, std::u32string_view>)
             {
+                std::u32string_view view{std::forward<First>(f)};
                 ret.append(view.data(), view.size());
             }
             else
             {
-                size_t i = 0;
+                auto view = toGenericView(std::forward<First>(f));
+                size_t i  = 0;
                 while (i < view.size())
                 {
                     size_t iMod = 1;
@@ -246,25 +238,23 @@ namespace StringUtils
             }
         }
 
+        // clang-format off
         template <typename StringType>
+        requires std::same_as<std::string, StringType> || std::same_as<std::u16string, StringType> || std::same_as<std::u32string, StringType>
         size_t concatMaxSizeInCodeUnits()
+        // clang-format on
         {
-            static_assert(std::is_same_v<StringType, std::string> ||
-                          std::is_same_v<StringType, std::u16string> ||
-                          std::is_same_v<StringType, std::u32string>);
             return 0;
         }
 
+        // clang-format off
         template <typename StringType, typename First, typename... Params>
+        requires (std::same_as<std::string, StringType> || std::same_as<std::u16string, StringType> || std::same_as<std::u32string, StringType>) &&
+                 (std::convertible_to<First, std::string_view> || std::convertible_to<First, std::u16string_view> || std::convertible_to<First, std::u32string_view>) &&
+                 ((std::convertible_to<Params, std::string_view> || std::convertible_to<Params, std::u16string_view> || std::convertible_to<Params,std::u32string_view>)&&...) 
         size_t concatMaxSizeInCodeUnits(First&& f, Params&&... args)
+        // clang-format on
         {
-            static_assert(std::is_same_v<StringType, std::string> ||
-                          std::is_same_v<StringType, std::u16string> ||
-                          std::is_same_v<StringType, std::u32string>);
-            static_assert(std::is_convertible_v<First, std::string_view> ||
-                          std::is_convertible_v<First, std::u16string_view> ||
-                          std::is_convertible_v<First, std::u32string_view>);
-
             if constexpr (std::is_same_v<StringType, std::string>)
             {
                 if constexpr (std::is_convertible_v<First, std::string_view>)
@@ -301,16 +291,13 @@ namespace StringUtils
         }
     }
 
+    // clang-format off
     template <typename EncString, typename OrigString>
+    requires (std::same_as<std::string, EncString> || std::same_as<std::u16string, EncString> || std::same_as<std::u32string, EncString>) &&
+             (std::convertible_to<OrigString, std::string_view> || std::convertible_to<OrigString, std::u16string_view> || std::convertible_to<OrigString, std::u32string_view>)
     EncString convert(OrigString&& str)
+    // clang-format on
     {
-        static_assert(std::is_same_v<EncString, std::string> ||
-                      std::is_same_v<EncString, std::u16string> ||
-                      std::is_same_v<EncString, std::u32string>);
-        static_assert(std::is_convertible_v<OrigString, std::string_view> ||
-                      std::is_convertible_v<OrigString, std::u16string_view> ||
-                      std::is_convertible_v<OrigString, std::u32string_view>);
-
         if constexpr (std::is_same_v<EncString, std::string>)
         {
             if constexpr (std::is_convertible_v<OrigString, std::string_view>)
@@ -358,16 +345,13 @@ namespace StringUtils
         }
     }
 
+    // clang-format off
     template <typename RetType, bool ShrinkAfter = false, typename... Params>
+    requires (std::same_as<RetType, std::string> || std::same_as<RetType, std::u16string> || std::same_as<RetType, std::u32string>) &&
+             ((std::convertible_to<Params, std::string_view> || std::convertible_to<Params, std::u16string_view> || std::convertible_to<Params, std::u32string_view>)&&...)
     RetType concat(Params&&... rest)
+    // clang-format on
     {
-        static_assert(std::is_same_v<RetType, std::string> ||
-                      std::is_same_v<RetType, std::u16string> ||
-                      std::is_same_v<RetType, std::u32string>);
-        static_assert(((std::is_convertible_v<Params, std::string_view> ||
-                        std::is_convertible_v<Params, std::u16string_view> ||
-                        std::is_convertible_v<Params, std::u32string_view>)&&...));
-
         if constexpr (sizeof...(rest) == 0)
         {
             return RetType();

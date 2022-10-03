@@ -28,6 +28,7 @@
 #define TYPE_HPP
 
 #include "enums/Language.hpp"
+#include <concepts>
 #include <limits>
 #include <string>
 #include <type_traits>
@@ -74,10 +75,9 @@ namespace pksm
             constexpr Type_impl& operator=(Type_impl&&) = default;
 
         public:
-            template <typename T>
+            template <std::integral T>
             constexpr explicit operator T() const noexcept
             {
-                static_assert(std::is_integral_v<T>);
                 return T(v);
             }
             constexpr operator TypeEnum() const noexcept { return v; }
@@ -123,10 +123,9 @@ namespace pksm
         constexpr Type() noexcept : impl(EnumType{0}) {}
         constexpr Type(const internal::Type_impl& impl) noexcept : impl(impl) {}
         constexpr explicit Type(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v}) {}
-        template <typename T>
+        template <std::integral T>
         constexpr explicit operator T() const noexcept
         {
-            static_assert(std::is_integral_v<T>);
             return T(impl);
         }
         constexpr operator EnumType() const noexcept { return static_cast<EnumType>(impl); }

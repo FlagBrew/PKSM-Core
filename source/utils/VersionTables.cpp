@@ -32,8 +32,11 @@
 
 namespace
 {
+    // clang-format off
     template <typename T>
-    static inline std::set<T> create_set_consecutive(const T& begin, const T& end)
+    requires std::is_enum_v<T> || std::integral<T> || requires { typename T::EnumType; }
+    inline std::set<T> create_set_consecutive(const T& begin, const T& end)
+    // clang-format on
     {
         std::set<T> set;
         if constexpr (std::is_integral_v<T>)
@@ -43,9 +46,16 @@ namespace
                 set.insert(i);
             }
         }
+        else if constexpr (std::is_enum_v<T>)
+        {
+            using INT = std::underlying_type_t<T>;
+            for (INT i = INT(begin); i <= INT(end); i++)
+            {
+                set.insert(T(i));
+            }
+        }
         else
         {
-            static_assert(std::is_enum_v<typename T::EnumType>);
             using INT = std::underlying_type_t<typename T::EnumType>;
             for (INT i = INT(begin); i <= INT(end); i++)
             {

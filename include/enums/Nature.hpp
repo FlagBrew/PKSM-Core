@@ -29,6 +29,7 @@
 
 #include "enums/Language.hpp"
 #include "utils/coretypes.h"
+#include <concepts>
 #include <limits>
 #include <type_traits>
 
@@ -81,10 +82,9 @@ namespace pksm
             constexpr Nature_impl& operator=(Nature_impl&&) = default;
 
         public:
-            template <typename T>
+            template <std::integral T>
             constexpr explicit operator T() const noexcept
             {
-                static_assert(std::is_integral_v<T>);
                 return T(v);
             }
             constexpr operator NatureEnum() const noexcept { return v; }
@@ -132,10 +132,9 @@ namespace pksm
         constexpr explicit Nature(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v})
         {
         }
-        template <typename T>
+        template <std::integral T>
         constexpr explicit operator T() const noexcept
         {
-            static_assert(std::is_integral_v<T>);
             return T(impl);
         }
         constexpr operator EnumType() const noexcept { return static_cast<EnumType>(impl); }
