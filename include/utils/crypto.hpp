@@ -35,16 +35,6 @@
 
 namespace pksm::crypto
 {
-    [[nodiscard]] constexpr u32 popcount(u32 x)
-    {
-        x -= ((x >> 1) & 0x55555555u);
-        x = (x & 0x33333333u) + ((x >> 2) & 0x33333333u);
-        x = (x + (x >> 4)) & 0x0F0F0F0Fu;
-        x += (x >> 8);
-        x += (x >> 16);
-        return x & 0x0000003Fu;
-    }
-
     [[nodiscard]] u16 ccitt16(const u8* buf, size_t len);
     [[nodiscard]] u16 crc16(const u8* buf, size_t len);
     [[nodiscard]] u16 crc16_noinvert(const u8* buf, size_t len);

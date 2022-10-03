@@ -26,6 +26,7 @@
 
 #include "utils/crypto.hpp"
 #include "utils/endian.hpp"
+#include <bit>
 
 namespace pksm::crypto::swsh
 {
@@ -82,7 +83,7 @@ namespace pksm::crypto::swsh
         public:
             explicit XorShift32(u32 seed)
             {
-                u32 count = pksm::crypto::popcount(seed);
+                u32 count = std::popcount(seed);
                 for (u32 i = 0; i < count; i++)
                 {
                     advance(seed);

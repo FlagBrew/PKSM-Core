@@ -33,6 +33,7 @@
 #include "utils/utils.hpp"
 #include "wcx/WB7.hpp"
 #include <algorithm>
+#include <bit>
 
 namespace
 {
@@ -214,7 +215,7 @@ namespace pksm
         //     u8 unimportant2 : 4;
         // } badgeBits;
         u8 badges = (LittleEndian::convertTo<u16>(&data[0x21b1]) >> 4) & 0xFF;
-        return pksm::crypto::popcount(badges);
+        return std::popcount(badges);
     }
 
     u16 SavLGPE::playedHours(void) const { return LittleEndian::convertTo<u16>(&data[0x45400]); }
