@@ -629,7 +629,7 @@ namespace pksm
             default:
                 base = 0;
         }
-        u16 EV  = u16(std::min(255, int(std::sqrt(ev(stat)))) >> 2);
+        u16 EV  = u16(std::min(255, int(std::ceil(std::sqrt(ev(stat))))) >> 2);
         u16 mid = u16(((2 * (base + iv(stat)) + EV) * level() / 100) + 5);
         if (stat == Stat::HP)
             return mid + 5 + level();
