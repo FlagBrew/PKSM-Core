@@ -343,7 +343,10 @@ namespace pksm
 
             if (slot >= boxCount(box))
             {
-                slot = boxCount(box);
+                if (slot > boxCount(box))
+                {
+                    pkm(*emptyPkm(), box, slot - 1, false);
+                }
                 boxCount(box, slot + 1);
             }
 
