@@ -39,7 +39,7 @@ namespace pksm
         bool japanese;
         Language lang;
         GameVersion versionOfGame = GameVersion::RD; // not even PKHeX tries to do better
-        u8 maxPkmInBox;
+        u8 maxPkmInBox, originalCurrentBox;
         u16 boxSize, mainDataLength, bankBoxesSize, OFS_DEX_CAUGHT, OFS_DEX_SEEN, OFS_BAG,
             OFS_MONEY, OFS_BADGES, OFS_TID, OFS_PC_ITEMS, OFS_CURRENT_BOX_INDEX, OFS_HOURS,
             OFS_PARTY, OFS_CURRENT_BOX, OFS_MAIN_DATA_SUM, OFS_BANK2_BOX_SUMS, OFS_BANK3_BOX_SUMS;
@@ -100,8 +100,8 @@ namespace pksm
         [[nodiscard]] u32 partyOffset(u8 slot) const override;
         [[nodiscard]] u32 partyNicknameOffset(u8 slot) const;
         [[nodiscard]] u32 partyOtNameOffset(u8 slot) const;
-        [[nodiscard]] u32 boxStart(u8 box) const;
-        [[nodiscard]] u32 boxDataStart(u8 box) const;
+        [[nodiscard]] u32 boxStart(u8 box, bool obeyCurrentBoxMechanics = true) const;
+        [[nodiscard]] u32 boxDataStart(u8 box, bool obeyCurrentBoxMechanics = true) const;
         [[nodiscard]] u8 nameLength(void) const;
         [[nodiscard]] u8 PK1Length(void) const;
 
@@ -129,7 +129,9 @@ namespace pksm
         [[nodiscard]] u8 boxWallpaper(u8 box) const override { return 0; }
         void boxWallpaper(u8 box, u8 v) override {}
         [[nodiscard]] u8 partyCount(void) const override;
+        [[nodiscard]] u8 boxCount(u8 box) const;
         void partyCount(u8 count) override;
+        void boxCount(u8 box, u8 count);
         void boxSpecies(u8 box);
         void partySpecies(void);
 

@@ -40,7 +40,7 @@ namespace pksm
         bool korean;
         Language lang;
         GameVersion versionOfGame;
-        u8 maxPkmInBox;
+        u8 maxPkmInBox, originalCurrentBox;
         u32 boxSize, OFS_PARTY, OFS_PC_ITEMS, OFS_CURRENT_BOX, OFS_CURRENT_BOX_INDEX, OFS_GENDER,
             OFS_BADGES, OFS_POKEDEX_CAUGHT, OFS_POKEDEX_SEEN, OFS_BOX_NAMES, OFS_TM_POUCH,
             OFS_ITEMS, OFS_KEY_ITEMS, OFS_BALLS, OFS_CHANGED_BOX, OFS_CHECKSUM_ONE, OFS_MONEY,
@@ -107,8 +107,8 @@ namespace pksm
         [[nodiscard]] u32 partyOffset(u8 slot) const override;
         [[nodiscard]] u32 partyNicknameOffset(u8 slot) const;
         [[nodiscard]] u32 partyOtNameOffset(u8 slot) const;
-        [[nodiscard]] u32 boxStart(u8 box) const;
-        [[nodiscard]] u32 boxDataStart(u8 box) const;
+        [[nodiscard]] u32 boxStart(u8 box, bool obeyCurrentBoxMechanics = true) const;
+        [[nodiscard]] u32 boxDataStart(u8 box, bool obeyCurrentBoxMechanics = true) const;
         [[nodiscard]] u8 nameLength(void) const;
         [[nodiscard]] u8 PK2Length(void) const;
 
@@ -133,7 +133,9 @@ namespace pksm
         [[nodiscard]] u8 boxWallpaper(u8 box) const override { return 0; }
         void boxWallpaper(u8 box, u8 v) override {}
         [[nodiscard]] u8 partyCount(void) const override;
+        [[nodiscard]] u8 boxCount(u8 box) const;
         void partyCount(u8 count) override;
+        void boxCount(u8 box, u8 count);
         void boxSpecies(u8 box);
         void partySpecies(void);
 

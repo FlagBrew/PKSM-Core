@@ -169,6 +169,8 @@ namespace pksm
             }
         }
 
+        originalCurrentBox = currentBox();
+
         if (lang == Language::ENG)
             lang = StringUtils::guessLanguage12(otName());
     }
@@ -264,7 +266,9 @@ namespace pksm
         fixBoxes();
         partySpecies();
         fixItemLists();
-        std::copy(&data[boxStart(currentBox())], &data[boxStart(currentBox())] + boxSize,
+        std::copy(&data[boxStart(originalCurrentBox)], &data[boxStart(originalCurrentBox)] + boxSize,
+            &data[boxStart(originalCurrentBox, false)]);
+        std::copy(&data[boxStart(currentBox(), false)], &data[boxStart(currentBox(), false)] + boxSize,
             &data[OFS_CURRENT_BOX]);
 
         // no, i don't know why only the checksum is little-endian. also idk why PKHeX destroys the
@@ -387,8 +391,12 @@ namespace pksm
         return OFS_PARTY + 8 + (6 * PK2::PARTY_LENGTH) + ((6 + slot) * nameLength());
     }
 
-    u32 Sav2::boxStart(u8 box) const
+    u32 Sav2::boxStart(u8 box, bool obeyCurrentBoxMechanics) const
     {
+        if (box == originalCurrentBox && obeyCurrentBoxMechanics)
+        {
+            return OFS_CURRENT_BOX;
+        }
         if (!japanese)
         {
             if (box < maxBoxes() / 2)
@@ -409,12 +417,19 @@ namespace pksm
             return 0x6000 + (box * boxSize);
         }
     }
-    u32 Sav2::boxDataStart(u8 box) const { return boxStart(box) + maxPkmInBox + 2; }
+    u32 Sav2::boxDataStart(u8 box, bool obeyCurrentBoxMechanics) const {
+        return boxStart(box, obeyCurrentBoxMechanics) + maxPkmInBox + 2;
+    }
 
     // the PK1 and PK2 formats used by the community start with magic bytes, the second being
     // species
     std::unique_ptr<PKX> Sav2::pkm(u8 slot) const
     {
+        if (slot >= partyCount())
+        {
+            return emptyPkm();
+        }
+
         // using the larger of the two sizes to not dynamically allocate
         u8 buffer[PK2::INT_LENGTH_WITH_NAMES] = {0x01, data[OFS_PARTY + 1 + slot], 0xFF};
 
@@ -441,7 +456,7 @@ namespace pksm
     }
     std::unique_ptr<PKX> Sav2::pkm(u8 box, u8 slot) const
     {
-        if (slot >= maxPkmInBox)
+        if (slot >= maxPkmInBox || slot >= boxCount(box))
         {
             return emptyPkm();
         }
@@ -508,6 +523,11 @@ namespace pksm
             }
 
             data[OFS_PARTY + 1 + slot] = pk2->rawData()[1];
+
+            if (slot == partyCount())
+            {
+                partyCount(slot + 1);
+            }
         }
     }
     void Sav2::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)
@@ -522,6 +542,12 @@ namespace pksm
             if (applyTrade)
             {
                 trade(*pk2);
+            }
+
+            if (slot >= boxCount(box))
+            {
+                slot = boxCount(box);
+                boxCount(box, slot + 1);
             }
 
             std::ranges::copy(
@@ -642,6 +668,8 @@ namespace pksm
 
     u8 Sav2::partyCount() const { return data[OFS_PARTY]; }
     void Sav2::partyCount(u8 count) { data[OFS_PARTY] = count; }
+    u8 Sav2::boxCount(u8 box) const { return data[boxStart(box)]; }
+    void Sav2::boxCount(u8 box, u8 count) { data[boxStart(box)] = count; }
     void Sav2::boxSpecies(u8 box)
     {
         u8 count = 0;
