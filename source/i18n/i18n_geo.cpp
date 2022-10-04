@@ -47,12 +47,11 @@ namespace i18n
     {
         std::map<u8, std::string> tmp;
         load(lang, "/countries.txt", tmp);
-        countries.insert_or_assign(lang, std::move(tmp));
+        auto [place, inserted] = countries.insert_or_assign(lang, std::move(tmp));
 
         std::map<u8, std::map<u8, std::string>> tmp2;
-        for (auto i = tmp.begin(); i != tmp.end(); i++)
+        for (auto i = place->second.begin(); i != place->second.end(); i++)
         {
-            tmp2[i->first] = {};
             load(lang, subregionFileName(i->first), tmp2[i->first]);
         }
         subregions.insert_or_assign(lang, std::move(tmp2));
