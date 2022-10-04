@@ -109,7 +109,7 @@ namespace pksm
                     j      = maxPkmInBox; // reset loop
                 }
             }
-            boxSpecies(i);
+            fixBox(i);
         }
     }
 
@@ -125,10 +125,14 @@ namespace pksm
             data[OFS_HOURS + 1] = 0;
         }
         fixBoxes();
-        partySpecies();
+        fixParty();
         fixItemLists();
-        std::copy(&data[boxStart(originalCurrentBox)], &data[boxStart(originalCurrentBox)] + boxSize,
-            &data[boxStart(originalCurrentBox, false)]);
+        if (currentBox() != originalCurrentBox) {
+            std::copy(&data[OFS_CURRENT_BOX], &data[OFS_CURRENT_BOX] + boxSize,
+                &data[boxStart(originalCurrentBox, false)]);
+            std::copy(&data[boxStart(currentBox())], &data[boxStart(currentBox())] + boxSize,
+                &data[OFS_CURRENT_BOX]);
+        }
         for (int box = 0; box < maxBoxes(); box++)
         {
             if (box < (maxBoxes() / 2))
@@ -142,11 +146,11 @@ namespace pksm
                     crypto::diff8({&data[boxDataStart(box, false)], boxSize});
             }
         }
-        std::copy(&data[boxStart(currentBox(), false)], &data[boxStart(currentBox(), false)] + boxSize,
-            &data[OFS_CURRENT_BOX]);
         data[OFS_MAIN_DATA_SUM]  = crypto::diff8({&data[0x2598], mainDataLength});
         data[OFS_BANK2_BOX_SUMS] = crypto::diff8({&data[0x4000], bankBoxesSize});
         data[OFS_BANK3_BOX_SUMS] = crypto::diff8({&data[0x6000], bankBoxesSize});
+
+        originalCurrentBox = currentBox();
     }
     u16 Sav1::TID() const { return BigEndian::convertTo<u16>(&data[OFS_TID]); }
     void Sav1::TID(u16 v) { BigEndian::convertFrom<u16>(&data[OFS_TID], v); }
@@ -230,7 +234,8 @@ namespace pksm
         box -= maxBoxes() / 2;
         return 0x6000 + (box * boxSize);
     }
-    u32 Sav1::boxDataStart(u8 box, bool obeyCurrentBoxMechanics) const {
+    u32 Sav1::boxDataStart(u8 box, bool obeyCurrentBoxMechanics) const
+    {
         return boxStart(box, obeyCurrentBoxMechanics) + maxPkmInBox + 2;
     }
 
@@ -238,11 +243,6 @@ namespace pksm
     // species
     std::unique_ptr<PKX> Sav1::pkm(u8 slot) const
     {
-        if (slot >= partyCount())
-        {
-            return emptyPkm();
-        }
-
         // using the larger of the two sizes to not dynamically allocate
         u8 buffer[PK1::INT_LENGTH_WITH_NAMES] = {0x01, data[partyOffset(slot)], 0xFF};
 
@@ -323,11 +323,6 @@ namespace pksm
                 std::ranges::copy(
                     pk1->rawData().subspan(3 + PK1::PARTY_LENGTH + nameLength(), nameLength()),
                     &data[partyNicknameOffset(slot)]);
-            }
-
-            if (slot == partyCount())
-            {
-                partyCount(slot + 1);
             }
         }
     }
@@ -434,7 +429,7 @@ namespace pksm
     void Sav1::partyCount(u8 count) { data[OFS_PARTY] = count; }
     u8 Sav1::boxCount(u8 box) const { return data[boxStart(box)]; }
     void Sav1::boxCount(u8 box, u8 count) { data[boxStart(box)] = count; }
-    void Sav1::boxSpecies(u8 box)
+    void Sav1::fixBox(u8 box)
     {
         u8 count = 0;
         while (pkm(box, count)->species() != Species::None)
@@ -446,8 +441,9 @@ namespace pksm
         data[boxStart(box) + 1 + count] = 0xFF;
         data[boxStart(box)]             = count;
     }
-    void Sav1::partySpecies()
+    void Sav1::fixParty()
     {
+        Sav::fixParty();
         u8 count = 0;
         while (pkm(count)->species() != Species::None && count < 6)
         {

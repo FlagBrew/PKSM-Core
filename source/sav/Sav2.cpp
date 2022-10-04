@@ -255,7 +255,7 @@ namespace pksm
                     j      = maxPkmInBox; // reset loop
                 }
             }
-            boxSpecies(i);
+            fixBox(i);
         }
     }
 
@@ -264,12 +264,14 @@ namespace pksm
         // we just pretend the secondary data copy doesn't exist, it's never used as long as we get
         // the checksum for the primary copy right
         fixBoxes();
-        partySpecies();
+        fixParty();
         fixItemLists();
-        std::copy(&data[boxStart(originalCurrentBox)], &data[boxStart(originalCurrentBox)] + boxSize,
-            &data[boxStart(originalCurrentBox, false)]);
-        std::copy(&data[boxStart(currentBox(), false)], &data[boxStart(currentBox(), false)] + boxSize,
-            &data[OFS_CURRENT_BOX]);
+        if (currentBox() != originalCurrentBox) {
+            std::copy(&data[OFS_CURRENT_BOX], &data[OFS_CURRENT_BOX] + boxSize,
+                &data[boxStart(originalCurrentBox, false)]);
+            std::copy(&data[boxStart(currentBox())], &data[boxStart(currentBox())] + boxSize,
+                &data[OFS_CURRENT_BOX]);
+        }
 
         // no, i don't know why only the checksum is little-endian. also idk why PKHeX destroys the
         // checksum for the secondary data copy
@@ -277,6 +279,8 @@ namespace pksm
             crypto::bytewiseSum16({&data[OFS_TID], &data[OFS_CHECKSUM_END] - &data[OFS_TID] + 1});
         LittleEndian::convertFrom<u16>(&data[OFS_CHECKSUM_ONE], checksum);
         LittleEndian::convertFrom<u16>(&data[OFS_CHECKSUM_TWO], checksum);
+        
+        originalCurrentBox = currentBox();
     }
 
     u16 Sav2::TID() const { return BigEndian::convertTo<u16>(&data[OFS_TID]); }
@@ -417,7 +421,8 @@ namespace pksm
             return 0x6000 + (box * boxSize);
         }
     }
-    u32 Sav2::boxDataStart(u8 box, bool obeyCurrentBoxMechanics) const {
+    u32 Sav2::boxDataStart(u8 box, bool obeyCurrentBoxMechanics) const
+    {
         return boxStart(box, obeyCurrentBoxMechanics) + maxPkmInBox + 2;
     }
 
@@ -425,11 +430,6 @@ namespace pksm
     // species
     std::unique_ptr<PKX> Sav2::pkm(u8 slot) const
     {
-        if (slot >= partyCount())
-        {
-            return emptyPkm();
-        }
-
         // using the larger of the two sizes to not dynamically allocate
         u8 buffer[PK2::INT_LENGTH_WITH_NAMES] = {0x01, data[OFS_PARTY + 1 + slot], 0xFF};
 
@@ -523,11 +523,6 @@ namespace pksm
             }
 
             data[OFS_PARTY + 1 + slot] = pk2->rawData()[1];
-
-            if (slot == partyCount())
-            {
-                partyCount(slot + 1);
-            }
         }
     }
     void Sav2::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)
@@ -670,7 +665,7 @@ namespace pksm
     void Sav2::partyCount(u8 count) { data[OFS_PARTY] = count; }
     u8 Sav2::boxCount(u8 box) const { return data[boxStart(box)]; }
     void Sav2::boxCount(u8 box, u8 count) { data[boxStart(box)] = count; }
-    void Sav2::boxSpecies(u8 box)
+    void Sav2::fixBox(u8 box)
     {
         u8 count = 0;
         while (count < maxPkmInBox)
@@ -692,8 +687,9 @@ namespace pksm
         data[boxStart(box) + 1 + count] = 0xFF;
         data[boxStart(box)]             = count;
     }
-    void Sav2::partySpecies()
+    void Sav2::fixParty()
     {
+        Sav::fixParty();
         u8 count = 0;
         while (count < 6)
         {

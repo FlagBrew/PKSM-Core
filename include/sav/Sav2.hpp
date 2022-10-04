@@ -136,8 +136,8 @@ namespace pksm
         [[nodiscard]] u8 boxCount(u8 box) const;
         void partyCount(u8 count) override;
         void boxCount(u8 box, u8 count);
-        void boxSpecies(u8 box);
-        void partySpecies(void);
+        void fixBox(u8 box);
+        void fixParty(void) override;
 
         [[nodiscard]] int maxSlot(void) const override;
         [[nodiscard]] int maxBoxes(void) const override;
