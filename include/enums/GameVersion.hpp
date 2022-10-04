@@ -29,6 +29,7 @@
 
 #include "enums/Generation.hpp"
 #include "utils/coretypes.h"
+#include <compare>
 #include <concepts>
 #include <limits>
 #include <type_traits>
@@ -189,47 +190,14 @@ namespace pksm
             }
             constexpr operator GameVersionEnum() const noexcept { return v; }
 
-            [[nodiscard]] constexpr bool operator<(const GameVersion_impl& other) const noexcept
+            [[nodiscard]] constexpr std::strong_ordering operator<=>(
+                const GameVersion_impl& other) const noexcept
             {
                 if (static_cast<Generation>(*this) == static_cast<Generation>(other))
                 {
-                    return v < other.v;
+                    return v <=> other.v;
                 }
-                return static_cast<Generation>(*this) < static_cast<Generation>(other);
-            }
-            [[nodiscard]] constexpr bool operator<=(const GameVersion_impl& other) const noexcept
-            {
-                if (static_cast<Generation>(*this) == static_cast<Generation>(other))
-                {
-                    return v <= other.v;
-                }
-                return static_cast<Generation>(*this) <= static_cast<Generation>(other);
-            }
-
-            [[nodiscard]] constexpr bool operator>(const GameVersion_impl& other) const noexcept
-            {
-                if (static_cast<Generation>(*this) == static_cast<Generation>(other))
-                {
-                    return v > other.v;
-                }
-                return static_cast<Generation>(*this) > static_cast<Generation>(other);
-            }
-            [[nodiscard]] constexpr bool operator>=(const GameVersion_impl& other) const noexcept
-            {
-                if (static_cast<Generation>(*this) == static_cast<Generation>(other))
-                {
-                    return v >= other.v;
-                }
-                return static_cast<Generation>(*this) >= static_cast<Generation>(other);
-            }
-
-            [[nodiscard]] constexpr bool operator==(const GameVersion_impl& other) const noexcept
-            {
-                return v == other.v;
-            }
-            [[nodiscard]] constexpr bool operator!=(const GameVersion_impl& other) const noexcept
-            {
-                return v != other.v;
+                return static_cast<Generation>(*this) <=> static_cast<Generation>(other);
             }
         };
     }
@@ -312,65 +280,8 @@ namespace pksm
             }
         }
 
-        [[nodiscard]] constexpr bool operator<(const GameVersion& other) const noexcept
-        {
-            return impl < other.impl;
-        }
-        [[nodiscard]] constexpr bool operator<=(const GameVersion& other) const noexcept
-        {
-            return impl <= other.impl;
-        }
-
-        [[nodiscard]] constexpr bool operator>(const GameVersion& other) const noexcept
-        {
-            return impl > other.impl;
-        }
-        [[nodiscard]] constexpr bool operator>=(const GameVersion& other) const noexcept
-        {
-            return impl >= other.impl;
-        }
-
-        [[nodiscard]] constexpr bool operator==(const GameVersion& other) const noexcept
-        {
-            return impl == other.impl;
-        }
-        [[nodiscard]] constexpr bool operator!=(const GameVersion& other) const noexcept
-        {
-            return impl != other.impl;
-        }
-
-        [[nodiscard]] constexpr bool operator<(
-            const internal::GameVersion_impl& other) const noexcept
-        {
-            return impl < other;
-        }
-        [[nodiscard]] constexpr bool operator<=(
-            const internal::GameVersion_impl& other) const noexcept
-        {
-            return impl <= other;
-        }
-
-        [[nodiscard]] constexpr bool operator>(
-            const internal::GameVersion_impl& other) const noexcept
-        {
-            return impl > other;
-        }
-        [[nodiscard]] constexpr bool operator>=(
-            const internal::GameVersion_impl& other) const noexcept
-        {
-            return impl >= other;
-        }
-
-        [[nodiscard]] constexpr bool operator==(
-            const internal::GameVersion_impl& other) const noexcept
-        {
-            return impl == other;
-        }
-        [[nodiscard]] constexpr bool operator!=(
-            const internal::GameVersion_impl& other) const noexcept
-        {
-            return impl != other;
-        }
+        [[nodiscard]] constexpr std::strong_ordering operator<=>(
+            const GameVersion&) const noexcept = default;
 
         static constexpr internal::GameVersion_impl None{EnumType::None};
         /// Pokémon Sapphire (GBA)

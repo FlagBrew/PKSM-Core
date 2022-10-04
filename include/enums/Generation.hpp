@@ -28,6 +28,7 @@
 #define GENERATION_HPP
 
 #include "utils/coretypes.h"
+#include <compare>
 #include <concepts>
 #include <string>
 #include <type_traits>
@@ -66,38 +67,39 @@ namespace pksm
 
         public:
             template <std::integral T>
-            constexpr explicit operator T() const noexcept
+            [[nodiscard]] constexpr explicit operator T() const noexcept
             {
                 return T(v);
             }
-            constexpr explicit operator const char*() const noexcept
+            [[nodiscard]] constexpr explicit operator const char*() const noexcept
             {
                 switch (v)
                 {
-                    case GenerationEnum::LGPE:
+                    using enum GenerationEnum;
+                    case LGPE:
                         return "LGPE";
-                    case GenerationEnum::ONE:
+                    case ONE:
                         return "1";
-                    case GenerationEnum::TWO:
+                    case TWO:
                         return "2";
-                    case GenerationEnum::THREE:
+                    case THREE:
                         return "3";
-                    case GenerationEnum::FOUR:
+                    case FOUR:
                         return "4";
-                    case GenerationEnum::FIVE:
+                    case FIVE:
                         return "5";
-                    case GenerationEnum::SIX:
+                    case SIX:
                         return "6";
-                    case GenerationEnum::SEVEN:
+                    case SEVEN:
                         return "7";
-                    case GenerationEnum::EIGHT:
+                    case EIGHT:
                         return "8";
-                    case GenerationEnum::UNUSED:
+                    case UNUSED:
                         return "INVALID";
                 }
                 return "INVALID";
             }
-            constexpr explicit operator std::string_view() const
+            [[nodiscard]] constexpr explicit operator std::string_view() const
             {
                 return std::string_view{static_cast<const char*>(*this)};
             }
@@ -105,96 +107,180 @@ namespace pksm
             {
                 return std::string{static_cast<const char*>(*this)};
             }
-            constexpr operator GenerationEnum() const noexcept { return v; }
+            [[nodiscard]] constexpr operator GenerationEnum() const noexcept { return v; }
 
-            [[nodiscard]] constexpr bool operator<(const Generation_impl& other) const noexcept
+            [[nodiscard]] constexpr std::strong_ordering operator<=>(
+                const Generation_impl& other) const noexcept
             {
                 switch (v)
                 {
-                    case GenerationEnum::ONE:
-                        if (other.v == GenerationEnum::TWO)
+                    using enum GenerationEnum;
+                    case ONE:
+                        switch (other.v)
                         {
-                            return true;
+                            case ONE:
+                                return std::strong_ordering::equal;
+                            case TWO:
+                            case THREE:
+                            case FOUR:
+                            case FIVE:
+                            case SIX:
+                            case SEVEN:
+                            case LGPE:
+                            case EIGHT:
+                            case UNUSED:
+                                return std::strong_ordering::less;
                         }
-                        // falls through
-                    case GenerationEnum::TWO:
-                        if (other.v == GenerationEnum::THREE)
+                        return std::strong_ordering::less;
+                    case TWO:
+                        switch (other.v)
                         {
-                            return true;
+                            case ONE:
+                                return std::strong_ordering::greater;
+                            case TWO:
+                                return std::strong_ordering::equal;
+                            case THREE:
+                            case FOUR:
+                            case FIVE:
+                            case SIX:
+                            case SEVEN:
+                            case LGPE:
+                            case EIGHT:
+                            case UNUSED:
+                                return std::strong_ordering::less;
                         }
-                        // falls through
-                    case GenerationEnum::THREE:
-                        if (other.v == GenerationEnum::FOUR)
+                        return std::strong_ordering::less;
+                    case THREE:
+                        switch (other.v)
                         {
-                            return true;
+                            case ONE:
+                            case TWO:
+                                return std::strong_ordering::greater;
+                            case THREE:
+                                return std::strong_ordering::equal;
+                            case FOUR:
+                            case FIVE:
+                            case SIX:
+                            case SEVEN:
+                            case LGPE:
+                            case EIGHT:
+                            case UNUSED:
+                                return std::strong_ordering::less;
                         }
-                        // falls through
-                    case GenerationEnum::FOUR:
-                        if (other.v == GenerationEnum::FIVE)
+                        return std::strong_ordering::less;
+                    case FOUR:
+                        switch (other.v)
                         {
-                            return true;
+                            case ONE:
+                            case TWO:
+                            case THREE:
+                                return std::strong_ordering::greater;
+                            case FOUR:
+                                return std::strong_ordering::equal;
+                            case FIVE:
+                            case SIX:
+                            case SEVEN:
+                            case LGPE:
+                            case EIGHT:
+                            case UNUSED:
+                                return std::strong_ordering::less;
                         }
-                        // falls through
-                    case GenerationEnum::FIVE:
-                        if (other.v == GenerationEnum::SIX)
+                        return std::strong_ordering::less;
+                    case FIVE:
+                        switch (other.v)
                         {
-                            return true;
+                            case ONE:
+                            case TWO:
+                            case THREE:
+                            case FOUR:
+                                return std::strong_ordering::greater;
+                            case FIVE:
+                                return std::strong_ordering::equal;
+                            case SIX:
+                            case SEVEN:
+                            case LGPE:
+                            case EIGHT:
+                            case UNUSED:
+                                return std::strong_ordering::less;
                         }
-                        // falls through
-                    case GenerationEnum::SIX:
-                        if (other.v == GenerationEnum::SEVEN)
+                        return std::strong_ordering::less;
+                    case SIX:
+                        switch (other.v)
                         {
-                            return true;
+                            case ONE:
+                            case TWO:
+                            case THREE:
+                            case FOUR:
+                            case FIVE:
+                                return std::strong_ordering::greater;
+                            case SIX:
+                                return std::strong_ordering::equal;
+                            case SEVEN:
+                            case LGPE:
+                            case EIGHT:
+                            case UNUSED:
+                                return std::strong_ordering::less;
                         }
-                        // falls through
-                    case GenerationEnum::SEVEN:
-                        if (other.v == GenerationEnum::LGPE)
+                        return std::strong_ordering::less;
+                    case SEVEN:
+                        switch (other.v)
                         {
-                            return true;
+                            case ONE:
+                            case TWO:
+                            case THREE:
+                            case FOUR:
+                            case FIVE:
+                            case SIX:
+                                return std::strong_ordering::greater;
+                            case SEVEN:
+                                return std::strong_ordering::equal;
+                            case LGPE:
+                            case EIGHT:
+                            case UNUSED:
+                                return std::strong_ordering::less;
                         }
-                        // falls through
-                    case GenerationEnum::LGPE:
-                        if (other.v == GenerationEnum::EIGHT)
+                        return std::strong_ordering::less;
+                    case LGPE:
+                        switch (other.v)
                         {
-                            return true;
+                            case ONE:
+                            case TWO:
+                            case THREE:
+                            case FOUR:
+                            case FIVE:
+                            case SIX:
+                            case SEVEN:
+                                return std::strong_ordering::greater;
+                            case LGPE:
+                                return std::strong_ordering::equal;
+                            case EIGHT:
+                            case UNUSED:
+                                return std::strong_ordering::less;
                         }
-                        // falls through
-                    case GenerationEnum::EIGHT:
-                        if (other.v == GenerationEnum::UNUSED)
+                        return std::strong_ordering::less;
+                    case EIGHT:
+                        switch (other.v)
                         {
-                            return true;
+                            case ONE:
+                            case TWO:
+                            case THREE:
+                            case FOUR:
+                            case FIVE:
+                            case SIX:
+                            case SEVEN:
+                            case LGPE:
+                                return std::strong_ordering::greater;
+                            case EIGHT:
+                                return std::strong_ordering::equal;
+                            case UNUSED:
+                                return std::strong_ordering::less;
                         }
-                        // falls through
-                    case GenerationEnum::UNUSED:
-                    default:
-                        return false;
+                        return std::strong_ordering::less;
+                    case UNUSED:
+                        return other.v == UNUSED ? std::strong_ordering::equal
+                                                 : std::strong_ordering::greater;
                 }
-            }
-            [[nodiscard]] constexpr bool operator>(const Generation_impl& other) const noexcept
-            {
-                if (*this == other)
-                {
-                    return false;
-                }
-                return !(*this < other);
-            }
-
-            [[nodiscard]] constexpr bool operator<=(const Generation_impl& other) const noexcept
-            {
-                return *this < other || *this == other;
-            }
-            [[nodiscard]] constexpr bool operator>=(const Generation_impl& other) const noexcept
-            {
-                return *this > other || *this == other;
-            }
-
-            [[nodiscard]] constexpr bool operator==(const Generation_impl& other) const noexcept
-            {
-                return v == other.v;
-            }
-            [[nodiscard]] constexpr bool operator!=(const Generation_impl& other) const noexcept
-            {
-                return v != other.v;
+                return v <=> other.v;
             }
         };
     }
@@ -213,17 +299,20 @@ namespace pksm
         {
         }
         template <std::integral T>
-        constexpr explicit operator T() const noexcept
+        [[nodiscard]] constexpr explicit operator T() const noexcept
         {
-            return T(impl);
+            return static_cast<T>(impl);
         }
-        constexpr operator EnumType() const noexcept { return static_cast<EnumType>(impl); }
+        [[nodiscard]] constexpr operator EnumType() const noexcept
+        {
+            return static_cast<EnumType>(impl);
+        }
 
-        constexpr explicit operator const char*() const noexcept
+        [[nodiscard]] constexpr explicit operator const char*() const noexcept
         {
             return static_cast<const char*>(impl);
         }
-        constexpr explicit operator std::string_view() const
+        [[nodiscard]] constexpr explicit operator std::string_view() const
         {
             return static_cast<std::string_view>(impl);
         }
@@ -231,6 +320,9 @@ namespace pksm
         {
             return static_cast<std::string>(impl);
         }
+
+        [[nodiscard]] constexpr std::strong_ordering operator<=>(
+            const Generation& other) const noexcept = default;
 
         [[nodiscard]] static constexpr Generation fromString(const std::string_view& str)
         {
@@ -271,66 +363,6 @@ namespace pksm
                 return Generation::EIGHT;
             }
             return Generation::UNUSED;
-        }
-
-        [[nodiscard]] constexpr bool operator<(const Generation& other) const noexcept
-        {
-            return impl < other.impl;
-        }
-        [[nodiscard]] constexpr bool operator<=(const Generation& other) const noexcept
-        {
-            return impl <= other.impl;
-        }
-
-        [[nodiscard]] constexpr bool operator>(const Generation& other) const noexcept
-        {
-            return impl > other.impl;
-        }
-        [[nodiscard]] constexpr bool operator>=(const Generation& other) const noexcept
-        {
-            return impl >= other.impl;
-        }
-
-        [[nodiscard]] constexpr bool operator==(const Generation& other) const noexcept
-        {
-            return impl == other.impl;
-        }
-        [[nodiscard]] constexpr bool operator!=(const Generation& other) const noexcept
-        {
-            return impl != other.impl;
-        }
-
-        [[nodiscard]] constexpr bool operator<(
-            const internal::Generation_impl& other) const noexcept
-        {
-            return impl < other;
-        }
-        [[nodiscard]] constexpr bool operator<=(
-            const internal::Generation_impl& other) const noexcept
-        {
-            return impl <= other;
-        }
-
-        [[nodiscard]] constexpr bool operator>(
-            const internal::Generation_impl& other) const noexcept
-        {
-            return impl > other;
-        }
-        [[nodiscard]] constexpr bool operator>=(
-            const internal::Generation_impl& other) const noexcept
-        {
-            return impl >= other;
-        }
-
-        [[nodiscard]] constexpr bool operator==(
-            const internal::Generation_impl& other) const noexcept
-        {
-            return impl == other;
-        }
-        [[nodiscard]] constexpr bool operator!=(
-            const internal::Generation_impl& other) const noexcept
-        {
-            return impl != other;
         }
 
         static constexpr internal::Generation_impl ONE{EnumType::ONE};

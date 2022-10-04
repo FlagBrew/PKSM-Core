@@ -29,6 +29,7 @@
 
 #include "enums/Language.hpp"
 #include "utils/coretypes.h"
+#include <compare>
 #include <concepts>
 #include <limits>
 #include <type_traits>
@@ -213,32 +214,8 @@ namespace pksm
             }
             constexpr operator RibbonEnum() const noexcept { return v; }
 
-            [[nodiscard]] constexpr bool operator<(const Ribbon_impl& other) const noexcept
-            {
-                return v < other.v;
-            }
-            [[nodiscard]] constexpr bool operator<=(const Ribbon_impl& other) const noexcept
-            {
-                return v <= other.v;
-            }
-
-            [[nodiscard]] constexpr bool operator>(const Ribbon_impl& other) const noexcept
-            {
-                return v > other.v;
-            }
-            [[nodiscard]] constexpr bool operator>=(const Ribbon_impl& other) const noexcept
-            {
-                return v >= other.v;
-            }
-
-            [[nodiscard]] constexpr bool operator==(const Ribbon_impl& other) const noexcept
-            {
-                return v == other.v;
-            }
-            [[nodiscard]] constexpr bool operator!=(const Ribbon_impl& other) const noexcept
-            {
-                return v != other.v;
-            }
+            [[nodiscard]] constexpr std::strong_ordering operator<=>(
+                const Ribbon_impl& other) const noexcept = default;
 
             [[nodiscard]] const std::string& localize(Language lang) const;
         };
@@ -263,59 +240,8 @@ namespace pksm
         }
         constexpr operator EnumType() const noexcept { return static_cast<EnumType>(impl); }
 
-        [[nodiscard]] constexpr bool operator<(const Ribbon& other) const noexcept
-        {
-            return impl < other.impl;
-        }
-        [[nodiscard]] constexpr bool operator<=(const Ribbon& other) const noexcept
-        {
-            return impl <= other.impl;
-        }
-
-        [[nodiscard]] constexpr bool operator>(const Ribbon& other) const noexcept
-        {
-            return impl > other.impl;
-        }
-        [[nodiscard]] constexpr bool operator>=(const Ribbon& other) const noexcept
-        {
-            return impl >= other.impl;
-        }
-
-        [[nodiscard]] constexpr bool operator==(const Ribbon& other) const noexcept
-        {
-            return impl == other.impl;
-        }
-        [[nodiscard]] constexpr bool operator!=(const Ribbon& other) const noexcept
-        {
-            return impl != other.impl;
-        }
-
-        [[nodiscard]] constexpr bool operator<(const internal::Ribbon_impl& other) const noexcept
-        {
-            return impl < other;
-        }
-        [[nodiscard]] constexpr bool operator<=(const internal::Ribbon_impl& other) const noexcept
-        {
-            return impl <= other;
-        }
-
-        [[nodiscard]] constexpr bool operator>(const internal::Ribbon_impl& other) const noexcept
-        {
-            return impl > other;
-        }
-        [[nodiscard]] constexpr bool operator>=(const internal::Ribbon_impl& other) const noexcept
-        {
-            return impl >= other;
-        }
-
-        [[nodiscard]] constexpr bool operator==(const internal::Ribbon_impl& other) const noexcept
-        {
-            return impl == other;
-        }
-        [[nodiscard]] constexpr bool operator!=(const internal::Ribbon_impl& other) const noexcept
-        {
-            return impl != other;
-        }
+        [[nodiscard]] constexpr std::strong_ordering operator<=>(
+            const Ribbon& other) const noexcept = default;
 
         [[nodiscard]] const std::string& localize(Language lang) const
         {
