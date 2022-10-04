@@ -160,7 +160,7 @@ namespace pksm
         // Can't use normal data constructor because of checksum encryption checks
         std::unique_ptr<PK3> ret =
             PKX::getPKM<Generation::THREE>(nullptr, isParty() ? PARTY_LENGTH : BOX_LENGTH);
-        std::copy(data, data + getLength(), ret->rawData());
+        std::copy(data, data + getLength(), ret->rawData().begin());
         return ret;
     }
 
@@ -633,7 +633,7 @@ namespace pksm
         if ((size_t)(u8(language()) - 1) < trashBytes.size())
         {
             auto& trash = trashBytes[u8(language()) - 1];
-            std::copy(trash.begin(), trash.end(), pk4->rawData() + 0x48 + 4);
+            std::copy(trash.begin(), trash.end(), pk4->rawData().begin() + 0x48 + 4);
         }
 
         std::string name = species().localize(language());
@@ -641,7 +641,8 @@ namespace pksm
         pk4->nicknamed(!egg() && nicknamed());
 
         // Copy nickname trash into OT name
-        std::copy(pk4->rawData() + 0x48, pk4->rawData() + 0x48 + 0x10, pk4->rawData() + 0x68);
+        std::copy(pk4->rawData().begin() + 0x48, pk4->rawData().begin() + 0x48 + 0x10,
+            pk4->rawData().begin() + 0x68);
         pk4->otName(otName());
 
         // I use 0 for invalid items

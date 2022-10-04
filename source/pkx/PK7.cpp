@@ -756,7 +756,7 @@ namespace pksm
         auto pk6 = PKX::getPKM<Generation::SIX>(const_cast<u8*>(data), PK6::BOX_LENGTH);
 
         // markvalue field moved, clear old gen 7 data
-        LittleEndian::convertFrom<u16>(pk6->rawData() + 0x16, 0);
+        LittleEndian::convertFrom<u16>(data + 0x16, 0);
 
         // marks get un-expanded from two bits to one.
         u16 oldMarks = markValue();

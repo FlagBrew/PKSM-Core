@@ -31,7 +31,7 @@
 
 namespace pksm
 {
-    SavBW::SavBW(std::shared_ptr<u8[]> dt) : Sav5(dt, 0x80000)
+    SavBW::SavBW(const std::shared_ptr<u8[]>& dt) : Sav5(dt, 0x80000)
     {
         game = Game::BW;
 
@@ -58,7 +58,7 @@ namespace pksm
 
         for (u8 i = 0; i < blockCount; i++)
         {
-            u16 cs = pksm::crypto::ccitt16(&data[blockOfs[i]], lengths[i]);
+            u16 cs = pksm::crypto::ccitt16({&data[blockOfs[i]], lengths[i]});
             LittleEndian::convertFrom<u16>(&data[chkMirror[i]], cs);
             LittleEndian::convertFrom<u16>(&data[chkofs[i]], cs);
         }

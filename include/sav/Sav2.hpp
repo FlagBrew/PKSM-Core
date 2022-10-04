@@ -56,12 +56,12 @@ namespace pksm
         [[nodiscard]] static u16 calculateChecksum(u8* start, const u8* end);
 
     public:
-        Sav2(std::shared_ptr<u8[]> data, u32 length,
+        Sav2(const std::shared_ptr<u8[]>& data, u32 length,
             std::tuple<GameVersion, Language, bool> versionAndLanguage);
 
         [[nodiscard]] static std::tuple<GameVersion, Language, bool> getVersion(
-            std::shared_ptr<u8[]> dt);
-        [[nodiscard]] static bool validList(std::shared_ptr<u8[]> dt, size_t ofs, u8 slot);
+            const std::shared_ptr<u8[]>& dt);
+        [[nodiscard]] static bool validList(const std::shared_ptr<u8[]>& dt, size_t ofs, u8 slot);
 
         void finishEditing(void) override;
         void beginEditing(void) override {}

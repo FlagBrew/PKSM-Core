@@ -55,10 +55,10 @@ namespace pksm::crypto
             0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2};
     }
 
-    std::array<u8, 32> sha256(const u8* buf, size_t len)
+    std::array<u8, 32> sha256(std::span<const u8> buf)
     {
         SHA256 context;
-        context.update(buf, len);
+        context.update(buf);
         return context.finish();
     }
 
@@ -104,9 +104,9 @@ namespace pksm::crypto
         state[7] += h;
     }
 
-    void SHA256::update(const u8* buf, size_t len)
+    void SHA256::update(std::span<const u8> buf)
     {
-        for (size_t i = 0; i < len; i++)
+        for (size_t i = 0; i < buf.size(); i++)
         {
             data[dataLength++] = buf[i];
             if (dataLength == 64)

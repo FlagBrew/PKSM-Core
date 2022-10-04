@@ -31,7 +31,7 @@
 
 namespace pksm
 {
-    SavB2W2::SavB2W2(std::shared_ptr<u8[]> dt) : Sav5(dt, 0x80000)
+    SavB2W2::SavB2W2(const std::shared_ptr<u8[]>& dt) : Sav5(dt, 0x80000)
     {
         game = Game::B2W2;
 
@@ -58,7 +58,7 @@ namespace pksm
 
         for (u8 i = 0; i < blockCount; i++)
         {
-            u16 cs = pksm::crypto::ccitt16(&data[blockOfs[i]], lengths[i]);
+            u16 cs = pksm::crypto::ccitt16({&data[blockOfs[i]], lengths[i]});
             LittleEndian::convertFrom<u16>(&data[chkMirror[i]], cs);
             LittleEndian::convertFrom<u16>(&data[chkofs[i]], cs);
         }
@@ -76,7 +76,7 @@ namespace pksm
             // header_size - 4);
             // pksm::crypto::pkm::crypt<size_to_checksum - 4>(data.get() + offset
             // + header_size, seed);
-            u16 crc = pksm::crypto::ccitt16(data.get() + offset + header_size, size_to_checksum);
+            u16 crc = pksm::crypto::ccitt16({data.get() + offset + header_size, size_to_checksum});
             LittleEndian::convertFrom<u16>(data.get() + offset + crc_offset_from_start, crc);
         }
         // Block 1 mirror
@@ -89,7 +89,7 @@ namespace pksm
             // header_size - 4);
             // pksm::crypto::pkm::crypt<size_to_checksum - 4>(data.get() + offset
             // + header_size, seed);
-            u16 crc = pksm::crypto::ccitt16(data.get() + offset + header_size, size_to_checksum);
+            u16 crc = pksm::crypto::ccitt16({data.get() + offset + header_size, size_to_checksum});
             LittleEndian::convertFrom<u16>(data.get() + offset + crc_offset_from_start, crc);
         }
         // Block 2
@@ -98,7 +98,7 @@ namespace pksm
             static constexpr u32 size_to_checksum      = 0x214;
             static constexpr u32 header_size           = 0xC;
             static constexpr u32 crc_offset_from_start = 0x8;
-            u16 crc = pksm::crypto::ccitt16(data.get() + offset + header_size, size_to_checksum);
+            u16 crc = pksm::crypto::ccitt16({data.get() + offset + header_size, size_to_checksum});
             LittleEndian::convertFrom<u16>(data.get() + offset + crc_offset_from_start, crc);
         }
     }

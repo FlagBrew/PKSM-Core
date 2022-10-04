@@ -41,7 +41,7 @@ namespace pksm
         [[nodiscard]] int dexFormIndex(int species, int formct) const;
 
     public:
-        Sav5(std::shared_ptr<u8[]> data, u32 length) : Sav(data, length) {}
+        Sav5(const std::shared_ptr<u8[]>& data, u32 length) : Sav(data, length) {}
         virtual void resign(void) = 0;
         void finishEditing(void) override { resign(); }
         void beginEditing(void) override {}

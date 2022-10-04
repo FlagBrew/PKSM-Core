@@ -181,7 +181,7 @@ constexpr void LittleEndian::convertFrom<DexEntry>(u8* data, const DexEntry& ent
 
 namespace pksm
 {
-    SavSWSH::SavSWSH(std::shared_ptr<u8[]> dt, size_t length) : Sav8(dt, length)
+    SavSWSH::SavSWSH(const std::shared_ptr<u8[]>& dt, size_t length) : Sav8(dt, length)
     {
         game = Game::SWSH;
 
@@ -526,8 +526,8 @@ namespace pksm
                 trade(*pk8);
             }
 
-            std::copy(pk8->rawData(), pk8->rawData() + pk8->getLength(),
-                getBlock(Box)->decryptedData() + boxOffset(box, slot));
+            std::ranges::copy(
+                pk8->rawData(), getBlock(Box)->decryptedData() + boxOffset(box, slot));
         }
     }
     void SavSWSH::pkm(const PKX& pk, u8 slot)
@@ -536,8 +536,7 @@ namespace pksm
         {
             auto pk8 = pk.partyClone();
             pk8->encrypt();
-            std::copy(pk8->rawData(), pk8->rawData() + pk8->getLength(),
-                getBlock(Party)->decryptedData() + partyOffset(slot));
+            std::ranges::copy(pk8->rawData(), getBlock(Party)->decryptedData() + partyOffset(slot));
         }
     }
 

@@ -48,7 +48,7 @@ namespace pksm
         static constexpr size_t SIZE_G8SWSH_3B = 0x187668; // 1.0 -> 1.2 -> 1.3
         static constexpr size_t SIZE_G8SWSH_3C = 0x18764A; // 1.0 -> 1.3
 
-        SavSWSH(std::shared_ptr<u8[]> dt, size_t length);
+        SavSWSH(const std::shared_ptr<u8[]>& dt, size_t length);
 
         [[nodiscard]] u16 TID(void) const override;
         void TID(u16 v) override;

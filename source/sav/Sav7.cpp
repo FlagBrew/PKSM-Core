@@ -124,7 +124,7 @@ namespace pksm
         {
             auto pk7 = pk.partyClone();
             pk7->encrypt();
-            std::copy(pk7->rawData(), pk7->rawData() + pk7->getLength(), &data[partyOffset(slot)]);
+            std::ranges::copy(pk7->rawData(), &data[partyOffset(slot)]);
         }
     }
 
@@ -143,8 +143,8 @@ namespace pksm
                 trade(*pkm);
             }
 
-            std::copy(
-                pkm->rawData(), pkm->rawData() + PK7::BOX_LENGTH, &data[boxOffset(box, slot)]);
+            std::ranges::copy(
+                pkm->rawData().subspan(0, PK7::BOX_LENGTH), &data[boxOffset(box, slot)]);
         }
     }
 

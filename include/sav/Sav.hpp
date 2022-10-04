@@ -79,10 +79,10 @@ namespace pksm
         const std::shared_ptr<u8[]> data;
         const u32 length;
         [[nodiscard]] static std::unique_ptr<Sav> checkGBType(
-            std::shared_ptr<u8[]> dt, size_t length);
-        [[nodiscard]] static std::unique_ptr<Sav> checkGBAType(std::shared_ptr<u8[]> dt);
-        [[nodiscard]] static std::unique_ptr<Sav> checkDSType(std::shared_ptr<u8[]> dt);
-        [[nodiscard]] static bool validSequence(std::shared_ptr<u8[]> dt, size_t offset);
+            const std::shared_ptr<u8[]>& dt, size_t length);
+        [[nodiscard]] static std::unique_ptr<Sav> checkGBAType(const std::shared_ptr<u8[]>& dt);
+        [[nodiscard]] static std::unique_ptr<Sav> checkDSType(const std::shared_ptr<u8[]>& dt);
+        [[nodiscard]] static bool validSequence(const std::shared_ptr<u8[]>& dt, size_t offset);
 
     public:
         enum class Pouch
@@ -115,7 +115,7 @@ namespace pksm
         };
 
         virtual ~Sav() = default;
-        Sav(std::shared_ptr<u8[]> data, u32 length) : data(data), length(length) {}
+        Sav(const std::shared_ptr<u8[]>& data, u32 length) : data(data), length(length) {}
         Sav(const Sav& save) = delete;
         Sav& operator=(const Sav& save) = delete;
         // Readies the save for serialization in signed/encrypted form
@@ -126,8 +126,9 @@ namespace pksm
 
         [[nodiscard]] BadTransferReason invalidTransferReason(const PKX& pk) const;
         [[nodiscard]] std::unique_ptr<PKX> transfer(const PKX& pk);
-        [[nodiscard]] static bool isValidDSSave(std::shared_ptr<u8[]> dt);
-        [[nodiscard]] static std::unique_ptr<Sav> getSave(std::shared_ptr<u8[]> dt, size_t length);
+        [[nodiscard]] static bool isValidDSSave(const std::shared_ptr<u8[]>& dt);
+        [[nodiscard]] static std::unique_ptr<Sav> getSave(
+            const std::shared_ptr<u8[]>& dt, size_t length);
 
         [[nodiscard]] virtual u16 TID(void) const             = 0;
         virtual void TID(u16 v)                               = 0;
@@ -234,7 +235,7 @@ namespace pksm
         [[nodiscard]] virtual std::map<Pouch, std::vector<int>> validItems(void) const = 0;
 
         [[nodiscard]] u32 getLength() const { return length; }
-        [[nodiscard]] std::shared_ptr<u8[]> rawData() const { return data; }
+        [[nodiscard]] const std::shared_ptr<u8[]>& rawData() const { return data; }
     };
 }
 

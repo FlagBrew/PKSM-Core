@@ -891,10 +891,10 @@ namespace pksm
         auto pk5 = PKX::getPKM<Generation::FIVE>(const_cast<u8*>(data), PK5::BOX_LENGTH);
 
         // Clear HGSS data
-        LittleEndian::convertFrom<u16>(pk5->rawData() + 0x86, 0);
+        LittleEndian::convertFrom<u16>(data + 0x86, 0);
 
         // Clear PtHGSS met data
-        LittleEndian::convertFrom<u32>(pk5->rawData() + 0x44, 0);
+        LittleEndian::convertFrom<u32>(data + 0x44, 0);
 
         pk5->otFriendship(70);
         pk5->metDate(Date::today());

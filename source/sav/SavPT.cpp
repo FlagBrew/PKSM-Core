@@ -29,7 +29,7 @@
 
 namespace pksm
 {
-    SavPT::SavPT(std::shared_ptr<u8[]> dt) : Sav4(dt, 0x80000)
+    SavPT::SavPT(const std::shared_ptr<u8[]>& dt) : Sav4(dt, 0x80000)
     {
         game = Game::Pt;
 

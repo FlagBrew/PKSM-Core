@@ -30,7 +30,7 @@
 
 namespace pksm
 {
-    Sav8::Sav8(std::shared_ptr<u8[]> dt, size_t length) : Sav(dt, length)
+    Sav8::Sav8(const std::shared_ptr<u8[]>& dt, size_t length) : Sav(dt, length)
     {
         pksm::crypto::swsh::applyXor(dt, length);
         blocks = pksm::crypto::swsh::getBlockList(dt, length);

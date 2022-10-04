@@ -74,7 +74,7 @@ namespace pksm
         int dexFormCount(int species) const override;
 
     public:
-        explicit SavUSUM(std::shared_ptr<u8[]> dt);
+        explicit SavUSUM(const std::shared_ptr<u8[]>& dt);
 
         void resign(void) override;
 

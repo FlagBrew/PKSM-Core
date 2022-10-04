@@ -29,7 +29,7 @@
 
 namespace pksm
 {
-    SavDP::SavDP(std::shared_ptr<u8[]> dt) : Sav4(dt, 0x80000)
+    SavDP::SavDP(const std::shared_ptr<u8[]>& dt) : Sav4(dt, 0x80000)
     {
         game = Game::DP;
 

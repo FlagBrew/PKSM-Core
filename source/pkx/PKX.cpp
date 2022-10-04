@@ -691,7 +691,7 @@ namespace pksm
                     partylen = 0;
             }
             auto ret = PKX::getPKM(generation(), nullptr, partylen);
-            std::copy(data, data + getLength(), ret->rawData());
+            std::copy(data, data + getLength(), ret->rawData().data());
             ret->updatePartyData();
             return ret;
         }

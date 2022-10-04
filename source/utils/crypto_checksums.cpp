@@ -56,10 +56,10 @@ namespace pksm::crypto
             0x4C80, 0x8C41, 0x4400, 0x84C1, 0x8581, 0x4540, 0x8701, 0x47C0, 0x4680, 0x8641, 0x8201,
             0x42C0, 0x4380, 0x8341, 0x4100, 0x81C1, 0x8081, 0x4040};
 
-        u16 crc16(const u8* buf, size_t len, u16 initial)
+        u16 crc16(std::span<const u8> buf, u16 initial)
         {
             u16 chk = initial;
-            for (u32 i = 0; i < len; i++)
+            for (u32 i = 0; i < buf.size(); i++)
             {
                 chk = (crc16_table[(buf[i] ^ chk) & 0xFF] ^ chk >> 8);
             }
@@ -67,10 +67,10 @@ namespace pksm::crypto
         }
     }
 
-    u16 ccitt16(const u8* buf, size_t len)
+    u16 ccitt16(std::span<const u8> buf)
     {
         u16 crc = 0xFFFF;
-        for (u32 i = 0; i < len; i++)
+        for (u32 i = 0; i < buf.size(); i++)
         {
             crc ^= buf[i] << 8;
             for (u32 j = 0; j < 0x8; j++)
@@ -84,32 +84,32 @@ namespace pksm::crypto
         return crc;
     }
 
-    u16 crc16(const u8* buf, size_t len) { return ~internal::crc16(buf, len, 0xFFFF); }
-    u16 crc16_noinvert(const u8* buf, size_t len) { return internal::crc16(buf, len, 0); }
+    u16 crc16(std::span<const u8> buf) { return ~internal::crc16(buf, 0xFFFF); }
+    u16 crc16_noinvert(std::span<const u8> buf) { return internal::crc16(buf, 0); }
 
-    u8 diff8(const u8* buf, size_t len)
+    u8 diff8(std::span<const u8> buf)
     {
         u8 val = 255;
-        for (size_t i = 0; i < len; i++)
+        for (size_t i = 0; i < buf.size(); i++)
             val -= buf[i];
         return val;
     }
 
-    u16 bytewiseSum16(const u8* buf, size_t len)
+    u16 bytewiseSum16(std::span<const u8> buf)
     {
         u16 val = 0;
-        for (size_t i = 0; i < len; i++)
+        for (size_t i = 0; i < buf.size(); i++)
         {
             val += buf[i];
         }
         return val;
     }
 
-    u32 sum32(const u8* buf, size_t len)
+    u32 sum32(std::span<const u8> buf)
     {
         u32 val = 0;
-        for (size_t i = 0; i < len; i += 4)
-            val += LittleEndian::convertTo<u32>(buf + i);
+        for (size_t i = 0; i < buf.size(); i += 4)
+            val += LittleEndian::convertTo<u32>(buf.data() + i);
         return val;
     }
 }

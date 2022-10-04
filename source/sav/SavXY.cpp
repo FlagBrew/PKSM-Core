@@ -31,7 +31,7 @@
 
 namespace pksm
 {
-    SavXY::SavXY(std::shared_ptr<u8[]> dt) : Sav6(dt, 0x65600)
+    SavXY::SavXY(const std::shared_ptr<u8[]>& dt) : Sav6(dt, 0x65600)
     {
         game = Game::XY;
 
@@ -62,7 +62,7 @@ namespace pksm
         for (u8 i = 0; i < blockCount; i++)
         {
             LittleEndian::convertFrom<u16>(
-                &data[csoff + i * 8], pksm::crypto::ccitt16(&data[chkofs[i]], chklen[i]));
+                &data[csoff + i * 8], pksm::crypto::ccitt16({&data[chkofs[i]], chklen[i]}));
         }
     }
 

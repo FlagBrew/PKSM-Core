@@ -42,7 +42,7 @@ namespace pksm
 
         void initialize();
 
-        [[nodiscard]] static u16 calculateChecksum(const u8* data, size_t len);
+        [[nodiscard]] static u16 calculateChecksum(std::span<const u8> data);
 
         static constexpr int BLOCK_COUNT = 14;
         static constexpr int SIZE_RESERVED =
@@ -54,8 +54,8 @@ namespace pksm
 
         void loadBlocks();
         [[nodiscard]] static std::array<int, BLOCK_COUNT> getBlockOrder(
-            std::shared_ptr<u8[]> dt, int ofs);
-        [[nodiscard]] static int getActiveSaveIndex(std::shared_ptr<u8[]> dt,
+            const std::shared_ptr<u8[]>& dt, int ofs);
+        [[nodiscard]] static int getActiveSaveIndex(const std::shared_ptr<u8[]>& dt,
             std::array<int, BLOCK_COUNT>& blockOrder1, std::array<int, BLOCK_COUNT>& blockOrder2);
 
         static constexpr u16 chunkLength[BLOCK_COUNT] = {
@@ -96,11 +96,11 @@ namespace pksm
         [[nodiscard]] bool getSeen(Species species) const;
         void setSeen(Species species, bool seen);
 
-        Sav3(std::shared_ptr<u8[]> data, const std::vector<int>& seenFlagOffsets);
+        Sav3(const std::shared_ptr<u8[]>& data, const std::vector<int>& seenFlagOffsets);
 
     public:
         static constexpr int SIZE_BLOCK = 0x1000;
-        [[nodiscard]] static Game getVersion(std::shared_ptr<u8[]> dt);
+        [[nodiscard]] static Game getVersion(const std::shared_ptr<u8[]>& dt);
 
         void resign(void);
         void finishEditing(void) override { resign(); }

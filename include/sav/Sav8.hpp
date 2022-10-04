@@ -43,7 +43,7 @@ namespace pksm
         bool encrypted = false;
 
     public:
-        Sav8(std::shared_ptr<u8[]> dt, size_t length);
+        Sav8(const std::shared_ptr<u8[]>& dt, size_t length);
 
         [[nodiscard]] std::shared_ptr<pksm::crypto::swsh::SCBlock> getBlock(u32 key) const;
 

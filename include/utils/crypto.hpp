@@ -30,18 +30,19 @@
 #include "utils/coretypes.h"
 #include <array>
 #include <memory>
+#include <span>
 #include <string>
 #include <vector>
 
 namespace pksm::crypto
 {
-    [[nodiscard]] u16 ccitt16(const u8* buf, size_t len);
-    [[nodiscard]] u16 crc16(const u8* buf, size_t len);
-    [[nodiscard]] u16 crc16_noinvert(const u8* buf, size_t len);
-    [[nodiscard]] u8 diff8(const u8* buf, size_t len);
-    [[nodiscard]] u16 bytewiseSum16(const u8* buf, size_t len);
+    [[nodiscard]] u16 ccitt16(std::span<const u8> data);
+    [[nodiscard]] u16 crc16(std::span<const u8> data);
+    [[nodiscard]] u16 crc16_noinvert(std::span<const u8> data);
+    [[nodiscard]] u8 diff8(std::span<const u8> data);
+    [[nodiscard]] u16 bytewiseSum16(std::span<const u8> data);
     // Length must be a multiple of 4
-    [[nodiscard]] u32 sum32(const u8* buf, size_t len);
+    [[nodiscard]] u32 sum32(std::span<const u8> data);
 
     // This SHA256 implementation is Brad Conte's. It has been modified to have a C++-style
     // interface.
@@ -65,10 +66,10 @@ namespace pksm::crypto
             state      = {0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c,
                 0x1f83d9ab, 0x5be0cd19};
         }
-        void update(const u8* data, size_t len);
+        void update(std::span<const u8> buf);
         [[nodiscard]] std::array<u8, 32> finish();
     };
-    [[nodiscard]] std::array<u8, 32> sha256(const u8* buf, size_t len);
+    [[nodiscard]] std::array<u8, 32> sha256(std::span<const u8> data);
 
     namespace swsh
     {
@@ -186,10 +187,10 @@ namespace pksm::crypto
             }
         }
 
-        // NOTE: Use the templated version wherever possible. Compile-time constants are preferred
-        constexpr void crypt(u8* data, u32 key, size_t size)
+        [[deprecated("Use the templated version wherever possible")]] constexpr void crypt(
+            std::span<u8> data, u32 key)
         {
-            for (size_t i = 0; i < size; i += 2)
+            for (size_t i = 0; i < data.size(); i += 2)
             {
                 key = seedStep(key);
                 data[i] ^= (key >> 16);

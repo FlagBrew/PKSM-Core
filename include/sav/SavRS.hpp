@@ -34,7 +34,7 @@ namespace pksm
     class SavRS : public Sav3
     {
     public:
-        explicit SavRS(std::shared_ptr<u8[]> dt);
+        explicit SavRS(const std::shared_ptr<u8[]>& dt);
 
         [[nodiscard]] std::map<Pouch, std::vector<int>> validItems(void) const override;
         [[nodiscard]] std::map<Pouch, std::vector<int>> validItems3(void) const override;

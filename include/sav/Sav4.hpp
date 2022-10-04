@@ -61,7 +61,7 @@ namespace pksm
         [[nodiscard]] static CountType compareCounters(u32 c1, u32 c2);
 
     public:
-        Sav4(std::shared_ptr<u8[]> data, u32 length) : Sav(data, length) {}
+        Sav4(const std::shared_ptr<u8[]>& data, u32 length) : Sav(data, length) {}
         void resign(void);
         void finishEditing(void) override { resign(); }
         void beginEditing(void) override {}

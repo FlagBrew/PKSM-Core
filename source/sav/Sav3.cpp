@@ -55,7 +55,7 @@ namespace pksm
         }
     }
 
-    std::array<int, Sav3::BLOCK_COUNT> Sav3::getBlockOrder(std::shared_ptr<u8[]> dt, int ofs)
+    std::array<int, Sav3::BLOCK_COUNT> Sav3::getBlockOrder(const std::shared_ptr<u8[]>& dt, int ofs)
     {
         std::array<int, BLOCK_COUNT> order;
         for (int i = 0; i < BLOCK_COUNT; i++)
@@ -63,7 +63,7 @@ namespace pksm
         return order;
     }
 
-    int Sav3::getActiveSaveIndex(std::shared_ptr<u8[]> dt,
+    int Sav3::getActiveSaveIndex(const std::shared_ptr<u8[]>& dt,
         std::array<int, BLOCK_COUNT>& blockOrder1, std::array<int, BLOCK_COUNT>& blockOrder2)
     {
         int zeroBlock1 = std::find(blockOrder1.begin(), blockOrder1.end(), 0) - blockOrder1.begin();
@@ -77,7 +77,7 @@ namespace pksm
         return count1 > count2 ? 0 : 1;
     }
 
-    Sav::Game Sav3::getVersion(std::shared_ptr<u8[]> dt)
+    Sav::Game Sav3::getVersion(const std::shared_ptr<u8[]>& dt)
     {
         // Get block 0 offset
         std::array<int, BLOCK_COUNT> o1     = getBlockOrder(dt, 0);
@@ -111,7 +111,7 @@ namespace pksm
         }
     }
 
-    Sav3::Sav3(std::shared_ptr<u8[]> dt, const std::vector<int>& flagOffsets)
+    Sav3::Sav3(const std::shared_ptr<u8[]>& dt, const std::vector<int>& flagOffsets)
         : Sav(dt, 0x20000), seenFlagOffsets(flagOffsets)
     {
         loadBlocks();
@@ -144,9 +144,9 @@ namespace pksm
         seenFlagOffsets = seenFlagOffsetsTemp;
     }
 
-    u16 Sav3::calculateChecksum(const u8* data, size_t len)
+    u16 Sav3::calculateChecksum(std::span<const u8> data)
     {
-        u32 sum = pksm::crypto::sum32(data, len);
+        u32 sum = pksm::crypto::sum32(data);
         return sum + (sum >> 16);
     }
 
@@ -159,17 +159,17 @@ namespace pksm
             if (index == -1)
                 continue;
             int len = chunkLength[index];
-            u16 chk = calculateChecksum(&data[ofs], len);
+            u16 chk = calculateChecksum({&data[ofs], len});
             LittleEndian::convertFrom<u16>(&data[ofs + 0xFF6], chk);
         }
 
         // Hall of Fame Checksums
         {
-            u16 chk = calculateChecksum(&data[0x1C000], SIZE_BLOCK_USED);
+            u16 chk = calculateChecksum({&data[0x1C000], SIZE_BLOCK_USED});
             LittleEndian::convertFrom<u16>(&data[0x1CFF4], chk);
         }
         {
-            u16 chk = calculateChecksum(&data[0x1D000], SIZE_BLOCK_USED);
+            u16 chk = calculateChecksum({&data[0x1D000], SIZE_BLOCK_USED});
             LittleEndian::convertFrom<u16>(&data[0x1DFF4], chk);
         }
     }
@@ -385,7 +385,7 @@ namespace pksm
         {
             auto pk3 = pk.partyClone();
             pk3->encrypt();
-            std::copy(pk3->rawData(), pk3->rawData() + PK3::PARTY_LENGTH, &data[partyOffset(slot)]);
+            std::ranges::copy(pk3->rawData(), &data[partyOffset(slot)]);
         }
     }
     void Sav3::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)
@@ -404,14 +404,14 @@ namespace pksm
             {
                 // Copy into the correct positions if so
                 u32 firstSize = 0xF80 - (offset % 0x1000);
-                std::copy(pk3->rawData(), pk3->rawData() + firstSize, &data[offset]);
+                std::ranges::copy(pk3->rawData().subspan(0, firstSize), &data[offset]);
                 u32 nextOffset = boxOffset(box + (slot + 1) / 30, (slot + 1) % 30);
-                std::copy(pk3->rawData() + firstSize, pk3->rawData() + PK3::BOX_LENGTH,
+                std::ranges::copy(pk3->rawData().subspan(firstSize, PK3::BOX_LENGTH - firstSize),
                     &data[nextOffset & 0xFFFFF000]);
             }
             else
             {
-                std::copy(pk3->rawData(), pk3->rawData() + PK3::BOX_LENGTH, &data[offset]);
+                std::ranges::copy(pk3->rawData(), &data[offset]);
             }
         }
     }

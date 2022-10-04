@@ -149,8 +149,8 @@ namespace pksm
 
         [[nodiscard]] virtual std::string_view extension(void) const = 0;
 
-        [[nodiscard]] u8* rawData(void) { return data; }
-        [[nodiscard]] const u8* rawData(void) const { return data; }
+        [[nodiscard]] std::span<u8> rawData(void) { return {data, length}; }
+        [[nodiscard]] std::span<const u8> rawData(void) const { return {data, length}; }
         [[nodiscard]] u32 getLength(void) const { return length; }
         [[nodiscard]] virtual bool isParty(void) const = 0;
 

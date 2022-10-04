@@ -73,7 +73,7 @@ namespace pksm
             0x23F9A};
 
     public:
-        explicit SavBW(std::shared_ptr<u8[]> dt);
+        explicit SavBW(const std::shared_ptr<u8[]>& dt);
 
         void resign(void) override;
 

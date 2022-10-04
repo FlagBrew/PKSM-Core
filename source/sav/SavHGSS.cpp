@@ -29,7 +29,7 @@
 
 namespace pksm
 {
-    SavHGSS::SavHGSS(std::shared_ptr<u8[]> dt) : Sav4(dt, 0x80000)
+    SavHGSS::SavHGSS(const std::shared_ptr<u8[]>& dt) : Sav4(dt, 0x80000)
     {
         game = Game::HGSS;
 

@@ -28,7 +28,7 @@
 
 namespace pksm
 {
-    SavRS::SavRS(std::shared_ptr<u8[]> dt) : Sav3(dt, {0x44, 0x938, 0xC0C})
+    SavRS::SavRS(const std::shared_ptr<u8[]>& dt) : Sav3(dt, {0x44, 0x938, 0xC0C})
     {
         game = Game::RS;
 

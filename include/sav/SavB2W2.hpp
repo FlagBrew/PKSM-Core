@@ -74,7 +74,7 @@ namespace pksm
             0x25F8A, 0x25F8C, 0x25F8E, 0x25F90, 0x25FA2};
 
     public:
-        explicit SavB2W2(std::shared_ptr<u8[]> dt);
+        explicit SavB2W2(const std::shared_ptr<u8[]>& dt);
 
         void resign(void) override;
 

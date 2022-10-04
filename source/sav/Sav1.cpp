@@ -39,7 +39,7 @@
 
 namespace pksm
 {
-    Sav1::Sav1(std::shared_ptr<u8[]> data, u32 length) : Sav(data, length)
+    Sav1::Sav1(const std::shared_ptr<u8[]>& data, u32 length) : Sav(data, length)
     {
         // checks if two boxes are valid
         japanese = ((data[0x2ED5] <= 30) && (data[0x2ED5 + 1 + data[0x2ED5]] == 0xFF)) &&
@@ -68,7 +68,7 @@ namespace pksm
         OFS_BANK2_BOX_SUMS = 0x4000 + bankBoxesSize;
         OFS_BANK3_BOX_SUMS = 0x6000 + bankBoxesSize;
     }
-    Sav::Game Sav1::getVersion(std::shared_ptr<u8[]> dt)
+    Sav::Game Sav1::getVersion(const std::shared_ptr<u8[]>& dt)
     {
         // for now it doesn't matter, the only difference is Pikachu's friendship and Pikachu surf
         // score
@@ -130,19 +130,19 @@ namespace pksm
             if (box < (maxBoxes() / 2))
             {
                 data[OFS_BANK2_BOX_SUMS + 1 + box] =
-                    crypto::diff8(&data[boxDataStart(box)], boxSize);
+                    crypto::diff8({&data[boxDataStart(box)], boxSize});
             }
             else
             {
                 data[OFS_BANK3_BOX_SUMS + 1 + (box - (maxBoxes() / 2))] =
-                    crypto::diff8(&data[boxDataStart(box)], boxSize);
+                    crypto::diff8({&data[boxDataStart(box)], boxSize});
             }
         }
         std::copy(&data[boxStart(currentBox())], &data[boxStart(currentBox())] + boxSize,
             &data[OFS_CURRENT_BOX]);
-        data[OFS_MAIN_DATA_SUM]  = crypto::diff8(&data[0x2598], mainDataLength);
-        data[OFS_BANK2_BOX_SUMS] = crypto::diff8(&data[0x4000], bankBoxesSize);
-        data[OFS_BANK3_BOX_SUMS] = crypto::diff8(&data[0x6000], bankBoxesSize);
+        data[OFS_MAIN_DATA_SUM]  = crypto::diff8({&data[0x2598], mainDataLength});
+        data[OFS_BANK2_BOX_SUMS] = crypto::diff8({&data[0x4000], bankBoxesSize});
+        data[OFS_BANK3_BOX_SUMS] = crypto::diff8({&data[0x6000], bankBoxesSize});
     }
     u16 Sav1::TID() const { return BigEndian::convertTo<u16>(&data[OFS_TID]); }
     void Sav1::TID(u16 v) { BigEndian::convertFrom<u16>(&data[OFS_TID], v); }
@@ -280,8 +280,8 @@ namespace pksm
         {
             auto pk1 = pk.partyClone();
 
-            std::copy(pk1->rawData() + 3, pk1->rawData() + 3 + PK1::PARTY_LENGTH,
-                &data[partyOffset(slot)]);
+            std::ranges::copy(
+                pk1->rawData().subspan(3, PK1::PARTY_LENGTH), &data[partyOffset(slot)]);
 
             if ((pk.language() == Language::JPN) != (language() == Language::JPN))
             {
@@ -303,11 +303,10 @@ namespace pksm
             }
             else
             {
-                std::copy(pk1->rawData() + 3 + PK1::PARTY_LENGTH,
-                    pk1->rawData() + 3 + PK1::PARTY_LENGTH + nameLength(),
+                std::ranges::copy(pk1->rawData().subspan(3 + PK1::PARTY_LENGTH, nameLength()),
                     &data[partyOtNameOffset(slot)]);
-                std::copy(pk1->rawData() + 3 + PK1::PARTY_LENGTH + nameLength(),
-                    pk1->rawData() + 3 + PK1::PARTY_LENGTH + 2 * nameLength(),
+                std::ranges::copy(
+                    pk1->rawData().subspan(3 + PK1::PARTY_LENGTH + nameLength(), nameLength()),
                     &data[partyNicknameOffset(slot)]);
             }
         }
@@ -327,8 +326,8 @@ namespace pksm
             }
             static_cast<PK1*>(pk1.get())->boxLevel(pk1->level());
 
-            std::copy(pk1->rawData() + 3, pk1->rawData() + 3 + PK1::BOX_LENGTH,
-                &data[boxOffset(box, slot)]);
+            std::ranges::copy(
+                pk1->rawData().subspan(3, PK1::BOX_LENGTH), &data[boxOffset(box, slot)]);
 
             if ((pk.language() == Language::JPN) != (language() == Language::JPN))
             {
@@ -350,11 +349,10 @@ namespace pksm
             }
             else
             {
-                std::copy(pk1->rawData() + 3 + PK1::PARTY_LENGTH,
-                    pk1->rawData() + 3 + PK1::PARTY_LENGTH + nameLength(),
+                std::ranges::copy(pk1->rawData().subspan(3 + PK1::PARTY_LENGTH, nameLength()),
                     &data[boxOtNameOffset(box, slot)]);
-                std::copy(pk1->rawData() + 3 + PK1::PARTY_LENGTH + nameLength(),
-                    pk1->rawData() + 3 + PK1::PARTY_LENGTH + 2 * nameLength(),
+                std::ranges::copy(
+                    pk1->rawData().subspan(3 + PK1::PARTY_LENGTH + nameLength(), nameLength()),
                     &data[boxNicknameOffset(box, slot)]);
             }
         }

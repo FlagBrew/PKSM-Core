@@ -40,7 +40,7 @@
 namespace pksm
 {
     // the language class and version necessarily need to be found, may as well use them
-    Sav2::Sav2(std::shared_ptr<u8[]> data, u32 length,
+    Sav2::Sav2(const std::shared_ptr<u8[]>& data, u32 length,
         std::tuple<GameVersion, Language, bool> versionAndLanguage)
         : Sav(data, length)
     {
@@ -173,7 +173,7 @@ namespace pksm
             lang = StringUtils::guessLanguage12(otName());
     }
 
-    std::tuple<GameVersion, Language, bool> Sav2::getVersion(std::shared_ptr<u8[]> dt)
+    std::tuple<GameVersion, Language, bool> Sav2::getVersion(const std::shared_ptr<u8[]>& dt)
     {
         GameVersion returnVersion = GameVersion::INVALID;
         Language returnLanguage   = Language::None;
@@ -217,7 +217,7 @@ namespace pksm
         return {returnVersion, returnLanguage, saveFound};
     }
 
-    bool Sav2::validList(std::shared_ptr<u8[]> dt, size_t ofs, u8 slot)
+    bool Sav2::validList(const std::shared_ptr<u8[]>& dt, size_t ofs, u8 slot)
     {
         return (dt[ofs] <= 30) && (dt[ofs + 1 + dt[ofs]] == 0xFF);
     }
@@ -270,7 +270,7 @@ namespace pksm
         // no, i don't know why only the checksum is little-endian. also idk why PKHeX destroys the
         // checksum for the secondary data copy
         u16 checksum =
-            crypto::bytewiseSum16(&data[OFS_TID], &data[OFS_CHECKSUM_END] - &data[OFS_TID] + 1);
+            crypto::bytewiseSum16({&data[OFS_TID], &data[OFS_CHECKSUM_END] - &data[OFS_TID] + 1});
         LittleEndian::convertFrom<u16>(&data[OFS_CHECKSUM_ONE], checksum);
         LittleEndian::convertFrom<u16>(&data[OFS_CHECKSUM_TWO], checksum);
     }
@@ -475,8 +475,8 @@ namespace pksm
         {
             auto pk2 = pk.partyClone();
 
-            std::copy(pk2->rawData() + 3, pk2->rawData() + 3 + PK2::PARTY_LENGTH,
-                &data[partyOffset(slot)]);
+            std::ranges::copy(
+                pk2->rawData().subspan(3, PK2::PARTY_LENGTH), &data[partyOffset(slot)]);
 
             // korean has a page for INT characters
             if (((language() == Language::JPN) != (pk2->language() == Language::JPN)) ||
@@ -500,11 +500,10 @@ namespace pksm
             }
             else
             {
-                std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH,
-                    pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(),
+                std::ranges::copy(pk2->rawData().subspan(3 + PK2::PARTY_LENGTH, nameLength()),
                     &data[partyOtNameOffset(slot)]);
-                std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(),
-                    pk2->rawData() + 3 + PK2::PARTY_LENGTH + 2 * nameLength(),
+                std::ranges::copy(
+                    pk2->rawData().subspan(3 + PK2::PARTY_LENGTH + nameLength(), nameLength()),
                     &data[partyNicknameOffset(slot)]);
             }
 
@@ -525,8 +524,8 @@ namespace pksm
                 trade(*pk2);
             }
 
-            std::copy(pk2->rawData() + 3, pk2->rawData() + 3 + PK2::BOX_LENGTH,
-                &data[boxOffset(box, slot)]);
+            std::ranges::copy(
+                pk2->rawData().subspan(3, PK2::BOX_LENGTH), &data[boxOffset(box, slot)]);
 
             if (((language() == Language::JPN) != (pk2->language() == Language::JPN)) ||
                 ((pk2->language() == Language::KOR) && (language() != Language::KOR)))
@@ -549,11 +548,10 @@ namespace pksm
             }
             else
             {
-                std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH,
-                    pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(),
+                std::ranges::copy(pk2->rawData().subspan(3 + PK2::PARTY_LENGTH, nameLength()),
                     &data[boxOtNameOffset(box, slot)]);
-                std::copy(pk2->rawData() + 3 + PK2::PARTY_LENGTH + nameLength(),
-                    pk2->rawData() + 3 + PK2::PARTY_LENGTH + 2 * nameLength(),
+                std::ranges::copy(
+                    pk2->rawData().subspan(3 + PK2::PARTY_LENGTH + nameLength(), nameLength()),
                     &data[boxNicknameOffset(box, slot)]);
             }
 

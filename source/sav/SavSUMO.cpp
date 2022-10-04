@@ -32,7 +32,7 @@
 
 namespace pksm
 {
-    SavSUMO::SavSUMO(std::shared_ptr<u8[]> dt) : Sav7(dt, 0x6BE00)
+    SavSUMO::SavSUMO(const std::shared_ptr<u8[]>& dt) : Sav7(dt, 0x6BE00)
     {
         game = Game::SM;
 
@@ -68,14 +68,14 @@ namespace pksm
                 std::fill_n(&data[chkofs[i] + 0x100], 0x80, 0);
             }
             LittleEndian::convertFrom<u16>(
-                &data[csoff + i * 8], pksm::crypto::crc16(&data[chkofs[i]], chklen[i]));
+                &data[csoff + i * 8], pksm::crypto::crc16({&data[chkofs[i]], chklen[i]}));
         }
 
         static constexpr u32 checksumTableOffset = 0x6BC00;
         static constexpr u32 checksumTableLength = 0x140;
         static constexpr u32 memecryptoOffset    = 0x6BB00;
 
-        auto hash = crypto::sha256(&data[checksumTableOffset], checksumTableLength);
+        auto hash = crypto::sha256({&data[checksumTableOffset], checksumTableLength});
 
         u8 decryptedSignature[0x80];
         reverseCrypt(&data[memecryptoOffset], decryptedSignature);

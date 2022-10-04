@@ -49,7 +49,7 @@ namespace
 
 namespace pksm
 {
-    SavLGPE::SavLGPE(std::shared_ptr<u8[]> dt, size_t length) : Sav(dt, length)
+    SavLGPE::SavLGPE(const std::shared_ptr<u8[]>& dt, size_t length) : Sav(dt, length)
     {
         game    = Game::LGPE;
         PokeDex = 0x2A00;
@@ -161,7 +161,7 @@ namespace pksm
         for (u8 i = 0; i < blockCount; i++)
         {
             LittleEndian::convertFrom<u16>(
-                &data[csoff + i * 8], pksm::crypto::crc16_noinvert(&data[chkofs[i]], chklen[i]));
+                &data[csoff + i * 8], pksm::crypto::crc16_noinvert({&data[chkofs[i]], chklen[i]}));
         }
     }
 
@@ -258,8 +258,8 @@ namespace pksm
                 trade(*pb7);
             }
 
-            std::copy(
-                pb7->rawData(), pb7->rawData() + PB7::PARTY_LENGTH, &data[boxOffset(box, slot)]);
+            std::ranges::copy(
+                pb7->rawData().subspan(0, PB7::PARTY_LENGTH), &data[boxOffset(box, slot)]);
         }
     }
 
@@ -296,7 +296,7 @@ namespace pksm
             }
 
             auto pb7 = pk.partyClone();
-            std::copy(pb7->rawData(), pb7->rawData() + PB7::PARTY_LENGTH, &data[off]);
+            std::ranges::copy(pb7->rawData().subspan(0, PB7::PARTY_LENGTH), &data[off]);
             partyBoxSlot(slot, newSlot);
         }
     }

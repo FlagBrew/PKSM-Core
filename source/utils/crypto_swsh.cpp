@@ -62,9 +62,9 @@ namespace pksm::crypto::swsh
         std::array<u8, 32> computeHash(u8* data, size_t length)
         {
             SHA256 context;
-            context.update(internal::hashBegin.data(), hashBegin.size());
-            context.update(data, length);
-            context.update(internal::hashEnd.data(), hashEnd.size());
+            context.update({internal::hashBegin});
+            context.update(std::span{data, length});
+            context.update({internal::hashEnd});
             return context.finish();
         }
 

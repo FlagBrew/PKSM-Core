@@ -51,7 +51,7 @@ namespace pksm
             0x00C84, 0x00628, 0x34AD0, 0x0E058};
 
     public:
-        explicit SavXY(std::shared_ptr<u8[]> dt);
+        explicit SavXY(const std::shared_ptr<u8[]>& dt);
 
         void resign(void) override;
 
