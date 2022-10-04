@@ -67,6 +67,8 @@ namespace pksm
 
         OFS_BANK2_BOX_SUMS = 0x4000 + bankBoxesSize;
         OFS_BANK3_BOX_SUMS = 0x6000 + bankBoxesSize;
+
+        originalCurrentBox = currentBox();
     }
     Sav::Game Sav1::getVersion(const std::shared_ptr<u8[]>& dt)
     {
@@ -107,7 +109,7 @@ namespace pksm
                     j      = maxPkmInBox; // reset loop
                 }
             }
-            boxSpecies(i);
+            fixBox(i);
         }
     }
 
@@ -123,26 +125,32 @@ namespace pksm
             data[OFS_HOURS + 1] = 0;
         }
         fixBoxes();
-        partySpecies();
+        fixParty();
         fixItemLists();
+        if (currentBox() != originalCurrentBox) {
+            std::copy(&data[OFS_CURRENT_BOX], &data[OFS_CURRENT_BOX] + boxSize,
+                &data[boxStart(originalCurrentBox, false)]);
+            std::copy(&data[boxStart(currentBox())], &data[boxStart(currentBox())] + boxSize,
+                &data[OFS_CURRENT_BOX]);
+        }
         for (int box = 0; box < maxBoxes(); box++)
         {
             if (box < (maxBoxes() / 2))
             {
                 data[OFS_BANK2_BOX_SUMS + 1 + box] =
-                    crypto::diff8({&data[boxDataStart(box)], boxSize});
+                    crypto::diff8({&data[boxDataStart(box, false)], boxSize});
             }
             else
             {
                 data[OFS_BANK3_BOX_SUMS + 1 + (box - (maxBoxes() / 2))] =
-                    crypto::diff8({&data[boxDataStart(box)], boxSize});
+                    crypto::diff8({&data[boxDataStart(box, false)], boxSize});
             }
         }
-        std::copy(&data[boxStart(currentBox())], &data[boxStart(currentBox())] + boxSize,
-            &data[OFS_CURRENT_BOX]);
         data[OFS_MAIN_DATA_SUM]  = crypto::diff8({&data[0x2598], mainDataLength});
         data[OFS_BANK2_BOX_SUMS] = crypto::diff8({&data[0x4000], bankBoxesSize});
         data[OFS_BANK3_BOX_SUMS] = crypto::diff8({&data[0x6000], bankBoxesSize});
+
+        originalCurrentBox = currentBox();
     }
     u16 Sav1::TID() const { return BigEndian::convertTo<u16>(&data[OFS_TID]); }
     void Sav1::TID(u16 v) { BigEndian::convertFrom<u16>(&data[OFS_TID], v); }
@@ -213,8 +221,12 @@ namespace pksm
         return OFS_PARTY + 8 + (6 * PK1::PARTY_LENGTH) + ((6 + slot) * nameLength());
     }
 
-    u32 Sav1::boxStart(u8 box) const
+    u32 Sav1::boxStart(u8 box, bool obeyCurrentBoxMechanics) const
     {
+        if (box == originalCurrentBox && obeyCurrentBoxMechanics)
+        {
+            return OFS_CURRENT_BOX;
+        }
         if (box < maxBoxes() / 2)
         {
             return 0x4000 + (box * boxSize);
@@ -222,7 +234,10 @@ namespace pksm
         box -= maxBoxes() / 2;
         return 0x6000 + (box * boxSize);
     }
-    u32 Sav1::boxDataStart(u8 box) const { return boxStart(box) + maxPkmInBox + 2; }
+    u32 Sav1::boxDataStart(u8 box, bool obeyCurrentBoxMechanics) const
+    {
+        return boxStart(box, obeyCurrentBoxMechanics) + maxPkmInBox + 2;
+    }
 
     // the PK1 and PK2 formats used by the community start with magic bytes, the second being
     // species
@@ -249,7 +264,7 @@ namespace pksm
     }
     std::unique_ptr<PKX> Sav1::pkm(u8 box, u8 slot) const
     {
-        if (slot >= maxPkmInBox)
+        if (slot >= maxPkmInBox || slot >= boxCount(box))
         {
             return emptyPkm();
         }
@@ -325,6 +340,15 @@ namespace pksm
                 trade(*pk1);
             }
             static_cast<PK1*>(pk1.get())->boxLevel(pk1->level());
+
+            if (slot >= boxCount(box))
+            {
+                if (slot > boxCount(box))
+                {
+                    pkm(*emptyPkm(), box, slot - 1, false);
+                }
+                boxCount(box, slot + 1);
+            }
 
             std::ranges::copy(
                 pk1->rawData().subspan(3, PK1::BOX_LENGTH), &data[boxOffset(box, slot)]);
@@ -406,7 +430,9 @@ namespace pksm
     }
     u8 Sav1::partyCount() const { return data[OFS_PARTY]; }
     void Sav1::partyCount(u8 count) { data[OFS_PARTY] = count; }
-    void Sav1::boxSpecies(u8 box)
+    u8 Sav1::boxCount(u8 box) const { return data[boxStart(box)]; }
+    void Sav1::boxCount(u8 box, u8 count) { data[boxStart(box)] = count; }
+    void Sav1::fixBox(u8 box)
     {
         u8 count = 0;
         while (pkm(box, count)->species() != Species::None)
@@ -418,8 +444,9 @@ namespace pksm
         data[boxStart(box) + 1 + count] = 0xFF;
         data[boxStart(box)]             = count;
     }
-    void Sav1::partySpecies()
+    void Sav1::fixParty()
     {
+        Sav::fixParty();
         u8 count = 0;
         while (pkm(count)->species() != Species::None && count < 6)
         {
