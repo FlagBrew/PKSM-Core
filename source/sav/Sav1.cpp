@@ -286,6 +286,10 @@ namespace pksm
     // species
     std::unique_ptr<PKX> Sav1::pkm(u8 slot) const
     {
+        if (slot >= partyCount())
+        {
+            return emptyPkm();
+        }
         // using the larger of the two sizes to not dynamically allocate
         u8 buffer[PK1::INT_LENGTH_WITH_NAMES] = {0x01, data[partyOffset(slot)], 0xFF};
 
@@ -336,6 +340,15 @@ namespace pksm
     {
         if (pk.generation() == Generation::ONE)
         {
+            if (slot >= partyCount())
+            {
+                if (slot > partyCount())
+                {
+                    pkm(*emptyPkm(), slot - 1);
+                }
+                partyCount(slot + 1);
+            }
+
             auto pk1 = pk.partyClone();
 
             std::ranges::copy(

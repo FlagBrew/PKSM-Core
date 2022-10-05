@@ -279,8 +279,7 @@ namespace pksm
 
         // no, i don't know why only the checksum is little-endian. also idk why PKHeX destroys the
         // checksum for the secondary data copy
-        u16 checksum =
-            crypto::bytewiseSum16({&data[OFS_TID], &data[OFS_CHECKSUM_END] - &data[OFS_TID] + 1});
+        u16 checksum = crypto::bytewiseSum16({&data[OFS_TID], OFS_CHECKSUM_END - OFS_TID + 1});
         LittleEndian::convertFrom<u16>(&data[OFS_CHECKSUM_ONE], checksum);
         LittleEndian::convertFrom<u16>(&data[OFS_CHECKSUM_TWO], checksum);
 
@@ -473,6 +472,10 @@ namespace pksm
     // species
     std::unique_ptr<PKX> Sav2::pkm(u8 slot) const
     {
+        if (slot >= partyCount())
+        {
+            return emptyPkm();
+        }
         // using the larger of the two sizes to not dynamically allocate
         u8 buffer[PK2::INT_LENGTH_WITH_NAMES] = {0x01, data[OFS_PARTY + 1 + slot], 0xFF};
 
@@ -531,6 +534,15 @@ namespace pksm
     {
         if (pk.generation() == Generation::TWO)
         {
+            if (slot >= partyCount())
+            {
+                if (slot > partyCount())
+                {
+                    pkm(*emptyPkm(), slot - 1);
+                }
+                partyCount(slot + 1);
+            }
+
             auto pk2 = pk.partyClone();
 
             std::ranges::copy(
