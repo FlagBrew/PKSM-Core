@@ -641,8 +641,7 @@ namespace pksm
         pk4->nicknamed(!egg() && nicknamed());
 
         // Copy nickname trash into OT name
-        std::copy(pk4->rawData().begin() + 0x48, pk4->rawData().begin() + 0x48 + 0x10,
-            pk4->rawData().begin() + 0x68);
+        std::ranges::copy(pk4->rawData().subspan(0x48, 0x10), pk4->rawData().begin() + 0x68);
         pk4->otName(otName());
 
         // I use 0 for invalid items

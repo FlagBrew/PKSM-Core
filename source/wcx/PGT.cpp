@@ -59,7 +59,7 @@ namespace pksm
         }
         pokemonData->refreshChecksum();
         pokemonData->encrypt();
-        std::ranges::copy(pokemonData->rawData().subspan(PK4::PARTY_LENGTH), data + 0x8);
+        std::ranges::copy(pokemonData->rawData().subspan(0, PK4::PARTY_LENGTH), data + 0x8);
         pokemonData->decrypt(); // encrypt Pokemon data if it isn't already
     }
 
@@ -132,7 +132,7 @@ namespace pksm
         pokemonData->egg() ? pokemonData->eggDate(newDate) : pokemonData->metDate(newDate);
         pokemonData->refreshChecksum();
         pokemonData->encrypt();
-        std::ranges::copy(pokemonData->rawData().subspan(PK4::PARTY_LENGTH),
+        std::ranges::copy(pokemonData->rawData().subspan(0, PK4::PARTY_LENGTH),
             data + 0x8); // Actually set the data
         pokemonData->decrypt();
     }
@@ -144,7 +144,7 @@ namespace pksm
         pokemonData->egg() ? pokemonData->eggDate(newDate) : pokemonData->metDate(newDate);
         pokemonData->refreshChecksum();
         pokemonData->encrypt();
-        std::ranges::copy(pokemonData->rawData().subspan(PK4::PARTY_LENGTH),
+        std::ranges::copy(pokemonData->rawData().subspan(0, PK4::PARTY_LENGTH),
             data + 0x8); // Actually set the data
         pokemonData->decrypt();
     }
@@ -156,7 +156,7 @@ namespace pksm
         pokemonData->egg() ? pokemonData->eggDate(newDate) : pokemonData->metDate(newDate);
         pokemonData->refreshChecksum();
         pokemonData->encrypt();
-        std::ranges::copy(pokemonData->rawData().subspan(PK4::PARTY_LENGTH),
+        std::ranges::copy(pokemonData->rawData().subspan(0, PK4::PARTY_LENGTH),
             data + 0x8); // Actually set the data
         pokemonData->decrypt();
     }
