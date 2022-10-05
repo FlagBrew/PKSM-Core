@@ -201,10 +201,10 @@ namespace pksm
             } v;
 
             constexpr explicit Ribbon_impl(RibbonEnum v) : v(v) {}
-            constexpr Ribbon_impl(const Ribbon_impl&) = default;
-            constexpr Ribbon_impl(Ribbon_impl&&)      = default;
+            constexpr Ribbon_impl(const Ribbon_impl&)            = default;
+            constexpr Ribbon_impl(Ribbon_impl&&)                 = default;
             constexpr Ribbon_impl& operator=(const Ribbon_impl&) = default;
-            constexpr Ribbon_impl& operator=(Ribbon_impl&&) = default;
+            constexpr Ribbon_impl& operator=(Ribbon_impl&&)      = default;
 
         public:
             template <std::integral T>

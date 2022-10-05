@@ -321,10 +321,10 @@ namespace pksm
             } v;
 
             constexpr explicit Ability_impl(AbilityEnum v) : v(v) {}
-            constexpr Ability_impl(const Ability_impl&) = default;
-            constexpr Ability_impl(Ability_impl&&)      = default;
+            constexpr Ability_impl(const Ability_impl&)            = default;
+            constexpr Ability_impl(Ability_impl&&)                 = default;
             constexpr Ability_impl& operator=(const Ability_impl&) = default;
-            constexpr Ability_impl& operator=(Ability_impl&&) = default;
+            constexpr Ability_impl& operator=(Ability_impl&&)      = default;
 
         public:
             template <std::integral T>

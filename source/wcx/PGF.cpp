@@ -78,79 +78,175 @@ namespace
 
 namespace pksm
 {
-    PGF::PGF(u8* dt) { std::copy(dt, dt + length, data); }
+    PGF::PGF(u8* dt)
+    {
+        std::copy(dt, dt + length, data);
+    }
 
-    Generation PGF::generation(void) const { return Generation::FIVE; }
+    Generation PGF::generation(void) const
+    {
+        return Generation::FIVE;
+    }
 
-    u16 PGF::ID(void) const { return LittleEndian::convertTo<u16>(data + 0xB0); }
+    u16 PGF::ID(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0xB0);
+    }
 
     std::string PGF::title(void) const
     {
         return StringUtils::transString45(StringUtils::getString(data, 0x60, 37, u'\uFFFF'));
     }
 
-    u8 PGF::type(void) const { return data[0xB3]; }
+    u8 PGF::type(void) const
+    {
+        return data[0xB3];
+    }
 
-    int PGF::year(void) const { return LittleEndian::convertTo<u16>(data + 0xAE); }
+    int PGF::year(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0xAE);
+    }
 
-    int PGF::month(void) const { return data[0xAD]; }
+    int PGF::month(void) const
+    {
+        return data[0xAD];
+    }
 
-    int PGF::day(void) const { return data[0xAC]; }
+    int PGF::day(void) const
+    {
+        return data[0xAC];
+    }
 
-    void PGF::year(int v) { LittleEndian::convertFrom<u16>(data + 0xAE, v); }
+    void PGF::year(int v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0xAE, v);
+    }
 
-    void PGF::month(int v) { data[0xAD] = static_cast<u8>(v); }
+    void PGF::month(int v)
+    {
+        data[0xAD] = static_cast<u8>(v);
+    }
 
-    void PGF::day(int v) { data[0xAC] = static_cast<u8>(v); }
+    void PGF::day(int v)
+    {
+        data[0xAC] = static_cast<u8>(v);
+    }
 
-    bool PGF::item(void) const { return type() == 2; }
+    bool PGF::item(void) const
+    {
+        return type() == 2;
+    }
 
-    u16 PGF::object(void) const { return LittleEndian::convertTo<u16>(data); }
+    u16 PGF::object(void) const
+    {
+        return LittleEndian::convertTo<u16>(data);
+    }
 
-    bool PGF::pokemon(void) const { return type() == 1; }
+    bool PGF::pokemon(void) const
+    {
+        return type() == 1;
+    }
 
-    bool PGF::power(void) const { return type() == 3; }
+    bool PGF::power(void) const
+    {
+        return type() == 3;
+    }
 
-    bool PGF::bean(void) const { return false; }
+    bool PGF::bean(void) const
+    {
+        return false;
+    }
 
-    bool PGF::BP(void) const { return false; }
+    bool PGF::BP(void) const
+    {
+        return false;
+    }
 
-    u8 PGF::cardLocation(void) const { return data[0xB2]; }
+    u8 PGF::cardLocation(void) const
+    {
+        return data[0xB2];
+    }
 
-    u8 PGF::flags(void) const { return data[0xB4]; }
+    u8 PGF::flags(void) const
+    {
+        return data[0xB4];
+    }
 
-    bool PGF::used(void) const { return (flags() >> 1) > 0; }
+    bool PGF::used(void) const
+    {
+        return (flags() >> 1) > 0;
+    }
 
-    bool PGF::multiObtainable(void) const { return flags() == 1; }
+    bool PGF::multiObtainable(void) const
+    {
+        return flags() == 1;
+    }
 
-    Ball PGF::ball(void) const { return Ball{data[0x0E]}; }
+    Ball PGF::ball(void) const
+    {
+        return Ball{data[0x0E]};
+    }
 
-    u16 PGF::heldItem(void) const { return LittleEndian::convertTo<u16>(data + 0x10); }
+    u16 PGF::heldItem(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x10);
+    }
 
-    bool PGF::shiny(void) const { return PIDType() == 2; }
+    bool PGF::shiny(void) const
+    {
+        return PIDType() == 2;
+    }
 
-    u8 PGF::PIDType(void) const { return data[0x37]; }
+    u8 PGF::PIDType(void) const
+    {
+        return data[0x37];
+    }
 
-    u16 PGF::TID(void) const { return LittleEndian::convertTo<u16>(data); }
+    u16 PGF::TID(void) const
+    {
+        return LittleEndian::convertTo<u16>(data);
+    }
 
-    u16 PGF::SID(void) const { return LittleEndian::convertTo<u16>(data + 0x02); }
+    u16 PGF::SID(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x02);
+    }
 
     Move PGF::move(u8 index) const
     {
         return Move{LittleEndian::convertTo<u16>(data + 0x12 + index * 2)};
     }
 
-    Species PGF::species(void) const { return Species{LittleEndian::convertTo<u16>(data + 0x1A)}; }
+    Species PGF::species(void) const
+    {
+        return Species{LittleEndian::convertTo<u16>(data + 0x1A)};
+    }
 
-    Gender PGF::gender(void) const { return Gender{data[0x35]}; }
+    Gender PGF::gender(void) const
+    {
+        return Gender{data[0x35]};
+    }
 
-    std::string PGF::otName(void) const { return StringUtils::getString(data, 0x4A, 8, u'\uFFFF'); }
+    std::string PGF::otName(void) const
+    {
+        return StringUtils::getString(data, 0x4A, 8, u'\uFFFF');
+    }
 
-    u8 PGF::level(void) const { return data[0x5B]; }
+    u8 PGF::level(void) const
+    {
+        return data[0x5B];
+    }
 
-    u32 PGF::PID(void) const { return LittleEndian::convertTo<u32>(data + 0x08); }
+    u32 PGF::PID(void) const
+    {
+        return LittleEndian::convertTo<u32>(data + 0x08);
+    }
 
-    bool PGF::hasRibbon(Ribbon rib) const { return OFFSET_OF(rib).first != RIBBON_ABSENT; }
+    bool PGF::hasRibbon(Ribbon rib) const
+    {
+        return OFFSET_OF(rib).first != RIBBON_ABSENT;
+    }
 
     bool PGF::ribbon(Ribbon rib) const
     {
@@ -159,9 +255,15 @@ namespace pksm
                                              : false;
     }
 
-    u8 PGF::alternativeForm(void) const { return data[0x1C]; }
+    u8 PGF::alternativeForm(void) const
+    {
+        return data[0x1C];
+    }
 
-    Language PGF::language(void) const { return Language(data[0x1D]); }
+    Language PGF::language(void) const
+    {
+        return Language(data[0x1D]);
+    }
 
     std::string PGF::nickname(void) const
     {
@@ -170,9 +272,15 @@ namespace pksm
                                    : "Pokemon Name";
     }
 
-    Nature PGF::nature(void) const { return Nature{data[0x34]}; }
+    Nature PGF::nature(void) const
+    {
+        return Nature{data[0x34]};
+    }
 
-    u8 PGF::abilityType(void) const { return data[0x36]; }
+    u8 PGF::abilityType(void) const
+    {
+        return data[0x36];
+    }
 
     Ability PGF::ability(void) const
     {
@@ -188,17 +296,35 @@ namespace pksm
         return PersonalBWB2W2::ability(u16(species()), abilitynum);
     }
 
-    u16 PGF::eggLocation(void) const { return LittleEndian::convertTo<u16>(data + 0x38); }
+    u16 PGF::eggLocation(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x38);
+    }
 
-    u16 PGF::metLocation(void) const { return LittleEndian::convertTo<u16>(data + 0x3A); }
+    u16 PGF::metLocation(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x3A);
+    }
 
-    u8 PGF::metLevel(void) const { return data[0x3C]; }
+    u8 PGF::metLevel(void) const
+    {
+        return data[0x3C];
+    }
 
-    u8 PGF::contest(u8 index) const { return data[0x3D + index]; }
+    u8 PGF::contest(u8 index) const
+    {
+        return data[0x3D + index];
+    }
 
-    u8 PGF::iv(Stat index) const { return data[0x43 + u8(index)]; }
+    u8 PGF::iv(Stat index) const
+    {
+        return data[0x43 + u8(index)];
+    }
 
-    bool PGF::egg(void) const { return data[0x5C] == 1; }
+    bool PGF::egg(void) const
+    {
+        return data[0x5C] == 1;
+    }
 
     u16 PGF::formSpecies(void) const
     {

@@ -317,11 +317,9 @@ namespace EndianTraits
 
         // NON-DEPENDENT CONVERSIONS
 
-        // clang-format off
         template <std::ranges::range R, std::endian TargetEndianness>
-        requires EndianTraits::EndianConvertible<std::ranges::range_value_t<R>>
+            requires EndianTraits::EndianConvertible<std::ranges::range_value_t<R>>
         constexpr void convertFrom(u8* dest, R&& range)
-        // clang-format on
         {
             for (auto it = std::ranges::begin(range); it != std::ranges::end(range); ++it)
             {
@@ -339,11 +337,10 @@ namespace EndianTraits
             return ret;
         }
 
-        // clang-format off
-        template <EndianTraits::EndianConvertible T, std::size_t Extent, std::endian TargetEndianness>
-        requires (Extent != std::dynamic_extent)
+        template <EndianTraits::EndianConvertible T, std::size_t Extent,
+            std::endian TargetEndianness>
+            requires(Extent != std::dynamic_extent)
         constexpr std::array<u8, sizeof(T) * Extent> convertFrom(std::span<T, Extent> span)
-        // clang-format on
         {
             std::array<u8, sizeof(T) * Extent> ret{};
             for (size_t i = 0; i < Extent; i++)
@@ -353,11 +350,9 @@ namespace EndianTraits
             return ret;
         }
 
-        // clang-format off
         template <std::ranges::range R, std::endian TargetEndianness>
-        requires EndianTraits::EndianConvertible<std::ranges::range_value_t<R>>
+            requires EndianTraits::EndianConvertible<std::ranges::range_value_t<R>>
         constexpr std::vector<u8> convertFrom(R&& range)
-        // clang-format on
         {
             std::vector<u8> ret = std::invoke([&] {
                 if constexpr (requires { requires std::ranges::sized_range<R>; })
@@ -433,11 +428,9 @@ namespace BigEndian
             dest, src);
     }
 
-    // clang-format off
     template <std::ranges::range R>
-    requires EndianTraits::EndianConvertible<std::ranges::range_value_t<R>>
+        requires EndianTraits::EndianConvertible<std::ranges::range_value_t<R>>
     constexpr void convertFrom(u8* dest, R&& range)
-    // clang-format on
     {
         return EndianTraits::EndianCommon::convertFrom<R, std::endian::big>(
             dest, std::forward<R>(range));
@@ -449,20 +442,16 @@ namespace BigEndian
         return EndianTraits::EndianCommon::convertFrom<T, std::endian::big>(orig);
     }
 
-    // clang-format off
     template <EndianTraits::EndianConvertible T, std::size_t Extent>
-    requires(Extent != std::dynamic_extent)
+        requires(Extent != std::dynamic_extent)
     constexpr std::array<u8, sizeof(T) * Extent> convertFrom(std::span<T, Extent> span)
-    // clang-format on
     {
         return EndianTraits::EndianCommon::convertFrom<T, Extent, std::endian::big>(span);
     }
 
-    // clang-format off
     template <std::ranges::range R>
-    requires EndianTraits::EndianConvertible<std::ranges::range_value_t<R>>
+        requires EndianTraits::EndianConvertible<std::ranges::range_value_t<R>>
     constexpr std::vector<u8> convertFrom(R&& range)
-    // clang-format on
     {
         return EndianTraits::EndianCommon::convertFrom<R, std::endian::big>(std::forward<R>(range));
     }
@@ -507,11 +496,9 @@ namespace LittleEndian
             dest, src);
     }
 
-    // clang-format off
     template <std::ranges::range R>
-    requires EndianTraits::EndianConvertible<std::ranges::range_value_t<R>>
+        requires EndianTraits::EndianConvertible<std::ranges::range_value_t<R>>
     constexpr void convertFrom(u8* dest, R&& range)
-    // clang-format on
     {
         return EndianTraits::EndianCommon::convertFrom<R, std::endian::little>(
             dest, std::forward<R>(range));
@@ -523,20 +510,16 @@ namespace LittleEndian
         return EndianTraits::EndianCommon::convertFrom<T, std::endian::little>(orig);
     }
 
-    // clang-format off
     template <EndianTraits::EndianConvertible T, std::size_t Extent>
-    requires(Extent != std::dynamic_extent)
+        requires(Extent != std::dynamic_extent)
     constexpr std::array<u8, sizeof(T) * Extent> convertFrom(std::span<T, Extent> span)
-    // clang-format on
     {
         return EndianTraits::EndianCommon::convertFrom<T, Extent, std::endian::little>(span);
     }
 
-    // clang-format off
     template <std::ranges::range R>
-    requires EndianTraits::EndianConvertible<std::ranges::range_value_t<R>>
+        requires EndianTraits::EndianConvertible<std::ranges::range_value_t<R>>
     constexpr std::vector<u8> convertFrom(R&& range)
-    // clang-format on
     {
         return EndianTraits::EndianCommon::convertFrom<R, std::endian::little>(
             std::forward<R>(range));

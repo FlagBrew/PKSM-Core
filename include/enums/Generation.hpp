@@ -60,10 +60,10 @@ namespace pksm
             } v;
 
             constexpr explicit Generation_impl(GenerationEnum v) : v(v) {}
-            constexpr Generation_impl(const Generation_impl&) = default;
-            constexpr Generation_impl(Generation_impl&&)      = default;
+            constexpr Generation_impl(const Generation_impl&)            = default;
+            constexpr Generation_impl(Generation_impl&&)                 = default;
             constexpr Generation_impl& operator=(const Generation_impl&) = default;
-            constexpr Generation_impl& operator=(Generation_impl&&) = default;
+            constexpr Generation_impl& operator=(Generation_impl&&)      = default;
 
         public:
             template <std::integral T>

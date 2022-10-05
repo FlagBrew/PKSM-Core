@@ -87,34 +87,91 @@ namespace pksm
             const_cast<u8*>(data), isParty() ? PARTY_LENGTH : BOX_LENGTH);
     }
 
-    Generation PB7::generation(void) const { return Generation::LGPE; }
+    Generation PB7::generation(void) const
+    {
+        return Generation::LGPE;
+    }
 
-    u32 PB7::encryptionConstant(void) const { return LittleEndian::convertTo<u32>(data); }
-    void PB7::encryptionConstant(u32 v) { LittleEndian::convertFrom<u32>(data, v); }
+    u32 PB7::encryptionConstant(void) const
+    {
+        return LittleEndian::convertTo<u32>(data);
+    }
+    void PB7::encryptionConstant(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(data, v);
+    }
 
-    u16 PB7::sanity(void) const { return LittleEndian::convertTo<u16>(data + 0x04); }
-    void PB7::sanity(u16 v) { LittleEndian::convertFrom<u16>(data + 0x04, v); }
+    u16 PB7::sanity(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x04);
+    }
+    void PB7::sanity(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x04, v);
+    }
 
-    u16 PB7::checksum(void) const { return LittleEndian::convertTo<u16>(data + 0x06); }
-    void PB7::checksum(u16 v) { LittleEndian::convertFrom<u16>(data + 0x06, v); }
+    u16 PB7::checksum(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x06);
+    }
+    void PB7::checksum(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x06, v);
+    }
 
-    Species PB7::species(void) const { return Species{LittleEndian::convertTo<u16>(data + 0x08)}; }
-    void PB7::species(Species v) { LittleEndian::convertFrom<u16>(data + 0x08, u16(v)); }
+    Species PB7::species(void) const
+    {
+        return Species{LittleEndian::convertTo<u16>(data + 0x08)};
+    }
+    void PB7::species(Species v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x08, u16(v));
+    }
 
-    u16 PB7::heldItem(void) const { return LittleEndian::convertTo<u16>(data + 0x0A); }
-    void PB7::heldItem(u16 v) { LittleEndian::convertFrom<u16>(data + 0x0A, v); }
+    u16 PB7::heldItem(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x0A);
+    }
+    void PB7::heldItem(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x0A, v);
+    }
 
-    u16 PB7::TID(void) const { return LittleEndian::convertTo<u16>(data + 0x0C); }
-    void PB7::TID(u16 v) { LittleEndian::convertFrom<u16>(data + 0x0C, v); }
+    u16 PB7::TID(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x0C);
+    }
+    void PB7::TID(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x0C, v);
+    }
 
-    u16 PB7::SID(void) const { return LittleEndian::convertTo<u16>(data + 0x0E); }
-    void PB7::SID(u16 v) { LittleEndian::convertFrom<u16>(data + 0x0E, v); }
+    u16 PB7::SID(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x0E);
+    }
+    void PB7::SID(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x0E, v);
+    }
 
-    u32 PB7::experience(void) const { return LittleEndian::convertTo<u32>(data + 0x10); }
-    void PB7::experience(u32 v) { LittleEndian::convertFrom<u32>(data + 0x10, v); }
+    u32 PB7::experience(void) const
+    {
+        return LittleEndian::convertTo<u32>(data + 0x10);
+    }
+    void PB7::experience(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(data + 0x10, v);
+    }
 
-    Ability PB7::ability(void) const { return Ability{data[0x14]}; }
-    void PB7::ability(Ability v) { data[0x14] = u8(v); }
+    Ability PB7::ability(void) const
+    {
+        return Ability{data[0x14]};
+    }
+    void PB7::ability(Ability v)
+    {
+        data[0x14] = u8(v);
+    }
 
     void PB7::setAbility(u8 v)
     {
@@ -131,56 +188,158 @@ namespace pksm
         ability(abilities(v));
     }
 
-    u8 PB7::abilityNumber(void) const { return data[0x15]; }
-    void PB7::abilityNumber(u8 v) { data[0x15] = v; }
+    u8 PB7::abilityNumber(void) const
+    {
+        return data[0x15];
+    }
+    void PB7::abilityNumber(u8 v)
+    {
+        data[0x15] = v;
+    }
 
-    u16 PB7::markValue(void) const { return LittleEndian::convertTo<u16>(data + 0x16); }
-    void PB7::markValue(u16 v) { LittleEndian::convertFrom<u16>(data + 0x16, v); }
+    u16 PB7::markValue(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x16);
+    }
+    void PB7::markValue(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x16, v);
+    }
 
-    u32 PB7::PID(void) const { return LittleEndian::convertTo<u32>(data + 0x18); }
-    void PB7::PID(u32 v) { LittleEndian::convertFrom<u32>(data + 0x18, v); }
+    u32 PB7::PID(void) const
+    {
+        return LittleEndian::convertTo<u32>(data + 0x18);
+    }
+    void PB7::PID(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(data + 0x18, v);
+    }
 
-    Nature PB7::nature(void) const { return Nature{data[0x1C]}; }
-    void PB7::nature(Nature v) { data[0x1C] = u8(v); }
+    Nature PB7::nature(void) const
+    {
+        return Nature{data[0x1C]};
+    }
+    void PB7::nature(Nature v)
+    {
+        data[0x1C] = u8(v);
+    }
 
-    bool PB7::fatefulEncounter(void) const { return (data[0x1D] & 1) == 1; }
-    void PB7::fatefulEncounter(bool v) { data[0x1D] = (data[0x1D] & ~0x01) | (v ? 1 : 0); }
+    bool PB7::fatefulEncounter(void) const
+    {
+        return (data[0x1D] & 1) == 1;
+    }
+    void PB7::fatefulEncounter(bool v)
+    {
+        data[0x1D] = (data[0x1D] & ~0x01) | (v ? 1 : 0);
+    }
 
-    Gender PB7::gender(void) const { return Gender{u8((data[0x1D] >> 1) & 0x3)}; }
-    void PB7::gender(Gender v) { data[0x1D] = (data[0x1D] & ~0x06) | (u8(v) << 1); }
+    Gender PB7::gender(void) const
+    {
+        return Gender{u8((data[0x1D] >> 1) & 0x3)};
+    }
+    void PB7::gender(Gender v)
+    {
+        data[0x1D] = (data[0x1D] & ~0x06) | (u8(v) << 1);
+    }
 
-    u16 PB7::alternativeForm(void) const { return data[0x1D] >> 3; }
-    void PB7::alternativeForm(u16 v) { data[0x1D] = (data[0x1D] & 0x07) | (v << 3); }
+    u16 PB7::alternativeForm(void) const
+    {
+        return data[0x1D] >> 3;
+    }
+    void PB7::alternativeForm(u16 v)
+    {
+        data[0x1D] = (data[0x1D] & 0x07) | (v << 3);
+    }
 
-    u16 PB7::ev(Stat ev) const { return data[0x1E + u8(ev)]; }
-    void PB7::ev(Stat ev, u16 v) { data[0x1E + u8(ev)] = v; }
+    u16 PB7::ev(Stat ev) const
+    {
+        return data[0x1E + u8(ev)];
+    }
+    void PB7::ev(Stat ev, u16 v)
+    {
+        data[0x1E + u8(ev)] = v;
+    }
 
-    u8 PB7::awakened(Stat stat) const { return data[0x24 + u8(stat)]; }
-    void PB7::awakened(Stat stat, u8 v) { data[0x24 + u8(stat)] = v; }
+    u8 PB7::awakened(Stat stat) const
+    {
+        return data[0x24 + u8(stat)];
+    }
+    void PB7::awakened(Stat stat, u8 v)
+    {
+        data[0x24 + u8(stat)] = v;
+    }
 
-    u8 PB7::pelagoEventStatus(void) const { return data[0x2A]; }
-    void PB7::pelagoEventStatus(u8 v) { data[0x2A] = v; }
+    u8 PB7::pelagoEventStatus(void) const
+    {
+        return data[0x2A];
+    }
+    void PB7::pelagoEventStatus(u8 v)
+    {
+        data[0x2A] = v;
+    }
 
-    u8 PB7::pkrs(void) const { return data[0x2B]; }
-    void PB7::pkrs(u8 v) { data[0x2B] = v; }
+    u8 PB7::pkrs(void) const
+    {
+        return data[0x2B];
+    }
+    void PB7::pkrs(u8 v)
+    {
+        data[0x2B] = v;
+    }
 
-    u8 PB7::pkrsDays(void) const { return data[0x2B] & 0xF; };
-    void PB7::pkrsDays(u8 v) { data[0x2B] = (data[0x2B] & ~0xF) | v; }
+    u8 PB7::pkrsDays(void) const
+    {
+        return data[0x2B] & 0xF;
+    };
+    void PB7::pkrsDays(u8 v)
+    {
+        data[0x2B] = (data[0x2B] & ~0xF) | v;
+    }
 
-    u8 PB7::pkrsStrain(void) const { return data[0x2B] >> 4; };
-    void PB7::pkrsStrain(u8 v) { data[0x2B] = (data[0x2B] & 0xF) | (v << 4); }
+    u8 PB7::pkrsStrain(void) const
+    {
+        return data[0x2B] >> 4;
+    };
+    void PB7::pkrsStrain(u8 v)
+    {
+        data[0x2B] = (data[0x2B] & 0xF) | (v << 4);
+    }
 
-    std::string PB7::nickname(void) const { return StringUtils::getString(data, 0x40, 12); }
-    void PB7::nickname(const std::string_view& v) { StringUtils::setString(data, v, 0x40, 12); }
+    std::string PB7::nickname(void) const
+    {
+        return StringUtils::getString(data, 0x40, 12);
+    }
+    void PB7::nickname(const std::string_view& v)
+    {
+        StringUtils::setString(data, v, 0x40, 12);
+    }
 
-    Move PB7::move(u8 m) const { return Move{LittleEndian::convertTo<u16>(data + 0x5A + m * 2)}; }
-    void PB7::move(u8 m, Move v) { LittleEndian::convertFrom<u16>(data + 0x5A + m * 2, u16(v)); }
+    Move PB7::move(u8 m) const
+    {
+        return Move{LittleEndian::convertTo<u16>(data + 0x5A + m * 2)};
+    }
+    void PB7::move(u8 m, Move v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x5A + m * 2, u16(v));
+    }
 
-    u8 PB7::PP(u8 m) const { return data[0x62 + m]; }
-    void PB7::PP(u8 m, u8 v) { data[0x62 + m] = v; }
+    u8 PB7::PP(u8 m) const
+    {
+        return data[0x62 + m];
+    }
+    void PB7::PP(u8 m, u8 v)
+    {
+        data[0x62 + m] = v;
+    }
 
-    u8 PB7::PPUp(u8 m) const { return data[0x66 + m]; }
-    void PB7::PPUp(u8 m, u8 v) { data[0x66 + m] = v; }
+    u8 PB7::PPUp(u8 m) const
+    {
+        return data[0x66 + m];
+    }
+    void PB7::PPUp(u8 m, u8 v)
+    {
+        data[0x66 + m] = v;
+    }
 
     Move PB7::relearnMove(u8 m) const
     {
@@ -225,74 +384,212 @@ namespace pksm
             (LittleEndian::convertTo<u32>(data + 0x74) & 0x7FFFFFFFu) | (v ? 0x80000000u : 0u));
     }
 
-    std::string PB7::htName(void) const { return StringUtils::getString(data, 0x78, 12); }
-    void PB7::htName(const std::string_view& v) { StringUtils::setString(data, v, 0x78, 12); }
+    std::string PB7::htName(void) const
+    {
+        return StringUtils::getString(data, 0x78, 12);
+    }
+    void PB7::htName(const std::string_view& v)
+    {
+        StringUtils::setString(data, v, 0x78, 12);
+    }
 
-    Gender PB7::htGender(void) const { return Gender{data[0x92]}; }
-    void PB7::htGender(Gender v) { data[0x92] = u8(v); }
+    Gender PB7::htGender(void) const
+    {
+        return Gender{data[0x92]};
+    }
+    void PB7::htGender(Gender v)
+    {
+        data[0x92] = u8(v);
+    }
 
-    u8 PB7::currentHandler(void) const { return data[0x93]; }
-    void PB7::currentHandler(u8 v) { data[0x93] = v; }
+    u8 PB7::currentHandler(void) const
+    {
+        return data[0x93];
+    }
+    void PB7::currentHandler(u8 v)
+    {
+        data[0x93] = v;
+    }
 
-    u8 PB7::htFriendship(void) const { return data[0xA2]; }
-    void PB7::htFriendship(u8 v) { data[0xA2] = v; }
+    u8 PB7::htFriendship(void) const
+    {
+        return data[0xA2];
+    }
+    void PB7::htFriendship(u8 v)
+    {
+        data[0xA2] = v;
+    }
 
-    u8 PB7::htIntensity(void) const { return data[0xA4]; }
-    void PB7::htIntensity(u8 v) { data[0xA4] = v; }
+    u8 PB7::htIntensity(void) const
+    {
+        return data[0xA4];
+    }
+    void PB7::htIntensity(u8 v)
+    {
+        data[0xA4] = v;
+    }
 
-    u8 PB7::htMemory(void) const { return data[0xA5]; }
-    void PB7::htMemory(u8 v) { data[0xA5] = v; }
+    u8 PB7::htMemory(void) const
+    {
+        return data[0xA5];
+    }
+    void PB7::htMemory(u8 v)
+    {
+        data[0xA5] = v;
+    }
 
-    u8 PB7::htFeeling(void) const { return data[0xA6]; }
-    void PB7::htFeeling(u8 v) { data[0xA6] = v; }
+    u8 PB7::htFeeling(void) const
+    {
+        return data[0xA6];
+    }
+    void PB7::htFeeling(u8 v)
+    {
+        data[0xA6] = v;
+    }
 
-    u16 PB7::htTextVar(void) const { return LittleEndian::convertTo<u16>(data + 0xA8); }
-    void PB7::htTextVar(u16 v) { LittleEndian::convertFrom<u16>(data + 0xA8, v); }
+    u16 PB7::htTextVar(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0xA8);
+    }
+    void PB7::htTextVar(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0xA8, v);
+    }
 
-    u8 PB7::fullness(void) const { return data[0xAE]; }
-    void PB7::fullness(u8 v) { data[0xAE] = v; }
+    u8 PB7::fullness(void) const
+    {
+        return data[0xAE];
+    }
+    void PB7::fullness(u8 v)
+    {
+        data[0xAE] = v;
+    }
 
-    u8 PB7::enjoyment(void) const { return data[0xAF]; }
-    void PB7::enjoyment(u8 v) { data[0xAF] = v; }
+    u8 PB7::enjoyment(void) const
+    {
+        return data[0xAF];
+    }
+    void PB7::enjoyment(u8 v)
+    {
+        data[0xAF] = v;
+    }
 
-    std::string PB7::otName(void) const { return StringUtils::getString(data, 0xB0, 12); }
-    void PB7::otName(const std::string_view& v) { StringUtils::setString(data, v, 0xB0, 12); }
+    std::string PB7::otName(void) const
+    {
+        return StringUtils::getString(data, 0xB0, 12);
+    }
+    void PB7::otName(const std::string_view& v)
+    {
+        StringUtils::setString(data, v, 0xB0, 12);
+    }
 
-    u8 PB7::otFriendship(void) const { return data[0xCA]; }
-    void PB7::otFriendship(u8 v) { data[0xCA] = v; }
+    u8 PB7::otFriendship(void) const
+    {
+        return data[0xCA];
+    }
+    void PB7::otFriendship(u8 v)
+    {
+        data[0xCA] = v;
+    }
 
-    int PB7::eggYear(void) const { return 2000 + data[0xD1]; }
-    void PB7::eggYear(int v) { data[0xD1] = v - 2000; }
+    int PB7::eggYear(void) const
+    {
+        return 2000 + data[0xD1];
+    }
+    void PB7::eggYear(int v)
+    {
+        data[0xD1] = v - 2000;
+    }
 
-    int PB7::eggMonth(void) const { return data[0xD2]; }
-    void PB7::eggMonth(int v) { data[0xD2] = v; }
+    int PB7::eggMonth(void) const
+    {
+        return data[0xD2];
+    }
+    void PB7::eggMonth(int v)
+    {
+        data[0xD2] = v;
+    }
 
-    int PB7::eggDay(void) const { return data[0xD3]; }
-    void PB7::eggDay(int v) { data[0xD3] = v; }
+    int PB7::eggDay(void) const
+    {
+        return data[0xD3];
+    }
+    void PB7::eggDay(int v)
+    {
+        data[0xD3] = v;
+    }
 
-    int PB7::metYear(void) const { return 2000 + data[0xD4]; }
-    void PB7::metYear(int v) { data[0xD4] = v - 2000; }
+    int PB7::metYear(void) const
+    {
+        return 2000 + data[0xD4];
+    }
+    void PB7::metYear(int v)
+    {
+        data[0xD4] = v - 2000;
+    }
 
-    int PB7::metMonth(void) const { return data[0xD5]; }
-    void PB7::metMonth(int v) { data[0xD5] = v; }
+    int PB7::metMonth(void) const
+    {
+        return data[0xD5];
+    }
+    void PB7::metMonth(int v)
+    {
+        data[0xD5] = v;
+    }
 
-    int PB7::metDay(void) const { return data[0xD6]; }
-    void PB7::metDay(int v) { data[0xD6] = v; }
+    int PB7::metDay(void) const
+    {
+        return data[0xD6];
+    }
+    void PB7::metDay(int v)
+    {
+        data[0xD6] = v;
+    }
 
-    u16 PB7::eggLocation(void) const { return LittleEndian::convertTo<u16>(data + 0xD8); }
-    void PB7::eggLocation(u16 v) { LittleEndian::convertFrom<u16>(data + 0xD8, v); }
+    u16 PB7::eggLocation(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0xD8);
+    }
+    void PB7::eggLocation(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0xD8, v);
+    }
 
-    u16 PB7::metLocation(void) const { return LittleEndian::convertTo<u16>(data + 0xDA); }
-    void PB7::metLocation(u16 v) { LittleEndian::convertFrom<u16>(data + 0xDA, v); }
+    u16 PB7::metLocation(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0xDA);
+    }
+    void PB7::metLocation(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0xDA, v);
+    }
 
-    Ball PB7::ball(void) const { return Ball{data[0xDC]}; }
-    void PB7::ball(Ball v) { data[0xDC] = u8(v); }
+    Ball PB7::ball(void) const
+    {
+        return Ball{data[0xDC]};
+    }
+    void PB7::ball(Ball v)
+    {
+        data[0xDC] = u8(v);
+    }
 
-    u8 PB7::metLevel(void) const { return data[0xDD] & ~0x80; }
-    void PB7::metLevel(u8 v) { data[0xDD] = (data[0xDD] & 0x80) | v; }
+    u8 PB7::metLevel(void) const
+    {
+        return data[0xDD] & ~0x80;
+    }
+    void PB7::metLevel(u8 v)
+    {
+        data[0xDD] = (data[0xDD] & 0x80) | v;
+    }
 
-    Gender PB7::otGender(void) const { return Gender{u8(data[0xDD] >> 7)}; }
-    void PB7::otGender(Gender v) { data[0xDD] = (data[0xDD] & ~0x80) | (u8(v) << 7); }
+    Gender PB7::otGender(void) const
+    {
+        return Gender{u8(data[0xDD] >> 7)};
+    }
+    void PB7::otGender(Gender v)
+    {
+        data[0xDD] = (data[0xDD] & ~0x80) | (u8(v) << 7);
+    }
 
     bool PB7::hyperTrain(Stat stat) const
     {
@@ -305,11 +602,23 @@ namespace pksm
                      (v ? 1 << hyperTrainLookup[size_t(stat)] : 0);
     }
 
-    GameVersion PB7::version(void) const { return GameVersion(data[0xDF]); }
-    void PB7::version(GameVersion v) { data[0xDF] = u8(v); }
+    GameVersion PB7::version(void) const
+    {
+        return GameVersion(data[0xDF]);
+    }
+    void PB7::version(GameVersion v)
+    {
+        data[0xDF] = u8(v);
+    }
 
-    Language PB7::language(void) const { return Language(data[0xE3]); }
-    void PB7::language(Language v) { data[0xE3] = u8(v); }
+    Language PB7::language(void) const
+    {
+        return Language(data[0xE3]);
+    }
+    void PB7::language(Language v)
+    {
+        data[0xE3] = u8(v);
+    }
 
     u8 PB7::currentFriendship(void) const
     {
@@ -385,8 +694,14 @@ namespace pksm
         }
     }
 
-    u16 PB7::TSV(void) const { return (TID() ^ SID()) >> 4; }
-    u16 PB7::PSV(void) const { return ((PID() >> 16) ^ (PID() & 0xFFFF)) >> 4; }
+    u16 PB7::TSV(void) const
+    {
+        return (TID() ^ SID()) >> 4;
+    }
+    u16 PB7::PSV(void) const
+    {
+        return ((PID() >> 16) ^ (PID() & 0xFFFF)) >> 4;
+    }
 
     u8 PB7::level(void) const
     {
@@ -397,9 +712,15 @@ namespace pksm
         return i;
     }
 
-    void PB7::level(u8 v) { experience(expTable(v - 1, expType())); }
+    void PB7::level(u8 v)
+    {
+        experience(expTable(v - 1, expType()));
+    }
 
-    bool PB7::shiny(void) const { return TSV() == PSV(); }
+    bool PB7::shiny(void) const
+    {
+        return TSV() == PSV();
+    }
     void PB7::shiny(bool v)
     {
         PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
@@ -562,13 +883,25 @@ namespace pksm
         return std::min(10000, base + awake);
     }
 
-    u8 PB7::height(void) const { return data[0x3A]; }
+    u8 PB7::height(void) const
+    {
+        return data[0x3A];
+    }
 
-    void PB7::height(u8 v) { data[0x3A] = v; }
+    void PB7::height(u8 v)
+    {
+        data[0x3A] = v;
+    }
 
-    u8 PB7::weight(void) const { return data[0x3B]; }
+    u8 PB7::weight(void) const
+    {
+        return data[0x3B];
+    }
 
-    void PB7::weight(u8 v) { data[0x3B] = v; }
+    void PB7::weight(u8 v)
+    {
+        data[0x3B] = v;
+    }
 
     void PB7::updatePartyData()
     {

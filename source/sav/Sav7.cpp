@@ -33,29 +33,77 @@
 
 namespace pksm
 {
-    u16 Sav7::TID(void) const { return LittleEndian::convertTo<u16>(&data[TrainerCard]); }
-    void Sav7::TID(u16 v) { LittleEndian::convertFrom<u16>(&data[TrainerCard], v); }
+    u16 Sav7::TID(void) const
+    {
+        return LittleEndian::convertTo<u16>(&data[TrainerCard]);
+    }
+    void Sav7::TID(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(&data[TrainerCard], v);
+    }
 
-    u16 Sav7::SID(void) const { return LittleEndian::convertTo<u16>(&data[TrainerCard + 2]); }
-    void Sav7::SID(u16 v) { LittleEndian::convertFrom<u16>(&data[TrainerCard + 2], v); }
+    u16 Sav7::SID(void) const
+    {
+        return LittleEndian::convertTo<u16>(&data[TrainerCard + 2]);
+    }
+    void Sav7::SID(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(&data[TrainerCard + 2], v);
+    }
 
-    GameVersion Sav7::version(void) const { return GameVersion(data[TrainerCard + 4]); }
-    void Sav7::version(GameVersion v) { data[TrainerCard + 4] = u8(v); }
+    GameVersion Sav7::version(void) const
+    {
+        return GameVersion(data[TrainerCard + 4]);
+    }
+    void Sav7::version(GameVersion v)
+    {
+        data[TrainerCard + 4] = u8(v);
+    }
 
-    Gender Sav7::gender(void) const { return Gender{data[TrainerCard + 5]}; }
-    void Sav7::gender(Gender v) { data[TrainerCard + 5] = u8(v); }
+    Gender Sav7::gender(void) const
+    {
+        return Gender{data[TrainerCard + 5]};
+    }
+    void Sav7::gender(Gender v)
+    {
+        data[TrainerCard + 5] = u8(v);
+    }
 
-    u8 Sav7::subRegion(void) const { return data[TrainerCard + 0x2E]; }
-    void Sav7::subRegion(u8 v) { data[TrainerCard + 0x2E] = v; }
+    u8 Sav7::subRegion(void) const
+    {
+        return data[TrainerCard + 0x2E];
+    }
+    void Sav7::subRegion(u8 v)
+    {
+        data[TrainerCard + 0x2E] = v;
+    }
 
-    u8 Sav7::country(void) const { return data[TrainerCard + 0x2F]; }
-    void Sav7::country(u8 v) { data[TrainerCard + 0x2F] = v; }
+    u8 Sav7::country(void) const
+    {
+        return data[TrainerCard + 0x2F];
+    }
+    void Sav7::country(u8 v)
+    {
+        data[TrainerCard + 0x2F] = v;
+    }
 
-    u8 Sav7::consoleRegion(void) const { return data[TrainerCard + 0x34]; }
-    void Sav7::consoleRegion(u8 v) { data[TrainerCard + 0x34] = v; }
+    u8 Sav7::consoleRegion(void) const
+    {
+        return data[TrainerCard + 0x34];
+    }
+    void Sav7::consoleRegion(u8 v)
+    {
+        data[TrainerCard + 0x34] = v;
+    }
 
-    Language Sav7::language(void) const { return Language(data[TrainerCard + 0x35]); }
-    void Sav7::language(Language v) { data[TrainerCard + 0x35] = u8(v); }
+    Language Sav7::language(void) const
+    {
+        return Language(data[TrainerCard + 0x35]);
+    }
+    void Sav7::language(Language v)
+    {
+        data[TrainerCard + 0x35] = u8(v);
+    }
 
     std::string Sav7::otName(void) const
     {
@@ -68,13 +116,19 @@ namespace pksm
             data.get(), StringUtils::transString67(v), TrainerCard + 0x38, 13);
     }
 
-    u32 Sav7::money(void) const { return LittleEndian::convertTo<u32>(&data[Misc + 0x4]); }
+    u32 Sav7::money(void) const
+    {
+        return LittleEndian::convertTo<u32>(&data[Misc + 0x4]);
+    }
     void Sav7::money(u32 v)
     {
         LittleEndian::convertFrom<u32>(&data[Misc + 0x4], v > 9999999 ? 9999999 : v);
     }
 
-    u32 Sav7::BP(void) const { return LittleEndian::convertTo<u32>(&data[Misc + 0x11C]); }
+    u32 Sav7::BP(void) const
+    {
+        return LittleEndian::convertTo<u32>(&data[Misc + 0x11C]);
+    }
     void Sav7::BP(u32 v)
     {
         LittleEndian::convertFrom<u32>(&data[Misc + 0x11C], v > 9999 ? 9999 : v);
@@ -91,27 +145,60 @@ namespace pksm
         return ret;
     }
 
-    u16 Sav7::playedHours(void) const { return LittleEndian::convertTo<u16>(&data[PlayTime]); }
-    void Sav7::playedHours(u16 v) { LittleEndian::convertFrom<u16>(&data[PlayTime], v); }
+    u16 Sav7::playedHours(void) const
+    {
+        return LittleEndian::convertTo<u16>(&data[PlayTime]);
+    }
+    void Sav7::playedHours(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(&data[PlayTime], v);
+    }
 
-    u8 Sav7::playedMinutes(void) const { return data[PlayTime + 2]; }
-    void Sav7::playedMinutes(u8 v) { data[PlayTime + 2] = v; }
+    u8 Sav7::playedMinutes(void) const
+    {
+        return data[PlayTime + 2];
+    }
+    void Sav7::playedMinutes(u8 v)
+    {
+        data[PlayTime + 2] = v;
+    }
 
-    u8 Sav7::playedSeconds(void) const { return data[PlayTime + 3]; }
-    void Sav7::playedSeconds(u8 v) { data[PlayTime + 3] = v; }
+    u8 Sav7::playedSeconds(void) const
+    {
+        return data[PlayTime + 3];
+    }
+    void Sav7::playedSeconds(u8 v)
+    {
+        data[PlayTime + 3] = v;
+    }
 
-    u8 Sav7::currentBox(void) const { return data[LastViewedBox]; }
-    void Sav7::currentBox(u8 v) { data[LastViewedBox] = v; }
+    u8 Sav7::currentBox(void) const
+    {
+        return data[LastViewedBox];
+    }
+    void Sav7::currentBox(u8 v)
+    {
+        data[LastViewedBox] = v;
+    }
 
-    u8 Sav7::unlockedBoxes(void) const { return data[LastViewedBox - 2]; }
-    void Sav7::unlockedBoxes(u8 v) { data[LastViewedBox - 2] = v; }
+    u8 Sav7::unlockedBoxes(void) const
+    {
+        return data[LastViewedBox - 2];
+    }
+    void Sav7::unlockedBoxes(u8 v)
+    {
+        data[LastViewedBox - 2] = v;
+    }
 
     u32 Sav7::boxOffset(u8 box, u8 slot) const
     {
         return Box + PK7::BOX_LENGTH * 30 * box + PK7::BOX_LENGTH * slot;
     }
 
-    u32 Sav7::partyOffset(u8 slot) const { return Party + PK7::PARTY_LENGTH * slot; }
+    u32 Sav7::partyOffset(u8 slot) const
+    {
+        return Party + PK7::PARTY_LENGTH * slot;
+    }
 
     std::unique_ptr<PKX> Sav7::pkm(u8 slot) const
     {
@@ -457,11 +544,23 @@ namespace pksm
             data.get(), StringUtils::transString67(name), PCLayout + 0x22 * box, 17);
     }
 
-    u8 Sav7::boxWallpaper(u8 box) const { return data[PCLayout + 1472 + box]; }
-    void Sav7::boxWallpaper(u8 box, u8 v) { data[PCLayout + 1472 + box] = v; }
+    u8 Sav7::boxWallpaper(u8 box) const
+    {
+        return data[PCLayout + 1472 + box];
+    }
+    void Sav7::boxWallpaper(u8 box, u8 v)
+    {
+        data[PCLayout + 1472 + box] = v;
+    }
 
-    u8 Sav7::partyCount(void) const { return data[Party + 6 * PK7::PARTY_LENGTH]; }
-    void Sav7::partyCount(u8 v) { data[Party + 6 * PK7::PARTY_LENGTH] = v; }
+    u8 Sav7::partyCount(void) const
+    {
+        return data[Party + 6 * PK7::PARTY_LENGTH];
+    }
+    void Sav7::partyCount(u8 v)
+    {
+        data[Party + 6 * PK7::PARTY_LENGTH] = v;
+    }
 
     std::unique_ptr<PKX> Sav7::emptyPkm() const
     {

@@ -84,8 +84,14 @@ namespace pksm::crypto
         return crc;
     }
 
-    u16 crc16(std::span<const u8> buf) { return ~internal::crc16(buf, 0xFFFF); }
-    u16 crc16_noinvert(std::span<const u8> buf) { return internal::crc16(buf, 0); }
+    u16 crc16(std::span<const u8> buf)
+    {
+        return ~internal::crc16(buf, 0xFFFF);
+    }
+    u16 crc16_noinvert(std::span<const u8> buf)
+    {
+        return internal::crc16(buf, 0);
+    }
 
     u8 diff8(std::span<const u8> buf)
     {

@@ -42,7 +42,10 @@ namespace i18n
         types.insert_or_assign(lang, std::move(vec));
     }
 
-    void exitType(pksm::Language lang) { types[lang].clear(); }
+    void exitType(pksm::Language lang)
+    {
+        types[lang].clear();
+    }
 
     const std::string& type(pksm::Language lang, pksm::Type val)
     {

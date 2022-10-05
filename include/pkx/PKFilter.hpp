@@ -43,12 +43,30 @@
 
 #define MAKE_DEFN(name, type)                                                                      \
 public:                                                                                            \
-    [[nodiscard]] type name(void) const override { return type##name; }                            \
-    void name(type v) override { type##name = v; }                                                 \
-    [[nodiscard]] bool name##Enabled(void) const { return name##Bool; }                            \
-    void name##Enabled(bool v) { name##Bool = v; }                                                 \
-    [[nodiscard]] bool name##Inversed(void) const { return name##Inverse; }                        \
-    void name##Inversed(bool v) { name##Inverse = v; }                                             \
+    [[nodiscard]] type name(void) const override                                                   \
+    {                                                                                              \
+        return type##name;                                                                         \
+    }                                                                                              \
+    void name(type v) override                                                                     \
+    {                                                                                              \
+        type##name = v;                                                                            \
+    }                                                                                              \
+    [[nodiscard]] bool name##Enabled(void) const                                                   \
+    {                                                                                              \
+        return name##Bool;                                                                         \
+    }                                                                                              \
+    void name##Enabled(bool v)                                                                     \
+    {                                                                                              \
+        name##Bool = v;                                                                            \
+    }                                                                                              \
+    [[nodiscard]] bool name##Inversed(void) const                                                  \
+    {                                                                                              \
+        return name##Inverse;                                                                      \
+    }                                                                                              \
+    void name##Inversed(bool v)                                                                    \
+    {                                                                                              \
+        name##Inverse = v;                                                                         \
+    }                                                                                              \
                                                                                                    \
 private:                                                                                           \
     type type##name    = type();                                                                   \
@@ -57,12 +75,30 @@ private:                                                                        
 
 #define MAKE_DEFN_CONSTANT(name, type)                                                             \
 public:                                                                                            \
-    [[nodiscard]] type name(void) const override { return type##name; }                            \
-    void name(type v) { type##name = v; }                                                          \
-    [[nodiscard]] bool name##Enabled(void) const { return name##Bool; }                            \
-    void name##Enabled(bool v) { name##Bool = v; }                                                 \
-    [[nodiscard]] bool name##Inversed(void) const { return name##Inverse; }                        \
-    void name##Inversed(bool v) { name##Inverse = v; }                                             \
+    [[nodiscard]] type name(void) const override                                                   \
+    {                                                                                              \
+        return type##name;                                                                         \
+    }                                                                                              \
+    void name(type v)                                                                              \
+    {                                                                                              \
+        type##name = v;                                                                            \
+    }                                                                                              \
+    [[nodiscard]] bool name##Enabled(void) const                                                   \
+    {                                                                                              \
+        return name##Bool;                                                                         \
+    }                                                                                              \
+    void name##Enabled(bool v)                                                                     \
+    {                                                                                              \
+        name##Bool = v;                                                                            \
+    }                                                                                              \
+    [[nodiscard]] bool name##Inversed(void) const                                                  \
+    {                                                                                              \
+        return name##Inverse;                                                                      \
+    }                                                                                              \
+    void name##Inversed(bool v)                                                                    \
+    {                                                                                              \
+        name##Inverse = v;                                                                         \
+    }                                                                                              \
                                                                                                    \
 private:                                                                                           \
     type type##name    = type();                                                                   \
@@ -71,15 +107,30 @@ private:                                                                        
 
 #define MAKE_NUM_DEFN(name, type, amount, indextype)                                               \
 public:                                                                                            \
-    [[nodiscard]] type name(indextype which) const override { return type##name[size_t(which)]; }  \
-    void name(indextype which, type v) override { type##name[size_t(which)] = v; }                 \
-    [[nodiscard]] bool name##Enabled(indextype which) const { return name##Bool[size_t(which)]; }  \
-    void name##Enabled(indextype which, bool v) { name##Bool[size_t(which)] = v; }                 \
+    [[nodiscard]] type name(indextype which) const override                                        \
+    {                                                                                              \
+        return type##name[size_t(which)];                                                          \
+    }                                                                                              \
+    void name(indextype which, type v) override                                                    \
+    {                                                                                              \
+        type##name[size_t(which)] = v;                                                             \
+    }                                                                                              \
+    [[nodiscard]] bool name##Enabled(indextype which) const                                        \
+    {                                                                                              \
+        return name##Bool[size_t(which)];                                                          \
+    }                                                                                              \
+    void name##Enabled(indextype which, bool v)                                                    \
+    {                                                                                              \
+        name##Bool[size_t(which)] = v;                                                             \
+    }                                                                                              \
     [[nodiscard]] bool name##Inversed(indextype which) const                                       \
     {                                                                                              \
         return name##Inverse[size_t(which)];                                                       \
     }                                                                                              \
-    void name##Inversed(indextype which, bool v) { name##Inverse[size_t(which)] = v; }             \
+    void name##Inversed(indextype which, bool v)                                                   \
+    {                                                                                              \
+        name##Inverse[size_t(which)] = v;                                                          \
+    }                                                                                              \
                                                                                                    \
 private:                                                                                           \
     std::array<type, amount> type##name = std::array<type, amount>();                              \
@@ -88,15 +139,30 @@ private:                                                                        
 
 #define MAKE_NUM_DEFN_CONSTANT(name, type, amount, indextype)                                      \
 public:                                                                                            \
-    [[nodiscard]] type name(indextype which) const override { return type##name[size_t(which)]; }  \
-    void name(indextype which, type v) { type##name[size_t(which)] = v; }                          \
-    [[nodiscard]] bool name##Enabled(indextype which) const { return name##Bool[size_t(which)]; }  \
-    void name##Enabled(indextype which, bool v) { name##Bool[size_t(which)] = v; }                 \
+    [[nodiscard]] type name(indextype which) const override                                        \
+    {                                                                                              \
+        return type##name[size_t(which)];                                                          \
+    }                                                                                              \
+    void name(indextype which, type v)                                                             \
+    {                                                                                              \
+        type##name[size_t(which)] = v;                                                             \
+    }                                                                                              \
+    [[nodiscard]] bool name##Enabled(indextype which) const                                        \
+    {                                                                                              \
+        return name##Bool[size_t(which)];                                                          \
+    }                                                                                              \
+    void name##Enabled(indextype which, bool v)                                                    \
+    {                                                                                              \
+        name##Bool[size_t(which)] = v;                                                             \
+    }                                                                                              \
     [[nodiscard]] bool name##Inversed(indextype which) const                                       \
     {                                                                                              \
         return name##Inverse[size_t(which)];                                                       \
     }                                                                                              \
-    void name##Inversed(indextype which, bool v) { name##Inverse[size_t(which)] = v; }             \
+    void name##Inversed(indextype which, bool v)                                                   \
+    {                                                                                              \
+        name##Inverse[size_t(which)] = v;                                                          \
+    }                                                                                              \
                                                                                                    \
 private:                                                                                           \
     std::array<type, amount> type##name = std::array<type, amount>();                              \

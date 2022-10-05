@@ -42,7 +42,10 @@ namespace i18n
         speciess.insert_or_assign(lang, std::move(vec));
     }
 
-    void exitSpecies(pksm::Language lang) { speciess[lang].clear(); }
+    void exitSpecies(pksm::Language lang)
+    {
+        speciess[lang].clear();
+    }
 
     const std::string& species(pksm::Language lang, pksm::Species val)
     {

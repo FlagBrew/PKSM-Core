@@ -80,13 +80,25 @@ namespace pksm
         return boxOffset(boxSlot / 30, boxSlot % 30);
     }
 
-    u16 SavLGPE::boxedPkm() const { return LittleEndian::convertTo<u16>(&data[0x5A00 + 14]); }
+    u16 SavLGPE::boxedPkm() const
+    {
+        return LittleEndian::convertTo<u16>(&data[0x5A00 + 14]);
+    }
 
-    void SavLGPE::boxedPkm(u16 v) { LittleEndian::convertFrom<u16>(&data[0x5A00 + 14], v); }
+    void SavLGPE::boxedPkm(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(&data[0x5A00 + 14], v);
+    }
 
-    u16 SavLGPE::followPkm() const { return LittleEndian::convertTo<u16>(&data[0x5A00 + 12]); }
+    u16 SavLGPE::followPkm() const
+    {
+        return LittleEndian::convertTo<u16>(&data[0x5A00 + 12]);
+    }
 
-    void SavLGPE::followPkm(u16 v) { LittleEndian::convertFrom<u16>(&data[0x5A00 + 12], v); }
+    void SavLGPE::followPkm(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(&data[0x5A00 + 12], v);
+    }
 
     u8 SavLGPE::partyCount() const
     {
@@ -165,25 +177,55 @@ namespace pksm
         }
     }
 
-    u16 SavLGPE::TID() const { return LittleEndian::convertTo<u16>(&data[0x1000]); }
+    u16 SavLGPE::TID() const
+    {
+        return LittleEndian::convertTo<u16>(&data[0x1000]);
+    }
 
-    void SavLGPE::TID(u16 v) { LittleEndian::convertFrom<u16>(&data[0x1000], v); }
+    void SavLGPE::TID(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(&data[0x1000], v);
+    }
 
-    u16 SavLGPE::SID() const { return LittleEndian::convertTo<u16>(&data[0x1002]); }
+    u16 SavLGPE::SID() const
+    {
+        return LittleEndian::convertTo<u16>(&data[0x1002]);
+    }
 
-    void SavLGPE::SID(u16 v) { LittleEndian::convertFrom<u16>(&data[0x1002], v); }
+    void SavLGPE::SID(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(&data[0x1002], v);
+    }
 
-    GameVersion SavLGPE::version() const { return GameVersion(data[0x1004]); }
+    GameVersion SavLGPE::version() const
+    {
+        return GameVersion(data[0x1004]);
+    }
 
-    void SavLGPE::version(GameVersion v) { data[0x1004] = u8(v); }
+    void SavLGPE::version(GameVersion v)
+    {
+        data[0x1004] = u8(v);
+    }
 
-    Gender SavLGPE::gender() const { return Gender{data[0x1005]}; }
+    Gender SavLGPE::gender() const
+    {
+        return Gender{data[0x1005]};
+    }
 
-    void SavLGPE::gender(Gender v) { data[0x1005] = u8(v); }
+    void SavLGPE::gender(Gender v)
+    {
+        data[0x1005] = u8(v);
+    }
 
-    Language SavLGPE::language() const { return Language(data[0x1035]); }
+    Language SavLGPE::language() const
+    {
+        return Language(data[0x1035]);
+    }
 
-    void SavLGPE::language(Language v) { data[0x1035] = u8(v); }
+    void SavLGPE::language(Language v)
+    {
+        data[0x1035] = u8(v);
+    }
 
     std::string SavLGPE::otName() const
     {
@@ -195,9 +237,15 @@ namespace pksm
         StringUtils::setString(data.get(), v, 0x1000 + 0x38, 13);
     }
 
-    u32 SavLGPE::money() const { return LittleEndian::convertTo<u32>(&data[0x4C04]); }
+    u32 SavLGPE::money() const
+    {
+        return LittleEndian::convertTo<u32>(&data[0x4C04]);
+    }
 
-    void SavLGPE::money(u32 v) { LittleEndian::convertFrom<u32>(&data[0x4C04], v); }
+    void SavLGPE::money(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(&data[0x4C04], v);
+    }
 
     u8 SavLGPE::badges() const
     {
@@ -218,17 +266,35 @@ namespace pksm
         return std::popcount(badges);
     }
 
-    u16 SavLGPE::playedHours(void) const { return LittleEndian::convertTo<u16>(&data[0x45400]); }
+    u16 SavLGPE::playedHours(void) const
+    {
+        return LittleEndian::convertTo<u16>(&data[0x45400]);
+    }
 
-    void SavLGPE::playedHours(u16 v) { LittleEndian::convertFrom<u16>(&data[0x45400], v); }
+    void SavLGPE::playedHours(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(&data[0x45400], v);
+    }
 
-    u8 SavLGPE::playedMinutes(void) const { return data[0x45402]; }
+    u8 SavLGPE::playedMinutes(void) const
+    {
+        return data[0x45402];
+    }
 
-    void SavLGPE::playedMinutes(u8 v) { data[0x45402] = v; }
+    void SavLGPE::playedMinutes(u8 v)
+    {
+        data[0x45402] = v;
+    }
 
-    u8 SavLGPE::playedSeconds(void) const { return data[0x45403]; }
+    u8 SavLGPE::playedSeconds(void) const
+    {
+        return data[0x45403];
+    }
 
-    void SavLGPE::playedSeconds(u8 v) { data[0x45403] = v; }
+    void SavLGPE::playedSeconds(u8 v)
+    {
+        data[0x45403] = v;
+    }
 
     std::unique_ptr<PKX> SavLGPE::pkm(u8 slot) const
     {
@@ -885,7 +951,10 @@ namespace pksm
         }
     }
 
-    std::unique_ptr<WCX> SavLGPE::mysteryGift(int) const { return nullptr; }
+    std::unique_ptr<WCX> SavLGPE::mysteryGift(int) const
+    {
+        return nullptr;
+    }
 
     std::vector<std::pair<Sav::Pouch, int>> SavLGPE::pouches() const
     {

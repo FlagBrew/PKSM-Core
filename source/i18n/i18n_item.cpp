@@ -81,13 +81,25 @@ namespace i18n
         items3.insert_or_assign(lang, std::move(vec));
     }
 
-    void exitItem(pksm::Language lang) { items[lang].clear(); }
+    void exitItem(pksm::Language lang)
+    {
+        items[lang].clear();
+    }
 
-    void exitItem1(pksm::Language lang) { items1[lang].clear(); }
+    void exitItem1(pksm::Language lang)
+    {
+        items1[lang].clear();
+    }
 
-    void exitItem2(pksm::Language lang) { items2[lang].clear(); }
+    void exitItem2(pksm::Language lang)
+    {
+        items2[lang].clear();
+    }
 
-    void exitItem3(pksm::Language lang) { items3[lang].clear(); }
+    void exitItem3(pksm::Language lang)
+    {
+        items3[lang].clear();
+    }
 
     const std::string& item(pksm::Language lang, u16 val)
     {

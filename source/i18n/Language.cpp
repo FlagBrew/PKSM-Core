@@ -38,8 +38,8 @@ namespace pksm
         constexpr std::array<Language, 7> G24Langs = {Language::JPN, Language::ENG, Language::FRE,
             Language::GER, Language::SPA, Language::ITA, Language::KOR};
         constexpr std::array<Language, 9> G7Langs  = {Language::JPN, Language::ENG, Language::FRE,
-            Language::GER, Language::SPA, Language::ITA, Language::KOR, Language::CHS,
-            Language::CHT};
+             Language::GER, Language::SPA, Language::ITA, Language::KOR, Language::CHS,
+             Language::CHT};
     }
 
     Language getSafeLanguage(Generation gen, Language orig)

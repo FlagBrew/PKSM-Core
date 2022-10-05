@@ -123,10 +123,10 @@ namespace pksm
             } v;
 
             constexpr explicit GameVersion_impl(GameVersionEnum v) : v(v) {}
-            constexpr GameVersion_impl(const GameVersion_impl&) = default;
-            constexpr GameVersion_impl(GameVersion_impl&&)      = default;
+            constexpr GameVersion_impl(const GameVersion_impl&)            = default;
+            constexpr GameVersion_impl(GameVersion_impl&&)                 = default;
             constexpr GameVersion_impl& operator=(const GameVersion_impl&) = default;
-            constexpr GameVersion_impl& operator=(GameVersion_impl&&) = default;
+            constexpr GameVersion_impl& operator=(GameVersion_impl&&)      = default;
 
         public:
             template <std::integral T>

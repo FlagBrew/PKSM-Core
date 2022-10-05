@@ -269,21 +269,45 @@ namespace pksm
         }
     }
 
-    bool PKX::originGen7(void) const { return (Generation)version() == Generation::SEVEN; }
+    bool PKX::originGen7(void) const
+    {
+        return (Generation)version() == Generation::SEVEN;
+    }
 
-    bool PKX::originGen6(void) const { return (Generation)version() == Generation::SIX; }
+    bool PKX::originGen6(void) const
+    {
+        return (Generation)version() == Generation::SIX;
+    }
 
-    bool PKX::originGen5(void) const { return (Generation)version() == Generation::FIVE; }
+    bool PKX::originGen5(void) const
+    {
+        return (Generation)version() == Generation::FIVE;
+    }
 
-    bool PKX::originGen4(void) const { return (Generation)version() == Generation::FOUR; }
+    bool PKX::originGen4(void) const
+    {
+        return (Generation)version() == Generation::FOUR;
+    }
 
-    bool PKX::originGen3(void) const { return (Generation)version() == Generation::THREE; }
+    bool PKX::originGen3(void) const
+    {
+        return (Generation)version() == Generation::THREE;
+    }
 
-    bool PKX::originGen2(void) const { return (Generation)version() == Generation::TWO; }
+    bool PKX::originGen2(void) const
+    {
+        return (Generation)version() == Generation::TWO;
+    }
 
-    bool PKX::originGen1(void) const { return (Generation)version() == Generation::ONE; }
+    bool PKX::originGen1(void) const
+    {
+        return (Generation)version() == Generation::ONE;
+    }
 
-    Generation PKX::originGen(void) const { return (Generation)version(); }
+    Generation PKX::originGen(void) const
+    {
+        return (Generation)version();
+    }
 
     void PKX::fixMoves(void)
     {

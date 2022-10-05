@@ -70,10 +70,10 @@ namespace pksm
             } v;
 
             constexpr explicit Type_impl(TypeEnum v) : v(v) {}
-            constexpr Type_impl(const Type_impl&) = default;
-            constexpr Type_impl(Type_impl&&)      = default;
+            constexpr Type_impl(const Type_impl&)            = default;
+            constexpr Type_impl(Type_impl&&)                 = default;
             constexpr Type_impl& operator=(const Type_impl&) = default;
-            constexpr Type_impl& operator=(Type_impl&&) = default;
+            constexpr Type_impl& operator=(Type_impl&&)      = default;
 
         public:
             template <std::integral T>

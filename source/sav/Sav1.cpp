@@ -78,7 +78,10 @@ namespace pksm
     }
 
     // max length of string + terminator
-    u8 Sav1::nameLength() const { return japanese ? 6 : 11; }
+    u8 Sav1::nameLength() const
+    {
+        return japanese ? 6 : 11;
+    }
 
     u8 Sav1::PK1Length() const
     {
@@ -127,7 +130,8 @@ namespace pksm
         fixBoxes();
         fixParty();
         fixItemLists();
-        if (currentBox() != originalCurrentBox) {
+        if (currentBox() != originalCurrentBox)
+        {
             std::copy(&data[OFS_CURRENT_BOX], &data[OFS_CURRENT_BOX] + boxSize,
                 &data[boxStart(originalCurrentBox, false)]);
             std::copy(&data[boxStart(currentBox())], &data[boxStart(currentBox())] + boxSize,
@@ -152,9 +156,18 @@ namespace pksm
 
         originalCurrentBox = currentBox();
     }
-    u16 Sav1::TID() const { return BigEndian::convertTo<u16>(&data[OFS_TID]); }
-    void Sav1::TID(u16 v) { BigEndian::convertFrom<u16>(&data[OFS_TID], v); }
-    Language Sav1::language() const { return lang; }
+    u16 Sav1::TID() const
+    {
+        return BigEndian::convertTo<u16>(&data[OFS_TID]);
+    }
+    void Sav1::TID(u16 v)
+    {
+        BigEndian::convertFrom<u16>(&data[OFS_TID], v);
+    }
+    Language Sav1::language() const
+    {
+        return lang;
+    }
     void Sav1::language(Language v)
     {
         if (lang != Language::JPN && v != Language::JPN)
@@ -174,8 +187,14 @@ namespace pksm
     }
 
     // why did they use BCD
-    u32 Sav1::money() const { return BigEndian::BCDtoUInteger<u32, 3>(&data[OFS_MONEY]); }
-    void Sav1::money(u32 v) { BigEndian::UIntegerToBCD<u32, 3>(&data[OFS_MONEY], v); }
+    u32 Sav1::money() const
+    {
+        return BigEndian::BCDtoUInteger<u32, 3>(&data[OFS_MONEY]);
+    }
+    void Sav1::money(u32 v)
+    {
+        BigEndian::UIntegerToBCD<u32, 3>(&data[OFS_MONEY], v);
+    }
     u8 Sav1::badges() const
     {
         u8 sum        = 0;
@@ -186,14 +205,35 @@ namespace pksm
         }
         return sum;
     }
-    u16 Sav1::playedHours() const { return u16(data[OFS_HOURS]); }
-    void Sav1::playedHours(u16 v) { data[OFS_HOURS] = u8(v); }
-    u8 Sav1::playedMinutes() const { return data[OFS_HOURS + 2]; }
-    void Sav1::playedMinutes(u8 v) { data[OFS_HOURS + 2] = v; }
-    u8 Sav1::playedSeconds() const { return data[OFS_HOURS + 3]; }
-    void Sav1::playedSeconds(u8 v) { data[OFS_HOURS + 3] = v; }
+    u16 Sav1::playedHours() const
+    {
+        return u16(data[OFS_HOURS]);
+    }
+    void Sav1::playedHours(u16 v)
+    {
+        data[OFS_HOURS] = u8(v);
+    }
+    u8 Sav1::playedMinutes() const
+    {
+        return data[OFS_HOURS + 2];
+    }
+    void Sav1::playedMinutes(u8 v)
+    {
+        data[OFS_HOURS + 2] = v;
+    }
+    u8 Sav1::playedSeconds() const
+    {
+        return data[OFS_HOURS + 3];
+    }
+    void Sav1::playedSeconds(u8 v)
+    {
+        data[OFS_HOURS + 3] = v;
+    }
 
-    u8 Sav1::currentBox() const { return data[OFS_CURRENT_BOX_INDEX] & 0x7F; }
+    u8 Sav1::currentBox() const
+    {
+        return data[OFS_CURRENT_BOX_INDEX] & 0x7F;
+    }
     void Sav1::currentBox(u8 v)
     {
         data[OFS_CURRENT_BOX_INDEX] = (data[OFS_CURRENT_BOX_INDEX] & 0x80) | (v & 0x7F);
@@ -211,7 +251,10 @@ namespace pksm
         return boxDataStart(box) + (maxPkmInBox * PK1::BOX_LENGTH) +
                ((maxPkmInBox + slot) * nameLength());
     }
-    u32 Sav1::partyOffset(u8 slot) const { return OFS_PARTY + 8 + (slot * PK1::PARTY_LENGTH); }
+    u32 Sav1::partyOffset(u8 slot) const
+    {
+        return OFS_PARTY + 8 + (slot * PK1::PARTY_LENGTH);
+    }
     u32 Sav1::partyOtNameOffset(u8 slot) const
     {
         return OFS_PARTY + 8 + (6 * PK1::PARTY_LENGTH) + (slot * nameLength());
@@ -428,10 +471,22 @@ namespace pksm
         return std::count_if(availableSpecies().begin(), availableSpecies().end(),
             [this](const auto& spec) { return getCaught(spec); });
     }
-    u8 Sav1::partyCount() const { return data[OFS_PARTY]; }
-    void Sav1::partyCount(u8 count) { data[OFS_PARTY] = count; }
-    u8 Sav1::boxCount(u8 box) const { return data[boxStart(box)]; }
-    void Sav1::boxCount(u8 box, u8 count) { data[boxStart(box)] = count; }
+    u8 Sav1::partyCount() const
+    {
+        return data[OFS_PARTY];
+    }
+    void Sav1::partyCount(u8 count)
+    {
+        data[OFS_PARTY] = count;
+    }
+    u8 Sav1::boxCount(u8 box) const
+    {
+        return data[boxStart(box)];
+    }
+    void Sav1::boxCount(u8 box, u8 count)
+    {
+        data[boxStart(box)] = count;
+    }
     void Sav1::fixBox(u8 box)
     {
         u8 count = 0;
@@ -457,8 +512,14 @@ namespace pksm
         data[OFS_PARTY]             = count;
     }
 
-    int Sav1::maxSlot() const { return maxBoxes() * maxPkmInBox; }
-    int Sav1::maxBoxes() const { return japanese ? 8 : 12; }
+    int Sav1::maxSlot() const
+    {
+        return maxBoxes() * maxPkmInBox;
+    }
+    int Sav1::maxBoxes() const
+    {
+        return japanese ? 8 : 12;
+    }
 
     void Sav1::item(const Item& tItem, Pouch pouch, u16 slot)
     {

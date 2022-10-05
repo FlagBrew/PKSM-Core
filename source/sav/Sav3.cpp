@@ -187,11 +187,23 @@ namespace pksm
         }
     }
 
-    u16 Sav3::TID(void) const { return LittleEndian::convertTo<u16>(&data[blockOfs[0] + 0xA]); }
-    void Sav3::TID(u16 v) { LittleEndian::convertFrom<u16>(&data[blockOfs[0] + 0xA], v); }
+    u16 Sav3::TID(void) const
+    {
+        return LittleEndian::convertTo<u16>(&data[blockOfs[0] + 0xA]);
+    }
+    void Sav3::TID(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(&data[blockOfs[0] + 0xA], v);
+    }
 
-    u16 Sav3::SID(void) const { return LittleEndian::convertTo<u16>(&data[blockOfs[0] + 0xC]); }
-    void Sav3::SID(u16 v) { LittleEndian::convertFrom<u16>(&data[blockOfs[0] + 0xC], v); }
+    u16 Sav3::SID(void) const
+    {
+        return LittleEndian::convertTo<u16>(&data[blockOfs[0] + 0xC]);
+    }
+    void Sav3::SID(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(&data[blockOfs[0] + 0xC], v);
+    }
 
     GameVersion Sav3::version(void) const
     {
@@ -201,8 +213,14 @@ namespace pksm
     }
     void Sav3::version(GameVersion) {}
 
-    Gender Sav3::gender(void) const { return Gender{data[blockOfs[0] + 8]}; }
-    void Sav3::gender(Gender v) { data[blockOfs[0] + 8] = u8(v); }
+    Gender Sav3::gender(void) const
+    {
+        return Gender{data[blockOfs[0] + 8]};
+    }
+    void Sav3::gender(Gender v)
+    {
+        data[blockOfs[0] + 8] = u8(v);
+    }
 
     Language Sav3::language(void) const
     {
@@ -255,7 +273,10 @@ namespace pksm
 
     // TODO:? Coins
 
-    u32 Sav3::BP(void) const { return LittleEndian::convertTo<u16>(&data[blockOfs[0] + 0xEB8]); }
+    u32 Sav3::BP(void) const
+    {
+        return LittleEndian::convertTo<u16>(&data[blockOfs[0] + 0xEB8]);
+    }
     void Sav3::BP(u32 v)
     {
         if (v > 9999)
@@ -329,18 +350,39 @@ namespace pksm
     {
         return LittleEndian::convertTo<u16>(&data[blockOfs[0] + 0xE]);
     }
-    void Sav3::playedHours(u16 v) { LittleEndian::convertFrom<u16>(&data[blockOfs[0] + 0xE], v); }
+    void Sav3::playedHours(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(&data[blockOfs[0] + 0xE], v);
+    }
 
-    u8 Sav3::playedMinutes(void) const { return data[blockOfs[0] + 0x10]; }
-    void Sav3::playedMinutes(u8 v) { data[blockOfs[0] + 0x10] = v; }
+    u8 Sav3::playedMinutes(void) const
+    {
+        return data[blockOfs[0] + 0x10];
+    }
+    void Sav3::playedMinutes(u8 v)
+    {
+        data[blockOfs[0] + 0x10] = v;
+    }
 
-    u8 Sav3::playedSeconds(void) const { return data[blockOfs[0] + 0x11]; }
-    void Sav3::playedSeconds(u8 v) { data[blockOfs[0] + 0x11] = v; }
+    u8 Sav3::playedSeconds(void) const
+    {
+        return data[blockOfs[0] + 0x11];
+    }
+    void Sav3::playedSeconds(u8 v)
+    {
+        data[blockOfs[0] + 0x11] = v;
+    }
 
     // TODO:? playedFrames, u8 at 0x12
 
-    u8 Sav3::currentBox(void) const { return data[blockOfs[5]]; }
-    void Sav3::currentBox(u8 v) { data[blockOfs[5]] = v; }
+    u8 Sav3::currentBox(void) const
+    {
+        return data[blockOfs[5]];
+    }
+    void Sav3::currentBox(u8 v)
+    {
+        data[blockOfs[5]] = v;
+    }
 
     u32 Sav3::boxOffset(u8 box, u8 slot) const
     {
@@ -435,11 +477,23 @@ namespace pksm
         return true;
     }
 
-    u32 Sav3::dexPIDUnown(void) { return LittleEndian::convertTo<u32>(&data[PokeDex + 0x4]); }
-    void Sav3::dexPIDUnown(u32 v) { LittleEndian::convertFrom<u32>(&data[PokeDex + 0x4], v); }
+    u32 Sav3::dexPIDUnown(void)
+    {
+        return LittleEndian::convertTo<u32>(&data[PokeDex + 0x4]);
+    }
+    void Sav3::dexPIDUnown(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(&data[PokeDex + 0x4], v);
+    }
 
-    u32 Sav3::dexPIDSpinda(void) { return LittleEndian::convertTo<u32>(&data[PokeDex + 0x8]); }
-    void Sav3::dexPIDSpinda(u32 v) { LittleEndian::convertFrom<u32>(&data[PokeDex + 0x8], v); }
+    u32 Sav3::dexPIDSpinda(void)
+    {
+        return LittleEndian::convertTo<u32>(&data[PokeDex + 0x8]);
+    }
+    void Sav3::dexPIDSpinda(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(&data[PokeDex + 0x8], v);
+    }
 
     void Sav3::dex(const PKX& pk)
     {
@@ -509,7 +563,10 @@ namespace pksm
     }
 
     // Unused
-    std::unique_ptr<WCX> Sav3::mysteryGift(int) const { return nullptr; }
+    std::unique_ptr<WCX> Sav3::mysteryGift(int) const
+    {
+        return nullptr;
+    }
 
     void Sav3::cryptBoxData(bool crypted)
     {
@@ -570,7 +627,10 @@ namespace pksm
     {
         return data[blockOfs[1] + (game == Game::FRLG ? 0x34 : 0x234)];
     }
-    void Sav3::partyCount(u8 v) { data[blockOfs[1] + (game == Game::FRLG ? 0x34 : 0x234)] = v; }
+    void Sav3::partyCount(u8 v)
+    {
+        data[blockOfs[1] + (game == Game::FRLG ? 0x34 : 0x234)] = v;
+    }
 
     void Sav3::item(const Item& tItem, Pouch pouch, u16 slot)
     {

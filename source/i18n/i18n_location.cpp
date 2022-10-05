@@ -72,7 +72,10 @@ namespace i18n
         locationss.insert_or_assign(lang, std::move(tmp));
     }
 
-    void exitLocation(pksm::Language lang) { locationss[lang].clear(); }
+    void exitLocation(pksm::Language lang)
+    {
+        locationss[lang].clear();
+    }
 
     const std::string& location(pksm::Language lang, pksm::Generation gen, u16 v)
     {

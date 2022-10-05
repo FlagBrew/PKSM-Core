@@ -42,7 +42,10 @@ namespace i18n
         ribbons.insert_or_assign(lang, std::move(vec));
     }
 
-    void exitRibbon(pksm::Language lang) { ribbons[lang].clear(); }
+    void exitRibbon(pksm::Language lang)
+    {
+        ribbons[lang].clear();
+    }
 
     const std::string& ribbon(pksm::Language lang, pksm::Ribbon val)
     {

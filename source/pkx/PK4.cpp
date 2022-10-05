@@ -249,7 +249,10 @@ namespace pksm
         }
     }
 
-    bool PK4::isEncrypted() const { return LittleEndian::convertTo<u32>(data + 0x64) != 0; }
+    bool PK4::isEncrypted() const
+    {
+        return LittleEndian::convertTo<u32>(data + 0x64) != 0;
+    }
 
     PK4::PK4(PrivateConstructor, u8* dt, bool party, bool direct)
         : PKX(dt, party ? PARTY_LENGTH : BOX_LENGTH, direct)
@@ -266,50 +269,125 @@ namespace pksm
             const_cast<u8*>(data), isParty() ? PARTY_LENGTH : BOX_LENGTH);
     }
 
-    Generation PK4::generation(void) const { return Generation::FOUR; }
+    Generation PK4::generation(void) const
+    {
+        return Generation::FOUR;
+    }
 
-    u32 PK4::encryptionConstant(void) const { return PID(); }
+    u32 PK4::encryptionConstant(void) const
+    {
+        return PID();
+    }
     void PK4::encryptionConstant(u32) {}
 
-    u8 PK4::currentFriendship(void) const { return otFriendship(); }
-    void PK4::currentFriendship(u8 v) { otFriendship(v); }
+    u8 PK4::currentFriendship(void) const
+    {
+        return otFriendship();
+    }
+    void PK4::currentFriendship(u8 v)
+    {
+        otFriendship(v);
+    }
 
-    u8 PK4::abilityNumber(void) const { return 1 << (PID() & 1); }
+    u8 PK4::abilityNumber(void) const
+    {
+        return 1 << (PID() & 1);
+    }
     void PK4::abilityNumber(u8 v)
     {
         PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(), v,
             shiny(), TSV(), PID(), generation()));
     }
 
-    u32 PK4::PID(void) const { return LittleEndian::convertTo<u32>(data); }
-    void PK4::PID(u32 v) { LittleEndian::convertFrom<u32>(data, v); }
+    u32 PK4::PID(void) const
+    {
+        return LittleEndian::convertTo<u32>(data);
+    }
+    void PK4::PID(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(data, v);
+    }
 
-    u16 PK4::sanity(void) const { return LittleEndian::convertTo<u16>(data + 0x04); }
-    void PK4::sanity(u16 v) { LittleEndian::convertFrom<u16>(data + 0x04, v); }
+    u16 PK4::sanity(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x04);
+    }
+    void PK4::sanity(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x04, v);
+    }
 
-    u16 PK4::checksum(void) const { return LittleEndian::convertTo<u16>(data + 0x06); }
-    void PK4::checksum(u16 v) { LittleEndian::convertFrom<u16>(data + 0x06, v); }
+    u16 PK4::checksum(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x06);
+    }
+    void PK4::checksum(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x06, v);
+    }
 
-    Species PK4::species(void) const { return Species{LittleEndian::convertTo<u16>(data + 0x08)}; }
-    void PK4::species(Species v) { LittleEndian::convertFrom<u16>(data + 0x08, u16(v)); }
+    Species PK4::species(void) const
+    {
+        return Species{LittleEndian::convertTo<u16>(data + 0x08)};
+    }
+    void PK4::species(Species v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x08, u16(v));
+    }
 
-    u16 PK4::heldItem(void) const { return LittleEndian::convertTo<u16>(data + 0x0A); }
-    void PK4::heldItem(u16 v) { LittleEndian::convertFrom<u16>(data + 0x0A, v); }
+    u16 PK4::heldItem(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x0A);
+    }
+    void PK4::heldItem(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x0A, v);
+    }
 
-    u16 PK4::TID(void) const { return LittleEndian::convertTo<u16>(data + 0x0C); }
-    void PK4::TID(u16 v) { LittleEndian::convertFrom<u16>(data + 0x0C, v); }
+    u16 PK4::TID(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x0C);
+    }
+    void PK4::TID(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x0C, v);
+    }
 
-    u16 PK4::SID(void) const { return LittleEndian::convertTo<u16>(data + 0x0E); }
-    void PK4::SID(u16 v) { LittleEndian::convertFrom<u16>(data + 0x0E, v); }
+    u16 PK4::SID(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x0E);
+    }
+    void PK4::SID(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x0E, v);
+    }
 
-    u32 PK4::experience(void) const { return LittleEndian::convertTo<u32>(data + 0x10); }
-    void PK4::experience(u32 v) { LittleEndian::convertFrom<u32>(data + 0x10, v); }
+    u32 PK4::experience(void) const
+    {
+        return LittleEndian::convertTo<u32>(data + 0x10);
+    }
+    void PK4::experience(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(data + 0x10, v);
+    }
 
-    u8 PK4::otFriendship(void) const { return data[0x14]; }
-    void PK4::otFriendship(u8 v) { data[0x14] = v; }
+    u8 PK4::otFriendship(void) const
+    {
+        return data[0x14];
+    }
+    void PK4::otFriendship(u8 v)
+    {
+        data[0x14] = v;
+    }
 
-    Ability PK4::ability(void) const { return Ability{data[0x15]}; }
-    void PK4::ability(Ability v) { data[0x15] = u8(v); }
+    Ability PK4::ability(void) const
+    {
+        return Ability{data[0x15]};
+    }
+    void PK4::ability(Ability v)
+    {
+        data[0x15] = u8(v);
+    }
 
     void PK4::setAbility(u8 v)
     {
@@ -324,19 +402,46 @@ namespace pksm
         ability(abilities(v));
     }
 
-    u16 PK4::markValue(void) const { return data[0x16]; }
-    void PK4::markValue(u16 v) { data[0x16] = v; }
+    u16 PK4::markValue(void) const
+    {
+        return data[0x16];
+    }
+    void PK4::markValue(u16 v)
+    {
+        data[0x16] = v;
+    }
 
-    Language PK4::language(void) const { return Language(data[0x17]); }
-    void PK4::language(Language v) { data[0x17] = u8(v); }
+    Language PK4::language(void) const
+    {
+        return Language(data[0x17]);
+    }
+    void PK4::language(Language v)
+    {
+        data[0x17] = u8(v);
+    }
 
-    u16 PK4::ev(Stat ev) const { return data[0x18 + u8(ev)]; }
-    void PK4::ev(Stat ev, u16 v) { data[0x18 + u8(ev)] = v; }
+    u16 PK4::ev(Stat ev) const
+    {
+        return data[0x18 + u8(ev)];
+    }
+    void PK4::ev(Stat ev, u16 v)
+    {
+        data[0x18 + u8(ev)] = v;
+    }
 
-    u8 PK4::contest(u8 contest) const { return data[0x1E + contest]; }
-    void PK4::contest(u8 contest, u8 v) { data[0x1E + contest] = v; }
+    u8 PK4::contest(u8 contest) const
+    {
+        return data[0x1E + contest];
+    }
+    void PK4::contest(u8 contest, u8 v)
+    {
+        data[0x1E + contest] = v;
+    }
 
-    bool PK4::hasRibbon(Ribbon ribbon) const { return OFFSET_OF(ribbon).first != RIBBON_ABSENT; }
+    bool PK4::hasRibbon(Ribbon ribbon) const
+    {
+        return OFFSET_OF(ribbon).first != RIBBON_ABSENT;
+    }
     bool PK4::ribbon(Ribbon ribbon) const
     {
         auto offset = OFFSET_OF(ribbon);
@@ -355,14 +460,32 @@ namespace pksm
         }
     }
 
-    Move PK4::move(u8 m) const { return Move{LittleEndian::convertTo<u16>(data + 0x28 + m * 2)}; }
-    void PK4::move(u8 m, Move v) { LittleEndian::convertFrom<u16>(data + 0x28 + m * 2, u16(v)); }
+    Move PK4::move(u8 m) const
+    {
+        return Move{LittleEndian::convertTo<u16>(data + 0x28 + m * 2)};
+    }
+    void PK4::move(u8 m, Move v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x28 + m * 2, u16(v));
+    }
 
-    u8 PK4::PP(u8 m) const { return data[0x30 + m]; }
-    void PK4::PP(u8 m, u8 v) { data[0x30 + m] = v; }
+    u8 PK4::PP(u8 m) const
+    {
+        return data[0x30 + m];
+    }
+    void PK4::PP(u8 m, u8 v)
+    {
+        data[0x30 + m] = v;
+    }
 
-    u8 PK4::PPUp(u8 m) const { return data[0x34 + m]; }
-    void PK4::PPUp(u8 m, u8 v) { data[0x34 + m] = v; }
+    u8 PK4::PPUp(u8 m) const
+    {
+        return data[0x34 + m];
+    }
+    void PK4::PPUp(u8 m, u8 v)
+    {
+        data[0x34 + m] = v;
+    }
 
     u8 PK4::iv(Stat stat) const
     {
@@ -399,10 +522,19 @@ namespace pksm
             (LittleEndian::convertTo<u32>(data + 0x38) & 0x7FFFFFFF) | (v ? 0x80000000 : 0));
     }
 
-    bool PK4::fatefulEncounter(void) const { return (data[0x40] & 1) == 1; }
-    void PK4::fatefulEncounter(bool v) { data[0x40] = (data[0x40] & ~0x01) | (v ? 1 : 0); }
+    bool PK4::fatefulEncounter(void) const
+    {
+        return (data[0x40] & 1) == 1;
+    }
+    void PK4::fatefulEncounter(bool v)
+    {
+        data[0x40] = (data[0x40] & ~0x01) | (v ? 1 : 0);
+    }
 
-    Gender PK4::gender(void) const { return Gender{u8((data[0x40] >> 1) & 0x3)}; }
+    Gender PK4::gender(void) const
+    {
+        return Gender{u8((data[0x40] >> 1) & 0x3)};
+    }
     void PK4::gender(Gender g)
     {
         data[0x40] = (data[0x40] & ~0x06) | (u8(g) << 1);
@@ -410,18 +542,33 @@ namespace pksm
             shiny(), TSV(), PID(), generation()));
     }
 
-    u16 PK4::alternativeForm(void) const { return data[0x40] >> 3; }
-    void PK4::alternativeForm(u16 v) { data[0x40] = (data[0x40] & 0x07) | (v << 3); }
+    u16 PK4::alternativeForm(void) const
+    {
+        return data[0x40] >> 3;
+    }
+    void PK4::alternativeForm(u16 v)
+    {
+        data[0x40] = (data[0x40] & 0x07) | (v << 3);
+    }
 
-    Nature PK4::nature(void) const { return Nature{u8(PID() % 25)}; }
+    Nature PK4::nature(void) const
+    {
+        return Nature{u8(PID() % 25)};
+    }
     void PK4::nature(Nature v)
     {
         PID(PKX::getRandomPID(species(), gender(), version(), v, alternativeForm(), abilityNumber(),
             shiny(), TSV(), PID(), generation()));
     }
 
-    u8 PK4::shinyLeaf(void) const { return data[0x41]; }
-    void PK4::shinyLeaf(u8 v) { data[0x41] = v; }
+    u8 PK4::shinyLeaf(void) const
+    {
+        return data[0x41];
+    }
+    void PK4::shinyLeaf(u8 v)
+    {
+        data[0x41] = v;
+    }
 
     std::string PK4::nickname(void) const
     {
@@ -432,8 +579,14 @@ namespace pksm
         StringUtils::setString4(data, StringUtils::transString45(v), 0x48, 11);
     }
 
-    GameVersion PK4::version(void) const { return GameVersion(data[0x5F]); }
-    void PK4::version(GameVersion v) { data[0x5F] = u8(v); }
+    GameVersion PK4::version(void) const
+    {
+        return GameVersion(data[0x5F]);
+    }
+    void PK4::version(GameVersion v)
+    {
+        data[0x5F] = u8(v);
+    }
 
     std::string PK4::otName(void) const
     {
@@ -444,23 +597,59 @@ namespace pksm
         StringUtils::setString4(data, StringUtils::transString45(v), 0x68, 8);
     }
 
-    int PK4::eggYear(void) const { return 2000 + data[0x78]; }
-    void PK4::eggYear(int v) { data[0x78] = v - 2000; }
+    int PK4::eggYear(void) const
+    {
+        return 2000 + data[0x78];
+    }
+    void PK4::eggYear(int v)
+    {
+        data[0x78] = v - 2000;
+    }
 
-    int PK4::eggMonth(void) const { return data[0x79]; }
-    void PK4::eggMonth(int v) { data[0x79] = v; }
+    int PK4::eggMonth(void) const
+    {
+        return data[0x79];
+    }
+    void PK4::eggMonth(int v)
+    {
+        data[0x79] = v;
+    }
 
-    int PK4::eggDay(void) const { return data[0x7A]; }
-    void PK4::eggDay(int v) { data[0x7A] = v; }
+    int PK4::eggDay(void) const
+    {
+        return data[0x7A];
+    }
+    void PK4::eggDay(int v)
+    {
+        data[0x7A] = v;
+    }
 
-    int PK4::metYear(void) const { return 2000 + data[0x7B]; }
-    void PK4::metYear(int v) { data[0x7B] = v - 2000; }
+    int PK4::metYear(void) const
+    {
+        return 2000 + data[0x7B];
+    }
+    void PK4::metYear(int v)
+    {
+        data[0x7B] = v - 2000;
+    }
 
-    int PK4::metMonth(void) const { return data[0x7C]; }
-    void PK4::metMonth(int v) { data[0x7C] = v; }
+    int PK4::metMonth(void) const
+    {
+        return data[0x7C];
+    }
+    void PK4::metMonth(int v)
+    {
+        data[0x7C] = v;
+    }
 
-    int PK4::metDay(void) const { return data[0x7D]; }
-    void PK4::metDay(int v) { data[0x7D] = v; }
+    int PK4::metDay(void) const
+    {
+        return data[0x7D];
+    }
+    void PK4::metDay(int v)
+    {
+        data[0x7D] = v;
+    }
 
     u16 PK4::eggLocation(void) const
     {
@@ -524,14 +713,32 @@ namespace pksm
         }
     }
 
-    u8 PK4::pkrs(void) const { return data[0x82]; }
-    void PK4::pkrs(u8 v) { data[0x82] = v; }
+    u8 PK4::pkrs(void) const
+    {
+        return data[0x82];
+    }
+    void PK4::pkrs(u8 v)
+    {
+        data[0x82] = v;
+    }
 
-    u8 PK4::pkrsDays(void) const { return data[0x82] & 0xF; };
-    void PK4::pkrsDays(u8 v) { data[0x82] = (u8)((data[0x82] & ~0xF) | v); }
+    u8 PK4::pkrsDays(void) const
+    {
+        return data[0x82] & 0xF;
+    };
+    void PK4::pkrsDays(u8 v)
+    {
+        data[0x82] = (u8)((data[0x82] & ~0xF) | v);
+    }
 
-    u8 PK4::pkrsStrain(void) const { return data[0x82] >> 4; };
-    void PK4::pkrsStrain(u8 v) { data[0x82] = (u8)((data[0x82] & 0xF) | v << 4); }
+    u8 PK4::pkrsStrain(void) const
+    {
+        return data[0x82] >> 4;
+    };
+    void PK4::pkrsStrain(u8 v)
+    {
+        data[0x82] = (u8)((data[0x82] & 0xF) | v << 4);
+    }
 
     Ball PK4::ball(void) const
     {
@@ -547,14 +754,32 @@ namespace pksm
             data[0x86] = 0;
     }
 
-    u8 PK4::metLevel(void) const { return data[0x84] & ~0x80; }
-    void PK4::metLevel(u8 v) { data[0x84] = (data[0x84] & 0x80) | v; }
+    u8 PK4::metLevel(void) const
+    {
+        return data[0x84] & ~0x80;
+    }
+    void PK4::metLevel(u8 v)
+    {
+        data[0x84] = (data[0x84] & 0x80) | v;
+    }
 
-    Gender PK4::otGender(void) const { return Gender{u8(data[0x84] >> 7)}; }
-    void PK4::otGender(Gender v) { data[0x84] = (data[0x84] & ~0x80) | (u8(v) << 7); }
+    Gender PK4::otGender(void) const
+    {
+        return Gender{u8(data[0x84] >> 7)};
+    }
+    void PK4::otGender(Gender v)
+    {
+        data[0x84] = (data[0x84] & ~0x80) | (u8(v) << 7);
+    }
 
-    u8 PK4::encounterType(void) const { return data[0x85]; }
-    void PK4::encounterType(u8 v) { data[0x85] = v; }
+    u8 PK4::encounterType(void) const
+    {
+        return data[0x85];
+    }
+    void PK4::encounterType(u8 v)
+    {
+        data[0x85] = v;
+    }
 
     u8 PK4::characteristic(void) const
     {
@@ -621,8 +846,14 @@ namespace pksm
         }
     }
 
-    u16 PK4::TSV(void) const { return (TID() ^ SID()) >> 3; }
-    u16 PK4::PSV(void) const { return ((PID() >> 16) ^ (PID() & 0xFFFF)) >> 3; }
+    u16 PK4::TSV(void) const
+    {
+        return (TID() ^ SID()) >> 3;
+    }
+    u16 PK4::PSV(void) const
+    {
+        return ((PID() >> 16) ^ (PID() & 0xFFFF)) >> 3;
+    }
 
     u8 PK4::level(void) const
     {
@@ -633,9 +864,15 @@ namespace pksm
         return i;
     }
 
-    void PK4::level(u8 v) { experience(expTable(v - 1, expType())); }
+    void PK4::level(u8 v)
+    {
+        experience(expTable(v - 1, expType()));
+    }
 
-    bool PK4::shiny(void) const { return TSV() == PSV(); }
+    bool PK4::shiny(void) const
+    {
+        return TSV() == PSV();
+    }
     void PK4::shiny(bool v)
     {
         PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),

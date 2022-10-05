@@ -42,7 +42,10 @@ namespace i18n
         balls.insert_or_assign(lang, std::move(vec));
     }
 
-    void exitBall(pksm::Language lang) { balls[lang].clear(); }
+    void exitBall(pksm::Language lang)
+    {
+        balls[lang].clear();
+    }
 
     const std::string& ball(pksm::Language lang, pksm::Ball val)
     {

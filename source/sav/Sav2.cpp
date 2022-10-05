@@ -225,7 +225,10 @@ namespace pksm
     }
 
     // max length of string + terminator
-    u8 Sav2::nameLength() const { return japanese ? 6 : 11; }
+    u8 Sav2::nameLength() const
+    {
+        return japanese ? 6 : 11;
+    }
 
     u8 Sav2::PK2Length(void) const
     {
@@ -266,7 +269,8 @@ namespace pksm
         fixBoxes();
         fixParty();
         fixItemLists();
-        if (currentBox() != originalCurrentBox) {
+        if (currentBox() != originalCurrentBox)
+        {
             std::copy(&data[OFS_CURRENT_BOX], &data[OFS_CURRENT_BOX] + boxSize,
                 &data[boxStart(originalCurrentBox, false)]);
             std::copy(&data[boxStart(currentBox())], &data[boxStart(currentBox())] + boxSize,
@@ -279,14 +283,23 @@ namespace pksm
             crypto::bytewiseSum16({&data[OFS_TID], &data[OFS_CHECKSUM_END] - &data[OFS_TID] + 1});
         LittleEndian::convertFrom<u16>(&data[OFS_CHECKSUM_ONE], checksum);
         LittleEndian::convertFrom<u16>(&data[OFS_CHECKSUM_TWO], checksum);
-        
+
         originalCurrentBox = currentBox();
     }
 
-    u16 Sav2::TID() const { return BigEndian::convertTo<u16>(&data[OFS_TID]); }
-    void Sav2::TID(u16 v) { BigEndian::convertFrom<u16>(&data[OFS_TID], v); }
+    u16 Sav2::TID() const
+    {
+        return BigEndian::convertTo<u16>(&data[OFS_TID]);
+    }
+    void Sav2::TID(u16 v)
+    {
+        BigEndian::convertFrom<u16>(&data[OFS_TID], v);
+    }
 
-    GameVersion Sav2::version() const { return versionOfGame; }
+    GameVersion Sav2::version() const
+    {
+        return versionOfGame;
+    }
     void Sav2::version(GameVersion v)
     {
         if ((v == GameVersion::C) ^ (versionOfGame != GameVersion::C))
@@ -318,7 +331,10 @@ namespace pksm
         }
     }
 
-    Language Sav2::language() const { return lang; }
+    Language Sav2::language() const
+    {
+        return lang;
+    }
     void Sav2::language(Language v)
     {
         if (((lang == Language::JPN) == (v == Language::JPN)) &&
@@ -339,7 +355,10 @@ namespace pksm
     }
 
     // yay, they stopped using BCD
-    u32 Sav2::money() const { return BigEndian::convertTo<u32>(&data[OFS_MONEY]) >> 8; }
+    u32 Sav2::money() const
+    {
+        return BigEndian::convertTo<u32>(&data[OFS_MONEY]) >> 8;
+    }
     void Sav2::money(u32 v)
     {
         if (v > 999999)
@@ -360,14 +379,35 @@ namespace pksm
         return sum;
     }
 
-    u16 Sav2::playedHours() const { return BigEndian::convertTo<u16>(&data[OFS_TIME_PLAYED]); }
-    void Sav2::playedHours(u16 v) { BigEndian::convertFrom<u16>(&data[OFS_TIME_PLAYED], v); }
-    u8 Sav2::playedMinutes() const { return data[OFS_TIME_PLAYED + 2]; }
-    void Sav2::playedMinutes(u8 v) { data[OFS_TIME_PLAYED + 2] = v; }
-    u8 Sav2::playedSeconds() const { return data[OFS_TIME_PLAYED + 3]; }
-    void Sav2::playedSeconds(u8 v) { data[OFS_TIME_PLAYED + 3] = v; }
+    u16 Sav2::playedHours() const
+    {
+        return BigEndian::convertTo<u16>(&data[OFS_TIME_PLAYED]);
+    }
+    void Sav2::playedHours(u16 v)
+    {
+        BigEndian::convertFrom<u16>(&data[OFS_TIME_PLAYED], v);
+    }
+    u8 Sav2::playedMinutes() const
+    {
+        return data[OFS_TIME_PLAYED + 2];
+    }
+    void Sav2::playedMinutes(u8 v)
+    {
+        data[OFS_TIME_PLAYED + 2] = v;
+    }
+    u8 Sav2::playedSeconds() const
+    {
+        return data[OFS_TIME_PLAYED + 3];
+    }
+    void Sav2::playedSeconds(u8 v)
+    {
+        data[OFS_TIME_PLAYED + 3] = v;
+    }
 
-    u8 Sav2::currentBox() const { return data[OFS_CURRENT_BOX_INDEX] & 0x7F; }
+    u8 Sav2::currentBox() const
+    {
+        return data[OFS_CURRENT_BOX_INDEX] & 0x7F;
+    }
     void Sav2::currentBox(u8 v)
     {
         data[OFS_CURRENT_BOX_INDEX] = (data[OFS_CHANGED_BOX] & 0x80) | (v & 0x7F);
@@ -385,7 +425,10 @@ namespace pksm
         return boxDataStart(box) + (maxPkmInBox * PK2::BOX_LENGTH) +
                ((maxPkmInBox + slot) * nameLength());
     }
-    u32 Sav2::partyOffset(u8 slot) const { return OFS_PARTY + 8 + (slot * PK2::PARTY_LENGTH); }
+    u32 Sav2::partyOffset(u8 slot) const
+    {
+        return OFS_PARTY + 8 + (slot * PK2::PARTY_LENGTH);
+    }
     u32 Sav2::partyOtNameOffset(u8 slot) const
     {
         return OFS_PARTY + 8 + (6 * PK2::PARTY_LENGTH) + (slot * nameLength());
@@ -664,10 +707,22 @@ namespace pksm
             boxNameLength, lang, boxNameLength);
     }
 
-    u8 Sav2::partyCount() const { return data[OFS_PARTY]; }
-    void Sav2::partyCount(u8 count) { data[OFS_PARTY] = count; }
-    u8 Sav2::boxCount(u8 box) const { return data[boxStart(box)]; }
-    void Sav2::boxCount(u8 box, u8 count) { data[boxStart(box)] = count; }
+    u8 Sav2::partyCount() const
+    {
+        return data[OFS_PARTY];
+    }
+    void Sav2::partyCount(u8 count)
+    {
+        data[OFS_PARTY] = count;
+    }
+    u8 Sav2::boxCount(u8 box) const
+    {
+        return data[boxStart(box)];
+    }
+    void Sav2::boxCount(u8 box, u8 count)
+    {
+        data[boxStart(box)] = count;
+    }
     void Sav2::fixBox(u8 box)
     {
         u8 count = 0;
@@ -714,9 +769,15 @@ namespace pksm
         data[OFS_PARTY]             = count;
     }
 
-    int Sav2::maxSlot() const { return maxBoxes() * maxPkmInBox; }
+    int Sav2::maxSlot() const
+    {
+        return maxBoxes() * maxPkmInBox;
+    }
 
-    int Sav2::maxBoxes() const { return japanese ? 9 : 14; }
+    int Sav2::maxBoxes() const
+    {
+        return japanese ? 9 : 14;
+    }
 
     void Sav2::item(const Item& tItem, Pouch pouch, u16 slot)
     {

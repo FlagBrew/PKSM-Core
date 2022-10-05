@@ -54,10 +54,10 @@ namespace pksm
             } v;
 
             constexpr explicit Gender_impl(GenderEnum v) : v(v) {}
-            constexpr Gender_impl(const Gender_impl&) = default;
-            constexpr Gender_impl(Gender_impl&&)      = default;
+            constexpr Gender_impl(const Gender_impl&)            = default;
+            constexpr Gender_impl(Gender_impl&&)                 = default;
             constexpr Gender_impl& operator=(const Gender_impl&) = default;
-            constexpr Gender_impl& operator=(Gender_impl&&) = default;
+            constexpr Gender_impl& operator=(Gender_impl&&)      = default;
 
         public:
             template <std::integral T>

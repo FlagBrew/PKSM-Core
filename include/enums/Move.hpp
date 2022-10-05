@@ -880,10 +880,10 @@ namespace pksm
             } v;
 
             constexpr explicit Move_impl(MoveEnum v) : v(v) {}
-            constexpr Move_impl(const Move_impl&) = default;
-            constexpr Move_impl(Move_impl&&)      = default;
+            constexpr Move_impl(const Move_impl&)            = default;
+            constexpr Move_impl(Move_impl&&)                 = default;
             constexpr Move_impl& operator=(const Move_impl&) = default;
-            constexpr Move_impl& operator=(Move_impl&&) = default;
+            constexpr Move_impl& operator=(Move_impl&&)      = default;
 
         public:
             template <std::integral T>

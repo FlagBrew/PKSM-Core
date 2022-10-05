@@ -116,7 +116,7 @@ namespace pksm
 
         virtual ~Sav() = default;
         Sav(const std::shared_ptr<u8[]>& data, u32 length) : data(data), length(length) {}
-        Sav(const Sav& save) = delete;
+        Sav(const Sav& save)            = delete;
         Sav& operator=(const Sav& save) = delete;
         // Readies the save for serialization in signed/encrypted form
         virtual void finishEditing(void) = 0;

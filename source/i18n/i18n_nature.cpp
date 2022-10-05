@@ -42,7 +42,10 @@ namespace i18n
         natures.insert_or_assign(lang, std::move(vec));
     }
 
-    void exitNature(pksm::Language lang) { natures[lang].clear(); }
+    void exitNature(pksm::Language lang)
+    {
+        natures[lang].clear();
+    }
 
     const std::string& nature(pksm::Language lang, pksm::Nature val)
     {

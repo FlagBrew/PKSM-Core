@@ -63,19 +63,40 @@ namespace pksm
         pokemonData->decrypt(); // encrypt Pokemon data if it isn't already
     }
 
-    u16 PGT::ID(void) const { return 0; }
+    u16 PGT::ID(void) const
+    {
+        return 0;
+    }
 
-    std::string PGT::title(void) const { return "Wondercard"; }
+    std::string PGT::title(void) const
+    {
+        return "Wondercard";
+    }
 
-    bool PGT::power(void) const { return false; }
+    bool PGT::power(void) const
+    {
+        return false;
+    }
 
-    Generation PGT::generation(void) const { return Generation::FOUR; }
+    Generation PGT::generation(void) const
+    {
+        return Generation::FOUR;
+    }
 
-    u8 PGT::type(void) const { return data[0]; }
+    u8 PGT::type(void) const
+    {
+        return data[0];
+    }
 
-    bool PGT::bean(void) const { return false; }
+    bool PGT::bean(void) const
+    {
+        return false;
+    }
 
-    bool PGT::BP(void) const { return false; }
+    bool PGT::BP(void) const
+    {
+        return false;
+    }
 
     bool PGT::item(void) const
     {
@@ -83,7 +104,10 @@ namespace pksm
     }
 
     // Pokemon, egg, or Manaphy egg
-    bool PGT::pokemon(void) const { return type() == 1 || type() == 2 || type() == 7; }
+    bool PGT::pokemon(void) const
+    {
+        return type() == 1 || type() == 2 || type() == 7;
+    }
 
     u16 PGT::object(void) const
     {
@@ -106,9 +130,15 @@ namespace pksm
         return LittleEndian::convertTo<u16>(data + 0x4);
     }
 
-    u8 PGT::flags(void) const { return data[3]; }
+    u8 PGT::flags(void) const
+    {
+        return data[3];
+    }
 
-    bool PGT::multiObtainable(void) const { return false; }
+    bool PGT::multiObtainable(void) const
+    {
+        return false;
+    }
 
     int PGT::year(void) const
     {
@@ -161,64 +191,148 @@ namespace pksm
         pokemonData->decrypt();
     }
 
-    u8 PGT::cardLocation(void) const { return 0; }
+    u8 PGT::cardLocation(void) const
+    {
+        return 0;
+    }
 
-    bool PGT::used(void) const { return false; }
+    bool PGT::used(void) const
+    {
+        return false;
+    }
 
-    Ball PGT::ball(void) const { return pokemonData->ball(); }
+    Ball PGT::ball(void) const
+    {
+        return pokemonData->ball();
+    }
 
-    u16 PGT::heldItem(void) const { return pokemonData->heldItem(); }
+    u16 PGT::heldItem(void) const
+    {
+        return pokemonData->heldItem();
+    }
 
-    bool PGT::shiny(void) const { return pokemonData->shiny(); }
+    bool PGT::shiny(void) const
+    {
+        return pokemonData->shiny();
+    }
 
-    u8 PGT::PIDType(void) const { return pokemonData->shiny() ? 2 : 0; }
+    u8 PGT::PIDType(void) const
+    {
+        return pokemonData->shiny() ? 2 : 0;
+    }
 
-    u16 PGT::TID(void) const { return pokemonData->TID(); }
+    u16 PGT::TID(void) const
+    {
+        return pokemonData->TID();
+    }
 
-    u16 PGT::SID(void) const { return pokemonData->SID(); }
+    u16 PGT::SID(void) const
+    {
+        return pokemonData->SID();
+    }
 
-    Move PGT::move(u8 index) const { return pokemonData->move(index); }
+    Move PGT::move(u8 index) const
+    {
+        return pokemonData->move(index);
+    }
 
-    Species PGT::species(void) const { return pokemonData->species(); }
+    Species PGT::species(void) const
+    {
+        return pokemonData->species();
+    }
 
-    Gender PGT::gender(void) const { return pokemonData->gender(); }
+    Gender PGT::gender(void) const
+    {
+        return pokemonData->gender();
+    }
 
     std::string PGT::otName(void) const
     {
         return !(flags() == 0 && type() != 1) ? pokemonData->otName() : "";
     }
 
-    u8 PGT::level(void) const { return pokemonData->level(); }
+    u8 PGT::level(void) const
+    {
+        return pokemonData->level();
+    }
 
-    u32 PGT::PID(void) const { return pokemonData->PID(); }
+    u32 PGT::PID(void) const
+    {
+        return pokemonData->PID();
+    }
 
-    bool PGT::hasRibbon(Ribbon rib) const { return pokemonData->hasRibbon(rib); }
+    bool PGT::hasRibbon(Ribbon rib) const
+    {
+        return pokemonData->hasRibbon(rib);
+    }
 
-    bool PGT::ribbon(Ribbon rib) const { return pokemonData->ribbon(rib); }
+    bool PGT::ribbon(Ribbon rib) const
+    {
+        return pokemonData->ribbon(rib);
+    }
 
-    u8 PGT::alternativeForm(void) const { return pokemonData->alternativeForm(); }
+    u8 PGT::alternativeForm(void) const
+    {
+        return pokemonData->alternativeForm();
+    }
 
-    Language PGT::language(void) const { return pokemonData->language(); }
+    Language PGT::language(void) const
+    {
+        return pokemonData->language();
+    }
 
-    std::string PGT::nickname(void) const { return pokemonData->nickname(); }
+    std::string PGT::nickname(void) const
+    {
+        return pokemonData->nickname();
+    }
 
-    Nature PGT::nature(void) const { return pokemonData->nature(); }
+    Nature PGT::nature(void) const
+    {
+        return pokemonData->nature();
+    }
 
-    u8 PGT::abilityType(void) const { return pokemonData->abilityNumber(); }
+    u8 PGT::abilityType(void) const
+    {
+        return pokemonData->abilityNumber();
+    }
 
-    Ability PGT::ability(void) const { return pokemonData->ability(); }
+    Ability PGT::ability(void) const
+    {
+        return pokemonData->ability();
+    }
 
-    u16 PGT::eggLocation(void) const { return pokemonData->eggLocation(); }
+    u16 PGT::eggLocation(void) const
+    {
+        return pokemonData->eggLocation();
+    }
 
-    u16 PGT::metLocation(void) const { return pokemonData->metLocation(); }
+    u16 PGT::metLocation(void) const
+    {
+        return pokemonData->metLocation();
+    }
 
-    u8 PGT::metLevel(void) const { return pokemonData->metLevel(); }
+    u8 PGT::metLevel(void) const
+    {
+        return pokemonData->metLevel();
+    }
 
-    u8 PGT::contest(u8 index) const { return pokemonData->contest(index); }
+    u8 PGT::contest(u8 index) const
+    {
+        return pokemonData->contest(index);
+    }
 
-    u8 PGT::iv(Stat index) const { return pokemonData->iv(index); }
+    u8 PGT::iv(Stat index) const
+    {
+        return pokemonData->iv(index);
+    }
 
-    bool PGT::egg(void) const { return pokemonData->egg(); }
+    bool PGT::egg(void) const
+    {
+        return pokemonData->egg();
+    }
 
-    u16 PGT::formSpecies(void) const { return pokemonData->formSpecies(); }
+    u16 PGT::formSpecies(void) const
+    {
+        return pokemonData->formSpecies();
+    }
 }

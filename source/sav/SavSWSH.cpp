@@ -223,16 +223,28 @@ namespace pksm
     {
         return GameVersion(getBlock(Status)->decryptedData()[0xA4]);
     }
-    void SavSWSH::version(GameVersion v) { getBlock(Status)->decryptedData()[0xA4] = u8(v); }
+    void SavSWSH::version(GameVersion v)
+    {
+        getBlock(Status)->decryptedData()[0xA4] = u8(v);
+    }
 
-    Gender SavSWSH::gender(void) const { return Gender{getBlock(Status)->decryptedData()[0xA5]}; }
-    void SavSWSH::gender(Gender v) { getBlock(Status)->decryptedData()[0xA5] = u8(v); }
+    Gender SavSWSH::gender(void) const
+    {
+        return Gender{getBlock(Status)->decryptedData()[0xA5]};
+    }
+    void SavSWSH::gender(Gender v)
+    {
+        getBlock(Status)->decryptedData()[0xA5] = u8(v);
+    }
 
     Language SavSWSH::language(void) const
     {
         return Language(getBlock(Status)->decryptedData()[0xA7]);
     }
-    void SavSWSH::language(Language v) { getBlock(Status)->decryptedData()[0xA7] = u8(v); }
+    void SavSWSH::language(Language v)
+    {
+        getBlock(Status)->decryptedData()[0xA7] = u8(v);
+    }
 
     std::string SavSWSH::otName(void) const
     {
@@ -274,7 +286,10 @@ namespace pksm
         LittleEndian::convertFrom<u32>(getBlock(Misc)->decryptedData() + 4, v);
     }
 
-    u8 SavSWSH::badges(void) const { return getBlock(Misc)->decryptedData()[0x11C]; }
+    u8 SavSWSH::badges(void) const
+    {
+        return getBlock(Misc)->decryptedData()[0x11C];
+    }
 
     u16 SavSWSH::playedHours(void) const
     {
@@ -285,11 +300,23 @@ namespace pksm
         LittleEndian::convertFrom<u16>(getBlock(PlayTime)->decryptedData(), v);
     }
 
-    u8 SavSWSH::playedMinutes(void) const { return getBlock(PlayTime)->decryptedData()[2]; }
-    void SavSWSH::playedMinutes(u8 v) { getBlock(PlayTime)->decryptedData()[2] = v; }
+    u8 SavSWSH::playedMinutes(void) const
+    {
+        return getBlock(PlayTime)->decryptedData()[2];
+    }
+    void SavSWSH::playedMinutes(u8 v)
+    {
+        getBlock(PlayTime)->decryptedData()[2] = v;
+    }
 
-    u8 SavSWSH::playedSeconds(void) const { return getBlock(PlayTime)->decryptedData()[3]; }
-    void SavSWSH::playedSeconds(u8 v) { getBlock(PlayTime)->decryptedData()[3] = v; }
+    u8 SavSWSH::playedSeconds(void) const
+    {
+        return getBlock(PlayTime)->decryptedData()[3];
+    }
+    void SavSWSH::playedSeconds(u8 v)
+    {
+        getBlock(PlayTime)->decryptedData()[3] = v;
+    }
 
     void SavSWSH::item(const Item& item, Pouch pouch, u16 slot)
     {
@@ -492,7 +519,10 @@ namespace pksm
     {
         return PK8::PARTY_LENGTH * slot + PK8::PARTY_LENGTH * 30 * box;
     }
-    u32 SavSWSH::partyOffset(u8 slot) const { return PK8::PARTY_LENGTH * slot; }
+    u32 SavSWSH::partyOffset(u8 slot) const
+    {
+        return PK8::PARTY_LENGTH * slot;
+    }
 
     u8 SavSWSH::partyCount(void) const
     {
@@ -836,7 +866,10 @@ namespace pksm
             }
         }
     }
-    std::unique_ptr<WCX> SavSWSH::mysteryGift(int) const { return nullptr; }
+    std::unique_ptr<WCX> SavSWSH::mysteryGift(int) const
+    {
+        return nullptr;
+    }
 
     void SavSWSH::dex(const PKX& pk)
     {

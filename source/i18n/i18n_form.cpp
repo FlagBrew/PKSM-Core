@@ -413,7 +413,10 @@ namespace i18n
         formss.insert_or_assign(lang, std::move(vec));
     }
 
-    void exitForm(pksm::Language lang) { formss[lang].clear(); }
+    void exitForm(pksm::Language lang)
+    {
+        formss[lang].clear();
+    }
 
     const std::span<const size_t> formIndices(pksm::GameVersion version, pksm::Species species)
     {

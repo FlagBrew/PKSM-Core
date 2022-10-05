@@ -298,8 +298,14 @@ namespace pksm::crypto::swsh
         }
     }
 
-    u32 SCBlock::key() const { return LittleEndian::convertTo<u32>(&data[myOffset]); }
-    void SCBlock::key(u32 v) { LittleEndian::convertFrom<u32>(&data[myOffset], v); }
+    u32 SCBlock::key() const
+    {
+        return LittleEndian::convertTo<u32>(&data[myOffset]);
+    }
+    void SCBlock::key(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(&data[myOffset], v);
+    }
 
     size_t SCBlock::arrayEntrySize(SCBlockType type)
     {

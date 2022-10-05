@@ -132,7 +132,10 @@ namespace pksm
         return value ^ x;
     }
 
-    bool PK3::japanese(void) const { return flagIsEgg() || language() == Language::JPN; }
+    bool PK3::japanese(void) const
+    {
+        return flagIsEgg() || language() == Language::JPN;
+    }
 
     u16 PK3::calcChecksum() const
     {
@@ -142,9 +145,15 @@ namespace pksm
         return chk;
     }
 
-    void PK3::refreshChecksum() { checksum(calcChecksum()); }
+    void PK3::refreshChecksum()
+    {
+        checksum(calcChecksum());
+    }
 
-    bool PK3::isEncrypted() const { return calcChecksum() != checksum(); }
+    bool PK3::isEncrypted() const
+    {
+        return calcChecksum() != checksum();
+    }
 
     PK3::PK3(PrivateConstructor, u8* dt, bool party, bool directAccess)
         : PKX(dt, party ? PARTY_LENGTH : BOX_LENGTH, directAccess)
@@ -164,25 +173,61 @@ namespace pksm
         return ret;
     }
 
-    Generation PK3::generation(void) const { return Generation::THREE; }
+    Generation PK3::generation(void) const
+    {
+        return Generation::THREE;
+    }
 
-    u32 PK3::encryptionConstant(void) const { return PID(); }
+    u32 PK3::encryptionConstant(void) const
+    {
+        return PID();
+    }
     void PK3::encryptionConstant(u32) {}
 
-    u8 PK3::currentFriendship(void) const { return otFriendship(); }
-    void PK3::currentFriendship(u8 v) { otFriendship(v); }
+    u8 PK3::currentFriendship(void) const
+    {
+        return otFriendship();
+    }
+    void PK3::currentFriendship(u8 v)
+    {
+        otFriendship(v);
+    }
 
-    u8 PK3::abilityNumber(void) const { return abilityBit() ? 2 : 1; }
-    void PK3::abilityNumber(u8 v) { abilityBit(v > 1); }
+    u8 PK3::abilityNumber(void) const
+    {
+        return abilityBit() ? 2 : 1;
+    }
+    void PK3::abilityNumber(u8 v)
+    {
+        abilityBit(v > 1);
+    }
 
-    u32 PK3::PID(void) const { return LittleEndian::convertTo<u32>(data); }
-    void PK3::PID(u32 v) { LittleEndian::convertFrom<u32>(data, v); }
+    u32 PK3::PID(void) const
+    {
+        return LittleEndian::convertTo<u32>(data);
+    }
+    void PK3::PID(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(data, v);
+    }
 
-    u16 PK3::TID(void) const { return LittleEndian::convertTo<u16>(data + 0x04); }
-    void PK3::TID(u16 v) { LittleEndian::convertFrom<u16>(data + 0x04, v); }
+    u16 PK3::TID(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x04);
+    }
+    void PK3::TID(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x04, v);
+    }
 
-    u16 PK3::SID(void) const { return LittleEndian::convertTo<u16>(data + 0x06); }
-    void PK3::SID(u16 v) { LittleEndian::convertFrom<u16>(data + 0x06, v); }
+    u16 PK3::SID(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x06);
+    }
+    void PK3::SID(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x06, v);
+    }
 
     std::string PK3::nickname(void) const
     {
@@ -193,17 +238,41 @@ namespace pksm
         StringUtils::setString3(data, v, 0x08, 10, japanese());
     }
 
-    Language PK3::language(void) const { return Language(data[0x12]); }
-    void PK3::language(Language v) { data[0x12] = u8(v); }
+    Language PK3::language(void) const
+    {
+        return Language(data[0x12]);
+    }
+    void PK3::language(Language v)
+    {
+        data[0x12] = u8(v);
+    }
 
-    bool PK3::flagIsBadEgg(void) const { return (data[0x13] & 1) == 1; }
-    void PK3::flagIsBadEgg(bool v) { data[0x13] = (data[0x13] & ~1) | (v ? 1 : 0); }
+    bool PK3::flagIsBadEgg(void) const
+    {
+        return (data[0x13] & 1) == 1;
+    }
+    void PK3::flagIsBadEgg(bool v)
+    {
+        data[0x13] = (data[0x13] & ~1) | (v ? 1 : 0);
+    }
 
-    bool PK3::flagHasSpecies(void) const { return (data[0x13] & 2) == 2; }
-    void PK3::flagHasSpecies(bool v) { data[0x13] = (data[0x13] & ~2) | (v ? 2 : 0); }
+    bool PK3::flagHasSpecies(void) const
+    {
+        return (data[0x13] & 2) == 2;
+    }
+    void PK3::flagHasSpecies(bool v)
+    {
+        data[0x13] = (data[0x13] & ~2) | (v ? 2 : 0);
+    }
 
-    bool PK3::flagIsEgg(void) const { return (data[0x13] & 4) == 4; }
-    void PK3::flagIsEgg(bool v) { data[0x13] = (data[0x13] & ~4) | (v ? 4 : 0); }
+    bool PK3::flagIsEgg(void) const
+    {
+        return (data[0x13] & 4) == 4;
+    }
+    void PK3::flagIsEgg(bool v)
+    {
+        data[0x13] = (data[0x13] & ~4) | (v ? 4 : 0);
+    }
 
     std::string PK3::otName(void) const
     {
@@ -214,30 +283,69 @@ namespace pksm
         StringUtils::setString3(data, v, 0x14, 7, japanese());
     }
 
-    u16 PK3::markValue(void) const { return swapBits(data[0x1B], 1, 2); }
-    void PK3::markValue(u16 v) { data[0x1B] = swapBits(v, 1, 2); }
+    u16 PK3::markValue(void) const
+    {
+        return swapBits(data[0x1B], 1, 2);
+    }
+    void PK3::markValue(u16 v)
+    {
+        data[0x1B] = swapBits(v, 1, 2);
+    }
 
-    u16 PK3::checksum(void) const { return LittleEndian::convertTo<u16>(data + 0x1C); }
-    void PK3::checksum(u16 v) { LittleEndian::convertFrom<u16>(data + 0x1C, v); }
+    u16 PK3::checksum(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x1C);
+    }
+    void PK3::checksum(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x1C, v);
+    }
 
-    u16 PK3::sanity(void) const { return LittleEndian::convertTo<u16>(data + 0x1E); }
-    void PK3::sanity(u16 v) { LittleEndian::convertFrom<u16>(data + 0x1E, v); }
+    u16 PK3::sanity(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x1E);
+    }
+    void PK3::sanity(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x1E, v);
+    }
 
-    u16 PK3::speciesID3(void) const { return LittleEndian::convertTo<u16>(data + 0x20); }
-    void PK3::speciesID3(u16 v) { LittleEndian::convertFrom<u16>(data + 0x20, v); }
+    u16 PK3::speciesID3(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x20);
+    }
+    void PK3::speciesID3(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x20, v);
+    }
 
-    Species PK3::species(void) const { return SpeciesConverter::g3ToNational(speciesID3()); }
+    Species PK3::species(void) const
+    {
+        return SpeciesConverter::g3ToNational(speciesID3());
+    }
     void PK3::species(Species v)
     {
         speciesID3(SpeciesConverter::nationalToG3(v));
         flagHasSpecies(species() != Species::None);
     }
 
-    u16 PK3::heldItem3(void) const { return LittleEndian::convertTo<u16>(data + 0x22); }
-    void PK3::heldItem3(u16 v) { LittleEndian::convertFrom<u16>(data + 0x22, v); }
+    u16 PK3::heldItem3(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x22);
+    }
+    void PK3::heldItem3(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x22, v);
+    }
 
-    u16 PK3::heldItem(void) const { return ItemConverter::g3ToNational(heldItem3()); }
-    void PK3::heldItem(u16 v) { heldItem3(ItemConverter::nationalToG3(v)); }
+    u16 PK3::heldItem(void) const
+    {
+        return ItemConverter::g3ToNational(heldItem3());
+    }
+    void PK3::heldItem(u16 v)
+    {
+        heldItem3(ItemConverter::nationalToG3(v));
+    }
 
     void PK3::heldItem(const Item& item)
     {
@@ -251,17 +359,32 @@ namespace pksm
         }
     }
 
-    u32 PK3::experience(void) const { return LittleEndian::convertTo<u32>(data + 0x24); }
-    void PK3::experience(u32 v) { LittleEndian::convertFrom<u32>(data + 0x24, v); }
+    u32 PK3::experience(void) const
+    {
+        return LittleEndian::convertTo<u32>(data + 0x24);
+    }
+    void PK3::experience(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(data + 0x24, v);
+    }
 
-    u8 PK3::PPUp(u8 move) const { return (data[0x28] >> (move * 2) & 3); }
+    u8 PK3::PPUp(u8 move) const
+    {
+        return (data[0x28] >> (move * 2) & 3);
+    }
     void PK3::PPUp(u8 move, u8 v)
     {
         data[0x28] = (data[0x28] & ~(3 << (move * 2))) | ((v & 3) << (move * 2));
     }
 
-    u8 PK3::otFriendship(void) const { return data[0x29]; }
-    void PK3::otFriendship(u8 v) { data[0x29] = v; }
+    u8 PK3::otFriendship(void) const
+    {
+        return data[0x29];
+    }
+    void PK3::otFriendship(u8 v)
+    {
+        data[0x29] = v;
+    }
 
     Move PK3::move(u8 move) const
     {
@@ -272,28 +395,73 @@ namespace pksm
         LittleEndian::convertFrom<u16>(data + 0x2C + move * 2, u16(v));
     }
 
-    u8 PK3::PP(u8 move) const { return data[0x34 + move]; }
-    void PK3::PP(u8 move, u8 v) { data[0x34 + move] = v; }
+    u8 PK3::PP(u8 move) const
+    {
+        return data[0x34 + move];
+    }
+    void PK3::PP(u8 move, u8 v)
+    {
+        data[0x34 + move] = v;
+    }
 
-    u16 PK3::ev(Stat ev) const { return data[0x38 + u8(ev)]; }
-    void PK3::ev(Stat ev, u16 v) { data[0x38 + u8(ev)] = v; }
+    u16 PK3::ev(Stat ev) const
+    {
+        return data[0x38 + u8(ev)];
+    }
+    void PK3::ev(Stat ev, u16 v)
+    {
+        data[0x38 + u8(ev)] = v;
+    }
 
-    u8 PK3::contest(u8 contest) const { return data[0x3E + contest]; }
-    void PK3::contest(u8 contest, u8 v) { data[0x3E + contest] = v; }
+    u8 PK3::contest(u8 contest) const
+    {
+        return data[0x3E + contest];
+    }
+    void PK3::contest(u8 contest, u8 v)
+    {
+        data[0x3E + contest] = v;
+    }
 
-    u8 PK3::pkrs(void) const { return data[0x44]; }
-    void PK3::pkrs(u8 v) { data[0x44] = v; }
+    u8 PK3::pkrs(void) const
+    {
+        return data[0x44];
+    }
+    void PK3::pkrs(u8 v)
+    {
+        data[0x44] = v;
+    }
 
-    u8 PK3::pkrsDays(void) const { return data[0x44] & 0xF; }
-    void PK3::pkrsDays(u8 v) { data[0x44] = (data[0x44] & ~0xF) | v; }
+    u8 PK3::pkrsDays(void) const
+    {
+        return data[0x44] & 0xF;
+    }
+    void PK3::pkrsDays(u8 v)
+    {
+        data[0x44] = (data[0x44] & ~0xF) | v;
+    }
 
-    u8 PK3::pkrsStrain(void) const { return data[0x44] >> 4; }
-    void PK3::pkrsStrain(u8 v) { data[0x44] = (data[0x44] & 0xF) | (v << 4); }
+    u8 PK3::pkrsStrain(void) const
+    {
+        return data[0x44] >> 4;
+    }
+    void PK3::pkrsStrain(u8 v)
+    {
+        data[0x44] = (data[0x44] & 0xF) | (v << 4);
+    }
 
-    u16 PK3::metLocation(void) const { return data[0x45]; }
-    void PK3::metLocation(u16 v) { data[0x45] = u8(v); }
+    u16 PK3::metLocation(void) const
+    {
+        return data[0x45];
+    }
+    void PK3::metLocation(u16 v)
+    {
+        data[0x45] = u8(v);
+    }
 
-    u8 PK3::metLevel(void) const { return LittleEndian::convertTo<u16>(data + 0x46) & 0x7F; }
+    u8 PK3::metLevel(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x46) & 0x7F;
+    }
     void PK3::metLevel(u8 v)
     {
         LittleEndian::convertFrom<u16>(
@@ -343,7 +511,10 @@ namespace pksm
         LittleEndian::convertFrom<u32>(data + 0x48, buffer);
     }
 
-    bool PK3::egg() const { return ((LittleEndian::convertTo<u32>(data + 0x48) >> 30) & 1) == 1; }
+    bool PK3::egg() const
+    {
+        return ((LittleEndian::convertTo<u32>(data + 0x48) >> 30) & 1) == 1;
+    }
     void PK3::egg(bool v)
     {
         LittleEndian::convertFrom<u32>(
@@ -367,7 +538,10 @@ namespace pksm
             (LittleEndian::convertTo<u32>(data + 0x48) & 0x7FFFFFFF) | (v ? 1u << 31 : 0u));
     }
 
-    bool PK3::hasRibbon(Ribbon ribbon) const { return OFFSET_OF(ribbon).first != RIBBON_ABSENT; }
+    bool PK3::hasRibbon(Ribbon ribbon) const
+    {
+        return OFFSET_OF(ribbon).first != RIBBON_ABSENT;
+    }
     bool PK3::ribbon(Ribbon ribbon) const
     {
         auto offset = OFFSET_OF(ribbon);
@@ -736,9 +910,15 @@ namespace pksm
             ;
         return i;
     }
-    void PK3::level(u8 v) { experience(expTable(v - 1, expType())); }
+    void PK3::level(u8 v)
+    {
+        experience(expTable(v - 1, expType()));
+    }
 
-    Ability PK3::ability() const { return abilityBit() ? abilities(1) : abilities(0); }
+    Ability PK3::ability() const
+    {
+        return abilityBit() ? abilities(1) : abilities(0);
+    }
     void PK3::ability(Ability v)
     {
         if (v == abilities(0))
@@ -758,7 +938,10 @@ namespace pksm
         }
     }
 
-    Nature PK3::nature() const { return Nature{u8(PID() % 25)}; }
+    Nature PK3::nature() const
+    {
+        return Nature{u8(PID() % 25)};
+    }
     void PK3::nature(Nature v)
     {
         PID(PKX::getRandomPID(species(), gender(), version(), v, alternativeForm(), abilityNumber(),
@@ -849,18 +1032,30 @@ namespace pksm
         }
     }
 
-    u16 PK3::TSV() const { return (TID() ^ SID()) >> 3; }
+    u16 PK3::TSV() const
+    {
+        return (TID() ^ SID()) >> 3;
+    }
 
-    u16 PK3::PSV() const { return (PID() >> 16 ^ (PID() & 0xFFFF)) >> 3; }
+    u16 PK3::PSV() const
+    {
+        return (PID() >> 16 ^ (PID() & 0xFFFF)) >> 3;
+    }
 
-    bool PK3::shiny(void) const { return TSV() == PSV(); }
+    bool PK3::shiny(void) const
+    {
+        return TSV() == PSV();
+    }
     void PK3::shiny(bool v)
     {
         PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
             abilityNumber(), v, TSV(), PID(), generation()));
     }
 
-    u16 PK3::formSpecies() const { return u16(species()); }
+    u16 PK3::formSpecies() const
+    {
+        return u16(species());
+    }
 
     u16 PK3::statImpl(Stat stat) const
     {

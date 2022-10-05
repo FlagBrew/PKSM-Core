@@ -77,10 +77,10 @@ namespace pksm
             } v;
 
             constexpr explicit Nature_impl(NatureEnum v) : v(v) {}
-            constexpr Nature_impl(const Nature_impl&) = default;
-            constexpr Nature_impl(Nature_impl&&)      = default;
+            constexpr Nature_impl(const Nature_impl&)            = default;
+            constexpr Nature_impl(Nature_impl&&)                 = default;
             constexpr Nature_impl& operator=(const Nature_impl&) = default;
-            constexpr Nature_impl& operator=(Nature_impl&&) = default;
+            constexpr Nature_impl& operator=(Nature_impl&&)      = default;
 
         public:
             template <std::integral T>

@@ -32,11 +32,9 @@
 
 namespace
 {
-    // clang-format off
     template <typename T>
-    requires std::is_enum_v<T> || std::integral<T> || requires { typename T::EnumType; }
+        requires std::is_enum_v<T> || std::integral<T> || requires { typename T::EnumType; }
     inline std::set<T> create_set_consecutive(const T& begin, const T& end)
-    // clang-format on
     {
         std::set<T> set;
         if constexpr (std::is_integral_v<T>)

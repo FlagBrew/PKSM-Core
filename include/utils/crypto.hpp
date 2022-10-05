@@ -64,7 +64,7 @@ namespace pksm::crypto
             dataLength = 0;
             bitLength  = 0;
             state      = {0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c,
-                0x1f83d9ab, 0x5be0cd19};
+                     0x1f83d9ab, 0x5be0cd19};
         }
         void update(std::span<const u8> buf);
         [[nodiscard]] std::array<u8, 32> finish();
@@ -115,7 +115,7 @@ namespace pksm::crypto
 
         private:
             SCBlock(std::shared_ptr<u8[]> data, size_t& offset);
-            SCBlock(const SCBlock&) = delete;
+            SCBlock(const SCBlock&)            = delete;
             SCBlock& operator=(const SCBlock&) = delete;
 
             // Returns pointer to data at the beginning of the block's data region, skipping block
@@ -160,7 +160,10 @@ namespace pksm::crypto
                                 // modulus
         };
 
-        [[nodiscard]] constexpr u32 seedStep(u32 seed) { return seed * 0x41C64E6D + 0x6073; }
+        [[nodiscard]] constexpr u32 seedStep(u32 seed)
+        {
+            return seed * 0x41C64E6D + 0x6073;
+        }
 
         template <size_t BlockLength>
         constexpr void blockShuffle(u8* data, u8 sv)

@@ -211,34 +211,91 @@ namespace pksm
             const_cast<u8*>(data), isParty() ? PARTY_LENGTH : BOX_LENGTH);
     }
 
-    Generation PK7::generation(void) const { return Generation::SEVEN; }
+    Generation PK7::generation(void) const
+    {
+        return Generation::SEVEN;
+    }
 
-    u32 PK7::encryptionConstant(void) const { return LittleEndian::convertTo<u32>(data); }
-    void PK7::encryptionConstant(u32 v) { LittleEndian::convertFrom<u32>(data, v); }
+    u32 PK7::encryptionConstant(void) const
+    {
+        return LittleEndian::convertTo<u32>(data);
+    }
+    void PK7::encryptionConstant(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(data, v);
+    }
 
-    u16 PK7::sanity(void) const { return LittleEndian::convertTo<u16>(data + 0x04); }
-    void PK7::sanity(u16 v) { LittleEndian::convertFrom<u16>(data + 0x04, v); }
+    u16 PK7::sanity(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x04);
+    }
+    void PK7::sanity(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x04, v);
+    }
 
-    u16 PK7::checksum(void) const { return LittleEndian::convertTo<u16>(data + 0x06); }
-    void PK7::checksum(u16 v) { LittleEndian::convertFrom<u16>(data + 0x06, v); }
+    u16 PK7::checksum(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x06);
+    }
+    void PK7::checksum(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x06, v);
+    }
 
-    Species PK7::species(void) const { return Species{LittleEndian::convertTo<u16>(data + 0x08)}; }
-    void PK7::species(Species v) { LittleEndian::convertFrom<u16>(data + 0x08, u16(v)); }
+    Species PK7::species(void) const
+    {
+        return Species{LittleEndian::convertTo<u16>(data + 0x08)};
+    }
+    void PK7::species(Species v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x08, u16(v));
+    }
 
-    u16 PK7::heldItem(void) const { return LittleEndian::convertTo<u16>(data + 0x0A); }
-    void PK7::heldItem(u16 v) { LittleEndian::convertFrom<u16>(data + 0x0A, v); }
+    u16 PK7::heldItem(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x0A);
+    }
+    void PK7::heldItem(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x0A, v);
+    }
 
-    u16 PK7::TID(void) const { return LittleEndian::convertTo<u16>(data + 0x0C); }
-    void PK7::TID(u16 v) { LittleEndian::convertFrom<u16>(data + 0x0C, v); }
+    u16 PK7::TID(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x0C);
+    }
+    void PK7::TID(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x0C, v);
+    }
 
-    u16 PK7::SID(void) const { return LittleEndian::convertTo<u16>(data + 0x0E); }
-    void PK7::SID(u16 v) { LittleEndian::convertFrom<u16>(data + 0x0E, v); }
+    u16 PK7::SID(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x0E);
+    }
+    void PK7::SID(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x0E, v);
+    }
 
-    u32 PK7::experience(void) const { return LittleEndian::convertTo<u32>(data + 0x10); }
-    void PK7::experience(u32 v) { LittleEndian::convertFrom<u32>(data + 0x10, v); }
+    u32 PK7::experience(void) const
+    {
+        return LittleEndian::convertTo<u32>(data + 0x10);
+    }
+    void PK7::experience(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(data + 0x10, v);
+    }
 
-    Ability PK7::ability(void) const { return Ability{data[0x14]}; }
-    void PK7::ability(Ability v) { data[0x14] = u8(v); }
+    Ability PK7::ability(void) const
+    {
+        return Ability{data[0x14]};
+    }
+    void PK7::ability(Ability v)
+    {
+        data[0x14] = u8(v);
+    }
 
     void PK7::setAbility(u8 v)
     {
@@ -255,46 +312,127 @@ namespace pksm
         ability(abilities(v));
     }
 
-    u8 PK7::abilityNumber(void) const { return data[0x15]; }
-    void PK7::abilityNumber(u8 v) { data[0x15] = v; }
+    u8 PK7::abilityNumber(void) const
+    {
+        return data[0x15];
+    }
+    void PK7::abilityNumber(u8 v)
+    {
+        data[0x15] = v;
+    }
 
-    u16 PK7::markValue(void) const { return LittleEndian::convertTo<u16>(data + 0x16); }
-    void PK7::markValue(u16 v) { LittleEndian::convertFrom<u16>(data + 0x16, v); }
+    u16 PK7::markValue(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x16);
+    }
+    void PK7::markValue(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x16, v);
+    }
 
-    u32 PK7::PID(void) const { return LittleEndian::convertTo<u32>(data + 0x18); }
-    void PK7::PID(u32 v) { LittleEndian::convertFrom<u32>(data + 0x18, v); }
+    u32 PK7::PID(void) const
+    {
+        return LittleEndian::convertTo<u32>(data + 0x18);
+    }
+    void PK7::PID(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(data + 0x18, v);
+    }
 
-    Nature PK7::nature(void) const { return Nature{data[0x1C]}; }
-    void PK7::nature(Nature v) { data[0x1C] = u8(v); }
+    Nature PK7::nature(void) const
+    {
+        return Nature{data[0x1C]};
+    }
+    void PK7::nature(Nature v)
+    {
+        data[0x1C] = u8(v);
+    }
 
-    bool PK7::fatefulEncounter(void) const { return (data[0x1D] & 1) == 1; }
-    void PK7::fatefulEncounter(bool v) { data[0x1D] = (u8)((data[0x1D] & ~0x01) | (v ? 1 : 0)); }
+    bool PK7::fatefulEncounter(void) const
+    {
+        return (data[0x1D] & 1) == 1;
+    }
+    void PK7::fatefulEncounter(bool v)
+    {
+        data[0x1D] = (u8)((data[0x1D] & ~0x01) | (v ? 1 : 0));
+    }
 
-    Gender PK7::gender(void) const { return Gender{u8((data[0x1D] >> 1) & 0x3)}; }
-    void PK7::gender(Gender v) { data[0x1D] = (data[0x1D] & ~0x06) | (u8(v) << 1); }
+    Gender PK7::gender(void) const
+    {
+        return Gender{u8((data[0x1D] >> 1) & 0x3)};
+    }
+    void PK7::gender(Gender v)
+    {
+        data[0x1D] = (data[0x1D] & ~0x06) | (u8(v) << 1);
+    }
 
-    u16 PK7::alternativeForm(void) const { return data[0x1D] >> 3; }
-    void PK7::alternativeForm(u16 v) { data[0x1D] = (data[0x1D] & 0x07) | (v << 3); }
+    u16 PK7::alternativeForm(void) const
+    {
+        return data[0x1D] >> 3;
+    }
+    void PK7::alternativeForm(u16 v)
+    {
+        data[0x1D] = (data[0x1D] & 0x07) | (v << 3);
+    }
 
-    u16 PK7::ev(Stat ev) const { return data[0x1E + u8(ev)]; }
-    void PK7::ev(Stat ev, u16 v) { data[0x1E + u8(ev)] = v; }
+    u16 PK7::ev(Stat ev) const
+    {
+        return data[0x1E + u8(ev)];
+    }
+    void PK7::ev(Stat ev, u16 v)
+    {
+        data[0x1E + u8(ev)] = v;
+    }
 
-    u8 PK7::contest(u8 contest) const { return data[0x24 + contest]; }
-    void PK7::contest(u8 contest, u8 v) { data[0x24 + contest] = v; }
+    u8 PK7::contest(u8 contest) const
+    {
+        return data[0x24 + contest];
+    }
+    void PK7::contest(u8 contest, u8 v)
+    {
+        data[0x24 + contest] = v;
+    }
 
-    u8 PK7::pelagoEventStatus(void) const { return data[0x2A]; }
-    void PK7::pelagoEventStatus(u8 v) { data[0x2A] = v; }
+    u8 PK7::pelagoEventStatus(void) const
+    {
+        return data[0x2A];
+    }
+    void PK7::pelagoEventStatus(u8 v)
+    {
+        data[0x2A] = v;
+    }
 
-    u8 PK7::pkrs(void) const { return data[0x2B]; }
-    void PK7::pkrs(u8 v) { data[0x2B] = v; }
+    u8 PK7::pkrs(void) const
+    {
+        return data[0x2B];
+    }
+    void PK7::pkrs(u8 v)
+    {
+        data[0x2B] = v;
+    }
 
-    u8 PK7::pkrsDays(void) const { return data[0x2B] & 0xF; };
-    void PK7::pkrsDays(u8 v) { data[0x2B] = (u8)((data[0x2B] & ~0xF) | v); }
+    u8 PK7::pkrsDays(void) const
+    {
+        return data[0x2B] & 0xF;
+    };
+    void PK7::pkrsDays(u8 v)
+    {
+        data[0x2B] = (u8)((data[0x2B] & ~0xF) | v);
+    }
 
-    u8 PK7::pkrsStrain(void) const { return data[0x2B] >> 4; };
-    void PK7::pkrsStrain(u8 v) { data[0x2B] = (u8)((data[0x2B] & 0xF) | v << 4); }
+    u8 PK7::pkrsStrain(void) const
+    {
+        return data[0x2B] >> 4;
+    };
+    void PK7::pkrsStrain(u8 v)
+    {
+        data[0x2B] = (u8)((data[0x2B] & 0xF) | v << 4);
+    }
 
-    bool PK7::hasRibbon(Ribbon ribbon) const { return OFFSET_OF(ribbon).first != RIBBON_ABSENT; }
+    bool PK7::hasRibbon(Ribbon ribbon) const
+    {
+        return OFFSET_OF(ribbon).first != RIBBON_ABSENT;
+    }
     bool PK7::ribbon(Ribbon ribbon) const
     {
         auto offset = OFFSET_OF(ribbon);
@@ -313,11 +451,23 @@ namespace pksm
         }
     }
 
-    u8 PK7::ribbonContestCount(void) const { return data[0x38]; }
-    void PK7::ribbonContestCount(u8 v) { data[0x38] = v; }
+    u8 PK7::ribbonContestCount(void) const
+    {
+        return data[0x38];
+    }
+    void PK7::ribbonContestCount(u8 v)
+    {
+        data[0x38] = v;
+    }
 
-    u8 PK7::ribbonBattleCount(void) const { return data[0x39]; }
-    void PK7::ribbonBattleCount(u8 v) { data[0x39] = v; }
+    u8 PK7::ribbonBattleCount(void) const
+    {
+        return data[0x39];
+    }
+    void PK7::ribbonBattleCount(u8 v)
+    {
+        data[0x39] = v;
+    }
 
     std::string PK7::nickname(void) const
     {
@@ -328,14 +478,32 @@ namespace pksm
         StringUtils::setString(data, StringUtils::transString67(v), 0x40, 13);
     }
 
-    Move PK7::move(u8 m) const { return Move{LittleEndian::convertTo<u16>(data + 0x5A + m * 2)}; }
-    void PK7::move(u8 m, Move v) { LittleEndian::convertFrom<u16>(data + 0x5A + m * 2, u16(v)); }
+    Move PK7::move(u8 m) const
+    {
+        return Move{LittleEndian::convertTo<u16>(data + 0x5A + m * 2)};
+    }
+    void PK7::move(u8 m, Move v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x5A + m * 2, u16(v));
+    }
 
-    u8 PK7::PP(u8 m) const { return data[0x62 + m]; }
-    void PK7::PP(u8 m, u8 v) { data[0x62 + m] = v; }
+    u8 PK7::PP(u8 m) const
+    {
+        return data[0x62 + m];
+    }
+    void PK7::PP(u8 m, u8 v)
+    {
+        data[0x62 + m] = v;
+    }
 
-    u8 PK7::PPUp(u8 m) const { return data[0x66 + m]; }
-    void PK7::PPUp(u8 m, u8 v) { data[0x66 + m] = v; }
+    u8 PK7::PPUp(u8 m) const
+    {
+        return data[0x66 + m];
+    }
+    void PK7::PPUp(u8 m, u8 v)
+    {
+        data[0x66 + m] = v;
+    }
 
     Move PK7::relearnMove(u8 m) const
     {
@@ -390,41 +558,113 @@ namespace pksm
         StringUtils::setString(data, StringUtils::transString67(v), 0x78, 13);
     }
 
-    Gender PK7::htGender(void) const { return Gender{data[0x92]}; }
-    void PK7::htGender(Gender v) { data[0x92] = u8(v); }
+    Gender PK7::htGender(void) const
+    {
+        return Gender{data[0x92]};
+    }
+    void PK7::htGender(Gender v)
+    {
+        data[0x92] = u8(v);
+    }
 
-    u8 PK7::currentHandler(void) const { return data[0x93]; }
-    void PK7::currentHandler(u8 v) { data[0x93] = v; }
+    u8 PK7::currentHandler(void) const
+    {
+        return data[0x93];
+    }
+    void PK7::currentHandler(u8 v)
+    {
+        data[0x93] = v;
+    }
 
-    u8 PK7::geoRegion(u8 region) const { return data[0x94 + region * 2]; }
-    void PK7::geoRegion(u8 region, u8 v) { data[0x94 + region * 2] = v; }
+    u8 PK7::geoRegion(u8 region) const
+    {
+        return data[0x94 + region * 2];
+    }
+    void PK7::geoRegion(u8 region, u8 v)
+    {
+        data[0x94 + region * 2] = v;
+    }
 
-    u8 PK7::geoCountry(u8 country) const { return data[0x95 + country * 2]; }
-    void PK7::geoCountry(u8 country, u8 v) { data[0x95 + country * 2] = v; }
+    u8 PK7::geoCountry(u8 country) const
+    {
+        return data[0x95 + country * 2];
+    }
+    void PK7::geoCountry(u8 country, u8 v)
+    {
+        data[0x95 + country * 2] = v;
+    }
 
-    u8 PK7::htFriendship(void) const { return data[0xA2]; }
-    void PK7::htFriendship(u8 v) { data[0xA2] = v; }
+    u8 PK7::htFriendship(void) const
+    {
+        return data[0xA2];
+    }
+    void PK7::htFriendship(u8 v)
+    {
+        data[0xA2] = v;
+    }
 
-    u8 PK7::htAffection(void) const { return data[0xA3]; }
-    void PK7::htAffection(u8 v) { data[0xA3] = v; }
+    u8 PK7::htAffection(void) const
+    {
+        return data[0xA3];
+    }
+    void PK7::htAffection(u8 v)
+    {
+        data[0xA3] = v;
+    }
 
-    u8 PK7::htIntensity(void) const { return data[0xA4]; }
-    void PK7::htIntensity(u8 v) { data[0xA4] = v; }
+    u8 PK7::htIntensity(void) const
+    {
+        return data[0xA4];
+    }
+    void PK7::htIntensity(u8 v)
+    {
+        data[0xA4] = v;
+    }
 
-    u8 PK7::htMemory(void) const { return data[0xA5]; }
-    void PK7::htMemory(u8 v) { data[0xA5] = v; }
+    u8 PK7::htMemory(void) const
+    {
+        return data[0xA5];
+    }
+    void PK7::htMemory(u8 v)
+    {
+        data[0xA5] = v;
+    }
 
-    u8 PK7::htFeeling(void) const { return data[0xA6]; }
-    void PK7::htFeeling(u8 v) { data[0xA6] = v; }
+    u8 PK7::htFeeling(void) const
+    {
+        return data[0xA6];
+    }
+    void PK7::htFeeling(u8 v)
+    {
+        data[0xA6] = v;
+    }
 
-    u16 PK7::htTextVar(void) const { return LittleEndian::convertTo<u16>(data + 0xA8); }
-    void PK7::htTextVar(u16 v) { LittleEndian::convertFrom<u16>(data + 0xA8, v); }
+    u16 PK7::htTextVar(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0xA8);
+    }
+    void PK7::htTextVar(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0xA8, v);
+    }
 
-    u8 PK7::fullness(void) const { return data[0xAE]; }
-    void PK7::fullness(u8 v) { data[0xAE] = v; }
+    u8 PK7::fullness(void) const
+    {
+        return data[0xAE];
+    }
+    void PK7::fullness(u8 v)
+    {
+        data[0xAE] = v;
+    }
 
-    u8 PK7::enjoyment(void) const { return data[0xAF]; }
-    void PK7::enjoyment(u8 v) { data[0xAF] = v; }
+    u8 PK7::enjoyment(void) const
+    {
+        return data[0xAF];
+    }
+    void PK7::enjoyment(u8 v)
+    {
+        data[0xAF] = v;
+    }
 
     std::string PK7::otName(void) const
     {
@@ -435,56 +675,158 @@ namespace pksm
         StringUtils::setString(data, StringUtils::transString67(v), 0xB0, 13);
     }
 
-    u8 PK7::otFriendship(void) const { return data[0xCA]; }
-    void PK7::otFriendship(u8 v) { data[0xCA] = v; }
+    u8 PK7::otFriendship(void) const
+    {
+        return data[0xCA];
+    }
+    void PK7::otFriendship(u8 v)
+    {
+        data[0xCA] = v;
+    }
 
-    u8 PK7::otAffection(void) const { return data[0xCB]; }
-    void PK7::otAffection(u8 v) { data[0xCB] = v; }
+    u8 PK7::otAffection(void) const
+    {
+        return data[0xCB];
+    }
+    void PK7::otAffection(u8 v)
+    {
+        data[0xCB] = v;
+    }
 
-    u8 PK7::otIntensity(void) const { return data[0xCC]; }
-    void PK7::otIntensity(u8 v) { data[0xCC] = v; }
+    u8 PK7::otIntensity(void) const
+    {
+        return data[0xCC];
+    }
+    void PK7::otIntensity(u8 v)
+    {
+        data[0xCC] = v;
+    }
 
-    u8 PK7::otMemory(void) const { return data[0xCD]; }
-    void PK7::otMemory(u8 v) { data[0xCD] = v; }
+    u8 PK7::otMemory(void) const
+    {
+        return data[0xCD];
+    }
+    void PK7::otMemory(u8 v)
+    {
+        data[0xCD] = v;
+    }
 
-    u16 PK7::otTextVar(void) const { return LittleEndian::convertTo<u16>(data + 0xCE); }
-    void PK7::otTextVar(u16 v) { LittleEndian::convertFrom<u16>(data + 0xCE, v); }
+    u16 PK7::otTextVar(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0xCE);
+    }
+    void PK7::otTextVar(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0xCE, v);
+    }
 
-    u8 PK7::otFeeling(void) const { return data[0xD0]; }
-    void PK7::otFeeling(u8 v) { data[0xD0] = v; }
+    u8 PK7::otFeeling(void) const
+    {
+        return data[0xD0];
+    }
+    void PK7::otFeeling(u8 v)
+    {
+        data[0xD0] = v;
+    }
 
-    int PK7::eggYear(void) const { return 2000 + data[0xD1]; }
-    void PK7::eggYear(int v) { data[0xD1] = v - 2000; }
+    int PK7::eggYear(void) const
+    {
+        return 2000 + data[0xD1];
+    }
+    void PK7::eggYear(int v)
+    {
+        data[0xD1] = v - 2000;
+    }
 
-    int PK7::eggMonth(void) const { return data[0xD2]; }
-    void PK7::eggMonth(int v) { data[0xD2] = v; }
+    int PK7::eggMonth(void) const
+    {
+        return data[0xD2];
+    }
+    void PK7::eggMonth(int v)
+    {
+        data[0xD2] = v;
+    }
 
-    int PK7::eggDay(void) const { return data[0xD3]; }
-    void PK7::eggDay(int v) { data[0xD3] = v; }
+    int PK7::eggDay(void) const
+    {
+        return data[0xD3];
+    }
+    void PK7::eggDay(int v)
+    {
+        data[0xD3] = v;
+    }
 
-    int PK7::metYear(void) const { return 2000 + data[0xD4]; }
-    void PK7::metYear(int v) { data[0xD4] = v - 2000; }
+    int PK7::metYear(void) const
+    {
+        return 2000 + data[0xD4];
+    }
+    void PK7::metYear(int v)
+    {
+        data[0xD4] = v - 2000;
+    }
 
-    int PK7::metMonth(void) const { return data[0xD5]; }
-    void PK7::metMonth(int v) { data[0xD5] = v; }
+    int PK7::metMonth(void) const
+    {
+        return data[0xD5];
+    }
+    void PK7::metMonth(int v)
+    {
+        data[0xD5] = v;
+    }
 
-    int PK7::metDay(void) const { return data[0xD6]; }
-    void PK7::metDay(int v) { data[0xD6] = v; }
+    int PK7::metDay(void) const
+    {
+        return data[0xD6];
+    }
+    void PK7::metDay(int v)
+    {
+        data[0xD6] = v;
+    }
 
-    u16 PK7::eggLocation(void) const { return LittleEndian::convertTo<u16>(data + 0xD8); }
-    void PK7::eggLocation(u16 v) { LittleEndian::convertFrom<u16>(data + 0xD8, v); }
+    u16 PK7::eggLocation(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0xD8);
+    }
+    void PK7::eggLocation(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0xD8, v);
+    }
 
-    u16 PK7::metLocation(void) const { return LittleEndian::convertTo<u16>(data + 0xDA); }
-    void PK7::metLocation(u16 v) { LittleEndian::convertFrom<u16>(data + 0xDA, v); }
+    u16 PK7::metLocation(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0xDA);
+    }
+    void PK7::metLocation(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0xDA, v);
+    }
 
-    Ball PK7::ball(void) const { return Ball{data[0xDC]}; }
-    void PK7::ball(Ball v) { data[0xDC] = u8(v); }
+    Ball PK7::ball(void) const
+    {
+        return Ball{data[0xDC]};
+    }
+    void PK7::ball(Ball v)
+    {
+        data[0xDC] = u8(v);
+    }
 
-    u8 PK7::metLevel(void) const { return data[0xDD] & ~0x80; }
-    void PK7::metLevel(u8 v) { data[0xDD] = (data[0xDD] & 0x80) | v; }
+    u8 PK7::metLevel(void) const
+    {
+        return data[0xDD] & ~0x80;
+    }
+    void PK7::metLevel(u8 v)
+    {
+        data[0xDD] = (data[0xDD] & 0x80) | v;
+    }
 
-    Gender PK7::otGender(void) const { return Gender{u8(data[0xDD] >> 7)}; }
-    void PK7::otGender(Gender v) { data[0xDD] = (data[0xDD] & ~0x80) | (u8(v) << 7); }
+    Gender PK7::otGender(void) const
+    {
+        return Gender{u8(data[0xDD] >> 7)};
+    }
+    void PK7::otGender(Gender v)
+    {
+        data[0xDD] = (data[0xDD] & ~0x80) | (u8(v) << 7);
+    }
 
     bool PK7::hyperTrain(Stat stat) const
     {
@@ -497,20 +839,50 @@ namespace pksm
                           (v ? 1 << hyperTrainLookup[size_t(stat)] : 0));
     }
 
-    GameVersion PK7::version(void) const { return GameVersion(data[0xDF]); }
-    void PK7::version(GameVersion v) { data[0xDF] = u8(v); }
+    GameVersion PK7::version(void) const
+    {
+        return GameVersion(data[0xDF]);
+    }
+    void PK7::version(GameVersion v)
+    {
+        data[0xDF] = u8(v);
+    }
 
-    u8 PK7::country(void) const { return data[0xE0]; }
-    void PK7::country(u8 v) { data[0xE0] = v; }
+    u8 PK7::country(void) const
+    {
+        return data[0xE0];
+    }
+    void PK7::country(u8 v)
+    {
+        data[0xE0] = v;
+    }
 
-    u8 PK7::region(void) const { return data[0xE1]; }
-    void PK7::region(u8 v) { data[0xE1] = v; }
+    u8 PK7::region(void) const
+    {
+        return data[0xE1];
+    }
+    void PK7::region(u8 v)
+    {
+        data[0xE1] = v;
+    }
 
-    u8 PK7::consoleRegion(void) const { return data[0xE2]; }
-    void PK7::consoleRegion(u8 v) { data[0xE2] = v; }
+    u8 PK7::consoleRegion(void) const
+    {
+        return data[0xE2];
+    }
+    void PK7::consoleRegion(u8 v)
+    {
+        data[0xE2] = v;
+    }
 
-    Language PK7::language(void) const { return Language(data[0xE3]); }
-    void PK7::language(Language v) { data[0xE3] = u8(v); }
+    Language PK7::language(void) const
+    {
+        return Language(data[0xE3]);
+    }
+    void PK7::language(Language v)
+    {
+        data[0xE3] = u8(v);
+    }
 
     u8 PK7::currentFriendship(void) const
     {
@@ -586,8 +958,14 @@ namespace pksm
         }
     }
 
-    u16 PK7::TSV(void) const { return (TID() ^ SID()) >> 4; }
-    u16 PK7::PSV(void) const { return ((PID() >> 16) ^ (PID() & 0xFFFF)) >> 4; }
+    u16 PK7::TSV(void) const
+    {
+        return (TID() ^ SID()) >> 4;
+    }
+    u16 PK7::PSV(void) const
+    {
+        return ((PID() >> 16) ^ (PID() & 0xFFFF)) >> 4;
+    }
 
     u8 PK7::level(void) const
     {
@@ -598,9 +976,15 @@ namespace pksm
         return i;
     }
 
-    void PK7::level(u8 v) { experience(expTable(v - 1, expType())); }
+    void PK7::level(u8 v)
+    {
+        experience(expTable(v - 1, expType()));
+    }
 
-    bool PK7::shiny(void) const { return TSV() == PSV(); }
+    bool PK7::shiny(void) const
+    {
+        return TSV() == PSV();
+    }
     void PK7::shiny(bool v)
     {
         PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),

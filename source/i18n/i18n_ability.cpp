@@ -42,7 +42,10 @@ namespace i18n
         abilities.insert_or_assign(lang, std::move(vec));
     }
 
-    void exitAbility(pksm::Language lang) { abilities[lang].clear(); }
+    void exitAbility(pksm::Language lang)
+    {
+        abilities[lang].clear();
+    }
 
     const std::string& ability(pksm::Language lang, pksm::Ability val)
     {

@@ -950,10 +950,10 @@ namespace pksm
                     std::numeric_limits<std::underlying_type_t<SpeciesEnum>>::max()
             } v;
             constexpr explicit Species_impl(SpeciesEnum v) : v(v) {}
-            constexpr Species_impl(const Species_impl&) = default;
-            constexpr Species_impl(Species_impl&&)      = default;
+            constexpr Species_impl(const Species_impl&)            = default;
+            constexpr Species_impl(Species_impl&&)                 = default;
             constexpr Species_impl& operator=(const Species_impl&) = default;
-            constexpr Species_impl& operator=(Species_impl&&) = default;
+            constexpr Species_impl& operator=(Species_impl&&)      = default;
 
         public:
             template <std::integral T>

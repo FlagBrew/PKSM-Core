@@ -42,7 +42,10 @@ namespace i18n
         games.insert_or_assign(lang, std::move(vec));
     }
 
-    void exitGame(pksm::Language lang) { games[lang].clear(); }
+    void exitGame(pksm::Language lang)
+    {
+        games[lang].clear();
+    }
 
     const std::string& game(pksm::Language lang, pksm::GameVersion val)
     {

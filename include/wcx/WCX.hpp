@@ -55,7 +55,7 @@ namespace pksm
 
     public:
         WCX() {}
-        WCX(const WCX&) = delete;
+        WCX(const WCX&)            = delete;
         WCX& operator=(const WCX&) = delete;
         virtual ~WCX(void)         = default;
 

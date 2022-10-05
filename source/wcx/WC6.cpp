@@ -84,20 +84,44 @@ namespace pksm
         std::copy(dt + ofs, dt + ofs + length, data);
     }
 
-    Generation WC6::generation(void) const { return Generation::SIX; }
+    Generation WC6::generation(void) const
+    {
+        return Generation::SIX;
+    }
 
-    u16 WC6::ID(void) const { return LittleEndian::convertTo<u16>(data); }
+    u16 WC6::ID(void) const
+    {
+        return LittleEndian::convertTo<u16>(data);
+    }
 
-    std::string WC6::title(void) const { return StringUtils::getString(data, 0x2, 36); }
+    std::string WC6::title(void) const
+    {
+        return StringUtils::getString(data, 0x2, 36);
+    }
 
-    u32 WC6::rawDate(void) const { return LittleEndian::convertTo<u32>(data + 0x4C); }
-    void WC6::rawDate(u32 v) { LittleEndian::convertFrom<u32>(data + 0x4C, v); }
+    u32 WC6::rawDate(void) const
+    {
+        return LittleEndian::convertTo<u32>(data + 0x4C);
+    }
+    void WC6::rawDate(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(data + 0x4C, v);
+    }
 
-    int WC6::year(void) const { return rawDate() / 10000 + 2000; }
+    int WC6::year(void) const
+    {
+        return rawDate() / 10000 + 2000;
+    }
 
-    int WC6::month(void) const { return rawDate() % 10000 / 100; }
+    int WC6::month(void) const
+    {
+        return rawDate() % 10000 / 100;
+    }
 
-    int WC6::day(void) const { return rawDate() % 100; }
+    int WC6::day(void) const
+    {
+        return rawDate() % 100;
+    }
 
     void WC6::year(int v)
     {
@@ -125,49 +149,115 @@ namespace pksm
         rawDate(newVal);
     }
 
-    u8 WC6::type(void) const { return data[0x51]; }
+    u8 WC6::type(void) const
+    {
+        return data[0x51];
+    }
 
-    u8 WC6::flags(void) const { return data[0x52]; }
+    u8 WC6::flags(void) const
+    {
+        return data[0x52];
+    }
 
-    bool WC6::multiObtainable(void) const { return data[0x53] == 1; }
+    bool WC6::multiObtainable(void) const
+    {
+        return data[0x53] == 1;
+    }
 
-    bool WC6::BP(void) const { return false; } // WC6 only has Pokemon and Item cards
+    bool WC6::BP(void) const
+    {
+        return false;
+    } // WC6 only has Pokemon and Item cards
 
-    bool WC6::bean(void) const { return false; } // WC6 only has Pokemon and Item cards
+    bool WC6::bean(void) const
+    {
+        return false;
+    } // WC6 only has Pokemon and Item cards
 
-    bool WC6::item(void) const { return type() == 1; }
+    bool WC6::item(void) const
+    {
+        return type() == 1;
+    }
 
-    bool WC6::power(void) const { return false; }
+    bool WC6::power(void) const
+    {
+        return false;
+    }
 
-    u16 WC6::object(void) const { return LittleEndian::convertTo<u16>(data + 0x68); }
+    u16 WC6::object(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x68);
+    }
 
-    u16 WC6::objectQuantity(void) const { return LittleEndian::convertTo<u16>(data + 0x70); }
+    u16 WC6::objectQuantity(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x70);
+    }
 
-    bool WC6::pokemon(void) const { return type() == 0; }
+    bool WC6::pokemon(void) const
+    {
+        return type() == 0;
+    }
 
-    u8 WC6::PIDType(void) const { return data[0xA3]; }
+    u8 WC6::PIDType(void) const
+    {
+        return data[0xA3];
+    }
 
-    bool WC6::shiny(void) const { return PIDType() == 2; }
+    bool WC6::shiny(void) const
+    {
+        return PIDType() == 2;
+    }
 
-    u16 WC6::TID(void) const { return LittleEndian::convertTo<u16>(data + 0x68); }
+    u16 WC6::TID(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x68);
+    }
 
-    u16 WC6::SID(void) const { return LittleEndian::convertTo<u16>(data + 0x6A); }
+    u16 WC6::SID(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x6A);
+    }
 
-    GameVersion WC6::version(void) const { return GameVersion(data[0x6C]); }
+    GameVersion WC6::version(void) const
+    {
+        return GameVersion(data[0x6C]);
+    }
 
-    u32 WC6::encryptionConstant(void) const { return LittleEndian::convertTo<u32>(data + 0x70); }
+    u32 WC6::encryptionConstant(void) const
+    {
+        return LittleEndian::convertTo<u32>(data + 0x70);
+    }
 
-    Ball WC6::ball(void) const { return Ball{data[0x76]}; }
+    Ball WC6::ball(void) const
+    {
+        return Ball{data[0x76]};
+    }
 
-    u16 WC6::heldItem(void) const { return LittleEndian::convertTo<u16>(data + 0x78); }
+    u16 WC6::heldItem(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x78);
+    }
 
-    Move WC6::move(u8 m) const { return Move{LittleEndian::convertTo<u16>(data + 0x7A + m * 2)}; }
+    Move WC6::move(u8 m) const
+    {
+        return Move{LittleEndian::convertTo<u16>(data + 0x7A + m * 2)};
+    }
 
-    Species WC6::species(void) const { return Species{LittleEndian::convertTo<u16>(data + 0x82)}; }
+    Species WC6::species(void) const
+    {
+        return Species{LittleEndian::convertTo<u16>(data + 0x82)};
+    }
 
-    u8 WC6::alternativeForm(void) const { return data[0x84]; }
+    u8 WC6::alternativeForm(void) const
+    {
+        return data[0x84];
+    }
 
-    Language WC6::language(void) const { return Language(data[0x85]); }
+    Language WC6::language(void) const
+    {
+        return Language(data[0x85]);
+    }
 
     std::string WC6::nickname(void) const
     {
@@ -176,9 +266,15 @@ namespace pksm
                    : "Pokemon Name";
     } // Localization::speciesName(species()); }
 
-    Nature WC6::nature(void) const { return Nature{data[0xA0]}; }
+    Nature WC6::nature(void) const
+    {
+        return Nature{data[0xA0]};
+    }
 
-    Gender WC6::gender(void) const { return Gender{data[0xA1]}; }
+    Gender WC6::gender(void) const
+    {
+        return Gender{data[0xA1]};
+    }
 
     Ability WC6::ability(void) const
     {
@@ -194,46 +290,100 @@ namespace pksm
         return PersonalXYORAS::ability(u16(species()), abilitynum);
     }
 
-    u8 WC6::abilityType(void) const { return data[0xA2]; }
+    u8 WC6::abilityType(void) const
+    {
+        return data[0xA2];
+    }
 
-    u8 WC6::metLevel(void) const { return data[0xA8]; }
+    u8 WC6::metLevel(void) const
+    {
+        return data[0xA8];
+    }
 
-    std::string WC6::otName(void) const { return StringUtils::getString(data, 0xB6, 12); }
+    std::string WC6::otName(void) const
+    {
+        return StringUtils::getString(data, 0xB6, 12);
+    }
 
-    u8 WC6::level(void) const { return data[0xD0]; }
+    u8 WC6::level(void) const
+    {
+        return data[0xD0];
+    }
 
-    bool WC6::egg(void) const { return data[0xD1] == 1; }
+    bool WC6::egg(void) const
+    {
+        return data[0xD1] == 1;
+    }
 
-    u16 WC6::eggLocation(void) const { return LittleEndian::convertTo<u16>(data + 0xA4); }
+    u16 WC6::eggLocation(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0xA4);
+    }
 
-    u16 WC6::metLocation(void) const { return LittleEndian::convertTo<u16>(data + 0xA6); }
+    u16 WC6::metLocation(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0xA6);
+    }
 
-    u8 WC6::contest(u8 index) const { return data[0xA9 + index]; }
+    u8 WC6::contest(u8 index) const
+    {
+        return data[0xA9 + index];
+    }
 
-    u8 WC6::iv(Stat index) const { return data[0xAF + u8(index)]; }
+    u8 WC6::iv(Stat index) const
+    {
+        return data[0xAF + u8(index)];
+    }
 
-    Gender WC6::otGender(void) const { return Gender{data[0xB5]}; }
+    Gender WC6::otGender(void) const
+    {
+        return Gender{data[0xB5]};
+    }
 
-    u16 WC6::additionalItem(void) const { return LittleEndian::convertTo<u16>(data + 0xD2); }
+    u16 WC6::additionalItem(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0xD2);
+    }
 
-    u32 WC6::PID(void) const { return LittleEndian::convertTo<u32>(data + 0xD4); }
+    u32 WC6::PID(void) const
+    {
+        return LittleEndian::convertTo<u32>(data + 0xD4);
+    }
 
     Move WC6::relearnMove(u8 index) const
     {
         return Move{LittleEndian::convertTo<u16>(data + 0xD8 + index * 2)};
     }
 
-    u8 WC6::otIntensity(void) const { return data[0xE0]; }
+    u8 WC6::otIntensity(void) const
+    {
+        return data[0xE0];
+    }
 
-    u8 WC6::otMemory(void) const { return data[0xE1]; }
+    u8 WC6::otMemory(void) const
+    {
+        return data[0xE1];
+    }
 
-    u16 WC6::otTextvar(void) const { return data[0xE2]; }
+    u16 WC6::otTextvar(void) const
+    {
+        return data[0xE2];
+    }
 
-    u8 WC6::otFeeling(void) const { return data[0xE4]; }
+    u8 WC6::otFeeling(void) const
+    {
+        return data[0xE4];
+    }
 
-    u16 WC6::ev(Stat index) const { return data[0xE5 + u8(index)]; }
+    u16 WC6::ev(Stat index) const
+    {
+        return data[0xE5 + u8(index)];
+    }
 
-    bool WC6::hasRibbon(Ribbon rib) const { return OFFSET_OF(rib).first != RIBBON_ABSENT; }
+    bool WC6::hasRibbon(Ribbon rib) const
+    {
+        return OFFSET_OF(rib).first != RIBBON_ABSENT;
+    }
 
     bool WC6::ribbon(Ribbon rib) const
     {
@@ -242,11 +392,20 @@ namespace pksm
                                              : false;
     }
 
-    u8 WC6::cardLocation(void) const { return data[0x50]; }
+    u8 WC6::cardLocation(void) const
+    {
+        return data[0x50];
+    }
 
-    bool WC6::used(void) const { return (flags() & 2) == 2; }
+    bool WC6::used(void) const
+    {
+        return (flags() & 2) == 2;
+    }
 
-    bool WC6::oncePerDay(void) const { return (flags() & 4) == 4; }
+    bool WC6::oncePerDay(void) const
+    {
+        return (flags() & 4) == 4;
+    }
 
     u16 WC6::formSpecies(void) const
     {

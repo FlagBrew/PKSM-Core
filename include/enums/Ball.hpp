@@ -79,10 +79,10 @@ namespace pksm
             } v;
 
             constexpr explicit Ball_impl(BallEnum v) : v(v) {}
-            constexpr Ball_impl(const Ball_impl&) = default;
-            constexpr Ball_impl(Ball_impl&&)      = default;
+            constexpr Ball_impl(const Ball_impl&)            = default;
+            constexpr Ball_impl(Ball_impl&&)                 = default;
             constexpr Ball_impl& operator=(const Ball_impl&) = default;
-            constexpr Ball_impl& operator=(Ball_impl&&) = default;
+            constexpr Ball_impl& operator=(Ball_impl&&)      = default;
 
         public:
             template <std::integral T>

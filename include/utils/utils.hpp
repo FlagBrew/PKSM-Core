@@ -158,13 +158,17 @@ namespace StringUtils
 
     namespace internal
     {
-        // clang-format off
         template <typename RetType, typename First, typename... Params>
-        requires (std::same_as<std::string, RetType> || std::same_as<std::u16string, RetType> || std::same_as<std::u32string, RetType>) &&
-                 (std::convertible_to<First, std::string_view> || std::convertible_to<First, std::u16string_view> || std::convertible_to<First, std::u32string_view>) &&
-                 ((std::convertible_to<Params, std::string_view> || std::convertible_to<Params, std::u16string_view> || std::convertible_to<Params,std::u32string_view>)&&...)         
+            requires(std::same_as<std::string, RetType> || std::same_as<std::u16string, RetType> ||
+                        std::same_as<std::u32string, RetType>) &&
+                    (std::convertible_to<First, std::string_view> ||
+                        std::convertible_to<First, std::u16string_view> ||
+                        std::convertible_to<First, std::u32string_view>) &&
+                    ((std::convertible_to<Params, std::string_view> ||
+                         std::convertible_to<Params, std::u16string_view> ||
+                         std::convertible_to<Params, std::u32string_view>) &&
+                        ...)
         void concatImpl(RetType& ret, First&& f, Params&&... rest)
-        // clang-format on
         {
             static constexpr auto toGenericView = [](First&& x)
                 -> std::conditional_t<std::is_convertible_v<First, std::string_view>,
@@ -238,22 +242,27 @@ namespace StringUtils
             }
         }
 
-        // clang-format off
         template <typename StringType>
-        requires std::same_as<std::string, StringType> || std::same_as<std::u16string, StringType> || std::same_as<std::u32string, StringType>
+            requires std::same_as<std::string, StringType> ||
+                     std::same_as<std::u16string, StringType> ||
+                     std::same_as<std::u32string, StringType>
         size_t concatMaxSizeInCodeUnits()
-        // clang-format on
         {
             return 0;
         }
 
-        // clang-format off
         template <typename StringType, typename First, typename... Params>
-        requires (std::same_as<std::string, StringType> || std::same_as<std::u16string, StringType> || std::same_as<std::u32string, StringType>) &&
-                 (std::convertible_to<First, std::string_view> || std::convertible_to<First, std::u16string_view> || std::convertible_to<First, std::u32string_view>) &&
-                 ((std::convertible_to<Params, std::string_view> || std::convertible_to<Params, std::u16string_view> || std::convertible_to<Params,std::u32string_view>)&&...) 
+            requires(std::same_as<std::string, StringType> ||
+                        std::same_as<std::u16string, StringType> ||
+                        std::same_as<std::u32string, StringType>) &&
+                    (std::convertible_to<First, std::string_view> ||
+                        std::convertible_to<First, std::u16string_view> ||
+                        std::convertible_to<First, std::u32string_view>) &&
+                    ((std::convertible_to<Params, std::string_view> ||
+                         std::convertible_to<Params, std::u16string_view> ||
+                         std::convertible_to<Params, std::u32string_view>) &&
+                        ...)
         size_t concatMaxSizeInCodeUnits(First&& f, Params&&... args)
-        // clang-format on
         {
             if constexpr (std::is_same_v<StringType, std::string>)
             {
@@ -291,12 +300,13 @@ namespace StringUtils
         }
     }
 
-    // clang-format off
     template <typename EncString, typename OrigString>
-    requires (std::same_as<std::string, EncString> || std::same_as<std::u16string, EncString> || std::same_as<std::u32string, EncString>) &&
-             (std::convertible_to<OrigString, std::string_view> || std::convertible_to<OrigString, std::u16string_view> || std::convertible_to<OrigString, std::u32string_view>)
+        requires(std::same_as<std::string, EncString> || std::same_as<std::u16string, EncString> ||
+                    std::same_as<std::u32string, EncString>) &&
+                (std::convertible_to<OrigString, std::string_view> ||
+                    std::convertible_to<OrigString, std::u16string_view> ||
+                    std::convertible_to<OrigString, std::u32string_view>)
     EncString convert(OrigString&& str)
-    // clang-format on
     {
         if constexpr (std::is_same_v<EncString, std::string>)
         {
@@ -345,12 +355,14 @@ namespace StringUtils
         }
     }
 
-    // clang-format off
     template <typename RetType, bool ShrinkAfter = false, typename... Params>
-    requires (std::same_as<RetType, std::string> || std::same_as<RetType, std::u16string> || std::same_as<RetType, std::u32string>) &&
-             ((std::convertible_to<Params, std::string_view> || std::convertible_to<Params, std::u16string_view> || std::convertible_to<Params, std::u32string_view>)&&...)
+        requires(std::same_as<RetType, std::string> || std::same_as<RetType, std::u16string> ||
+                    std::same_as<RetType, std::u32string>) &&
+                ((std::convertible_to<Params, std::string_view> ||
+                     std::convertible_to<Params, std::u16string_view> ||
+                     std::convertible_to<Params, std::u32string_view>) &&
+                    ...)
     RetType concat(Params&&... rest)
-    // clang-format on
     {
         if constexpr (sizeof...(rest) == 0)
         {

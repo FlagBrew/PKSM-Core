@@ -34,20 +34,50 @@
 
 namespace pksm
 {
-    u16 Sav5::TID(void) const { return LittleEndian::convertTo<u16>(&data[Trainer1 + 0x14]); }
-    void Sav5::TID(u16 v) { LittleEndian::convertFrom<u16>(&data[Trainer1 + 0x14], v); }
+    u16 Sav5::TID(void) const
+    {
+        return LittleEndian::convertTo<u16>(&data[Trainer1 + 0x14]);
+    }
+    void Sav5::TID(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(&data[Trainer1 + 0x14], v);
+    }
 
-    u16 Sav5::SID(void) const { return LittleEndian::convertTo<u16>(&data[Trainer1 + 0x16]); }
-    void Sav5::SID(u16 v) { LittleEndian::convertFrom<u16>(&data[Trainer1 + 0x16], v); }
+    u16 Sav5::SID(void) const
+    {
+        return LittleEndian::convertTo<u16>(&data[Trainer1 + 0x16]);
+    }
+    void Sav5::SID(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(&data[Trainer1 + 0x16], v);
+    }
 
-    GameVersion Sav5::version(void) const { return GameVersion(data[Trainer1 + 0x1F]); }
-    void Sav5::version(GameVersion v) { data[Trainer1 + 0x1F] = u8(v); }
+    GameVersion Sav5::version(void) const
+    {
+        return GameVersion(data[Trainer1 + 0x1F]);
+    }
+    void Sav5::version(GameVersion v)
+    {
+        data[Trainer1 + 0x1F] = u8(v);
+    }
 
-    Gender Sav5::gender(void) const { return Gender{data[Trainer1 + 0x21]}; }
-    void Sav5::gender(Gender v) { data[Trainer1 + 0x21] = u8(v); }
+    Gender Sav5::gender(void) const
+    {
+        return Gender{data[Trainer1 + 0x21]};
+    }
+    void Sav5::gender(Gender v)
+    {
+        data[Trainer1 + 0x21] = u8(v);
+    }
 
-    Language Sav5::language(void) const { return Language(data[Trainer1 + 0x1E]); }
-    void Sav5::language(Language v) { data[Trainer1 + 0x1E] = u8(v); }
+    Language Sav5::language(void) const
+    {
+        return Language(data[Trainer1 + 0x1E]);
+    }
+    void Sav5::language(Language v)
+    {
+        data[Trainer1 + 0x1E] = u8(v);
+    }
 
     std::string Sav5::otName(void) const
     {
@@ -60,11 +90,23 @@ namespace pksm
             data.get(), StringUtils::transString45(v), Trainer1 + 0x4, 8, u'\uFFFF', 0);
     }
 
-    u32 Sav5::money(void) const { return LittleEndian::convertTo<u32>(&data[Trainer2]); }
-    void Sav5::money(u32 v) { LittleEndian::convertFrom<u32>(&data[Trainer2], v); }
+    u32 Sav5::money(void) const
+    {
+        return LittleEndian::convertTo<u32>(&data[Trainer2]);
+    }
+    void Sav5::money(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(&data[Trainer2], v);
+    }
 
-    u32 Sav5::BP(void) const { return LittleEndian::convertTo<u16>(&data[BattleSubway]); }
-    void Sav5::BP(u32 v) { LittleEndian::convertFrom<u32>(&data[BattleSubway], v); }
+    u32 Sav5::BP(void) const
+    {
+        return LittleEndian::convertTo<u16>(&data[BattleSubway]);
+    }
+    void Sav5::BP(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(&data[BattleSubway], v);
+    }
 
     u8 Sav5::badges(void) const
     {
@@ -81,25 +123,55 @@ namespace pksm
     {
         return LittleEndian::convertTo<u16>(&data[Trainer1 + 0x24]);
     }
-    void Sav5::playedHours(u16 v) { LittleEndian::convertFrom<u16>(&data[Trainer1 + 0x24], v); }
+    void Sav5::playedHours(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(&data[Trainer1 + 0x24], v);
+    }
 
-    u8 Sav5::playedMinutes(void) const { return data[Trainer1 + 0x26]; }
-    void Sav5::playedMinutes(u8 v) { data[Trainer1 + 0x26] = v; }
+    u8 Sav5::playedMinutes(void) const
+    {
+        return data[Trainer1 + 0x26];
+    }
+    void Sav5::playedMinutes(u8 v)
+    {
+        data[Trainer1 + 0x26] = v;
+    }
 
-    u8 Sav5::playedSeconds(void) const { return data[Trainer1 + 0x27]; }
-    void Sav5::playedSeconds(u8 v) { data[Trainer1 + 0x27] = v; }
+    u8 Sav5::playedSeconds(void) const
+    {
+        return data[Trainer1 + 0x27];
+    }
+    void Sav5::playedSeconds(u8 v)
+    {
+        data[Trainer1 + 0x27] = v;
+    }
 
-    u8 Sav5::currentBox(void) const { return data[PCLayout]; }
-    void Sav5::currentBox(u8 v) { data[PCLayout] = v; }
+    u8 Sav5::currentBox(void) const
+    {
+        return data[PCLayout];
+    }
+    void Sav5::currentBox(u8 v)
+    {
+        data[PCLayout] = v;
+    }
 
-    u8 Sav5::unlockedBoxes(void) const { return data[PCLayout + 0x3DD]; }
-    void Sav5::unlockedBoxes(u8 v) { data[PCLayout + 0x3DD] = v; }
+    u8 Sav5::unlockedBoxes(void) const
+    {
+        return data[PCLayout + 0x3DD];
+    }
+    void Sav5::unlockedBoxes(u8 v)
+    {
+        data[PCLayout + 0x3DD] = v;
+    }
 
     u32 Sav5::boxOffset(u8 box, u8 slot) const
     {
         return Box + PK5::BOX_LENGTH * box * 30 + 0x10 * box + PK5::BOX_LENGTH * slot;
     }
-    u32 Sav5::partyOffset(u8 slot) const { return Party + 8 + PK5::PARTY_LENGTH * slot; }
+    u32 Sav5::partyOffset(u8 slot) const
+    {
+        return Party + 8 + PK5::PARTY_LENGTH * slot;
+    }
 
     std::unique_ptr<PKX> Sav5::pkm(u8 slot) const
     {
@@ -348,11 +420,23 @@ namespace pksm
             PCLayout + 0x28 * box + 4, 9, u'\uFFFF', 0);
     }
 
-    u8 Sav5::boxWallpaper(u8 box) const { return data[PCLayout + 0x3C4 + box]; }
-    void Sav5::boxWallpaper(u8 box, u8 v) { data[PCLayout + 0x3C4 + box] = v; }
+    u8 Sav5::boxWallpaper(u8 box) const
+    {
+        return data[PCLayout + 0x3C4 + box];
+    }
+    void Sav5::boxWallpaper(u8 box, u8 v)
+    {
+        data[PCLayout + 0x3C4 + box] = v;
+    }
 
-    u8 Sav5::partyCount(void) const { return data[Party + 4]; }
-    void Sav5::partyCount(u8 v) { data[Party + 4] = v; }
+    u8 Sav5::partyCount(void) const
+    {
+        return data[Party + 4];
+    }
+    void Sav5::partyCount(u8 v)
+    {
+        data[Party + 4] = v;
+    }
 
     std::unique_ptr<PKX> Sav5::emptyPkm() const
     {

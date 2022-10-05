@@ -302,8 +302,14 @@ namespace pksm
             const_cast<u8*>(data), japanese ? JP_LENGTH_WITH_NAMES : INT_LENGTH_WITH_NAMES);
     }
 
-    u16 PK1::TID() const { return BigEndian::convertTo<u16>(shiftedData + 12); }
-    void PK1::TID(u16 v) { BigEndian::convertFrom<u16>(shiftedData + 12, v); }
+    u16 PK1::TID() const
+    {
+        return BigEndian::convertTo<u16>(shiftedData + 12);
+    }
+    void PK1::TID(u16 v)
+    {
+        BigEndian::convertFrom<u16>(shiftedData + 12, v);
+    }
     std::string PK1::nickname() const
     {
         return StringUtils::getString1(
@@ -319,7 +325,10 @@ namespace pksm
         StringUtils::setString1(
             shiftedData, v, 44 + (japanese ? 6 : 11), japanese ? 6 : 11, lang, japanese ? 6 : 11);
     }
-    Language PK1::language() const { return lang; }
+    Language PK1::language() const
+    {
+        return lang;
+    }
     void PK1::language(Language v)
     {
         // data is too different to allow converting anything between japanese and another language
@@ -337,7 +346,10 @@ namespace pksm
         StringUtils::setString1(shiftedData, v, 44, japanese ? 6 : 11, lang, japanese ? 6 : 11);
     }
 
-    u8 PK1::speciesID1() const { return shiftedData[0]; }
+    u8 PK1::speciesID1() const
+    {
+        return shiftedData[0];
+    }
     void PK1::speciesID1(u8 v)
     {
         data[1]        = v;
@@ -349,14 +361,29 @@ namespace pksm
         data[2] = 0xFF;
     }
 
-    Species PK1::species() const { return SpeciesConverter::g1ToNational(speciesID1()); }
-    void PK1::species(Species v) { speciesID1(SpeciesConverter::nationalToG1(v)); }
+    Species PK1::species() const
+    {
+        return SpeciesConverter::g1ToNational(speciesID1());
+    }
+    void PK1::species(Species v)
+    {
+        speciesID1(SpeciesConverter::nationalToG1(v));
+    }
     // yes, Gen I pokemon data stores catch rate, and yes it's actually important for Gen II
     // importing
-    u8 PK1::catchRate() const { return shiftedData[7]; }
-    void PK1::catchRate(u8 v) { shiftedData[7] = v; }
+    u8 PK1::catchRate() const
+    {
+        return shiftedData[7];
+    }
+    void PK1::catchRate(u8 v)
+    {
+        shiftedData[7] = v;
+    }
     // experience is actually 3 bytes
-    u32 PK1::experience() const { return BigEndian::convertTo<u32>(shiftedData + 14) >> 8; }
+    u32 PK1::experience() const
+    {
+        return BigEndian::convertTo<u32>(shiftedData + 14) >> 8;
+    }
     void PK1::experience(u32 v)
     {
         shiftedData[14] = v >> 16;
@@ -376,14 +403,26 @@ namespace pksm
         BigEndian::convertFrom<u16>(shiftedData + 17 + 2 * u8(ev), v);
     }
 
-    Move PK1::move(u8 move) const { return Move{shiftedData[8 + move]}; }
-    void PK1::move(u8 move, Move v) { shiftedData[8 + move] = u8(v); }
-    u8 PK1::PP(u8 move) const { return u8(shiftedData[29 + move] & 0x3F); }
+    Move PK1::move(u8 move) const
+    {
+        return Move{shiftedData[8 + move]};
+    }
+    void PK1::move(u8 move, Move v)
+    {
+        shiftedData[8 + move] = u8(v);
+    }
+    u8 PK1::PP(u8 move) const
+    {
+        return u8(shiftedData[29 + move] & 0x3F);
+    }
     void PK1::PP(u8 move, u8 v)
     {
         shiftedData[29 + move] = u8((shiftedData[29 + move] & 0xC0) | (v & 0x3F));
     }
-    u8 PK1::PPUp(u8 move) const { return shiftedData[29 + move] >> 6; }
+    u8 PK1::PPUp(u8 move) const
+    {
+        return shiftedData[29 + move] >> 6;
+    }
     void PK1::PPUp(u8 move, u8 v)
     {
         shiftedData[29 + move] = u8((v & 0xC0) | (shiftedData[29 + move] & 0x3F));
@@ -480,8 +519,14 @@ namespace pksm
                     (g == Gender::Female) ? (genderType() >> 4) : ((genderType() >> 4) + 1));
         }
     }
-    Nature PK1::nature() const { return Nature{u8(experience() % 25)}; }
-    void PK1::nature(Nature v) { experience(experience() - (experience() % 25) + u8(v)); }
+    Nature PK1::nature() const
+    {
+        return Nature{u8(experience() % 25)};
+    }
+    void PK1::nature(Nature v)
+    {
+        experience(experience() - (experience() % 25) + u8(v));
+    }
 
     Type PK1::hpType() const
     {
@@ -529,7 +574,10 @@ namespace pksm
         }
         iv(Stat::ATK, v ? 7 : 8);
     }
-    u16 PK1::formSpecies() const { return u16(species()); }
+    u16 PK1::formSpecies() const
+    {
+        return u16(species());
+    }
     u16 PK1::statImpl(Stat stat) const
     {
         u16 base;
@@ -588,14 +636,23 @@ namespace pksm
             BigEndian::convertFrom<u16>(shiftedData + 34 + 2 * u8(stat), v);
         }
     }
-    int PK1::partyLevel() const { return isParty() ? shiftedData[33] : -1; }
+    int PK1::partyLevel() const
+    {
+        return isParty() ? shiftedData[33] : -1;
+    }
     void PK1::partyLevel(u8 v)
     {
         if (isParty())
             shiftedData[33] = v;
     }
-    int PK1::boxLevel() const { return shiftedData[3]; }
-    void PK1::boxLevel(u8 v) { shiftedData[3] = v; }
+    int PK1::boxLevel() const
+    {
+        return shiftedData[3];
+    }
+    void PK1::boxLevel(u8 v)
+    {
+        shiftedData[3] = v;
+    }
     void PK1::updatePartyData()
     {
         partyLevel(level());
@@ -635,9 +692,18 @@ namespace pksm
                 return catchRate();
         }
     }
-    void PK1::heldItem2(u8 v) { catchRate(v); }
-    u16 PK1::heldItem() const { return ItemConverter::g2ToNational(heldItem2()); }
-    void PK1::heldItem(u16 v) { catchRate(ItemConverter::nationalToG2(v)); }
+    void PK1::heldItem2(u8 v)
+    {
+        catchRate(v);
+    }
+    u16 PK1::heldItem() const
+    {
+        return ItemConverter::g2ToNational(heldItem2());
+    }
+    void PK1::heldItem(u16 v)
+    {
+        catchRate(ItemConverter::nationalToG2(v));
+    }
     void PK1::heldItem(const Item& item)
     {
         if (item.generation() == Generation::TWO)

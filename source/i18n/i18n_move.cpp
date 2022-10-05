@@ -41,7 +41,10 @@ namespace i18n
         moves.insert_or_assign(lang, std::move(vec));
     }
 
-    void exitMove(pksm::Language lang) { moves[lang].clear(); }
+    void exitMove(pksm::Language lang)
+    {
+        moves[lang].clear();
+    }
 
     const std::string& move(pksm::Language lang, pksm::Move val)
     {

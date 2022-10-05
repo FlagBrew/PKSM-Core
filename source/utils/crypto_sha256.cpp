@@ -31,12 +31,30 @@
 
 namespace
 {
-    inline u32 CH(u32 x, u32 y, u32 z) { return (x & y) ^ (~x & z); }
-    inline u32 MAJ(u32 x, u32 y, u32 z) { return (x & y) ^ (x & z) ^ (y & z); }
-    inline u32 EP0(u32 x) { return std::rotr(x, 2) ^ std::rotr(x, 13) ^ std::rotr(x, 22); }
-    inline u32 EP1(u32 x) { return std::rotr(x, 6) ^ std::rotr(x, 11) ^ std::rotr(x, 25); }
-    inline u32 SIG0(u32 x) { return std::rotr(x, 7) ^ std::rotr(x, 18) ^ (x >> 3); }
-    inline u32 SIG1(u32 x) { return std::rotr(x, 17) ^ std::rotr(x, 19) ^ (x >> 10); }
+    inline u32 CH(u32 x, u32 y, u32 z)
+    {
+        return (x & y) ^ (~x & z);
+    }
+    inline u32 MAJ(u32 x, u32 y, u32 z)
+    {
+        return (x & y) ^ (x & z) ^ (y & z);
+    }
+    inline u32 EP0(u32 x)
+    {
+        return std::rotr(x, 2) ^ std::rotr(x, 13) ^ std::rotr(x, 22);
+    }
+    inline u32 EP1(u32 x)
+    {
+        return std::rotr(x, 6) ^ std::rotr(x, 11) ^ std::rotr(x, 25);
+    }
+    inline u32 SIG0(u32 x)
+    {
+        return std::rotr(x, 7) ^ std::rotr(x, 18) ^ (x >> 3);
+    }
+    inline u32 SIG1(u32 x)
+    {
+        return std::rotr(x, 17) ^ std::rotr(x, 19) ^ (x >> 10);
+    }
 }
 
 namespace pksm::crypto

@@ -150,11 +150,23 @@ namespace pksm
         LittleEndian::convertFrom<u16>(&data[sbo + storage[2]], cs);
     }
 
-    u16 Sav4::TID(void) const { return LittleEndian::convertTo<u16>(&data[Trainer1 + 0x10]); }
-    void Sav4::TID(u16 v) { LittleEndian::convertFrom<u16>(&data[Trainer1 + 0x10], v); }
+    u16 Sav4::TID(void) const
+    {
+        return LittleEndian::convertTo<u16>(&data[Trainer1 + 0x10]);
+    }
+    void Sav4::TID(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(&data[Trainer1 + 0x10], v);
+    }
 
-    u16 Sav4::SID(void) const { return LittleEndian::convertTo<u16>(&data[Trainer1 + 0x12]); }
-    void Sav4::SID(u16 v) { LittleEndian::convertFrom<u16>(&data[Trainer1 + 0x12], v); }
+    u16 Sav4::SID(void) const
+    {
+        return LittleEndian::convertTo<u16>(&data[Trainer1 + 0x12]);
+    }
+    void Sav4::SID(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(&data[Trainer1 + 0x12], v);
+    }
 
     GameVersion Sav4::version(void) const
     {
@@ -164,11 +176,23 @@ namespace pksm
     }
     void Sav4::version(GameVersion) {}
 
-    Gender Sav4::gender(void) const { return Gender{data[Trainer1 + 0x18]}; }
-    void Sav4::gender(Gender v) { data[Trainer1 + 0x18] = u8(v); }
+    Gender Sav4::gender(void) const
+    {
+        return Gender{data[Trainer1 + 0x18]};
+    }
+    void Sav4::gender(Gender v)
+    {
+        data[Trainer1 + 0x18] = u8(v);
+    }
 
-    Language Sav4::language(void) const { return Language(data[Trainer1 + 0x19]); }
-    void Sav4::language(Language v) { data[Trainer1 + 0x19] = u8(v); }
+    Language Sav4::language(void) const
+    {
+        return Language(data[Trainer1 + 0x19]);
+    }
+    void Sav4::language(Language v)
+    {
+        data[Trainer1 + 0x19] = u8(v);
+    }
 
     std::string Sav4::otName(void) const
     {
@@ -179,14 +203,23 @@ namespace pksm
         StringUtils::setString4(data.get(), StringUtils::transString45(v), Trainer1, 8);
     }
 
-    u32 Sav4::money(void) const { return LittleEndian::convertTo<u32>(&data[Trainer1 + 0x14]); }
-    void Sav4::money(u32 v) { LittleEndian::convertFrom<u32>(&data[Trainer1 + 0x14], v); }
+    u32 Sav4::money(void) const
+    {
+        return LittleEndian::convertTo<u32>(&data[Trainer1 + 0x14]);
+    }
+    void Sav4::money(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(&data[Trainer1 + 0x14], v);
+    }
 
     u32 Sav4::BP(void) const
     {
         return LittleEndian::convertTo<u16>(&data[Trainer1 + 0x20]);
     } // Returns Coins @ Game Corner
-    void Sav4::BP(u32 v) { LittleEndian::convertFrom<u32>(&data[Trainer1 + 0x20], v); }
+    void Sav4::BP(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(&data[Trainer1 + 0x20], v);
+    }
 
     u8 Sav4::badges(void) const
     {
@@ -211,13 +244,28 @@ namespace pksm
     {
         return LittleEndian::convertTo<u16>(&data[Trainer1 + 0x22]);
     }
-    void Sav4::playedHours(u16 v) { LittleEndian::convertFrom<u16>(&data[Trainer1 + 0x22], v); }
+    void Sav4::playedHours(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(&data[Trainer1 + 0x22], v);
+    }
 
-    u8 Sav4::playedMinutes(void) const { return data[Trainer1 + 0x24]; }
-    void Sav4::playedMinutes(u8 v) { data[Trainer1 + 0x24] = v; }
+    u8 Sav4::playedMinutes(void) const
+    {
+        return data[Trainer1 + 0x24];
+    }
+    void Sav4::playedMinutes(u8 v)
+    {
+        data[Trainer1 + 0x24] = v;
+    }
 
-    u8 Sav4::playedSeconds(void) const { return data[Trainer1 + 0x25]; }
-    void Sav4::playedSeconds(u8 v) { data[Trainer1 + 0x25] = v; }
+    u8 Sav4::playedSeconds(void) const
+    {
+        return data[Trainer1 + 0x25];
+    }
+    void Sav4::playedSeconds(u8 v)
+    {
+        data[Trainer1 + 0x25] = v;
+    }
 
     u8 Sav4::currentBox(void) const
     {
@@ -236,7 +284,10 @@ namespace pksm
         return Box + PK4::BOX_LENGTH * box * 30 + (game == Game::HGSS ? box * 0x10 : 0) +
                slot * PK4::BOX_LENGTH;
     }
-    u32 Sav4::partyOffset(u8 slot) const { return Party + slot * PK4::PARTY_LENGTH; }
+    u32 Sav4::partyOffset(u8 slot) const
+    {
+        return Party + slot * PK4::PARTY_LENGTH;
+    }
 
     std::unique_ptr<PKX> Sav4::pkm(u8 slot) const
     {
@@ -300,7 +351,10 @@ namespace pksm
         }
     }
 
-    bool Sav4::giftsMenuActivated(void) const { return (data[gbo + 72] & 1) == 1; }
+    bool Sav4::giftsMenuActivated(void) const
+    {
+        return (data[gbo + 72] & 1) == 1;
+    }
 
     void Sav4::giftsMenuActivated(bool v)
     {
@@ -374,8 +428,14 @@ namespace pksm
         data[offset] = v;
     }
 
-    u8 Sav4::partyCount(void) const { return data[Party - 4]; }
-    void Sav4::partyCount(u8 v) { data[Party - 4] = v; }
+    u8 Sav4::partyCount(void) const
+    {
+        return data[Party - 4];
+    }
+    void Sav4::partyCount(u8 v)
+    {
+        data[Party - 4] = v;
+    }
 
     void Sav4::dex(const PKX& pk)
     {

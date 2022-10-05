@@ -333,7 +333,10 @@ namespace pksm
         }
     }
 
-    bool PK5::isEncrypted() const { return LittleEndian::convertTo<u32>(data + 0x64) != 0; }
+    bool PK5::isEncrypted() const
+    {
+        return LittleEndian::convertTo<u32>(data + 0x64) != 0;
+    }
 
     PK5::PK5(PrivateConstructor, u8* dt, bool party, bool direct)
         : PKX(dt, party ? PARTY_LENGTH : BOX_LENGTH, direct)
@@ -350,15 +353,30 @@ namespace pksm
             const_cast<u8*>(data), isParty() ? PARTY_LENGTH : BOX_LENGTH);
     }
 
-    Generation PK5::generation(void) const { return Generation::FIVE; }
+    Generation PK5::generation(void) const
+    {
+        return Generation::FIVE;
+    }
 
-    u32 PK5::encryptionConstant(void) const { return PID(); }
+    u32 PK5::encryptionConstant(void) const
+    {
+        return PID();
+    }
     void PK5::encryptionConstant(u32) {}
 
-    u8 PK5::currentFriendship(void) const { return otFriendship(); }
-    void PK5::currentFriendship(u8 v) { otFriendship(v); }
+    u8 PK5::currentFriendship(void) const
+    {
+        return otFriendship();
+    }
+    void PK5::currentFriendship(u8 v)
+    {
+        otFriendship(v);
+    }
 
-    u8 PK5::abilityNumber(void) const { return hiddenAbility() ? 4 : 1 << ((PID() >> 16) & 1); }
+    u8 PK5::abilityNumber(void) const
+    {
+        return hiddenAbility() ? 4 : 1 << ((PID() >> 16) & 1);
+    }
     void PK5::abilityNumber(u8 v)
     {
         if (v == 1 || v == 2)
@@ -373,35 +391,95 @@ namespace pksm
         }
     }
 
-    u32 PK5::PID(void) const { return LittleEndian::convertTo<u32>(data); }
-    void PK5::PID(u32 v) { LittleEndian::convertFrom<u32>(data, v); }
+    u32 PK5::PID(void) const
+    {
+        return LittleEndian::convertTo<u32>(data);
+    }
+    void PK5::PID(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(data, v);
+    }
 
-    u16 PK5::sanity(void) const { return LittleEndian::convertTo<u16>(data + 0x04); }
-    void PK5::sanity(u16 v) { LittleEndian::convertFrom<u16>(data + 0x04, v); }
+    u16 PK5::sanity(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x04);
+    }
+    void PK5::sanity(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x04, v);
+    }
 
-    u16 PK5::checksum(void) const { return LittleEndian::convertTo<u16>(data + 0x06); }
-    void PK5::checksum(u16 v) { LittleEndian::convertFrom<u16>(data + 0x06, v); }
+    u16 PK5::checksum(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x06);
+    }
+    void PK5::checksum(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x06, v);
+    }
 
-    Species PK5::species(void) const { return Species{LittleEndian::convertTo<u16>(data + 0x08)}; }
-    void PK5::species(Species v) { LittleEndian::convertFrom<u16>(data + 0x08, u16(v)); }
+    Species PK5::species(void) const
+    {
+        return Species{LittleEndian::convertTo<u16>(data + 0x08)};
+    }
+    void PK5::species(Species v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x08, u16(v));
+    }
 
-    u16 PK5::heldItem(void) const { return LittleEndian::convertTo<u16>(data + 0x0A); }
-    void PK5::heldItem(u16 v) { LittleEndian::convertFrom<u16>(data + 0x0A, v); }
+    u16 PK5::heldItem(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x0A);
+    }
+    void PK5::heldItem(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x0A, v);
+    }
 
-    u16 PK5::TID(void) const { return LittleEndian::convertTo<u16>(data + 0x0C); }
-    void PK5::TID(u16 v) { LittleEndian::convertFrom<u16>(data + 0x0C, v); }
+    u16 PK5::TID(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x0C);
+    }
+    void PK5::TID(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x0C, v);
+    }
 
-    u16 PK5::SID(void) const { return LittleEndian::convertTo<u16>(data + 0x0E); }
-    void PK5::SID(u16 v) { LittleEndian::convertFrom<u16>(data + 0x0E, v); }
+    u16 PK5::SID(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x0E);
+    }
+    void PK5::SID(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x0E, v);
+    }
 
-    u32 PK5::experience(void) const { return LittleEndian::convertTo<u32>(data + 0x10); }
-    void PK5::experience(u32 v) { LittleEndian::convertFrom<u32>(data + 0x10, v); }
+    u32 PK5::experience(void) const
+    {
+        return LittleEndian::convertTo<u32>(data + 0x10);
+    }
+    void PK5::experience(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(data + 0x10, v);
+    }
 
-    u8 PK5::otFriendship(void) const { return data[0x14]; }
-    void PK5::otFriendship(u8 v) { data[0x14] = v; }
+    u8 PK5::otFriendship(void) const
+    {
+        return data[0x14];
+    }
+    void PK5::otFriendship(u8 v)
+    {
+        data[0x14] = v;
+    }
 
-    Ability PK5::ability(void) const { return Ability{data[0x15]}; }
-    void PK5::ability(Ability v) { data[0x15] = u8(v); }
+    Ability PK5::ability(void) const
+    {
+        return Ability{data[0x15]};
+    }
+    void PK5::ability(Ability v)
+    {
+        data[0x15] = u8(v);
+    }
 
     void PK5::setAbility(u8 v)
     {
@@ -418,19 +496,46 @@ namespace pksm
         ability(abilities(v));
     }
 
-    u16 PK5::markValue(void) const { return data[0x16]; }
-    void PK5::markValue(u16 v) { data[0x16] = v; }
+    u16 PK5::markValue(void) const
+    {
+        return data[0x16];
+    }
+    void PK5::markValue(u16 v)
+    {
+        data[0x16] = v;
+    }
 
-    Language PK5::language(void) const { return Language(data[0x17]); }
-    void PK5::language(Language v) { data[0x17] = u8(v); }
+    Language PK5::language(void) const
+    {
+        return Language(data[0x17]);
+    }
+    void PK5::language(Language v)
+    {
+        data[0x17] = u8(v);
+    }
 
-    u16 PK5::ev(Stat ev) const { return data[0x18 + u8(ev)]; }
-    void PK5::ev(Stat ev, u16 v) { data[0x18 + u8(ev)] = v; }
+    u16 PK5::ev(Stat ev) const
+    {
+        return data[0x18 + u8(ev)];
+    }
+    void PK5::ev(Stat ev, u16 v)
+    {
+        data[0x18 + u8(ev)] = v;
+    }
 
-    u8 PK5::contest(u8 contest) const { return data[0x1E + contest]; }
-    void PK5::contest(u8 contest, u8 v) { data[0x1E + contest] = v; }
+    u8 PK5::contest(u8 contest) const
+    {
+        return data[0x1E + contest];
+    }
+    void PK5::contest(u8 contest, u8 v)
+    {
+        data[0x1E + contest] = v;
+    }
 
-    bool PK5::hasRibbon(Ribbon ribbon) const { return OFFSET_OF(ribbon).first != RIBBON_ABSENT; }
+    bool PK5::hasRibbon(Ribbon ribbon) const
+    {
+        return OFFSET_OF(ribbon).first != RIBBON_ABSENT;
+    }
     bool PK5::ribbon(Ribbon ribbon) const
     {
         auto offset = OFFSET_OF(ribbon);
@@ -449,14 +554,32 @@ namespace pksm
         }
     }
 
-    Move PK5::move(u8 m) const { return Move{LittleEndian::convertTo<u16>(data + 0x28 + m * 2)}; }
-    void PK5::move(u8 m, Move v) { LittleEndian::convertFrom<u16>(data + 0x28 + m * 2, u16(v)); }
+    Move PK5::move(u8 m) const
+    {
+        return Move{LittleEndian::convertTo<u16>(data + 0x28 + m * 2)};
+    }
+    void PK5::move(u8 m, Move v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x28 + m * 2, u16(v));
+    }
 
-    u8 PK5::PP(u8 m) const { return data[0x30 + m]; }
-    void PK5::PP(u8 m, u8 v) { data[0x30 + m] = v; }
+    u8 PK5::PP(u8 m) const
+    {
+        return data[0x30 + m];
+    }
+    void PK5::PP(u8 m, u8 v)
+    {
+        data[0x30 + m] = v;
+    }
 
-    u8 PK5::PPUp(u8 m) const { return data[0x34 + m]; }
-    void PK5::PPUp(u8 m, u8 v) { data[0x34 + m] = v; }
+    u8 PK5::PPUp(u8 m) const
+    {
+        return data[0x34 + m];
+    }
+    void PK5::PPUp(u8 m, u8 v)
+    {
+        data[0x34 + m] = v;
+    }
 
     u8 PK5::iv(Stat stat) const
     {
@@ -493,10 +616,19 @@ namespace pksm
             (LittleEndian::convertTo<u32>(data + 0x38) & 0x7FFFFFFF) | (v ? 0x80000000 : 0));
     }
 
-    bool PK5::fatefulEncounter(void) const { return (data[0x40] & 1) == 1; }
-    void PK5::fatefulEncounter(bool v) { data[0x40] = (u8)((data[0x40] & ~0x01) | (v ? 1 : 0)); }
+    bool PK5::fatefulEncounter(void) const
+    {
+        return (data[0x40] & 1) == 1;
+    }
+    void PK5::fatefulEncounter(bool v)
+    {
+        data[0x40] = (u8)((data[0x40] & ~0x01) | (v ? 1 : 0));
+    }
 
-    Gender PK5::gender(void) const { return Gender{u8((data[0x40] >> 1) & 0x3)}; }
+    Gender PK5::gender(void) const
+    {
+        return Gender{u8((data[0x40] >> 1) & 0x3)};
+    }
     void PK5::gender(Gender g)
     {
         data[0x40] = (data[0x40] & ~0x06) | (u8(g) << 1);
@@ -504,17 +636,41 @@ namespace pksm
             shiny(), TSV(), PID(), generation()));
     }
 
-    u16 PK5::alternativeForm(void) const { return data[0x40] >> 3; }
-    void PK5::alternativeForm(u16 v) { data[0x40] = (data[0x40] & 0x07) | (v << 3); }
+    u16 PK5::alternativeForm(void) const
+    {
+        return data[0x40] >> 3;
+    }
+    void PK5::alternativeForm(u16 v)
+    {
+        data[0x40] = (data[0x40] & 0x07) | (v << 3);
+    }
 
-    Nature PK5::nature(void) const { return Nature{data[0x41]}; }
-    void PK5::nature(Nature v) { data[0x41] = u8(v); }
+    Nature PK5::nature(void) const
+    {
+        return Nature{data[0x41]};
+    }
+    void PK5::nature(Nature v)
+    {
+        data[0x41] = u8(v);
+    }
 
-    bool PK5::hiddenAbility(void) const { return (data[0x42] & 1) == 1; }
-    void PK5::hiddenAbility(bool v) { data[0x42] = (u8)((data[0x42] & ~0x01) | (v ? 1 : 0)); }
+    bool PK5::hiddenAbility(void) const
+    {
+        return (data[0x42] & 1) == 1;
+    }
+    void PK5::hiddenAbility(bool v)
+    {
+        data[0x42] = (u8)((data[0x42] & ~0x01) | (v ? 1 : 0));
+    }
 
-    bool PK5::nPokemon(void) const { return (data[0x42] & 2) == 2; }
-    void PK5::nPokemon(bool v) { data[0x42] = (u8)((data[0x42] & ~0x02) | (v ? 2 : 0)); }
+    bool PK5::nPokemon(void) const
+    {
+        return (data[0x42] & 2) == 2;
+    }
+    void PK5::nPokemon(bool v)
+    {
+        data[0x42] = (u8)((data[0x42] & ~0x02) | (v ? 2 : 0));
+    }
 
     std::string PK5::nickname(void) const
     {
@@ -525,8 +681,14 @@ namespace pksm
         StringUtils::setString(data, StringUtils::transString45(v), 0x48, 11, u'\uFFFF', 0);
     }
 
-    GameVersion PK5::version(void) const { return GameVersion(data[0x5F]); }
-    void PK5::version(GameVersion v) { data[0x5F] = u8(v); }
+    GameVersion PK5::version(void) const
+    {
+        return GameVersion(data[0x5F]);
+    }
+    void PK5::version(GameVersion v)
+    {
+        data[0x5F] = u8(v);
+    }
 
     std::string PK5::otName(void) const
     {
@@ -537,50 +699,140 @@ namespace pksm
         StringUtils::setString(data, StringUtils::transString45(v), 0x68, 8, u'\uFFFF', 0);
     }
 
-    int PK5::eggYear(void) const { return 2000 + data[0x78]; }
-    void PK5::eggYear(int v) { data[0x78] = v - 2000; }
+    int PK5::eggYear(void) const
+    {
+        return 2000 + data[0x78];
+    }
+    void PK5::eggYear(int v)
+    {
+        data[0x78] = v - 2000;
+    }
 
-    int PK5::eggMonth(void) const { return data[0x79]; }
-    void PK5::eggMonth(int v) { data[0x79] = v; }
+    int PK5::eggMonth(void) const
+    {
+        return data[0x79];
+    }
+    void PK5::eggMonth(int v)
+    {
+        data[0x79] = v;
+    }
 
-    int PK5::eggDay(void) const { return data[0x7A]; }
-    void PK5::eggDay(int v) { data[0x7A] = v; }
+    int PK5::eggDay(void) const
+    {
+        return data[0x7A];
+    }
+    void PK5::eggDay(int v)
+    {
+        data[0x7A] = v;
+    }
 
-    int PK5::metYear(void) const { return 2000 + data[0x7B]; }
-    void PK5::metYear(int v) { data[0x7B] = v - 2000; }
+    int PK5::metYear(void) const
+    {
+        return 2000 + data[0x7B];
+    }
+    void PK5::metYear(int v)
+    {
+        data[0x7B] = v - 2000;
+    }
 
-    int PK5::metMonth(void) const { return data[0x7C]; }
-    void PK5::metMonth(int v) { data[0x7C] = v; }
+    int PK5::metMonth(void) const
+    {
+        return data[0x7C];
+    }
+    void PK5::metMonth(int v)
+    {
+        data[0x7C] = v;
+    }
 
-    int PK5::metDay(void) const { return data[0x7D]; }
-    void PK5::metDay(int v) { data[0x7D] = v; }
+    int PK5::metDay(void) const
+    {
+        return data[0x7D];
+    }
+    void PK5::metDay(int v)
+    {
+        data[0x7D] = v;
+    }
 
-    u16 PK5::eggLocation(void) const { return LittleEndian::convertTo<u16>(data + 0x7E); }
-    void PK5::eggLocation(u16 v) { LittleEndian::convertFrom<u16>(data + 0x7E, v); }
+    u16 PK5::eggLocation(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x7E);
+    }
+    void PK5::eggLocation(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x7E, v);
+    }
 
-    u16 PK5::metLocation(void) const { return LittleEndian::convertTo<u16>(data + 0x80); }
-    void PK5::metLocation(u16 v) { LittleEndian::convertFrom<u16>(data + 0x80, v); }
+    u16 PK5::metLocation(void) const
+    {
+        return LittleEndian::convertTo<u16>(data + 0x80);
+    }
+    void PK5::metLocation(u16 v)
+    {
+        LittleEndian::convertFrom<u16>(data + 0x80, v);
+    }
 
-    u8 PK5::pkrs(void) const { return data[0x82]; }
-    void PK5::pkrs(u8 v) { data[0x82] = v; }
+    u8 PK5::pkrs(void) const
+    {
+        return data[0x82];
+    }
+    void PK5::pkrs(u8 v)
+    {
+        data[0x82] = v;
+    }
 
-    u8 PK5::pkrsDays(void) const { return data[0x82] & 0xF; };
-    void PK5::pkrsDays(u8 v) { data[0x82] = (u8)((data[0x82] & ~0xF) | v); }
+    u8 PK5::pkrsDays(void) const
+    {
+        return data[0x82] & 0xF;
+    };
+    void PK5::pkrsDays(u8 v)
+    {
+        data[0x82] = (u8)((data[0x82] & ~0xF) | v);
+    }
 
-    u8 PK5::pkrsStrain(void) const { return data[0x82] >> 4; };
-    void PK5::pkrsStrain(u8 v) { data[0x82] = (u8)((data[0x82] & 0xF) | v << 4); }
+    u8 PK5::pkrsStrain(void) const
+    {
+        return data[0x82] >> 4;
+    };
+    void PK5::pkrsStrain(u8 v)
+    {
+        data[0x82] = (u8)((data[0x82] & 0xF) | v << 4);
+    }
 
-    Ball PK5::ball(void) const { return Ball{data[0x83]}; }
-    void PK5::ball(Ball v) { data[0x83] = u8(v); }
+    Ball PK5::ball(void) const
+    {
+        return Ball{data[0x83]};
+    }
+    void PK5::ball(Ball v)
+    {
+        data[0x83] = u8(v);
+    }
 
-    u8 PK5::metLevel(void) const { return data[0x84] & ~0x80; }
-    void PK5::metLevel(u8 v) { data[0x84] = (data[0x84] & 0x80) | v; }
+    u8 PK5::metLevel(void) const
+    {
+        return data[0x84] & ~0x80;
+    }
+    void PK5::metLevel(u8 v)
+    {
+        data[0x84] = (data[0x84] & 0x80) | v;
+    }
 
-    Gender PK5::otGender(void) const { return Gender{u8(data[0x84] >> 7)}; }
-    void PK5::otGender(Gender v) { data[0x84] = (data[0x84] & ~0x80) | (u8(v) << 7); }
+    Gender PK5::otGender(void) const
+    {
+        return Gender{u8(data[0x84] >> 7)};
+    }
+    void PK5::otGender(Gender v)
+    {
+        data[0x84] = (data[0x84] & ~0x80) | (u8(v) << 7);
+    }
 
-    u8 PK5::encounterType(void) const { return data[0x85]; }
-    void PK5::encounterType(u8 v) { data[0x85] = v; }
+    u8 PK5::encounterType(void) const
+    {
+        return data[0x85];
+    }
+    void PK5::encounterType(u8 v)
+    {
+        data[0x85] = v;
+    }
 
     void PK5::refreshChecksum(void)
     {
@@ -632,8 +884,14 @@ namespace pksm
         }
     }
 
-    u16 PK5::TSV(void) const { return (TID() ^ SID()) >> 3; }
-    u16 PK5::PSV(void) const { return ((PID() >> 16) ^ (PID() & 0xFFFF)) >> 3; }
+    u16 PK5::TSV(void) const
+    {
+        return (TID() ^ SID()) >> 3;
+    }
+    u16 PK5::PSV(void) const
+    {
+        return ((PID() >> 16) ^ (PID() & 0xFFFF)) >> 3;
+    }
 
     u8 PK5::level(void) const
     {
@@ -644,9 +902,15 @@ namespace pksm
         return i;
     }
 
-    void PK5::level(u8 v) { experience(expTable(v - 1, expType())); }
+    void PK5::level(u8 v)
+    {
+        experience(expTable(v - 1, expType()));
+    }
 
-    bool PK5::shiny(void) const { return TSV() == PSV(); }
+    bool PK5::shiny(void) const
+    {
+        return TSV() == PSV();
+    }
     void PK5::shiny(bool v)
     {
         PID(PKX::getRandomPID(species(), gender(), version(), nature(), alternativeForm(),
