@@ -39,9 +39,24 @@ namespace i18n
         std::map<u16, std::string> locations7;
         std::map<u16, std::string> locationsLGPE;
         std::map<u16, std::string> locations8;
+        void clear() noexcept
+        {
+            locations2.clear();
+            locations3.clear();
+            locations4.clear();
+            locations5.clear();
+            locations6.clear();
+            locations7.clear();
+            locationsLGPE.clear();
+            locations8.clear();
+        }
     };
 
-    std::unordered_map<pksm::Language, Locations> locationss;
+    std::unordered_map<pksm::Language, Locations> locationss = std::invoke([] {
+        std::unordered_map<pksm::Language, Locations> ret;
+        MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
+        return ret;
+    });
 
     void initLocation(pksm::Language lang)
     {
@@ -57,67 +72,64 @@ namespace i18n
         locationss.insert_or_assign(lang, std::move(tmp));
     }
 
-    void exitLocation(pksm::Language lang) { locationss.erase(lang); }
+    void exitLocation(pksm::Language lang) { locationss[lang].clear(); }
 
     const std::string& location(pksm::Language lang, pksm::Generation gen, u16 v)
     {
         checkInitialized(lang);
-        if (locationss.count(lang) > 0)
+        switch (gen)
         {
-            switch (gen)
-            {
-                case pksm::Generation::TWO:
-                    if (locationss[lang].locations2.count(v) > 0)
-                    {
-                        return locationss[lang].locations2[v];
-                    }
-                    break;
-                case pksm::Generation::THREE:
-                    if (locationss[lang].locations3.count(v) > 0)
-                    {
-                        return locationss[lang].locations3[v];
-                    }
-                    break;
-                case pksm::Generation::FOUR:
-                    if (locationss[lang].locations4.count(v) > 0)
-                    {
-                        return locationss[lang].locations4[v];
-                    }
-                    break;
-                case pksm::Generation::FIVE:
-                    if (locationss[lang].locations5.count(v) > 0)
-                    {
-                        return locationss[lang].locations5[v];
-                    }
-                    break;
-                case pksm::Generation::SIX:
-                    if (locationss[lang].locations6.count(v) > 0)
-                    {
-                        return locationss[lang].locations6[v];
-                    }
-                    break;
-                case pksm::Generation::SEVEN:
-                    if (locationss[lang].locations7.count(v) > 0)
-                    {
-                        return locationss[lang].locations7[v];
-                    }
-                    break;
-                case pksm::Generation::LGPE:
-                    if (locationss[lang].locationsLGPE.count(v) > 0)
-                    {
-                        return locationss[lang].locationsLGPE[v];
-                    }
-                    break;
-                case pksm::Generation::EIGHT:
-                    if (locationss[lang].locations8.count(v) > 0)
-                    {
-                        return locationss[lang].locations8[v];
-                    }
-                    break;
-                case pksm::Generation::UNUSED:
-                case pksm::Generation::ONE:
-                    break;
-            }
+            case pksm::Generation::TWO:
+                if (locationss[lang].locations2.count(v) > 0)
+                {
+                    return locationss[lang].locations2[v];
+                }
+                break;
+            case pksm::Generation::THREE:
+                if (locationss[lang].locations3.count(v) > 0)
+                {
+                    return locationss[lang].locations3[v];
+                }
+                break;
+            case pksm::Generation::FOUR:
+                if (locationss[lang].locations4.count(v) > 0)
+                {
+                    return locationss[lang].locations4[v];
+                }
+                break;
+            case pksm::Generation::FIVE:
+                if (locationss[lang].locations5.count(v) > 0)
+                {
+                    return locationss[lang].locations5[v];
+                }
+                break;
+            case pksm::Generation::SIX:
+                if (locationss[lang].locations6.count(v) > 0)
+                {
+                    return locationss[lang].locations6[v];
+                }
+                break;
+            case pksm::Generation::SEVEN:
+                if (locationss[lang].locations7.count(v) > 0)
+                {
+                    return locationss[lang].locations7[v];
+                }
+                break;
+            case pksm::Generation::LGPE:
+                if (locationss[lang].locationsLGPE.count(v) > 0)
+                {
+                    return locationss[lang].locationsLGPE[v];
+                }
+                break;
+            case pksm::Generation::EIGHT:
+                if (locationss[lang].locations8.count(v) > 0)
+                {
+                    return locationss[lang].locations8[v];
+                }
+                break;
+            case pksm::Generation::UNUSED:
+            case pksm::Generation::ONE:
+                break;
         }
         return emptyString;
     }
@@ -125,30 +137,27 @@ namespace i18n
     const std::map<u16, std::string>& rawLocations(pksm::Language lang, pksm::Generation g)
     {
         checkInitialized(lang);
-        if (locationss.count(lang) > 0)
+        switch (g)
         {
-            switch (g)
-            {
-                case pksm::Generation::TWO:
-                    return locationss[lang].locations2;
-                case pksm::Generation::THREE:
-                    return locationss[lang].locations3;
-                case pksm::Generation::FOUR:
-                    return locationss[lang].locations4;
-                case pksm::Generation::FIVE:
-                    return locationss[lang].locations5;
-                case pksm::Generation::SIX:
-                    return locationss[lang].locations6;
-                case pksm::Generation::SEVEN:
-                    return locationss[lang].locations7;
-                case pksm::Generation::LGPE:
-                    return locationss[lang].locationsLGPE;
-                case pksm::Generation::EIGHT:
-                    return locationss[lang].locations8;
-                case pksm::Generation::UNUSED:
-                case pksm::Generation::ONE:
-                    break;
-            }
+            case pksm::Generation::TWO:
+                return locationss[lang].locations2;
+            case pksm::Generation::THREE:
+                return locationss[lang].locations3;
+            case pksm::Generation::FOUR:
+                return locationss[lang].locations4;
+            case pksm::Generation::FIVE:
+                return locationss[lang].locations5;
+            case pksm::Generation::SIX:
+                return locationss[lang].locations6;
+            case pksm::Generation::SEVEN:
+                return locationss[lang].locations7;
+            case pksm::Generation::LGPE:
+                return locationss[lang].locationsLGPE;
+            case pksm::Generation::EIGHT:
+                return locationss[lang].locations8;
+            case pksm::Generation::UNUSED:
+            case pksm::Generation::ONE:
+                break;
         }
         return emptyU16Map;
     }

@@ -25,18 +25,11 @@
  */
 
 #include "i18n_internal.hpp"
-#include "utils/_map_macro.hpp"
 #include "utils/utils.hpp"
 #include <algorithm>
 #include <array>
 #include <functional>
 #include <list>
-
-#ifdef _PKSMCORE_EXTRA_LANGUAGES
-#define LANGUAGES_TO_USE JPN, ENG, FRE, ITA, GER, SPA, KOR, CHS, CHT, _PKSMCORE_EXTRA_LANGUAGES
-#else
-#define LANGUAGES_TO_USE JPN, ENG, FRE, ITA, GER, SPA, KOR, CHS, CHT
-#endif
 
 #define MAKE_MAP(lang) ret.emplace(pksm::Language::lang, LangState::UNINITIALIZED);
 #define TO_STRING_CASE(lang)                                                                       \

@@ -28,10 +28,26 @@
 
 namespace i18n
 {
-    std::unordered_map<pksm::Language, std::vector<std::string>> items;
-    std::unordered_map<pksm::Language, std::vector<std::string>> items1;
-    std::unordered_map<pksm::Language, std::vector<std::string>> items2;
-    std::unordered_map<pksm::Language, std::vector<std::string>> items3;
+    std::unordered_map<pksm::Language, std::vector<std::string>> items  = std::invoke([] {
+        std::unordered_map<pksm::Language, std::vector<std::string>> ret;
+        MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
+        return ret;
+    });
+    std::unordered_map<pksm::Language, std::vector<std::string>> items1 = std::invoke([] {
+        std::unordered_map<pksm::Language, std::vector<std::string>> ret;
+        MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
+        return ret;
+    });
+    std::unordered_map<pksm::Language, std::vector<std::string>> items2 = std::invoke([] {
+        std::unordered_map<pksm::Language, std::vector<std::string>> ret;
+        MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
+        return ret;
+    });
+    std::unordered_map<pksm::Language, std::vector<std::string>> items3 = std::invoke([] {
+        std::unordered_map<pksm::Language, std::vector<std::string>> ret;
+        MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
+        return ret;
+    });
 
     void initItem(pksm::Language lang)
     {
@@ -65,23 +81,20 @@ namespace i18n
         items3.insert_or_assign(lang, std::move(vec));
     }
 
-    void exitItem(pksm::Language lang) { items.erase(lang); }
+    void exitItem(pksm::Language lang) { items[lang].clear(); }
 
-    void exitItem1(pksm::Language lang) { items1.erase(lang); }
+    void exitItem1(pksm::Language lang) { items1[lang].clear(); }
 
-    void exitItem2(pksm::Language lang) { items2.erase(lang); }
+    void exitItem2(pksm::Language lang) { items2[lang].clear(); }
 
-    void exitItem3(pksm::Language lang) { items3.erase(lang); }
+    void exitItem3(pksm::Language lang) { items3[lang].clear(); }
 
     const std::string& item(pksm::Language lang, u16 val)
     {
         checkInitialized(lang);
-        if (items.count(lang) > 0)
+        if (val < items[lang].size())
         {
-            if (val < items[lang].size())
-            {
-                return items[lang][val];
-            }
+            return items[lang][val];
         }
         return emptyString;
     }
@@ -89,12 +102,9 @@ namespace i18n
     const std::string& item1(pksm::Language lang, u8 val)
     {
         checkInitialized(lang);
-        if (items1.count(lang) > 0)
+        if (val < items1[lang].size())
         {
-            if (val < items1[lang].size())
-            {
-                return items1[lang][val];
-            }
+            return items1[lang][val];
         }
         return emptyString;
     }
@@ -102,12 +112,9 @@ namespace i18n
     const std::string& item2(pksm::Language lang, u8 val)
     {
         checkInitialized(lang);
-        if (items2.count(lang) > 0)
+        if (val < items2[lang].size())
         {
-            if (val < items2[lang].size())
-            {
-                return items2[lang][val];
-            }
+            return items2[lang][val];
         }
         return emptyString;
     }
@@ -115,12 +122,9 @@ namespace i18n
     const std::string& item3(pksm::Language lang, u16 val)
     {
         checkInitialized(lang);
-        if (items3.count(lang) > 0)
+        if (val < items3[lang].size())
         {
-            if (val < items3[lang].size())
-            {
-                return items3[lang][val];
-            }
+            return items3[lang][val];
         }
         return emptyString;
     }
@@ -128,40 +132,24 @@ namespace i18n
     const std::vector<std::string>& rawItems(pksm::Language lang)
     {
         checkInitialized(lang);
-        if (items.count(lang) > 0)
-        {
-            return items[lang];
-        }
-        return emptyVector;
+        return items[lang];
     }
 
     const std::vector<std::string>& rawItems1(pksm::Language lang)
     {
         checkInitialized(lang);
-        if (items1.count(lang) > 0)
-        {
-            return items1[lang];
-        }
-        return emptyVector;
+        return items1[lang];
     }
 
     const std::vector<std::string>& rawItems2(pksm::Language lang)
     {
         checkInitialized(lang);
-        if (items2.count(lang) > 0)
-        {
-            return items2[lang];
-        }
-        return emptyVector;
+        return items2[lang];
     }
 
     const std::vector<std::string>& rawItems3(pksm::Language lang)
     {
         checkInitialized(lang);
-        if (items3.count(lang) > 0)
-        {
-            return items3[lang];
-        }
-        return emptyVector;
+        return items3[lang];
     }
 }

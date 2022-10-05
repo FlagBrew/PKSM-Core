@@ -28,8 +28,17 @@
 
 namespace i18n
 {
-    std::unordered_map<pksm::Language, std::map<u8, std::string>> countries;
-    std::unordered_map<pksm::Language, std::map<u8, std::map<u8, std::string>>> subregions;
+    std::unordered_map<pksm::Language, std::map<u8, std::string>> countries = std::invoke([] {
+        std::unordered_map<pksm::Language, std::map<u8, std::string>> ret;
+        MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
+        return ret;
+    });
+    std::unordered_map<pksm::Language, std::map<u8, std::map<u8, std::string>>> subregions =
+        std::invoke([] {
+            std::unordered_map<pksm::Language, std::map<u8, std::map<u8, std::string>>> ret;
+            MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
+            return ret;
+        });
 
     std::string subregionFileName(u8 region)
     {
@@ -59,21 +68,18 @@ namespace i18n
 
     void exitGeo(pksm::Language lang)
     {
-        countries.erase(lang);
-        subregions.erase(lang);
+        countries[lang].clear();
+        subregions[lang].clear();
     }
 
     const std::string& subregion(pksm::Language lang, u8 country, u8 v)
     {
         checkInitialized(lang);
-        if (subregions.count(lang) > 0)
+        if (subregions[lang].count(country) > 0)
         {
-            if (subregions[lang].count(country) > 0)
+            if (subregions[lang][country].count(v) > 0)
             {
-                if (subregions[lang][country].count(v) > 0)
-                {
-                    return subregions[lang][country][v];
-                }
+                return subregions[lang][country][v];
             }
         }
         return emptyString;
@@ -82,12 +88,9 @@ namespace i18n
     const std::string& country(pksm::Language lang, u8 v)
     {
         checkInitialized(lang);
-        if (countries.count(lang) > 0)
+        if (countries[lang].count(v) > 0)
         {
-            if (countries[lang].count(v) > 0)
-            {
-                return countries[lang][v];
-            }
+            return countries[lang][v];
         }
         return emptyString;
     }
@@ -95,22 +98,15 @@ namespace i18n
     const std::map<u8, std::string>& rawCountries(pksm::Language lang)
     {
         checkInitialized(lang);
-        if (countries.count(lang) > 0)
-        {
-            return countries[lang];
-        }
-        return emptyU8Map;
+        return countries[lang];
     }
 
     const std::map<u8, std::string>& rawSubregions(pksm::Language lang, u8 country)
     {
         checkInitialized(lang);
-        if (subregions.count(lang) > 0)
+        if (subregions[lang].count(country) > 0)
         {
-            if (subregions[lang].count(country) > 0)
-            {
-                return subregions[lang][country];
-            }
+            return subregions[lang][country];
         }
         return emptyU8Map;
     }

@@ -29,7 +29,11 @@
 
 namespace i18n
 {
-    std::unordered_map<pksm::Language, std::vector<std::string>> abilities;
+    std::unordered_map<pksm::Language, std::vector<std::string>> abilities = std::invoke([] {
+        std::unordered_map<pksm::Language, std::vector<std::string>> ret;
+        MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
+        return ret;
+    });
 
     void initAbility(pksm::Language lang)
     {
@@ -38,17 +42,14 @@ namespace i18n
         abilities.insert_or_assign(lang, std::move(vec));
     }
 
-    void exitAbility(pksm::Language lang) { abilities.erase(lang); }
+    void exitAbility(pksm::Language lang) { abilities[lang].clear(); }
 
     const std::string& ability(pksm::Language lang, pksm::Ability val)
     {
         checkInitialized(lang);
-        if (abilities.count(lang) > 0)
+        if (size_t(val) < abilities[lang].size())
         {
-            if (size_t(val) < abilities[lang].size())
-            {
-                return abilities[lang][size_t(val)];
-            }
+            return abilities[lang][size_t(val)];
         }
         return emptyString;
     }
@@ -56,11 +57,7 @@ namespace i18n
     const std::vector<std::string>& rawAbilities(pksm::Language lang)
     {
         checkInitialized(lang);
-        if (abilities.count(lang) > 0)
-        {
-            return abilities[lang];
-        }
-        return emptyVector;
+        return abilities[lang];
     }
 }
 

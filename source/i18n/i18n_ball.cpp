@@ -29,7 +29,11 @@
 
 namespace i18n
 {
-    std::unordered_map<pksm::Language, std::vector<std::string>> balls;
+    std::unordered_map<pksm::Language, std::vector<std::string>> balls = std::invoke([] {
+        std::unordered_map<pksm::Language, std::vector<std::string>> ret;
+        MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
+        return ret;
+    });
 
     void initBall(pksm::Language lang)
     {
@@ -38,17 +42,14 @@ namespace i18n
         balls.insert_or_assign(lang, std::move(vec));
     }
 
-    void exitBall(pksm::Language lang) { balls.erase(lang); }
+    void exitBall(pksm::Language lang) { balls[lang].clear(); }
 
     const std::string& ball(pksm::Language lang, pksm::Ball val)
     {
         checkInitialized(lang);
-        if (balls.count(lang) > 0)
+        if (size_t(val) < balls[lang].size())
         {
-            if (size_t(val) < balls[lang].size())
-            {
-                return balls[lang][size_t(val)];
-            }
+            return balls[lang][size_t(val)];
         }
         return emptyString;
     }
@@ -56,11 +57,7 @@ namespace i18n
     const std::vector<std::string>& rawBalls(pksm::Language lang)
     {
         checkInitialized(lang);
-        if (balls.count(lang) > 0)
-        {
-            return balls[lang];
-        }
-        return emptyVector;
+        return balls[lang];
     }
 }
 

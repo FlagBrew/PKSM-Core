@@ -29,7 +29,11 @@
 
 namespace i18n
 {
-    std::unordered_map<pksm::Language, std::vector<std::string>> natures;
+    std::unordered_map<pksm::Language, std::vector<std::string>> natures = std::invoke([] {
+        std::unordered_map<pksm::Language, std::vector<std::string>> ret;
+        MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
+        return ret;
+    });
 
     void initNature(pksm::Language lang)
     {
@@ -38,17 +42,14 @@ namespace i18n
         natures.insert_or_assign(lang, std::move(vec));
     }
 
-    void exitNature(pksm::Language lang) { natures.erase(lang); }
+    void exitNature(pksm::Language lang) { natures[lang].clear(); }
 
     const std::string& nature(pksm::Language lang, pksm::Nature val)
     {
         checkInitialized(lang);
-        if (natures.count(lang) > 0)
+        if (size_t(val) < natures[lang].size())
         {
-            if (size_t(val) < natures[lang].size())
-            {
-                return natures[lang][size_t(val)];
-            }
+            return natures[lang][size_t(val)];
         }
         return emptyString;
     }
@@ -56,11 +57,7 @@ namespace i18n
     const std::vector<std::string>& rawNatures(pksm::Language lang)
     {
         checkInitialized(lang);
-        if (natures.count(lang) > 0)
-        {
-            return natures[lang];
-        }
-        return emptyVector;
+        return natures[lang];
     }
 }
 

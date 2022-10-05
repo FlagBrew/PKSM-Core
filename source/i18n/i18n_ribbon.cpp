@@ -29,7 +29,11 @@
 
 namespace i18n
 {
-    std::unordered_map<pksm::Language, std::vector<std::string>> ribbons;
+    std::unordered_map<pksm::Language, std::vector<std::string>> ribbons = std::invoke([] {
+        std::unordered_map<pksm::Language, std::vector<std::string>> ret;
+        MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
+        return ret;
+    });
 
     void initRibbon(pksm::Language lang)
     {
@@ -38,17 +42,14 @@ namespace i18n
         ribbons.insert_or_assign(lang, std::move(vec));
     }
 
-    void exitRibbon(pksm::Language lang) { ribbons.erase(lang); }
+    void exitRibbon(pksm::Language lang) { ribbons[lang].clear(); }
 
     const std::string& ribbon(pksm::Language lang, pksm::Ribbon val)
     {
         checkInitialized(lang);
-        if (ribbons.count(lang) > 0)
+        if (size_t(val) < ribbons[lang].size())
         {
-            if (size_t(val) < ribbons[lang].size())
-            {
-                return ribbons[lang][size_t(val)];
-            }
+            return ribbons[lang][size_t(val)];
         }
         return emptyString;
     }
@@ -56,11 +57,7 @@ namespace i18n
     const std::vector<std::string>& rawRibbons(pksm::Language lang)
     {
         checkInitialized(lang);
-        if (ribbons.count(lang) > 0)
-        {
-            return ribbons[lang];
-        }
-        return emptyVector;
+        return ribbons[lang];
     }
 }
 

@@ -28,10 +28,12 @@
 #define I18N_INTERNAL_HPP
 
 #include "enums/Language.hpp"
+#include "utils/_map_macro.hpp"
 #include "utils/coretypes.h"
 #include "utils/i18n.hpp"
 #include "utils/io.hpp"
 #include <atomic>
+#include <functional>
 #include <time.h>
 #include <unordered_map>
 
@@ -43,6 +45,15 @@
 #define _PKSMCORE_GETLINE_FUNC getline
 #endif
 
+#ifdef _PKSMCORE_EXTRA_LANGUAGES
+#define LANGUAGES_TO_USE JPN, ENG, FRE, ITA, GER, SPA, KOR, CHS, CHT, _PKSMCORE_EXTRA_LANGUAGES
+#else
+#define LANGUAGES_TO_USE JPN, ENG, FRE, ITA, GER, SPA, KOR, CHS, CHT
+#endif
+
+#define MAKE_GENERIC_LANGMAP(lang)                                                                 \
+    ret.insert_or_assign(pksm::Language::lang, decltype(ret)::mapped_type{});
+
 namespace i18n
 {
     enum class LangState : u8
@@ -53,7 +64,6 @@ namespace i18n
     };
 
     inline const std::string emptyString                = "";
-    inline const std::vector<std::string> emptyVector   = {};
     inline const std::map<u16, std::string> emptyU16Map = {};
     inline const std::map<u8, std::string> emptyU8Map   = {};
 
