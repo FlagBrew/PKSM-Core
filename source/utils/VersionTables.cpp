@@ -1121,11 +1121,16 @@ namespace pksm
                 }
                 if (species == Species::Pikachu)
                 {
-                    return 6;
+                    return 7;
                 }
-                if (species == Species::Necrozma)
+                if (species == Species::Necrozma || species == Species::Ribombee ||
+                    species == Species::Araquanid || species == Species::Togedemaru)
                 {
                     return 1;
+                }
+                if (species == Species::Marowak)
+                {
+                    return 2;
                 }
                 // falls through
             case GameVersion::US:
