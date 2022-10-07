@@ -158,8 +158,7 @@ namespace pksm
             int index = blockOrder[i];
             if (index == -1)
                 continue;
-            int len = chunkLength[index];
-            u16 chk = calculateChecksum({&data[ofs], len});
+            u16 chk = calculateChecksum({&data[ofs], chunkLength[index]});
             LittleEndian::convertFrom<u16>(&data[ofs + 0xFF6], chk);
         }
 

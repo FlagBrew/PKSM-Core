@@ -143,10 +143,10 @@ namespace pksm
             : game == Game::Pt ? 0x1F10E
                                : 0x21A0E};
 
-        cs = pksm::crypto::ccitt16({&data[gbo + general[0]], general[1] - general[0]});
+        cs = pksm::crypto::ccitt16({&data[gbo + general[0]], (size_t)(general[1] - general[0])});
         LittleEndian::convertFrom<u16>(&data[gbo + general[2]], cs);
 
-        cs = pksm::crypto::ccitt16({&data[sbo + storage[0]], storage[1] - storage[0]});
+        cs = pksm::crypto::ccitt16({&data[sbo + storage[0]], (size_t)(storage[1] - storage[0])});
         LittleEndian::convertFrom<u16>(&data[sbo + storage[2]], cs);
     }
 
