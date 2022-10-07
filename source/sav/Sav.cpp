@@ -53,6 +53,7 @@
 #include "sav/SavXY.hpp"
 #include "utils/crypto.hpp"
 #include "utils/endian.hpp"
+#include "utils/ValueConverter.hpp"
 
 namespace pksm
 {
@@ -333,11 +334,11 @@ namespace pksm
         {
             return BadTransferReason::MOVE;
         }
-        else if (availableSpecies().count(pk.species()) == 0)
+        if (availableSpecies().count(pk.species()) == 0)
         {
             return BadTransferReason::SPECIES;
         }
-        else if (pk.alternativeForm() >= formCount(pk.species()) &&
+        if (pk.alternativeForm() >= formCount(pk.species()) &&
                  !((pk.species() == Species::Scatterbug || pk.species() == Species::Spewpa) &&
                      pk.alternativeForm() < formCount(Species::Vivillon)) &&
                  !((pk.species() == Species::Mothim) &&
@@ -345,21 +346,43 @@ namespace pksm
         {
             return BadTransferReason::FORM;
         }
-        else if (availableAbilities().count(pk.ability()) == 0)
+        if (availableAbilities().count(pk.ability()) == 0)
         {
             if (generation() > Generation::TWO && pk.generation() > Generation::TWO)
             {
                 return BadTransferReason::ABILITY;
             }
         }
-        else if (availableItems().count((int)pk.heldItem()) == 0)
+        
+        if (generation() <= Generation::TWO)
         {
-            if (generation() != Generation::ONE)
+            const int heldItem2 = pk.generation() == Generation::ONE
+                                        ? (int)static_cast<const PK1&>(pk).heldItem2()
+                                        : (pk.generation() == Generation::TWO
+                                            ? (int)static_cast<const PK2&>(pk).heldItem2()
+                                            : (int)ItemConverter::nationalToG2(pk.heldItem()));
+            // Crystal only adds key items
+            if (VersionTables::availableItems(GameVersion::GD).count(heldItem2) == 0 || (heldItem2 == 0 && pk.heldItem() != 0))
             {
                 return BadTransferReason::ITEM;
             }
         }
-        else if (availableBalls().count(pk.ball()) == 0)
+        else if (generation() == Generation::THREE)
+        {
+            const int heldItem3 = pk.generation() == Generation::THREE
+                                        ? (int)static_cast<const PK3&>(pk).heldItem3()
+                                        : (int)ItemConverter::nationalToG3(pk.heldItem());
+            if (availableItems().count(heldItem3) == 0 || (heldItem3 == 0 && pk.heldItem() != 0))
+            {
+                return BadTransferReason::ITEM;
+            }
+        }
+        else if (availableItems().count((int)pk.heldItem()) == 0 || (pk.generation() == Generation::THREE && pk.heldItem() == ItemConverter::ITEM_NOT_CONVERTIBLE))
+        {
+            return BadTransferReason::ITEM;
+        }
+
+        if (availableBalls().count(pk.ball()) == 0)
         {
             if (generation() > Generation::TWO)
             {
