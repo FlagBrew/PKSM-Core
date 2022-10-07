@@ -82,30 +82,7 @@ namespace pksm
         pk2->iv(Stat::SPATK, iv(Stat::SPATK));
         pk2->otName(otName());
         pk2->nickname(nickname());
-
-        // Teru-sama is a dummy item
-        switch (catchRate())
-        {
-            case 0x19:                // Teru-sama
-                pk2->heldItem2(0x92); // Leftovers
-                break;
-            case 0x2D:                // Teru-sama
-                pk2->heldItem2(0x53); // Bitter Berry
-                break;
-            case 0x32:                // Teru-sama
-                pk2->heldItem2(0xAE); // Gold Berry
-                break;
-            case 0x5A:                // Teru-sama
-            case 0x64:                // Teru-sama
-            case 0x78:                // Teru-sama
-            case 0x7F:                // Card Key
-            case 0xBE:                // Teru-sama
-            case 0xFF:                // Cancel
-                pk2->heldItem2(0xAD); // Berry
-                break;
-            default:
-                pk2->heldItem2(catchRate());
-        }
+        pk2->heldItem2(heldItem2());
 
         pk2->fixMoves();
         return pk2;

@@ -650,6 +650,7 @@ namespace pksm
         pk2->egg(false);
         pk2->otFriendship(otFriendship());
         pk2->language(language());
+        pk2->heldItem(heldItem() == ItemConverter::ITEM_NOT_CONVERTIBLE ? 0 : heldItem());
 
         // approximate an equivalent stat experience for an ev, by squaring
         pk2->ev(Stat::HP, ev(Stat::HP) * ev(Stat::HP));
