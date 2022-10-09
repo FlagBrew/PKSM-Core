@@ -172,7 +172,9 @@ namespace pksm
         originalCurrentBox = currentBox();
 
         if (lang == Language::ENG)
+        {
             lang = StringUtils::guessLanguage12(otName());
+        }
     }
 
     std::tuple<GameVersion, Language, bool> Sav2::getVersion(const std::shared_ptr<u8[]>& dt)
@@ -290,6 +292,7 @@ namespace pksm
     {
         return BigEndian::convertTo<u16>(&data[OFS_TID]);
     }
+
     void Sav2::TID(u16 v)
     {
         BigEndian::convertFrom<u16>(&data[OFS_TID], v);
@@ -299,6 +302,7 @@ namespace pksm
     {
         return versionOfGame;
     }
+
     void Sav2::version(GameVersion v)
     {
         if ((v == GameVersion::C) ^ (versionOfGame != GameVersion::C))
@@ -312,17 +316,22 @@ namespace pksm
         if (versionOfGame == GameVersion::C)
         {
             if (data[OFS_GENDER] > 1)
+            {
                 return Gender::Male;
+            }
             return Gender{data[OFS_GENDER]};
         }
         return Gender::Male;
     }
+
     void Sav2::gender(Gender v)
     {
         if (versionOfGame == GameVersion::C)
         {
             if (v <= Gender::Female)
+            {
                 data[OFS_GENDER] = u8(v);
+            }
 
             // this is the palette used to draw the player, always 0 (red) for male and 1 (blue)
             // for female. it's present and 0 in Gold and Silver
@@ -334,6 +343,7 @@ namespace pksm
     {
         return lang;
     }
+
     void Sav2::language(Language v)
     {
         if (((lang == Language::JPN) == (v == Language::JPN)) &&
@@ -348,6 +358,7 @@ namespace pksm
         return StringUtils::getString2(
             data.get(), OFS_NAME, japanese ? 6 : (korean ? 11 : 8), lang);
     }
+
     void Sav2::otName(const std::string_view& v)
     {
         StringUtils::setString2(data.get(), v, OFS_NAME, japanese ? 6 : (korean ? 11 : 8), lang);
@@ -358,10 +369,13 @@ namespace pksm
     {
         return BigEndian::convertTo<u32>(&data[OFS_MONEY]) >> 8;
     }
+
     void Sav2::money(u32 v)
     {
         if (v > 999999)
+        {
             v = 999999;
+        }
         data[OFS_MONEY]     = v >> 16;
         data[OFS_MONEY + 1] = (v >> 8) & 0x00FF;
         data[OFS_MONEY + 2] = v & 0x0000FF;
@@ -382,22 +396,27 @@ namespace pksm
     {
         return BigEndian::convertTo<u16>(&data[OFS_TIME_PLAYED]);
     }
+
     void Sav2::playedHours(u16 v)
     {
         BigEndian::convertFrom<u16>(&data[OFS_TIME_PLAYED], v);
     }
+
     u8 Sav2::playedMinutes() const
     {
         return data[OFS_TIME_PLAYED + 2];
     }
+
     void Sav2::playedMinutes(u8 v)
     {
         data[OFS_TIME_PLAYED + 2] = v;
     }
+
     u8 Sav2::playedSeconds() const
     {
         return data[OFS_TIME_PLAYED + 3];
     }
+
     void Sav2::playedSeconds(u8 v)
     {
         data[OFS_TIME_PLAYED + 3] = v;
@@ -407,31 +426,38 @@ namespace pksm
     {
         return data[OFS_CURRENT_BOX_INDEX] & 0x7F;
     }
+
     void Sav2::currentBox(u8 v)
     {
         data[OFS_CURRENT_BOX_INDEX] = (data[OFS_CHANGED_BOX] & 0x80) | (v & 0x7F);
     }
+
     u32 Sav2::boxOffset(u8 box, u8 slot) const
     {
         return boxDataStart(box) + (slot * PK2::BOX_LENGTH);
     }
+
     u32 Sav2::boxOtNameOffset(u8 box, u8 slot) const
     {
         return boxDataStart(box) + (maxPkmInBox * PK2::BOX_LENGTH) + (slot * nameLength());
     }
+
     u32 Sav2::boxNicknameOffset(u8 box, u8 slot) const
     {
         return boxDataStart(box) + (maxPkmInBox * PK2::BOX_LENGTH) +
                ((maxPkmInBox + slot) * nameLength());
     }
+
     u32 Sav2::partyOffset(u8 slot) const
     {
         return OFS_PARTY + 8 + (slot * PK2::PARTY_LENGTH);
     }
+
     u32 Sav2::partyOtNameOffset(u8 slot) const
     {
         return OFS_PARTY + 8 + (6 * PK2::PARTY_LENGTH) + (slot * nameLength());
     }
+
     u32 Sav2::partyNicknameOffset(u8 slot) const
     {
         return OFS_PARTY + 8 + (6 * PK2::PARTY_LENGTH) + ((6 + slot) * nameLength());
@@ -463,6 +489,7 @@ namespace pksm
             return 0x6000 + (box * boxSize);
         }
     }
+
     u32 Sav2::boxDataStart(u8 box, bool obeyCurrentBoxMechanics) const
     {
         return boxStart(box, obeyCurrentBoxMechanics) + maxPkmInBox + 2;
@@ -494,12 +521,17 @@ namespace pksm
         // has to be done now, since you can't do it in the PK2 initializer because of the nullptr
         // case
         if (language() == Language::KOR)
+        {
             pk2->languageOverrideLimits(Language::KOR);
+        }
         else if (language() != Language::JPN)
+        {
             pk2->language(StringUtils::guessLanguage12(pk2->nickname()));
+        }
 
         return pk2;
     }
+
     std::unique_ptr<PKX> Sav2::pkm(u8 box, u8 slot) const
     {
         if (slot >= maxPkmInBox || slot >= boxCount(box))
@@ -524,12 +556,17 @@ namespace pksm
         pk2->updatePartyData();
 
         if (language() == Language::KOR)
+        {
             pk2->language(Language::KOR);
+        }
         else if (language() != Language::JPN)
+        {
             pk2->language(StringUtils::guessLanguage12(pk2->nickname()));
+        }
 
         return pk2;
     }
+
     void Sav2::pkm(const PKX& pk, u8 slot)
     {
         if (pk.generation() == Generation::TWO)
@@ -580,6 +617,7 @@ namespace pksm
             data[OFS_PARTY + 1 + slot] = pk2->rawData()[1];
         }
     }
+
     void Sav2::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)
     {
         if (slot >= maxPkmInBox)
@@ -646,16 +684,20 @@ namespace pksm
     void Sav2::dex(const PKX& pk)
     {
         if (!(availableSpecies().count(pk.species()) > 0))
+        {
             return;
+        }
         setCaught(pk.species(), true);
         setSeen(pk.species(), true);
     }
+
     bool Sav2::getCaught(Species species) const
     {
         int flag = u8(species) - 1;
         int ofs  = flag >> 3;
         return FlagUtil::getFlag(data.get() + OFS_POKEDEX_CAUGHT, ofs, flag & 7);
     }
+
     void Sav2::setCaught(Species species, bool caught)
     {
         int flag = u8(species) - 1;
@@ -677,12 +719,14 @@ namespace pksm
             }
         }
     }
+
     bool Sav2::getSeen(Species species) const
     {
         int flag = u8(species) - 1;
         int ofs  = flag >> 3;
         return FlagUtil::getFlag(data.get() + OFS_POKEDEX_SEEN, ofs, flag & 7);
     }
+
     void Sav2::setSeen(Species species, bool seen)
     {
         int flag = u8(species) - 1;
@@ -695,11 +739,13 @@ namespace pksm
             data[OFS_POKEDEX_SEEN + 0x1F + 28] = 1; // A
         }
     }
+
     int Sav2::dexSeen() const
     {
         return std::count_if(availableSpecies().begin(), availableSpecies().end(),
             [this](const auto& spec) { return getSeen(spec); });
     }
+
     int Sav2::dexCaught() const
     {
         return std::count_if(availableSpecies().begin(), availableSpecies().end(),
@@ -712,6 +758,7 @@ namespace pksm
         return StringUtils::getString2(
             data.get(), OFS_BOX_NAMES + (box * boxNameLength), boxNameLength, lang);
     }
+
     void Sav2::boxName(u8 box, const std::string_view& name)
     {
         int boxNameLength = korean ? 17 : 9;
@@ -723,25 +770,31 @@ namespace pksm
     {
         return data[OFS_PARTY];
     }
+
     void Sav2::partyCount(u8 count)
     {
         data[OFS_PARTY] = count;
     }
+
     u8 Sav2::boxCount(u8 box) const
     {
         return data[boxStart(box)];
     }
+
     void Sav2::boxCount(u8 box, u8 count)
     {
         data[boxStart(box)] = count;
     }
+
     void Sav2::fixBox(u8 box)
     {
         u8 count = 0;
         while (count < maxPkmInBox)
         {
             if (pkm(box, count)->species() == Species::None)
+            {
                 break;
+            }
 
             if (pkm(box, count)->egg())
             {
@@ -757,6 +810,7 @@ namespace pksm
         data[boxStart(box) + 1 + count] = 0xFF;
         data[boxStart(box)]             = count;
     }
+
     void Sav2::fixParty()
     {
         Sav::fixParty();
@@ -764,7 +818,9 @@ namespace pksm
         while (count < 6)
         {
             if (pkm(count)->species() == Species::None)
+            {
                 break;
+            }
 
             if (pkm(count)->egg())
             {
@@ -804,7 +860,9 @@ namespace pksm
         {
             case Pouch::TM:
                 while (validItems2()[Pouch::TM][index] != write[0])
+                {
                     index++;
+                }
                 data[OFS_TM_POUCH + index] = write[1];
                 break;
             case Pouch::NormalItem:
@@ -823,6 +881,7 @@ namespace pksm
                 return;
         }
     }
+
     std::unique_ptr<Item> Sav2::item(Pouch pouch, u16 slot) const
     {
         if (slot >= pouchEntryCount(pouch))
@@ -858,33 +917,44 @@ namespace pksm
         }
         // 0xFF is a list terminator. In a normal game state it will be in an ID slot.
         if (returnVal->id2() == 0xFF)
+        {
             return std::make_unique<Item2>(nullptr);
+        }
         return returnVal;
     }
+
     std::vector<std::pair<Sav::Pouch, int>> Sav2::pouches() const
     {
-        return {{Pouch::TM, 57}, {Pouch::NormalItem, 20}, {Pouch::KeyItem, 26}, {Pouch::Ball, 12},
-            {Pouch::PCItem, 50}};
+        return {
+            {Pouch::TM,         57},
+            {Pouch::NormalItem, 20},
+            {Pouch::KeyItem,    26},
+            {Pouch::Ball,       12},
+            {Pouch::PCItem,     50}
+        };
     }
+
     std::map<Sav::Pouch, std::vector<int>> Sav2::validItems2() const
     {
         std::map<Sav::Pouch, std::vector<int>> items = {
-            {Pouch::TM, {191, 192, 193, 194, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206,
+            {Pouch::TM,         {191, 192, 193, 194, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206,
                             207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 221,
                             222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235,
                             236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249}},
             {Pouch::NormalItem,
-                {3, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 26, 27, 28,
+             {3, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 26, 27, 28,
                     29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 46, 47, 48, 49,
                     51, 52, 53, 57, 60, 62, 63, 64, 65, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82,
                     83, 84, 85, 86, 87, 88, 89, 91, 92, 93, 94, 95, 96, 97, 98, 99, 101, 102, 103,
                     104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 117, 118, 119, 121, 122,
                     123, 124, 125, 126, 131, 132, 138, 139, 140, 143, 144, 146, 150, 151, 152, 156,
                     158, 163, 167, 168, 169, 170, 172, 173, 174, 180, 181, 182, 183, 184, 185, 186,
-                    187, 188, 189}},
+                    187, 188, 189}                                                                                      },
             {Pouch::KeyItem,
-                {7, 54, 55, 58, 59, 61, 66, 67, 68, 69, 71, 127, 128, 130, 133, 134, 175, 178}},
-            {Pouch::Ball, {1, 2, 4, 5, 157, 159, 160, 161, 164, 165, 166}}, {Pouch::PCItem, {}}};
+             {7, 54, 55, 58, 59, 61, 66, 67, 68, 69, 71, 127, 128, 130, 133, 134, 175, 178}                             },
+            {Pouch::Ball,       {1, 2, 4, 5, 157, 159, 160, 161, 164, 165, 166}                                         },
+            {Pouch::PCItem,     {}                                                                                      }
+        };
 
         // Crystal added four key items
         if (version() == GameVersion::C)
@@ -906,24 +976,27 @@ namespace pksm
 
         return items;
     }
+
     std::map<Sav::Pouch, std::vector<int>> Sav2::validItems() const
     {
         std::map<Sav::Pouch, std::vector<int>> items = {
-            {Pouch::TM, {328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342,
+            {Pouch::TM,         {328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342,
                             343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356,
                             357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370,
                             371, 372, 373, 374, 375, 376, 377, 420, 421, 422, 423, 424, 425, 426}},
             {Pouch::NormalItem,
-                {213, 81, 18, 19, 20, 21, 22, 23, 24, 25, 26, 17, 78, 79, 41, 82, 83, 84, 45, 46,
+             {213, 81, 18, 19, 20, 21, 22, 23, 24, 25, 26, 17, 78, 79, 41, 82, 83, 84, 45, 46,
                     47, 48, 256, 49, 50, 60, 85, 257, 92, 63, 27, 28, 29, 55, 76, 77, 56, 30, 31,
                     32, 57, 58, 59, 61, 216, 891, 51, 38, 39, 40, 33, 217, 151, 890, 237, 244, 149,
                     153, 152, 245, 221, 156, 150, 485, 86, 87, 222, 487, 223, 486, 488, 224, 243,
                     248, 490, 241, 491, 489, 240, 473, 259, 228, 246, 242, 157, 88, 89, 229, 247,
                     504, 239, 258, 230, 34, 35, 36, 37, 238, 231, 90, 91, 249, 43, 232, 233, 250,
-                    234, 154, 235, 44, 236, 80, 252, 155, 158}},
-            {Pouch::KeyItem, {450, 444, 445, 446, 447, 478, 464, 456, 484, 482, 475, 481, 479, 476,
-                                 480, 477, 483}},
-            {Pouch::Ball, {1, 2, 3, 4, 495, 493, 494, 492, 497, 498, 496}}, {Pouch::PCItem, {}}};
+                    234, 154, 235, 44, 236, 80, 252, 155, 158}                                                          },
+            {Pouch::KeyItem,    {450, 444, 445, 446, 447, 478, 464, 456, 484, 482, 475, 481, 479, 476,
+                                 480, 477, 483}                                             },
+            {Pouch::Ball,       {1, 2, 3, 4, 495, 493, 494, 492, 497, 498, 496}                                         },
+            {Pouch::PCItem,     {}                                                                                      }
+        };
 
         if (version() == GameVersion::C)
         {
@@ -962,6 +1035,7 @@ namespace pksm
                 return 0;
         }
     }
+
     void Sav2::pouchEntryCount(Pouch pouch, u8 v)
     {
         switch (pouch)

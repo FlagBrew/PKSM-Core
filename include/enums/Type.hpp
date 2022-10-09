@@ -37,6 +37,7 @@
 namespace pksm
 {
     class Type;
+
     namespace internal
     {
         class Type_impl
@@ -70,6 +71,7 @@ namespace pksm
             } v;
 
             constexpr explicit Type_impl(TypeEnum v) : v(v) {}
+
             constexpr Type_impl(const Type_impl&)            = default;
             constexpr Type_impl(Type_impl&&)                 = default;
             constexpr Type_impl& operator=(const Type_impl&) = default;
@@ -81,6 +83,7 @@ namespace pksm
             {
                 return T(v);
             }
+
             constexpr operator TypeEnum() const noexcept { return v; }
 
             [[nodiscard]] constexpr std::strong_ordering operator<=>(
@@ -97,14 +100,19 @@ namespace pksm
 
     public:
         using EnumType = internal::Type_impl::TypeEnum;
+
         constexpr Type() noexcept : impl(EnumType{0}) {}
+
         constexpr Type(const internal::Type_impl& impl) noexcept : impl(impl) {}
+
         constexpr explicit Type(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v}) {}
+
         template <std::integral T>
         constexpr explicit operator T() const noexcept
         {
             return T(impl);
         }
+
         constexpr operator EnumType() const noexcept { return static_cast<EnumType>(impl); }
 
         [[nodiscard]] constexpr std::strong_ordering operator<=>(

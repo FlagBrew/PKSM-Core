@@ -300,9 +300,8 @@ namespace pksm
             case GameVersion::OR:
             case GameVersion::AS:
             {
-                static const std::set<Move> items = std::invoke([]() {
-                    return create_set_consecutive<Move>(Move::None, Move::HyperspaceFury);
-                });
+                static const std::set<Move> items = std::invoke([]()
+                    { return create_set_consecutive<Move>(Move::None, Move::HyperspaceFury); });
                 return items;
             }
             case GameVersion::SN:
@@ -315,9 +314,10 @@ namespace pksm
             case GameVersion::US:
             case GameVersion::UM:
             {
-                static const std::set<Move> items = std::invoke([]() {
-                    return create_set_consecutive<Move>(Move::None, Move::ClangorousSoulblaze);
-                });
+                static const std::set<Move> items = std::invoke(
+                    []() {
+                        return create_set_consecutive<Move>(Move::None, Move::ClangorousSoulblaze);
+                    });
                 return items;
             }
             case GameVersion::GE:
@@ -398,18 +398,18 @@ namespace pksm
             case GameVersion::BU:
             case GameVersion::YW:
             {
-                static const std::set<Species> items = std::invoke([]() {
-                    return create_set_consecutive<Species>(Species::Bulbasaur, Species::Mew);
-                });
+                static const std::set<Species> items = std::invoke([]()
+                    { return create_set_consecutive<Species>(Species::Bulbasaur, Species::Mew); });
                 return items;
             }
             case GameVersion::GD:
             case GameVersion::SV:
             case GameVersion::C:
             {
-                static const std::set<Species> items = std::invoke([]() {
-                    return create_set_consecutive<Species>(Species::Bulbasaur, Species::Celebi);
-                });
+                static const std::set<Species> items = std::invoke(
+                    []() {
+                        return create_set_consecutive<Species>(Species::Bulbasaur, Species::Celebi);
+                    });
                 return items;
             }
             case GameVersion::R:
@@ -418,9 +418,10 @@ namespace pksm
             case GameVersion::LG:
             case GameVersion::E:
             {
-                static const std::set<Species> items = std::invoke([]() {
-                    return create_set_consecutive<Species>(Species::Bulbasaur, Species::Deoxys);
-                });
+                static const std::set<Species> items = std::invoke(
+                    []() {
+                        return create_set_consecutive<Species>(Species::Bulbasaur, Species::Deoxys);
+                    });
                 return items;
             }
             case GameVersion::D:
@@ -429,9 +430,10 @@ namespace pksm
             case GameVersion::HG:
             case GameVersion::SS:
             {
-                static const std::set<Species> items = std::invoke([]() {
-                    return create_set_consecutive<Species>(Species::Bulbasaur, Species::Arceus);
-                });
+                static const std::set<Species> items = std::invoke(
+                    []() {
+                        return create_set_consecutive<Species>(Species::Bulbasaur, Species::Arceus);
+                    });
                 return items;
             }
             case GameVersion::B:
@@ -439,9 +441,11 @@ namespace pksm
             case GameVersion::B2:
             case GameVersion::W2:
             {
-                static const std::set<Species> items = std::invoke([]() {
-                    return create_set_consecutive<Species>(Species::Bulbasaur, Species::Genesect);
-                });
+                static const std::set<Species> items = std::invoke(
+                    []() {
+                        return create_set_consecutive<Species>(
+                            Species::Bulbasaur, Species::Genesect);
+                    });
                 return items;
             }
             case GameVersion::X:
@@ -449,36 +453,45 @@ namespace pksm
             case GameVersion::OR:
             case GameVersion::AS:
             {
-                static const std::set<Species> items = std::invoke([]() {
-                    return create_set_consecutive<Species>(Species::Bulbasaur, Species::Volcanion);
-                });
+                static const std::set<Species> items = std::invoke(
+                    []() {
+                        return create_set_consecutive<Species>(
+                            Species::Bulbasaur, Species::Volcanion);
+                    });
                 return items;
             }
             case GameVersion::SN:
             case GameVersion::MN:
             {
-                static const std::set<Species> items = std::invoke([]() {
-                    return create_set_consecutive<Species>(Species::Bulbasaur, Species::Marshadow);
-                });
+                static const std::set<Species> items = std::invoke(
+                    []() {
+                        return create_set_consecutive<Species>(
+                            Species::Bulbasaur, Species::Marshadow);
+                    });
                 return items;
             }
             case GameVersion::US:
             case GameVersion::UM:
             {
-                static const std::set<Species> items = std::invoke([]() {
-                    return create_set_consecutive<Species>(Species::Bulbasaur, Species::Zeraora);
-                });
+                static const std::set<Species> items = std::invoke(
+                    []() {
+                        return create_set_consecutive<Species>(
+                            Species::Bulbasaur, Species::Zeraora);
+                    });
                 return items;
             }
             case GameVersion::GE:
             case GameVersion::GP:
             {
-                static const std::set<Species> items = std::invoke([]() {
-                    auto ret = create_set_consecutive<Species>(Species::Bulbasaur, Species::Mew);
-                    ret.emplace(Species::Meltan);
-                    ret.emplace(Species::Melmetal);
-                    return ret;
-                });
+                static const std::set<Species> items = std::invoke(
+                    []()
+                    {
+                        auto ret =
+                            create_set_consecutive<Species>(Species::Bulbasaur, Species::Mew);
+                        ret.emplace(Species::Meltan);
+                        ret.emplace(Species::Melmetal);
+                        return ret;
+                    });
                 return items;
             }
             case GameVersion::SW:
@@ -690,9 +703,11 @@ namespace pksm
             case GameVersion::LG:
             case GameVersion::E:
             {
-                static const std::set<Ability> items = std::invoke([]() {
-                    return create_set_consecutive<Ability>(Ability::Stench, Ability::TangledFeet);
-                });
+                static const std::set<Ability> items = std::invoke(
+                    []() {
+                        return create_set_consecutive<Ability>(
+                            Ability::Stench, Ability::TangledFeet);
+                    });
                 return items;
             }
             case GameVersion::D:
@@ -701,9 +716,10 @@ namespace pksm
             case GameVersion::HG:
             case GameVersion::SS:
             {
-                static const std::set<Ability> items = std::invoke([]() {
-                    return create_set_consecutive<Ability>(Ability::Stench, Ability::BadDreams);
-                });
+                static const std::set<Ability> items = std::invoke(
+                    []() {
+                        return create_set_consecutive<Ability>(Ability::Stench, Ability::BadDreams);
+                    });
                 return items;
             }
             case GameVersion::B:
@@ -711,57 +727,66 @@ namespace pksm
             case GameVersion::B2:
             case GameVersion::W2:
             {
-                static const std::set<Ability> items = std::invoke([]() {
-                    return create_set_consecutive<Ability>(Ability::Stench, Ability::Teravolt);
-                });
+                static const std::set<Ability> items = std::invoke(
+                    []() {
+                        return create_set_consecutive<Ability>(Ability::Stench, Ability::Teravolt);
+                    });
                 return items;
             }
             case GameVersion::X:
             case GameVersion::Y:
             {
-                static const std::set<Ability> items = std::invoke([]() {
-                    return create_set_consecutive<Ability>(Ability::Stench, Ability::AuraBreak);
-                });
+                static const std::set<Ability> items = std::invoke(
+                    []() {
+                        return create_set_consecutive<Ability>(Ability::Stench, Ability::AuraBreak);
+                    });
                 return items;
             }
             case GameVersion::OR:
             case GameVersion::AS:
             {
-                static const std::set<Ability> items = std::invoke([]() {
-                    return create_set_consecutive<Ability>(Ability::Stench, Ability::DeltaStream);
-                });
+                static const std::set<Ability> items = std::invoke(
+                    []() {
+                        return create_set_consecutive<Ability>(
+                            Ability::Stench, Ability::DeltaStream);
+                    });
                 return items;
             }
             case GameVersion::SN:
             case GameVersion::MN:
             {
-                static const std::set<Ability> items = std::invoke([]() {
-                    return create_set_consecutive<Ability>(Ability::Stench, Ability::PrismArmor);
-                });
+                static const std::set<Ability> items = std::invoke(
+                    []() {
+                        return create_set_consecutive<Ability>(
+                            Ability::Stench, Ability::PrismArmor);
+                    });
                 return items;
             }
             case GameVersion::US:
             case GameVersion::UM:
             {
-                static const std::set<Ability> items = std::invoke([]() {
-                    return create_set_consecutive<Ability>(Ability::Stench, Ability::Neuroforce);
-                });
+                static const std::set<Ability> items = std::invoke(
+                    []() {
+                        return create_set_consecutive<Ability>(
+                            Ability::Stench, Ability::Neuroforce);
+                    });
                 return items;
             }
             case GameVersion::GE:
             case GameVersion::GP:
             {
-                static const std::set<Ability> items = std::invoke([]() {
-                    return create_set_consecutive<Ability>(Ability::Stench, Ability::Neuroforce);
-                });
+                static const std::set<Ability> items = std::invoke(
+                    []() {
+                        return create_set_consecutive<Ability>(
+                            Ability::Stench, Ability::Neuroforce);
+                    });
                 return items;
             }
             case GameVersion::SW:
             case GameVersion::SH:
             {
-                static const std::set<Ability> items = std::invoke([]() {
-                    return create_set_consecutive<Ability>(Ability::Stench, Ability::AsOneG);
-                });
+                static const std::set<Ability> items = std::invoke([]()
+                    { return create_set_consecutive<Ability>(Ability::Stench, Ability::AsOneG); });
                 return items;
             }
             default:

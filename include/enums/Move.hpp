@@ -880,6 +880,7 @@ namespace pksm
             } v;
 
             constexpr explicit Move_impl(MoveEnum v) : v(v) {}
+
             constexpr Move_impl(const Move_impl&)            = default;
             constexpr Move_impl(Move_impl&&)                 = default;
             constexpr Move_impl& operator=(const Move_impl&) = default;
@@ -891,6 +892,7 @@ namespace pksm
             {
                 return T(v);
             }
+
             constexpr operator MoveEnum() const noexcept { return v; }
 
             [[nodiscard]] constexpr std::strong_ordering operator<=>(
@@ -907,14 +909,19 @@ namespace pksm
 
     public:
         using EnumType = internal::Move_impl::MoveEnum;
+
         constexpr Move() noexcept : impl(EnumType::INVALID) {}
+
         constexpr Move(const internal::Move_impl& impl) noexcept : impl(impl) {}
+
         constexpr explicit Move(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v}) {}
+
         template <std::integral T>
         constexpr explicit operator T() const noexcept
         {
             return T(impl);
         }
+
         constexpr operator EnumType() const noexcept { return static_cast<EnumType>(impl); }
 
         [[nodiscard]] constexpr std::strong_ordering operator<=>(

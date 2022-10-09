@@ -28,26 +28,34 @@
 
 namespace i18n
 {
-    std::unordered_map<pksm::Language, std::vector<std::string>> items  = std::invoke([] {
-        std::unordered_map<pksm::Language, std::vector<std::string>> ret;
-        MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
-        return ret;
-    });
-    std::unordered_map<pksm::Language, std::vector<std::string>> items1 = std::invoke([] {
-        std::unordered_map<pksm::Language, std::vector<std::string>> ret;
-        MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
-        return ret;
-    });
-    std::unordered_map<pksm::Language, std::vector<std::string>> items2 = std::invoke([] {
-        std::unordered_map<pksm::Language, std::vector<std::string>> ret;
-        MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
-        return ret;
-    });
-    std::unordered_map<pksm::Language, std::vector<std::string>> items3 = std::invoke([] {
-        std::unordered_map<pksm::Language, std::vector<std::string>> ret;
-        MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
-        return ret;
-    });
+    std::unordered_map<pksm::Language, std::vector<std::string>> items = std::invoke(
+        []
+        {
+            std::unordered_map<pksm::Language, std::vector<std::string>> ret;
+            MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
+            return ret;
+        });
+    std::unordered_map<pksm::Language, std::vector<std::string>> items1 = std::invoke(
+        []
+        {
+            std::unordered_map<pksm::Language, std::vector<std::string>> ret;
+            MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
+            return ret;
+        });
+    std::unordered_map<pksm::Language, std::vector<std::string>> items2 = std::invoke(
+        []
+        {
+            std::unordered_map<pksm::Language, std::vector<std::string>> ret;
+            MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
+            return ret;
+        });
+    std::unordered_map<pksm::Language, std::vector<std::string>> items3 = std::invoke(
+        []
+        {
+            std::unordered_map<pksm::Language, std::vector<std::string>> ret;
+            MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
+            return ret;
+        });
 
     void initItem(pksm::Language lang)
     {

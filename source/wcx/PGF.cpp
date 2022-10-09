@@ -287,11 +287,17 @@ namespace pksm
         u8 abilitynum, type = abilityType();
 
         if (type == 2)
+        {
             abilitynum = 2;
+        }
         else if (type == 4)
+        {
             abilitynum = 2;
+        }
         else
+        {
             abilitynum = 0;
+        }
 
         return PersonalBWB2W2::ability(u16(species()), abilitynum);
     }

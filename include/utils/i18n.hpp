@@ -56,6 +56,7 @@ namespace i18n
         addInitCallback(init);
         addExitCallback(exit);
     }
+
     inline void removeCallbacks(initCallback init, exitCallback exit)
     {
         removeInitCallback(init);

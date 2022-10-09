@@ -36,10 +36,15 @@ namespace pksm
     {
     private:
         [[nodiscard]] int year(void) const override { return 1900; }
+
         [[nodiscard]] int month(void) const override { return 1; }
+
         [[nodiscard]] int day(void) const override { return 1; }
+
         void year(int) override {}
+
         void month(int) override {}
+
         void day(int) override {}
 
     protected:
@@ -54,12 +59,16 @@ namespace pksm
         [[nodiscard]] std::string_view extension(void) const override { return ".wc8"; }
 
         [[nodiscard]] Generation generation(void) const override;
+
         [[nodiscard]] bool bean(void) const override { return false; }
+
         [[nodiscard]] bool BP(void) const override;
         [[nodiscard]] bool item(void) const override;
         [[nodiscard]] bool pokemon(void) const override;
         [[nodiscard]] bool clothing(void) const;
+
         [[nodiscard]] bool power(void) const override { return false; }
+
         [[nodiscard]] std::string title(void) const override;
         [[nodiscard]] std::string title(Language lang) const;
         [[nodiscard]] Language titleIndex(void) const;
@@ -73,7 +82,9 @@ namespace pksm
         [[nodiscard]] int items(void) const;
         [[nodiscard]] bool multiObtainable(void) const override;
         [[nodiscard]] u8 flags(void) const override;
+
         [[nodiscard]] u8 cardLocation(void) const override { return 0; }
+
         [[nodiscard]] bool used(void) const override;
 
         // Pokemon properties
@@ -99,10 +110,12 @@ namespace pksm
         [[nodiscard]] Ball ball(void) const override;
         [[nodiscard]] u32 encryptionConstant(void) const;
         [[nodiscard]] u16 heldItem(void) const override;
+
         [[nodiscard]] Language language(void) const override
         {
             return Language::UNUSED;
         } // Apparently all WCs are now multi-language?
+
         [[nodiscard]] std::string nickname(void) const override;
         [[nodiscard]] std::string nickname(Language lang) const;
         [[nodiscard]] Language nicknameLanguage(Language orig) const;
@@ -119,13 +132,16 @@ namespace pksm
         [[nodiscard]] u32 PID(void) const override;
         [[nodiscard]] u16 eggLocation(void) const override;
         [[nodiscard]] u16 metLocation(void) const override;
+
         [[nodiscard]] u8 contest(u8) const override { return 0; }
+
         [[nodiscard]] bool hasRibbon(Ribbon rib) const override;
         [[nodiscard]] bool ribbon(Ribbon rib) const override;
 
         [[nodiscard]] u16 formSpecies(void) const override;
 
         [[nodiscard]] int size(void) const override { return length; }
+
         [[nodiscard]] const u8* rawData(void) const override { return data; }
     };
 }

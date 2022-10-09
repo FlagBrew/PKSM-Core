@@ -57,6 +57,7 @@ namespace pksm::crypto::swsh
             0xE0, 0x80, 0x52, 0xDB, 0xEA, 0x89, 0x73, 0x99, 0x75, 0x79, 0xAF, 0xCB, 0x2E, 0x80, 0x07, 0xE6,
             0xF1, 0x26, 0xE0, 0x03, 0x0A, 0xE6, 0x6F, 0xF6, 0x41, 0xBF, 0x7E, 0x59, 0xC2, 0xAE, 0x55, 0xFD,
         };
+
         // clang-format on
 
         std::array<u8, 32> computeHash(u8* data, size_t length)
@@ -73,6 +74,7 @@ namespace pksm::crypto::swsh
         private:
             u32 mCounter = 0;
             u32 mSeed;
+
             static void advance(u32& key)
             {
                 key ^= key << 2;
@@ -302,6 +304,7 @@ namespace pksm::crypto::swsh
     {
         return LittleEndian::convertTo<u32>(&data[myOffset]);
     }
+
     void SCBlock::key(u32 v)
     {
         LittleEndian::convertFrom<u32>(&data[myOffset], v);

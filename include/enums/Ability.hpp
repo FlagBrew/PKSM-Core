@@ -321,6 +321,7 @@ namespace pksm
             } v;
 
             constexpr explicit Ability_impl(AbilityEnum v) : v(v) {}
+
             constexpr Ability_impl(const Ability_impl&)            = default;
             constexpr Ability_impl(Ability_impl&&)                 = default;
             constexpr Ability_impl& operator=(const Ability_impl&) = default;
@@ -332,6 +333,7 @@ namespace pksm
             {
                 return T(v);
             }
+
             constexpr operator AbilityEnum() const noexcept { return v; }
 
             [[nodiscard]] constexpr std::strong_ordering operator<=>(
@@ -348,16 +350,21 @@ namespace pksm
 
     public:
         using EnumType = internal::Ability_impl::AbilityEnum;
+
         constexpr Ability() noexcept : impl(EnumType::INVALID) {}
+
         constexpr Ability(const internal::Ability_impl& impl) noexcept : impl(impl) {}
+
         constexpr explicit Ability(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v})
         {
         }
+
         template <std::integral T>
         constexpr explicit operator T() const noexcept
         {
             return T(impl);
         }
+
         constexpr operator EnumType() const noexcept { return static_cast<EnumType>(impl); }
 
         [[nodiscard]] constexpr std::strong_ordering operator<=>(

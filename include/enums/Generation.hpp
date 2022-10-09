@@ -36,6 +36,7 @@
 namespace pksm
 {
     class Generation;
+
     namespace internal
     {
         class Generation_impl
@@ -60,6 +61,7 @@ namespace pksm
             } v;
 
             constexpr explicit Generation_impl(GenerationEnum v) : v(v) {}
+
             constexpr Generation_impl(const Generation_impl&)            = default;
             constexpr Generation_impl(Generation_impl&&)                 = default;
             constexpr Generation_impl& operator=(const Generation_impl&) = default;
@@ -71,6 +73,7 @@ namespace pksm
             {
                 return T(v);
             }
+
             [[nodiscard]] constexpr explicit operator const char*() const noexcept
             {
                 switch (v)
@@ -99,14 +102,17 @@ namespace pksm
                 }
                 return "INVALID";
             }
+
             [[nodiscard]] constexpr explicit operator std::string_view() const
             {
                 return std::string_view{static_cast<const char*>(*this)};
             }
+
             [[nodiscard]] explicit operator std::string() const
             {
                 return std::string{static_cast<const char*>(*this)};
             }
+
             [[nodiscard]] constexpr operator GenerationEnum() const noexcept { return v; }
 
             [[nodiscard]] constexpr std::strong_ordering operator<=>(
@@ -292,17 +298,22 @@ namespace pksm
 
     public:
         using EnumType = internal::Generation_impl::GenerationEnum;
+
         constexpr Generation() noexcept : impl(EnumType::UNUSED) {}
+
         constexpr Generation(const internal::Generation_impl& impl) noexcept : impl(impl) {}
+
         constexpr explicit Generation(std::underlying_type_t<EnumType> v) noexcept
             : impl(EnumType{v})
         {
         }
+
         template <std::integral T>
         [[nodiscard]] constexpr explicit operator T() const noexcept
         {
             return static_cast<T>(impl);
         }
+
         [[nodiscard]] constexpr operator EnumType() const noexcept
         {
             return static_cast<EnumType>(impl);
@@ -312,10 +323,12 @@ namespace pksm
         {
             return static_cast<const char*>(impl);
         }
+
         [[nodiscard]] constexpr explicit operator std::string_view() const
         {
             return static_cast<std::string_view>(impl);
         }
+
         [[nodiscard]] explicit operator std::string() const
         {
             return static_cast<std::string>(impl);

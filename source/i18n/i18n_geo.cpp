@@ -28,17 +28,21 @@
 
 namespace i18n
 {
-    std::unordered_map<pksm::Language, std::map<u8, std::string>> countries = std::invoke([] {
-        std::unordered_map<pksm::Language, std::map<u8, std::string>> ret;
-        MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
-        return ret;
-    });
-    std::unordered_map<pksm::Language, std::map<u8, std::map<u8, std::string>>> subregions =
-        std::invoke([] {
-            std::unordered_map<pksm::Language, std::map<u8, std::map<u8, std::string>>> ret;
+    std::unordered_map<pksm::Language, std::map<u8, std::string>> countries = std::invoke(
+        []
+        {
+            std::unordered_map<pksm::Language, std::map<u8, std::string>> ret;
             MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
             return ret;
         });
+    std::unordered_map<pksm::Language, std::map<u8, std::map<u8, std::string>>> subregions =
+        std::invoke(
+            []
+            {
+                std::unordered_map<pksm::Language, std::map<u8, std::map<u8, std::string>>> ret;
+                MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
+                return ret;
+            });
 
     std::string subregionFileName(u8 region)
     {
@@ -47,7 +51,7 @@ namespace i18n
         {
             char setMe                = '0' + (region % 10);
             ret[ret.size() - 5 - pos] = setMe;
-            region /= 10;
+            region                    /= 10;
         }
         return ret;
     }

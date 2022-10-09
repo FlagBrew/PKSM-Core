@@ -48,17 +48,21 @@
 namespace i18n
 {
 #ifdef _PKSMCORE_DISABLE_THREAD_SAFETY
-    std::unordered_map<pksm::Language, LangState> languages = std::invoke([]() {
-        std::unordered_map<pksm::Language, LangState> ret;
-        MAP(MAKE_MAP, LANGUAGES_TO_USE);
-        return ret;
-    });
+    std::unordered_map<pksm::Language, LangState> languages = std::invoke(
+        []()
+        {
+            std::unordered_map<pksm::Language, LangState> ret;
+            MAP(MAKE_MAP, LANGUAGES_TO_USE);
+            return ret;
+        });
 #else
-    std::unordered_map<pksm::Language, std::atomic<LangState>> languages = std::invoke([]() {
-        std::unordered_map<pksm::Language, std::atomic<LangState>> ret;
-        MAP(MAKE_MAP, LANGUAGES_TO_USE);
-        return ret;
-    });
+    std::unordered_map<pksm::Language, std::atomic<LangState>> languages = std::invoke(
+        []()
+        {
+            std::unordered_map<pksm::Language, std::atomic<LangState>> ret;
+            MAP(MAKE_MAP, LANGUAGES_TO_USE);
+            return ret;
+        });
 #endif
 
     std::list<initCallback> initCallbacks = {initAbility, initBall, initForm, initGame, initGeo,
@@ -149,8 +153,8 @@ namespace i18n
     void load(pksm::Language lang, const std::string& name, std::vector<std::string>& array)
     {
         std::string path = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name)
-                               ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
-                               : _PKSMCORE_LANG_FOLDER + folder(pksm::Language::ENG) + name;
+                             ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
+                             : _PKSMCORE_LANG_FOLDER + folder(pksm::Language::ENG) + name;
 
         std::string tmp;
         FILE* values = fopen(path.c_str(), "rt");

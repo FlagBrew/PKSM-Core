@@ -119,6 +119,7 @@ namespace pksm
         [[nodiscard]] u16 formSpecies(void) const override;
 
         [[nodiscard]] int size(void) const override { return length; }
+
         [[nodiscard]] const u8* rawData(void) const override { return data; }
     };
 }

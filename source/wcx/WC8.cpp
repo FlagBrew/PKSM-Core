@@ -269,7 +269,9 @@ namespace pksm
                 numItems++;
             }
             else
+            {
                 break;
+            }
         }
     }
 
@@ -455,11 +457,17 @@ namespace pksm
         u8 abilitynum, type = abilityType();
 
         if (type == 2)
+        {
             abilitynum = 2;
+        }
         else if (type == 4)
+        {
             abilitynum = 2;
+        }
         else
+        {
             abilitynum = 0;
+        }
 
         return PersonalSWSH::ability(u16(species()), abilitynum);
     }

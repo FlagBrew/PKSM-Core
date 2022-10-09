@@ -44,17 +44,29 @@ namespace pksm
     private:
         bool japanese(void) const;
         static int swapBits(int value, int p1, int p2);
+
         [[nodiscard]] int eggYear(void) const override { return 1900; }
+
         void eggYear(int) override {}
+
         [[nodiscard]] int eggMonth(void) const override { return 1; }
+
         void eggMonth(int) override {}
+
         [[nodiscard]] int eggDay(void) const override { return 1; }
+
         void eggDay(int) override {}
+
         [[nodiscard]] int metYear(void) const override { return 1900; }
+
         void metYear(int) override {}
+
         [[nodiscard]] int metMonth(void) const override { return 1; }
+
         void metMonth(int) override {}
+
         [[nodiscard]] int metDay(void) const override { return 1; }
+
         void metDay(int) override {}
 
     public:
@@ -80,7 +92,9 @@ namespace pksm
         [[nodiscard]] std::unique_ptr<PKX> clone(void) const override;
 
         [[nodiscard]] Generation generation(void) const override;
+
         [[nodiscard]] bool isParty(void) const override { return getLength() == PARTY_LENGTH; }
+
         void decrypt(void) override;
         void encrypt(void) override;
         [[nodiscard]] bool isEncrypted(void) const override;
@@ -89,8 +103,11 @@ namespace pksm
         void encryptionConstant(u32 v) override;
         [[nodiscard]] u8 currentFriendship(void) const override;
         void currentFriendship(u8 v) override;
+
         [[nodiscard]] u8 currentHandler(void) const override { return 0; }
+
         void currentHandler(u8) override {}
+
         [[nodiscard]] u8 abilityNumber(void) const override;
         void abilityNumber(u8 v) override;
         void setAbility(u8 abilityNumber) override;
@@ -149,8 +166,11 @@ namespace pksm
 
         [[nodiscard]] Move move(u8 move) const override;
         void move(u8 move, Move v) override;
+
         [[nodiscard]] Move relearnMove(u8) const override { return Move::None; }
+
         void relearnMove(u8, Move) override {}
+
         [[nodiscard]] u8 PP(u8 move) const override;
         void PP(u8 move, u8 v) override;
         [[nodiscard]] u8 PPUp(u8 move) const override;
@@ -175,13 +195,16 @@ namespace pksm
         void hiddenAbility(bool v);
 
         [[nodiscard]] bool hyperTrain(Stat) const override { return false; }
+
         void hyperTrain(Stat, bool) override {}
 
         [[nodiscard]] GameVersion version(void) const override;
         void version(GameVersion v) override;
 
         [[nodiscard]] u16 eggLocation(void) const override { return 0; }
+
         void eggLocation(u16) override {}
+
         [[nodiscard]] u16 metLocation(void) const override;
         void metLocation(u16 v) override;
         [[nodiscard]] u8 pkrs(void) const override;
@@ -223,50 +246,62 @@ namespace pksm
         {
             return PersonalRSFRLGE::baseHP(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseAtk(void) const override
         {
             return PersonalRSFRLGE::baseAtk(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseDef(void) const override
         {
             return PersonalRSFRLGE::baseDef(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseSpe(void) const override
         {
             return PersonalRSFRLGE::baseSpe(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseSpa(void) const override
         {
             return PersonalRSFRLGE::baseSpa(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseSpd(void) const override
         {
             return PersonalRSFRLGE::baseSpd(formSpecies());
         }
+
         [[nodiscard]] inline Type type1(void) const override
         {
             return PersonalRSFRLGE::type1(formSpecies());
         }
+
         [[nodiscard]] inline Type type2(void) const override
         {
             return PersonalRSFRLGE::type2(formSpecies());
         }
+
         [[nodiscard]] inline u8 genderType(void) const override
         {
             return PersonalRSFRLGE::gender(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseFriendship(void) const override
         {
             return PersonalRSFRLGE::baseFriendship(formSpecies());
         }
+
         [[nodiscard]] inline u8 expType(void) const override
         {
             return PersonalRSFRLGE::expType(formSpecies());
         }
+
         [[nodiscard]] inline Ability abilities(u8 n) const override
         {
             return PersonalRSFRLGE::ability(formSpecies(), n);
         }
+
         [[nodiscard]] inline u16 formStatIndex(void) const override { return 0; }
 
     private:

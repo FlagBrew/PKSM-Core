@@ -92,7 +92,7 @@ namespace EndianTraits
                     for (size_t i = 0; i < sizeof(T); i++)
                     {
                         dest[sizeof(T) - i - 1] = u8(origVal);
-                        origVal >>= 8;
+                        origVal                 >>= 8;
                     }
                 }
             }
@@ -108,7 +108,7 @@ namespace EndianTraits
                     {
                         case FP_INFINITE:
                             write |= u32(0xFF)
-                                     << 23; // should be written as 0x7F800000 or 0xFF800000
+                                  << 23; // should be written as 0x7F800000 or 0xFF800000
                             break;
                         case FP_NAN:
                             write = 0xFFFFFFFF; // might as well just use a constant NaN number
@@ -121,7 +121,7 @@ namespace EndianTraits
                             // falls through
                         case FP_SUBNORMAL:
                             normalized *= 1 << 23;
-                            write |= u32(normalized);
+                            write      |= u32(normalized);
                             break;
                     }
                     convertFrom<u32, TargetEndianness>(dest, write);
@@ -148,7 +148,7 @@ namespace EndianTraits
                             // falls through
                         case FP_SUBNORMAL:
                             normalized *= u64(1) << 52;
-                            write |= u64(normalized);
+                            write      |= u64(normalized);
                             break;
                     }
                     convertFrom<u64, TargetEndianness>(dest, write);
@@ -275,17 +275,19 @@ namespace EndianTraits
         {
             T out             = 0;
             T j               = 1;
-            auto [begin, end] = std::invoke([&src] {
-                if constexpr (TargetEndianness == std::endian::big)
+            auto [begin, end] = std::invoke(
+                [&src]
                 {
-                    return std::make_pair(std::make_reverse_iterator(src + arrayLength - 1),
-                        std::make_reverse_iterator(src - 1));
-                }
-                else
-                {
-                    return std::make_pair(src, src + arrayLength);
-                }
-            });
+                    if constexpr (TargetEndianness == std::endian::big)
+                    {
+                        return std::make_pair(std::make_reverse_iterator(src + arrayLength - 1),
+                            std::make_reverse_iterator(src - 1));
+                    }
+                    else
+                    {
+                        return std::make_pair(src, src + arrayLength);
+                    }
+                });
             for (; begin != end; ++begin)
             {
                 out += ((*begin & 0x0F) * j) + (((*begin & 0xF0) >> 4) * (j * 10));
@@ -297,17 +299,19 @@ namespace EndianTraits
             std::endian TargetEndianness>
         constexpr void UIntegerToBCD(u8* dest, T src)
         {
-            auto [begin, end] = std::invoke([&dest] {
-                if constexpr (TargetEndianness == std::endian::big)
+            auto [begin, end] = std::invoke(
+                [&dest]
                 {
-                    return std::make_pair(std::make_reverse_iterator(dest + arrayLength - 1),
-                        std::make_reverse_iterator(dest - 1));
-                }
-                else
-                {
-                    return std::make_pair(dest, dest + arrayLength);
-                }
-            });
+                    if constexpr (TargetEndianness == std::endian::big)
+                    {
+                        return std::make_pair(std::make_reverse_iterator(dest + arrayLength - 1),
+                            std::make_reverse_iterator(dest - 1));
+                    }
+                    else
+                    {
+                        return std::make_pair(dest, dest + arrayLength);
+                    }
+                });
 
             for (; begin != end; ++begin, ++dest, src /= 100)
             {
@@ -339,7 +343,7 @@ namespace EndianTraits
 
         template <EndianTraits::EndianConvertible T, std::size_t Extent,
             std::endian TargetEndianness>
-            requires(Extent != std::dynamic_extent)
+            requires (Extent != std::dynamic_extent)
         constexpr std::array<u8, sizeof(T) * Extent> convertFrom(std::span<T, Extent> span)
         {
             std::array<u8, sizeof(T) * Extent> ret{};
@@ -354,17 +358,19 @@ namespace EndianTraits
             requires EndianTraits::EndianConvertible<std::ranges::range_value_t<R>>
         constexpr std::vector<u8> convertFrom(R&& range)
         {
-            std::vector<u8> ret = std::invoke([&] {
-                if constexpr (requires { requires std::ranges::sized_range<R>; })
+            std::vector<u8> ret = std::invoke(
+                [&]
                 {
-                    return std::vector<u8>(
-                        std::ranges::size(range) * sizeof(std::ranges::range_value_t<R>));
-                }
-                else
-                {
-                    return std::vector<u8>();
-                }
-            });
+                    if constexpr (requires { requires std::ranges::sized_range<R>; })
+                    {
+                        return std::vector<u8>(
+                            std::ranges::size(range) * sizeof(std::ranges::range_value_t<R>));
+                    }
+                    else
+                    {
+                        return std::vector<u8>();
+                    }
+                });
             std::size_t current = 0;
             for (auto it = std::ranges::begin(range); it != std::ranges::end(range);
                  ++it, current += sizeof(std::ranges::range_value_t<R>))
@@ -443,7 +449,7 @@ namespace BigEndian
     }
 
     template <EndianTraits::EndianConvertible T, std::size_t Extent>
-        requires(Extent != std::dynamic_extent)
+        requires (Extent != std::dynamic_extent)
     constexpr std::array<u8, sizeof(T) * Extent> convertFrom(std::span<T, Extent> span)
     {
         return EndianTraits::EndianCommon::convertFrom<T, Extent, std::endian::big>(span);
@@ -511,7 +517,7 @@ namespace LittleEndian
     }
 
     template <EndianTraits::EndianConvertible T, std::size_t Extent>
-        requires(Extent != std::dynamic_extent)
+        requires (Extent != std::dynamic_extent)
     constexpr std::array<u8, sizeof(T) * Extent> convertFrom(std::span<T, Extent> span)
     {
         return EndianTraits::EndianCommon::convertFrom<T, Extent, std::endian::little>(span);

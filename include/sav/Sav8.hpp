@@ -54,8 +54,11 @@ namespace pksm
         [[nodiscard]] std::unique_ptr<PKX> emptyPkm() const override;
 
         [[nodiscard]] int maxBoxes(void) const override { return 32; }
+
         [[nodiscard]] size_t maxWondercards(void) const override { return 1; } // Data not stored
+
         [[nodiscard]] int currentGiftAmount(void) const override { return 0; } // Data not stored
+
         [[nodiscard]] Generation generation(void) const override { return Generation::EIGHT; }
     };
 }

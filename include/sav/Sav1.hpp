@@ -57,30 +57,47 @@ namespace pksm
         [[nodiscard]] static Game getVersion(const std::shared_ptr<u8[]>& dt);
 
         void finishEditing(void) override;
+
         void beginEditing(void) override {}
 
         [[nodiscard]] u16 TID(void) const override;
         void TID(u16 v) override;
+
         [[nodiscard]] u16 SID(void) const override { return 0; }
+
         void SID(u16 v) override {}
+
         [[nodiscard]] GameVersion version(void) const override { return versionOfGame; }
+
         void version(GameVersion v) override { versionOfGame = v; };
+
         [[nodiscard]] Gender gender(void) const override { return Gender::Male; }
+
         void gender(Gender v) override {}
+
         [[nodiscard]] u8 subRegion(void) const override { return 0; }
+
         void subRegion(u8) override {}
+
         [[nodiscard]] u8 country(void) const override { return 0; }
+
         void country(u8) override {}
+
         [[nodiscard]] u8 consoleRegion(void) const override { return 0; }
+
         void consoleRegion(u8) override {}
+
         [[nodiscard]] Language language(void) const override;
         void language(Language v) override;
         [[nodiscard]] std::string otName(void) const override;
         void otName(const std::string_view& v) override;
         [[nodiscard]] u32 money(void) const override;
         void money(u32 v) override;
+
         [[nodiscard]] u32 BP(void) const override { return 0; }
+
         void BP(u32 v) override {}
+
         [[nodiscard]] u8 badges(void) const override;
         [[nodiscard]] u16 playedHours(void) const override;
         void playedHours(u16 v) override;
@@ -91,9 +108,13 @@ namespace pksm
 
         [[nodiscard]] u8 currentBox(void) const override;
         void currentBox(u8 v) override;
+
         [[nodiscard]] u8 unlockedBoxes(void) const override { return maxBoxes(); }
+
         void unlockedBoxes(u8) override {}
+
         [[nodiscard]] u8 legendBoxUnlockSize(void) const override { return 0; }
+
         [[nodiscard]] u32 boxOffset(u8 box, u8 slot) const override;
         [[nodiscard]] u32 boxNicknameOffset(u8 box, u8 slot) const;
         [[nodiscard]] u32 boxOtNameOffset(u8 box, u8 slot) const;
@@ -112,22 +133,32 @@ namespace pksm
         void pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade) override;
 
         void trade(PKX& pk, const Date& date = Date::today()) const override {}
+
         [[nodiscard]] std::unique_ptr<PKX> emptyPkm(void) const override;
 
         void dex(const PKX& pk) override;
         [[nodiscard]] int dexSeen(void) const override;
         [[nodiscard]] int dexCaught(void) const override;
+
         [[nodiscard]] int currentGiftAmount(void) const override { return 0; }
+
         void mysteryGift(const WCX&, int&) override {}
+
         [[nodiscard]] std::unique_ptr<WCX> mysteryGift(int pos) const override { return nullptr; }
+
         void cryptBoxData(bool crypted) override {}
+
         [[nodiscard]] std::string boxName(u8 box) const override
         {
             return "Box " + std::to_string(box + 1);
         }
+
         void boxName(u8 box, const std::string_view& name) override {}
+
         [[nodiscard]] u8 boxWallpaper(u8 box) const override { return 0; }
+
         void boxWallpaper(u8 box, u8 v) override {}
+
         [[nodiscard]] u8 partyCount(void) const override;
         [[nodiscard]] u8 boxCount(u8 box) const;
         void partyCount(u8 count) override;
@@ -137,7 +168,9 @@ namespace pksm
 
         [[nodiscard]] int maxSlot(void) const override;
         [[nodiscard]] int maxBoxes(void) const override;
+
         [[nodiscard]] size_t maxWondercards(void) const override { return 0; }
+
         [[nodiscard]] Generation generation(void) const override { return Generation::ONE; }
 
         void item(const Item& tItem, Pouch pouch, u16 slot) override;

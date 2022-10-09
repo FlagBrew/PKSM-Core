@@ -37,8 +37,8 @@
 #include "enums/Ribbon.hpp"
 #include "enums/Species.hpp"
 #include "enums/Stat.hpp"
-#include "utils/DateTime.hpp"
 #include "utils/coretypes.h"
+#include "utils/DateTime.hpp"
 #include <string>
 
 namespace pksm
@@ -55,6 +55,7 @@ namespace pksm
 
     public:
         WCX() {}
+
         WCX(const WCX&)            = delete;
         WCX& operator=(const WCX&) = delete;
         virtual ~WCX(void)         = default;
@@ -69,13 +70,16 @@ namespace pksm
         [[nodiscard]] virtual bool power(void) const            = 0;
         [[nodiscard]] virtual std::string title(void) const     = 0;
         [[nodiscard]] virtual u8 type(void) const               = 0;
+
         [[nodiscard]] Date date(void) const { return Date{(u8)day(), (u8)month(), (u32)year()}; }
+
         void date(const Date& v)
         {
             day(v.day());
             month(v.month());
             year(v.year());
         }
+
         [[nodiscard]] virtual u16 ID(void) const               = 0;
         [[nodiscard]] virtual u16 object(void) const           = 0;
         [[nodiscard]] virtual bool multiObtainable(void) const = 0;

@@ -98,6 +98,7 @@ namespace pksm
                 return std::unique_ptr<Sav>(nullptr);
         }
     }
+
     std::unique_ptr<Sav> Sav::checkGBType(const std::shared_ptr<u8[]>& dt, size_t length)
     {
         std::tuple<GameVersion, Language, bool> versionAndLanguage = Sav2::getVersion(dt);
@@ -153,19 +154,31 @@ namespace pksm
         static constexpr size_t PT_OFFSET   = 0xCF2C;
         static constexpr size_t HGSS_OFFSET = 0xF628;
         if (validSequence(dt, DP_OFFSET))
+        {
             return true;
+        }
         if (validSequence(dt, PT_OFFSET))
+        {
             return true;
+        }
         if (validSequence(dt, HGSS_OFFSET))
+        {
             return true;
+        }
 
         // Check the other save
         if (validSequence(dt, DP_OFFSET + 0x40000))
+        {
             return true;
+        }
         if (validSequence(dt, PT_OFFSET + 0x40000))
+        {
             return true;
+        }
         if (validSequence(dt, HGSS_OFFSET + 0x40000))
+        {
             return true;
+        }
         return false;
     }
 
@@ -176,19 +189,31 @@ namespace pksm
         static constexpr size_t PT_OFFSET   = 0xCF2C;
         static constexpr size_t HGSS_OFFSET = 0xF628;
         if (validSequence(dt, DP_OFFSET))
+        {
             return std::make_unique<SavDP>(dt);
+        }
         if (validSequence(dt, PT_OFFSET))
+        {
             return std::make_unique<SavPT>(dt);
+        }
         if (validSequence(dt, HGSS_OFFSET))
+        {
             return std::make_unique<SavHGSS>(dt);
+        }
 
         // Check the other save
         if (validSequence(dt, DP_OFFSET + 0x40000))
+        {
             return std::make_unique<SavDP>(dt);
+        }
         if (validSequence(dt, PT_OFFSET + 0x40000))
+        {
             return std::make_unique<SavPT>(dt);
+        }
         if (validSequence(dt, HGSS_OFFSET + 0x40000))
+        {
             return std::make_unique<SavHGSS>(dt);
+        }
 
         // Check for BW/B2W2 checksums
         u16 chk1    = LittleEndian::convertTo<u16>(&dt[0x24000 - 0x100 + 0x8C + 0xE]);
@@ -339,10 +364,10 @@ namespace pksm
             return BadTransferReason::SPECIES;
         }
         if (pk.alternativeForm() >= formCount(pk.species()) &&
-                 !((pk.species() == Species::Scatterbug || pk.species() == Species::Spewpa) &&
-                     pk.alternativeForm() < formCount(Species::Vivillon)) &&
-                 !((pk.species() == Species::Mothim) &&
-                     pk.alternativeForm() < formCount(Species::Burmy)))
+            !((pk.species() == Species::Scatterbug || pk.species() == Species::Spewpa) &&
+                pk.alternativeForm() < formCount(Species::Vivillon)) &&
+            !((pk.species() == Species::Mothim) &&
+                pk.alternativeForm() < formCount(Species::Burmy)))
         {
             return BadTransferReason::FORM;
         }
@@ -353,16 +378,17 @@ namespace pksm
                 return BadTransferReason::ABILITY;
             }
         }
-        
+
         if (generation() <= Generation::TWO)
         {
             const int heldItem2 = pk.generation() == Generation::ONE
-                                        ? (int)static_cast<const PK1&>(pk).heldItem2()
-                                        : (pk.generation() == Generation::TWO
-                                            ? (int)static_cast<const PK2&>(pk).heldItem2()
-                                            : (int)ItemConverter::nationalToG2(pk.heldItem()));
+                                    ? (int)static_cast<const PK1&>(pk).heldItem2()
+                                    : (pk.generation() == Generation::TWO
+                                              ? (int)static_cast<const PK2&>(pk).heldItem2()
+                                              : (int)ItemConverter::nationalToG2(pk.heldItem()));
             // Crystal only adds key items
-            if (VersionTables::availableItems(GameVersion::GD).count(heldItem2) == 0 || (heldItem2 == 0 && pk.heldItem() != 0))
+            if (VersionTables::availableItems(GameVersion::GD).count(heldItem2) == 0 ||
+                (heldItem2 == 0 && pk.heldItem() != 0))
             {
                 return BadTransferReason::ITEM;
             }
@@ -370,14 +396,16 @@ namespace pksm
         else if (generation() == Generation::THREE)
         {
             const int heldItem3 = pk.generation() == Generation::THREE
-                                        ? (int)static_cast<const PK3&>(pk).heldItem3()
-                                        : (int)ItemConverter::nationalToG3(pk.heldItem());
+                                    ? (int)static_cast<const PK3&>(pk).heldItem3()
+                                    : (int)ItemConverter::nationalToG3(pk.heldItem());
             if (availableItems().count(heldItem3) == 0 || (heldItem3 == 0 && pk.heldItem() != 0))
             {
                 return BadTransferReason::ITEM;
             }
         }
-        else if (availableItems().count((int)pk.heldItem()) == 0 || (pk.generation() == Generation::THREE && pk.heldItem() == ItemConverter::ITEM_NOT_CONVERTIBLE))
+        else if (availableItems().count((int)pk.heldItem()) == 0 ||
+                 (pk.generation() == Generation::THREE &&
+                     pk.heldItem() == ItemConverter::ITEM_NOT_CONVERTIBLE))
         {
             return BadTransferReason::ITEM;
         }

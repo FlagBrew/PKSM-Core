@@ -74,14 +74,18 @@ namespace pksm
         void decrypt(void) override;
         void encrypt(void) override;
         [[nodiscard]] bool isEncrypted(void) const override;
+
         [[nodiscard]] bool isParty(void) const override { return getLength() == PARTY_LENGTH; }
 
         [[nodiscard]] u32 encryptionConstant(void) const override;
         void encryptionConstant(u32 v) override;
         [[nodiscard]] u8 currentFriendship(void) const override;
         void currentFriendship(u8 v) override;
+
         [[nodiscard]] u8 currentHandler(void) const override { return 0; }
+
         void currentHandler(u8) override {}
+
         [[nodiscard]] u8 abilityNumber(void) const override;
         void abilityNumber(u8 v) override;
         void setAbility(u8 abilityNumber) override;
@@ -120,8 +124,11 @@ namespace pksm
 
         [[nodiscard]] Move move(u8 move) const override;
         void move(u8 move, Move v) override;
+
         [[nodiscard]] Move relearnMove(u8) const override { return Move::None; }
+
         void relearnMove(u8, Move) override {}
+
         [[nodiscard]] u8 PP(u8 move) const override;
         void PP(u8 move, u8 v) override;
         [[nodiscard]] u8 PPUp(u8 move) const override;
@@ -146,6 +153,7 @@ namespace pksm
         void nPokemon(bool v);
 
         [[nodiscard]] bool hyperTrain(Stat) const override { return false; }
+
         void hyperTrain(Stat, bool) override {}
 
         [[nodiscard]] std::string nickname(void) const override;
@@ -197,50 +205,62 @@ namespace pksm
         {
             return PersonalBWB2W2::baseHP(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseAtk(void) const override
         {
             return PersonalBWB2W2::baseAtk(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseDef(void) const override
         {
             return PersonalBWB2W2::baseDef(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseSpe(void) const override
         {
             return PersonalBWB2W2::baseSpe(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseSpa(void) const override
         {
             return PersonalBWB2W2::baseSpa(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseSpd(void) const override
         {
             return PersonalBWB2W2::baseSpd(formSpecies());
         }
+
         [[nodiscard]] inline Type type1(void) const override
         {
             return PersonalBWB2W2::type1(formSpecies());
         }
+
         [[nodiscard]] inline Type type2(void) const override
         {
             return PersonalBWB2W2::type2(formSpecies());
         }
+
         [[nodiscard]] inline u8 genderType(void) const override
         {
             return PersonalBWB2W2::gender(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseFriendship(void) const override
         {
             return PersonalBWB2W2::baseFriendship(formSpecies());
         }
+
         [[nodiscard]] inline u8 expType(void) const override
         {
             return PersonalBWB2W2::expType(formSpecies());
         }
+
         [[nodiscard]] inline Ability abilities(u8 n) const override
         {
             return PersonalBWB2W2::ability(formSpecies(), n);
         }
+
         [[nodiscard]] inline u16 formStatIndex(void) const override
         {
             return PersonalBWB2W2::formStatIndex(formSpecies());

@@ -37,6 +37,7 @@
 namespace pksm
 {
     class Ball;
+
     namespace internal
     {
         class Ball_impl
@@ -79,6 +80,7 @@ namespace pksm
             } v;
 
             constexpr explicit Ball_impl(BallEnum v) : v(v) {}
+
             constexpr Ball_impl(const Ball_impl&)            = default;
             constexpr Ball_impl(Ball_impl&&)                 = default;
             constexpr Ball_impl& operator=(const Ball_impl&) = default;
@@ -90,6 +92,7 @@ namespace pksm
             {
                 return T(v);
             }
+
             constexpr operator BallEnum() const noexcept { return v; }
 
             [[nodiscard]] constexpr std::strong_ordering operator<=>(
@@ -106,14 +109,19 @@ namespace pksm
 
     public:
         using EnumType = internal::Ball_impl::BallEnum;
+
         constexpr Ball() noexcept : impl(EnumType::INVALID) {}
+
         constexpr Ball(const internal::Ball_impl& impl) noexcept : impl(impl) {}
+
         constexpr explicit Ball(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v}) {}
+
         template <std::integral T>
         constexpr explicit operator T() const noexcept
         {
             return T(impl);
         }
+
         constexpr operator EnumType() const noexcept { return static_cast<EnumType>(impl); }
 
         [[nodiscard]] constexpr std::strong_ordering operator<=>(

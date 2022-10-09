@@ -864,45 +864,53 @@ namespace pksm::internal
         5,  // EerieSpell
     };
 
-    constexpr std::array<std::pair<pksm::Move, u8>, 9> PPDiff_LGPE = {{{pksm::Move::Absorb, 15},
-        {pksm::Move::MegaDrain, 10}, {pksm::Move::ZippyZap, 15}, {pksm::Move::BouncyBubble, 15},
-        {pksm::Move::BuzzyBuzz, 15}, {pksm::Move::SizzlySlide, 15}, {pksm::Move::SappySeed, 15},
-        {pksm::Move::FreezyFrost, 15}, {pksm::Move::SparklySwirl, 15}}};
+    constexpr std::array<std::pair<pksm::Move, u8>, 9> PPDiff_LGPE = {
+        {{pksm::Move::Absorb, 15}, {pksm::Move::MegaDrain, 10}, {pksm::Move::ZippyZap, 15},
+         {pksm::Move::BouncyBubble, 15}, {pksm::Move::BuzzyBuzz, 15},
+         {pksm::Move::SizzlySlide, 15}, {pksm::Move::SappySeed, 15},
+         {pksm::Move::FreezyFrost, 15}, {pksm::Move::SparklySwirl, 15}}
+    };
 
     // No differences between SM and SWSH
 
-    constexpr std::array<std::pair<pksm::Move, u8>, 3> PPDiff_G6 = {{{pksm::Move::Submission, 25},
-        {pksm::Move::LeechLife, 15}, {pksm::Move::Synchronoise, 15}}};
+    constexpr std::array<std::pair<pksm::Move, u8>, 3> PPDiff_G6 = {
+        {{pksm::Move::Submission, 25}, {pksm::Move::LeechLife, 15},
+         {pksm::Move::Synchronoise, 15}}
+    };
 
-    constexpr std::array<std::pair<pksm::Move, u8>, 18> PPDiff_G5 = {{{pksm::Move::SwordsDance, 30},
-        {pksm::Move::VineWhip, 15}, {pksm::Move::JumpKick, 25}, {pksm::Move::Submission, 25},
-        {pksm::Move::Growth, 40}, {pksm::Move::Minimize, 20}, {pksm::Move::Barrier, 30},
-        {pksm::Move::SkullBash, 15}, {pksm::Move::LeechLife, 15}, {pksm::Move::AcidArmor, 40},
-        {pksm::Move::Thief, 10}, {pksm::Move::RockTomb, 10}, {pksm::Move::Extrasensory, 30},
-        {pksm::Move::Covet, 40}, {pksm::Move::Tailwind, 30}, {pksm::Move::AirSlash, 20},
-        {pksm::Move::Synchronoise, 15}, {pksm::Move::SacredSword, 20}}};
+    constexpr std::array<std::pair<pksm::Move, u8>, 18> PPDiff_G5 = {
+        {{pksm::Move::SwordsDance, 30}, {pksm::Move::VineWhip, 15}, {pksm::Move::JumpKick, 25},
+         {pksm::Move::Submission, 25}, {pksm::Move::Growth, 40}, {pksm::Move::Minimize, 20},
+         {pksm::Move::Barrier, 30}, {pksm::Move::SkullBash, 15}, {pksm::Move::LeechLife, 15},
+         {pksm::Move::AcidArmor, 40}, {pksm::Move::Thief, 10}, {pksm::Move::RockTomb, 10},
+         {pksm::Move::Extrasensory, 30}, {pksm::Move::Covet, 40}, {pksm::Move::Tailwind, 30},
+         {pksm::Move::AirSlash, 20}, {pksm::Move::Synchronoise, 15},
+         {pksm::Move::SacredSword, 20}}
+    };
 
     constexpr std::array<std::pair<pksm::Move, u8>, 23> PPDiff_G4 = {
         {{pksm::Move::SwordsDance, 30}, {pksm::Move::VineWhip, 15}, {pksm::Move::JumpKick, 25},
-            {pksm::Move::Thrash, 20}, {pksm::Move::Submission, 25}, {pksm::Move::Growth, 40},
-            {pksm::Move::PetalDance, 20}, {pksm::Move::Minimize, 20}, {pksm::Move::Barrier, 30},
-            {pksm::Move::Clamp, 10}, {pksm::Move::SkullBash, 15}, {pksm::Move::HighJumpKick, 20},
-            {pksm::Move::LeechLife, 15}, {pksm::Move::AcidArmor, 40}, {pksm::Move::Thief, 10},
-            {pksm::Move::Outrage, 15}, {pksm::Move::FutureSight, 15}, {pksm::Move::RockTomb, 10},
-            {pksm::Move::Extrasensory, 30}, {pksm::Move::Covet, 40}, {pksm::Move::Tailwind, 30},
-            {pksm::Move::AirSlash, 20}, {pksm::Move::DrainPunch, 5}}};
+         {pksm::Move::Thrash, 20}, {pksm::Move::Submission, 25}, {pksm::Move::Growth, 40},
+         {pksm::Move::PetalDance, 20}, {pksm::Move::Minimize, 20}, {pksm::Move::Barrier, 30},
+         {pksm::Move::Clamp, 10}, {pksm::Move::SkullBash, 15}, {pksm::Move::HighJumpKick, 20},
+         {pksm::Move::LeechLife, 15}, {pksm::Move::AcidArmor, 40}, {pksm::Move::Thief, 10},
+         {pksm::Move::Outrage, 15}, {pksm::Move::FutureSight, 15}, {pksm::Move::RockTomb, 10},
+         {pksm::Move::Extrasensory, 30}, {pksm::Move::Covet, 40}, {pksm::Move::Tailwind, 30},
+         {pksm::Move::AirSlash, 20}, {pksm::Move::DrainPunch, 5}}
+    };
 
     // no pp difference in Gen I and II moves until Gen IV
     constexpr std::array<std::pair<pksm::Move, u8>, 25> PPDiff_G123 = {
         {{pksm::Move::SwordsDance, 30}, {pksm::Move::VineWhip, 15}, {pksm::Move::JumpKick, 25},
-            {pksm::Move::Thrash, 20}, {pksm::Move::Submission, 25}, {pksm::Move::Absorb, 20},
-            {pksm::Move::MegaDrain, 10}, {pksm::Move::Growth, 40}, {pksm::Move::PetalDance, 20},
-            {pksm::Move::Recover, 20}, {pksm::Move::Minimize, 20}, {pksm::Move::Barrier, 30},
-            {pksm::Move::Clamp, 10}, {pksm::Move::SkullBash, 15}, {pksm::Move::HighJumpKick, 20},
-            {pksm::Move::LeechLife, 15}, {pksm::Move::AcidArmor, 40}, {pksm::Move::Thief, 10},
-            {pksm::Move::Outrage, 15}, {pksm::Move::GigaDrain, 5}, {pksm::Move::FutureSight, 15},
-            {pksm::Move::Stockpile, 10}, {pksm::Move::RockTomb, 10}, {pksm::Move::Extrasensory, 30},
-            {pksm::Move::Covet, 40}}};
+         {pksm::Move::Thrash, 20}, {pksm::Move::Submission, 25}, {pksm::Move::Absorb, 20},
+         {pksm::Move::MegaDrain, 10}, {pksm::Move::Growth, 40}, {pksm::Move::PetalDance, 20},
+         {pksm::Move::Recover, 20}, {pksm::Move::Minimize, 20}, {pksm::Move::Barrier, 30},
+         {pksm::Move::Clamp, 10}, {pksm::Move::SkullBash, 15}, {pksm::Move::HighJumpKick, 20},
+         {pksm::Move::LeechLife, 15}, {pksm::Move::AcidArmor, 40}, {pksm::Move::Thief, 10},
+         {pksm::Move::Outrage, 15}, {pksm::Move::GigaDrain, 5}, {pksm::Move::FutureSight, 15},
+         {pksm::Move::Stockpile, 10}, {pksm::Move::RockTomb, 10}, {pksm::Move::Extrasensory, 30},
+         {pksm::Move::Covet, 40}}
+    };
 }
 
 #endif

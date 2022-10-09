@@ -37,6 +37,7 @@
 namespace pksm
 {
     class GameVersion;
+
     namespace internal
     {
         class GameVersion_impl
@@ -123,6 +124,7 @@ namespace pksm
             } v;
 
             constexpr explicit GameVersion_impl(GameVersionEnum v) : v(v) {}
+
             constexpr GameVersion_impl(const GameVersion_impl&)            = default;
             constexpr GameVersion_impl(GameVersion_impl&&)                 = default;
             constexpr GameVersion_impl& operator=(const GameVersion_impl&) = default;
@@ -134,6 +136,7 @@ namespace pksm
             {
                 return T(v);
             }
+
             constexpr explicit operator pksm::Generation() const noexcept
             {
                 switch (v)
@@ -188,6 +191,7 @@ namespace pksm
                 }
                 return Generation::UNUSED;
             }
+
             constexpr operator GameVersionEnum() const noexcept { return v; }
 
             [[nodiscard]] constexpr std::strong_ordering operator<=>(
@@ -209,21 +213,27 @@ namespace pksm
 
     public:
         using EnumType = internal::GameVersion_impl::GameVersionEnum;
+
         constexpr GameVersion() noexcept : impl(EnumType::INVALID) {}
+
         constexpr GameVersion(const internal::GameVersion_impl& impl) noexcept : impl(impl) {}
+
         constexpr explicit GameVersion(std::underlying_type_t<EnumType> v) noexcept
             : impl(EnumType{v})
         {
         }
+
         template <std::integral T>
         constexpr explicit operator T() const noexcept
         {
             return T(impl);
         }
+
         constexpr explicit operator pksm::Generation() const noexcept
         {
             return static_cast<Generation>(impl);
         }
+
         constexpr operator EnumType() const noexcept { return static_cast<EnumType>(impl); }
 
         static constexpr GameVersion newestVersion(const Generation& gen) noexcept

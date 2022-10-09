@@ -40,9 +40,8 @@ namespace pksm
     {
         // binary search
         auto found = std::lower_bound(blocks.begin(), blocks.end(), key,
-            [](const std::shared_ptr<pksm::crypto::swsh::SCBlock>& block, u32 key) {
-                return block->key() < key;
-            });
+            [](const std::shared_ptr<pksm::crypto::swsh::SCBlock>& block, u32 key)
+            { return block->key() < key; });
         if ((*found)->key() != key)
         {
             return nullptr;

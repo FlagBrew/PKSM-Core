@@ -66,9 +66,11 @@ namespace pksm::crypto
             state      = {0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c,
                      0x1f83d9ab, 0x5be0cd19};
         }
+
         void update(std::span<const u8> buf);
         [[nodiscard]] std::array<u8, 32> finish();
     };
+
     [[nodiscard]] std::array<u8, 32> sha256(std::span<const u8> data);
 
     namespace swsh
@@ -121,6 +123,7 @@ namespace pksm::crypto
             // Returns pointer to data at the beginning of the block's data region, skipping block
             // identifying information
             u8* rawData() const { return data.get() + myOffset + headerSize(type); }
+
             void key(u32 v);
             // data.get() + myOffset points to the beginning of the block data: *(u32*)(data.get() +
             // myOffset) == key
@@ -184,8 +187,8 @@ namespace pksm::crypto
         {
             for (size_t i = 0; i < Size; i += 2)
             {
-                key = seedStep(key);
-                data[i] ^= (key >> 16);
+                key         = seedStep(key);
+                data[i]     ^= (key >> 16);
                 data[i + 1] ^= (key >> 24);
             }
         }
@@ -195,8 +198,8 @@ namespace pksm::crypto
         {
             for (size_t i = 0; i < data.size(); i += 2)
             {
-                key = seedStep(key);
-                data[i] ^= (key >> 16);
+                key         = seedStep(key);
+                data[i]     ^= (key >> 16);
                 data[i + 1] ^= (key >> 24);
             }
         }

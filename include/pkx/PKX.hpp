@@ -42,8 +42,8 @@
 #include "pkx/IPKFilterable.hpp"
 #include "pkx/PKFilter.hpp"
 #include "sav/Item.hpp"
-#include "utils/DateTime.hpp"
 #include "utils/coretypes.h"
+#include "utils/DateTime.hpp"
 #include "utils/genToPkx.hpp"
 #include <concepts>
 #include <memory>
@@ -99,6 +99,7 @@ namespace pksm
         // length, or in Gen I and II a Japanese Pokemon depending on length
         [[nodiscard]] static std::unique_ptr<PKX> getPKM(
             Generation gen, u8* data, size_t length, bool directAccess = false);
+
         template <Generation::EnumType g>
         [[nodiscard]] static std::unique_ptr<typename GenToPkx<g>::PKX> getPKM(
             u8* data, size_t length, bool directAccess = false)
@@ -150,8 +151,11 @@ namespace pksm
         [[nodiscard]] virtual std::string_view extension(void) const = 0;
 
         [[nodiscard]] std::span<u8> rawData(void) { return {data, length}; }
+
         [[nodiscard]] std::span<const u8> rawData(void) const { return {data, length}; }
+
         [[nodiscard]] u32 getLength(void) const { return length; }
+
         [[nodiscard]] virtual bool isParty(void) const = 0;
 
         virtual void decrypt(void)                     = 0;
@@ -197,7 +201,9 @@ namespace pksm
         void species(Species v) override                         = 0;
         [[nodiscard]] u16 heldItem(void) const override          = 0;
         void heldItem(u16 v) override                            = 0;
+
         virtual void heldItem(const Item& item) { heldItem(item.id()); }
+
         [[nodiscard]] virtual u16 TID(void) const               = 0;
         virtual void TID(u16 v)                                 = 0;
         [[nodiscard]] virtual u16 SID(void) const               = 0;
@@ -258,6 +264,7 @@ namespace pksm
 
         [[nodiscard]] u8 maxPP(u8 move) const;
         void healPP();
+
         void healPP(u8 move) { PP(move, maxPP(move)); }
 
         // BLOCK C
@@ -269,27 +276,32 @@ namespace pksm
         virtual void otName(const std::string_view& v)       = 0;
         [[nodiscard]] virtual u8 otFriendship(void) const    = 0;
         virtual void otFriendship(u8 v)                      = 0;
+
         // Raw information handled in private functions
         [[nodiscard]] virtual Date eggDate(void) const
         {
             return Date{(u8)eggDay(), (u8)eggMonth(), (u32)eggYear()};
         }
+
         virtual void eggDate(const Date& v)
         {
             eggDay(v.day());
             eggMonth(v.month());
             eggYear(v.year());
         }
+
         [[nodiscard]] virtual Date metDate(void) const
         {
             return Date{(u8)metDay(), (u8)metMonth(), (u32)metYear()};
         }
+
         virtual void metDate(const Date& v)
         {
             metDay(v.day());
             metMonth(v.month());
             metYear(v.year());
         }
+
         [[nodiscard]] virtual u16 eggLocation(void) const     = 0;
         virtual void eggLocation(u16 v)                       = 0;
         [[nodiscard]] virtual u16 metLocation(void) const     = 0;
@@ -321,6 +333,7 @@ namespace pksm
         [[nodiscard]] bool shiny(void) const override     = 0;
         void shiny(bool v) override                       = 0;
         [[nodiscard]] virtual u16 formSpecies(void) const = 0;
+
         [[nodiscard]] u16 stat(Stat stat) const
         {
             if (species() == Species::Shedinja && stat == Stat::HP)

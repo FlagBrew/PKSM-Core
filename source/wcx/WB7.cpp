@@ -61,7 +61,9 @@ namespace pksm
                 numItems++;
             }
             else
+            {
                 break;
+            }
         }
     }
 
@@ -84,6 +86,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u32>(data + 0x4C);
     }
+
     void WB7::rawDate(u32 date)
     {
         LittleEndian::convertFrom<u32>(data + 0x4C, date);
@@ -107,26 +110,26 @@ namespace pksm
     void WB7::year(int v)
     {
         u32 newVal = std::max(0, v - 2000);
-        newVal *= 10000;
-        newVal += rawDate() % 10000;
+        newVal     *= 10000;
+        newVal     += rawDate() % 10000;
         rawDate(newVal);
     }
 
     void WB7::month(int v)
     {
         u32 newVal = rawDate() / 10000;
-        newVal *= 100;
-        newVal += v;
-        newVal *= 100;
-        newVal += rawDate() % 100;
+        newVal     *= 100;
+        newVal     += v;
+        newVal     *= 100;
+        newVal     += rawDate() % 100;
         rawDate(newVal);
     }
 
     void WB7::day(int v)
     {
         u32 newVal = rawDate() / 100;
-        newVal *= 100;
-        newVal += v;
+        newVal     *= 100;
+        newVal     += v;
         rawDate(newVal);
     }
 
@@ -270,11 +273,17 @@ namespace pksm
         u8 abilitynum, type = abilityType();
 
         if (type == 2)
+        {
             abilitynum = 2;
+        }
         else if (type == 4)
+        {
             abilitynum = 2;
+        }
         else
+        {
             abilitynum = 0;
+        }
 
         return PersonalLGPE::ability(u16(species()), abilitynum);
     }

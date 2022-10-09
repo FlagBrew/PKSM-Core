@@ -82,12 +82,17 @@ namespace pksm
         [[nodiscard]] std::vector<std::pair<Pouch, int>> pouches(void) const override;
         [[nodiscard]] std::map<Pouch, std::vector<int>> validItems(void) const override;
 
-        [[nodiscard]] u8 subRegion(void) const override { return 0; }     // Not applicable
-        void subRegion(u8) override {}                                    // Not applicable
-        [[nodiscard]] u8 country(void) const override { return 0; }       // Not applicable
-        void country(u8) override {}                                      // Not applicable
+        [[nodiscard]] u8 subRegion(void) const override { return 0; } // Not applicable
+
+        void subRegion(u8) override {} // Not applicable
+
+        [[nodiscard]] u8 country(void) const override { return 0; } // Not applicable
+
+        void country(u8) override {} // Not applicable
+
         [[nodiscard]] u8 consoleRegion(void) const override { return 0; } // Not applicable
-        void consoleRegion(u8) override {}                                // Not applicable
+
+        void consoleRegion(u8) override {} // Not applicable
 
         [[nodiscard]] std::string boxName(u8 box) const override;
         void boxName(u8 box, const std::string_view& name) override;
@@ -96,10 +101,14 @@ namespace pksm
 
         [[nodiscard]] u8 currentBox(void) const override;
         void currentBox(u8) override;
+
         // TODO: CHECK WHERE THIS IS ACTUALLY STORED
         [[nodiscard]] u8 unlockedBoxes(void) const override { return maxBoxes(); }
+
         void unlockedBoxes(u8 v) override {}
+
         [[nodiscard]] u8 legendBoxUnlockSize(void) const override { return 0; }
+
         [[nodiscard]] u32 boxOffset(u8 box, u8 slot) const override;
         [[nodiscard]] u32 partyOffset(u8 slot) const override;
         [[nodiscard]] u8 partyCount(void) const override;

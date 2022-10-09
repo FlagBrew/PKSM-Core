@@ -38,6 +38,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u16>(&data[TrainerCard]);
     }
+
     void Sav6::TID(u16 v)
     {
         LittleEndian::convertFrom<u16>(&data[TrainerCard], v);
@@ -47,6 +48,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u16>(&data[TrainerCard + 2]);
     }
+
     void Sav6::SID(u16 v)
     {
         LittleEndian::convertFrom<u16>(&data[TrainerCard + 2], v);
@@ -56,6 +58,7 @@ namespace pksm
     {
         return GameVersion(data[TrainerCard + 4]);
     }
+
     void Sav6::version(GameVersion v)
     {
         data[TrainerCard + 4] = u8(v);
@@ -65,6 +68,7 @@ namespace pksm
     {
         return Gender{data[TrainerCard + 5]};
     }
+
     void Sav6::gender(Gender v)
     {
         data[TrainerCard + 5] = u8(v);
@@ -74,6 +78,7 @@ namespace pksm
     {
         return data[TrainerCard + 0x26];
     }
+
     void Sav6::subRegion(u8 v)
     {
         data[TrainerCard + 0x26] = v;
@@ -83,6 +88,7 @@ namespace pksm
     {
         return data[TrainerCard + 0x27];
     }
+
     void Sav6::country(u8 v)
     {
         data[TrainerCard + 0x27] = v;
@@ -92,6 +98,7 @@ namespace pksm
     {
         return data[TrainerCard + 0x2C];
     }
+
     void Sav6::consoleRegion(u8 v)
     {
         data[TrainerCard + 0x2C] = v;
@@ -101,6 +108,7 @@ namespace pksm
     {
         return Language(data[TrainerCard + 0x2D]);
     }
+
     void Sav6::language(Language v)
     {
         data[TrainerCard + 0x2D] = u8(v);
@@ -111,6 +119,7 @@ namespace pksm
         return StringUtils::transString67(
             StringUtils::getString(data.get(), TrainerCard + 0x48, 13));
     }
+
     void Sav6::otName(const std::string_view& v)
     {
         StringUtils::setString(data.get(), StringUtils::transString67(v), TrainerCard + 0x48, 13);
@@ -120,6 +129,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u32>(&data[Trainer2 + 0x8]);
     }
+
     void Sav6::money(u32 v)
     {
         LittleEndian::convertFrom<u32>(&data[Trainer2 + 0x8], v);
@@ -129,6 +139,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u32>(&data[Trainer2 + (game == Game::XY ? 0x3C : 0x30)]);
     }
+
     void Sav6::BP(u32 v)
     {
         LittleEndian::convertFrom<u32>(&data[Trainer2 + (game == Game::XY ? 0x3C : 0x30)], v);
@@ -149,6 +160,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u16>(&data[PlayTime]);
     }
+
     void Sav6::playedHours(u16 v)
     {
         LittleEndian::convertFrom<u16>(&data[PlayTime], v);
@@ -158,6 +170,7 @@ namespace pksm
     {
         return data[PlayTime + 2];
     }
+
     void Sav6::playedMinutes(u8 v)
     {
         data[PlayTime + 2] = v;
@@ -167,6 +180,7 @@ namespace pksm
     {
         return data[PlayTime + 3];
     }
+
     void Sav6::playedSeconds(u8 v)
     {
         data[PlayTime + 3] = v;
@@ -176,6 +190,7 @@ namespace pksm
     {
         return data[LastViewedBox];
     }
+
     void Sav6::currentBox(u8 v)
     {
         data[LastViewedBox] = v;
@@ -185,6 +200,7 @@ namespace pksm
     {
         return data[LastViewedBox - 1];
     }
+
     void Sav6::unlockedBoxes(u8 v)
     {
         data[LastViewedBox - 1] = v;
@@ -341,7 +357,9 @@ namespace pksm
     int Sav6::dexFormIndex(int species, int formct) const
     {
         if (formct < 1 || species < 0)
+        {
             return -1; // invalid
+        }
 
         if (game == Game::ORAS)
         {
@@ -524,13 +542,17 @@ namespace pksm
     void Sav6::dex(const PKX& pk)
     {
         if (!(availableSpecies().count(pk.species()) > 0) || pk.egg())
+        {
             return;
+        }
 
         const int brSize = 0x60;
         int bit          = u16(pk.species()) - 1;
         int lang         = u8(pk.language()) - 1;
         if (lang > 5)
-            lang--;                         // 0-6 language vals
+        {
+            lang--; // 0-6 language vals
+        }
         int gender   = u8(pk.gender()) % 2; // genderless -> male
         int shiny    = pk.shiny() ? 1 : 0;
         int shiftoff = brSize * (1 + gender + 2 * shiny); // after the Owned region
@@ -540,42 +562,51 @@ namespace pksm
         int ofs      = PokeDex + 0x8 + bd;
 
         // Owned quality flag
-        if (pk.version() < GameVersion::X && bit < 649 &&
-            game !=
-                Game::ORAS) // Species: 1-649 for X/Y, and not for ORAS; Set the Foreign Owned Flag
+        if (pk.version() < GameVersion::X && bit < 649 && game != Game::ORAS)
+        { // Species: 1-649 for X/Y, and not for ORAS; Set the Foreign Owned Flag
             data[ofs + 0x644] |= mask;
-        else if (pk.version() >= GameVersion::X ||
-                 game == Game::ORAS) // Set Native Owned Flag (should always happen)
+        }
+        else if (pk.version() >= GameVersion::X || game == Game::ORAS)
+        { // Set Native Owned Flag (should always happen)
             data[ofs + (brSize * 0)] |= mask;
+        }
 
         // Set the [Species/Gender/Shiny] Seen Flag
         data[ofs + shiftoff] |= mask;
 
         // Set the Display flag if none are set
         bool displayed = false;
-        displayed |= (data[ofs + brSize * 5] & mask) != 0;
-        displayed |= (data[ofs + brSize * 6] & mask) != 0;
-        displayed |= (data[ofs + brSize * 7] & mask) != 0;
-        displayed |= (data[ofs + brSize * 8] & mask) != 0;
-        if (!displayed) // offset is already biased by brSize, reuse shiftoff but for the display
-                        // flags.
+        displayed      |= (data[ofs + brSize * 5] & mask) != 0;
+        displayed      |= (data[ofs + brSize * 6] & mask) != 0;
+        displayed      |= (data[ofs + brSize * 7] & mask) != 0;
+        displayed      |= (data[ofs + brSize * 8] & mask) != 0;
+        if (!displayed)
+        { // offset is already biased by brSize, reuse shiftoff but for the display
+          // flags.
             data[ofs + brSize * 4 + shiftoff] |= mask;
+        }
 
         // Set the Language
         if (lang < 0)
+        {
             lang = 1;
+        }
         data[PokeDexLanguageFlags + (bit * 7 + lang) / 8] |= (u8)(1 << ((bit * 7 + lang) % 8));
 
         // Set DexNav count (only if not encountered previously)
         if (game == Game::ORAS &&
             LittleEndian::convertTo<u16>(&data[EncounterCount + (u16(pk.species()) - 1) * 2]) == 0)
+        {
             LittleEndian::convertFrom<u16>(&data[EncounterCount + (u16(pk.species()) - 1) * 2], 1);
+        }
 
         // Set Form flags
         int fc = PersonalXYORAS::formCount(u16(pk.species()));
         int f  = dexFormIndex(u16(pk.species()), fc);
         if (f < 0)
+        {
             return;
+        }
 
         int formLen = game == Game::XY ? 0x18 : 0x26;
         int formDex = PokeDex + 0x8 + brSize * 9;
@@ -588,12 +619,16 @@ namespace pksm
         for (int i = 0; i < fc; i++)
         {
             bit = f + i;
-            if ((data[formDex + formLen * 2 + bit / 8] & (u8)(1 << (bit % 8))) != 0) // Nonshiny
-                return;                                                              // already set
-            if ((data[formDex + formLen * 3 + bit / 8] & (u8)(1 << (bit % 8))) != 0) // Shiny
-                return;                                                              // already set
+            if ((data[formDex + formLen * 2 + bit / 8] & (u8)(1 << (bit % 8))) != 0)
+            {           // Nonshiny
+                return; // already set
+            }
+            if ((data[formDex + formLen * 3 + bit / 8] & (u8)(1 << (bit % 8))) != 0)
+            {           // Shiny
+                return; // already set
+            }
         }
-        bit = f + pk.alternativeForm();
+        bit                                             = f + pk.alternativeForm();
         data[formDex + formLen * (2 + shiny) + bit / 8] |= (u8)(1 << (bit % 8));
     }
 
@@ -655,6 +690,7 @@ namespace pksm
         return StringUtils::transString67(
             StringUtils::getString(data.get(), PCLayout + 0x22 * box, 17));
     }
+
     void Sav6::boxName(u8 box, const std::string_view& name)
     {
         StringUtils::setString(
@@ -665,6 +701,7 @@ namespace pksm
     {
         return data[0x4400 + 1054 + box];
     }
+
     void Sav6::boxWallpaper(u8 box, u8 v)
     {
         data[0x4400 + 1054 + box] = v;
@@ -674,6 +711,7 @@ namespace pksm
     {
         return data[Party + 6 * PK6::PARTY_LENGTH];
     }
+
     void Sav6::partyCount(u8 v)
     {
         data[Party + 6 * PK6::PARTY_LENGTH] = v;
@@ -761,8 +799,12 @@ namespace pksm
 
     std::vector<std::pair<Sav::Pouch, int>> Sav6::pouches(void) const
     {
-        return {{Pouch::NormalItem, game == Game::XY ? 286 : 305},
-            {Pouch::KeyItem, game == Game::XY ? 31 : 47}, {Pouch::TM, game == Game::XY ? 105 : 107},
-            {Pouch::Medicine, game == Game::XY ? 51 : 54}, {Pouch::Berry, 67}};
+        return {
+            {Pouch::NormalItem, game == Game::XY ? 286 : 305},
+            {Pouch::KeyItem,    game == Game::XY ? 31 : 47  },
+            {Pouch::TM,         game == Game::XY ? 105 : 107},
+            {Pouch::Medicine,   game == Game::XY ? 51 : 54  },
+            {Pouch::Berry,      67                          }
+        };
     }
 }

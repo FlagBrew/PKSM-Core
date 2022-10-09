@@ -61,14 +61,17 @@ namespace StringUtils
     [[nodiscard]] std::u16string UTF8toUCS2(const std::string_view& src);
     [[nodiscard]] std::u16string UTF16toUCS2(const std::u16string_view& src);
     [[nodiscard]] std::u16string UTF32toUCS2(const std::u32string_view& src);
+
     [[nodiscard]] inline std::string UCS2toUTF8(const std::u16string_view& src)
     {
         return UTF16toUTF8(src);
     }
+
     [[nodiscard]] inline std::u16string UCS2toUTF16(const std::u16string_view& src)
     {
         return std::u16string(src);
     }
+
     [[nodiscard]] inline std::u32string UCS2toUTF32(const std::u16string_view& src)
     {
         return UTF16toUTF32(src);
@@ -81,6 +84,7 @@ namespace StringUtils
     [[nodiscard]] std::pair<char32_t, size_t> UTF8toCodepoint(const char* data, size_t maxSize);
     [[nodiscard]] std::pair<char32_t, size_t> UTF16toCodepoint(
         const char16_t* data, size_t maxSize);
+
     [[nodiscard]] inline std::pair<char32_t, size_t> UCS2toCodepoint(const char16_t* data)
     {
         return UTF16toCodepoint(data, 1);
@@ -92,11 +96,13 @@ namespace StringUtils
         const u8* data, int ofs, int len, char16_t term = u'\0');
     [[nodiscard]] std::u16string getUCS2String(
         const u8* data, int ofs, int len, char16_t term = u'\0');
+
     [[nodiscard]] inline std::u16string getU16String(
         const u8* data, int ofs, int len, char16_t term = u'\0')
     {
         return getUCS2String(data, ofs, len, term);
     }
+
     [[nodiscard]] std::string getString(const u8* data, int ofs, int len, char16_t term = u'\0');
 
     // All of these take a pointer to a buffer with a UCS-2 char16_t array at data + ofs and write
@@ -159,15 +165,15 @@ namespace StringUtils
     namespace internal
     {
         template <typename RetType, typename First, typename... Params>
-            requires(std::same_as<std::string, RetType> || std::same_as<std::u16string, RetType> ||
-                        std::same_as<std::u32string, RetType>) &&
-                    (std::convertible_to<First, std::string_view> ||
-                        std::convertible_to<First, std::u16string_view> ||
-                        std::convertible_to<First, std::u32string_view>) &&
-                    ((std::convertible_to<Params, std::string_view> ||
-                         std::convertible_to<Params, std::u16string_view> ||
-                         std::convertible_to<Params, std::u32string_view>) &&
-                        ...)
+            requires (std::same_as<std::string, RetType> || std::same_as<std::u16string, RetType> ||
+                         std::same_as<std::u32string, RetType>) &&
+                     (std::convertible_to<First, std::string_view> ||
+                         std::convertible_to<First, std::u16string_view> ||
+                         std::convertible_to<First, std::u32string_view>) &&
+                     ((std::convertible_to<Params, std::string_view> ||
+                          std::convertible_to<Params, std::u16string_view> ||
+                          std::convertible_to<Params, std::u32string_view>) &&
+                         ...)
         void concatImpl(RetType& ret, First&& f, Params&&... rest)
         {
             static constexpr auto toGenericView = [](First&& x)
@@ -252,16 +258,16 @@ namespace StringUtils
         }
 
         template <typename StringType, typename First, typename... Params>
-            requires(std::same_as<std::string, StringType> ||
-                        std::same_as<std::u16string, StringType> ||
-                        std::same_as<std::u32string, StringType>) &&
-                    (std::convertible_to<First, std::string_view> ||
-                        std::convertible_to<First, std::u16string_view> ||
-                        std::convertible_to<First, std::u32string_view>) &&
-                    ((std::convertible_to<Params, std::string_view> ||
-                         std::convertible_to<Params, std::u16string_view> ||
-                         std::convertible_to<Params, std::u32string_view>) &&
-                        ...)
+            requires (std::same_as<std::string, StringType> ||
+                         std::same_as<std::u16string, StringType> ||
+                         std::same_as<std::u32string, StringType>) &&
+                     (std::convertible_to<First, std::string_view> ||
+                         std::convertible_to<First, std::u16string_view> ||
+                         std::convertible_to<First, std::u32string_view>) &&
+                     ((std::convertible_to<Params, std::string_view> ||
+                          std::convertible_to<Params, std::u16string_view> ||
+                          std::convertible_to<Params, std::u32string_view>) &&
+                         ...)
         size_t concatMaxSizeInCodeUnits(First&& f, Params&&... args)
         {
             if constexpr (std::is_same_v<StringType, std::string>)
@@ -301,11 +307,11 @@ namespace StringUtils
     }
 
     template <typename EncString, typename OrigString>
-        requires(std::same_as<std::string, EncString> || std::same_as<std::u16string, EncString> ||
-                    std::same_as<std::u32string, EncString>) &&
-                (std::convertible_to<OrigString, std::string_view> ||
-                    std::convertible_to<OrigString, std::u16string_view> ||
-                    std::convertible_to<OrigString, std::u32string_view>)
+        requires (std::same_as<std::string, EncString> || std::same_as<std::u16string, EncString> ||
+                     std::same_as<std::u32string, EncString>) &&
+                 (std::convertible_to<OrigString, std::string_view> ||
+                     std::convertible_to<OrigString, std::u16string_view> ||
+                     std::convertible_to<OrigString, std::u32string_view>)
     EncString convert(OrigString&& str)
     {
         if constexpr (std::is_same_v<EncString, std::string>)
@@ -356,12 +362,12 @@ namespace StringUtils
     }
 
     template <typename RetType, bool ShrinkAfter = false, typename... Params>
-        requires(std::same_as<RetType, std::string> || std::same_as<RetType, std::u16string> ||
-                    std::same_as<RetType, std::u32string>) &&
-                ((std::convertible_to<Params, std::string_view> ||
-                     std::convertible_to<Params, std::u16string_view> ||
-                     std::convertible_to<Params, std::u32string_view>) &&
-                    ...)
+        requires (std::same_as<RetType, std::string> || std::same_as<RetType, std::u16string> ||
+                     std::same_as<RetType, std::u32string>) &&
+                 ((std::convertible_to<Params, std::string_view> ||
+                      std::convertible_to<Params, std::u16string_view> ||
+                      std::convertible_to<Params, std::u32string_view>) &&
+                     ...)
     RetType concat(Params&&... rest)
     {
         if constexpr (sizeof...(rest) == 0)

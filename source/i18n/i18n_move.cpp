@@ -28,11 +28,13 @@
 
 namespace i18n
 {
-    std::unordered_map<pksm::Language, std::vector<std::string>> moves = std::invoke([] {
-        std::unordered_map<pksm::Language, std::vector<std::string>> ret;
-        MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
-        return ret;
-    });
+    std::unordered_map<pksm::Language, std::vector<std::string>> moves = std::invoke(
+        []
+        {
+            std::unordered_map<pksm::Language, std::vector<std::string>> ret;
+            MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
+            return ret;
+        });
 
     void initMove(pksm::Language lang)
     {

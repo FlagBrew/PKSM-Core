@@ -103,7 +103,9 @@ namespace pksm
         [[nodiscard]] static Game getVersion(const std::shared_ptr<u8[]>& dt);
 
         void resign(void);
+
         void finishEditing(void) override { resign(); }
+
         void beginEditing(void) override {}
 
         [[nodiscard]] u8* getBlock(size_t blockNum) { return &data[blockOfs[blockNum]]; }
@@ -116,12 +118,19 @@ namespace pksm
         void version(GameVersion v) override;
         [[nodiscard]] Gender gender(void) const override;
         void gender(Gender v) override;
+
         [[nodiscard]] u8 subRegion(void) const override { return 0; }
+
         void subRegion(u8) override {}
+
         [[nodiscard]] u8 country(void) const override { return 0; }
+
         void country(u8) override {}
+
         [[nodiscard]] u8 consoleRegion(void) const override { return 0; }
+
         void consoleRegion(u8) override {}
+
         [[nodiscard]] Language language(void) const override;
         void language(Language v) override;
         [[nodiscard]] std::string otName(void) const override;
@@ -140,9 +149,13 @@ namespace pksm
 
         [[nodiscard]] u8 currentBox(void) const override;
         void currentBox(u8 v) override;
+
         [[nodiscard]] u8 unlockedBoxes(void) const override { return maxBoxes(); }
+
         void unlockedBoxes(u8) override {}
+
         [[nodiscard]] u8 legendBoxUnlockSize(void) const override { return 0; }
+
         // Note: a Pokemon may be split up into two pieces! That will happen if RETURNVALUE % 0x1000
         // + PK3::BOX_LENGTH > 0xF80 In this case, the first 0xF80 - RETURNVALUE bytes of a Pokemon
         // should be written to the returned offset, with the remainder written to offset
@@ -165,8 +178,11 @@ namespace pksm
         void dex(const PKX& pk) override;
         [[nodiscard]] int dexSeen(void) const override;
         [[nodiscard]] int dexCaught(void) const override;
+
         [[nodiscard]] int currentGiftAmount(void) const override { return 0; }
+
         void mysteryGift(const WCX&, int&) override {}
+
         [[nodiscard]] std::unique_ptr<WCX> mysteryGift(int pos) const override;
         void cryptBoxData(bool crypted) override;
         [[nodiscard]] std::string boxName(u8 box) const override;
@@ -177,7 +193,9 @@ namespace pksm
         void partyCount(u8 count) override;
 
         [[nodiscard]] int maxBoxes(void) const override { return 14; }
+
         [[nodiscard]] size_t maxWondercards(void) const override { return 0; }
+
         [[nodiscard]] Generation generation(void) const override { return Generation::THREE; }
 
         void item(const Item& item, Pouch pouch, u16 slot) override;

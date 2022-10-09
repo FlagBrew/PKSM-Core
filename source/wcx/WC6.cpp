@@ -103,6 +103,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u32>(data + 0x4C);
     }
+
     void WC6::rawDate(u32 v)
     {
         LittleEndian::convertFrom<u32>(data + 0x4C, v);
@@ -126,26 +127,26 @@ namespace pksm
     void WC6::year(int v)
     {
         u32 newVal = std::max(0, v - 2000);
-        newVal *= 10000;
-        newVal += rawDate() % 10000;
+        newVal     *= 10000;
+        newVal     += rawDate() % 10000;
         rawDate(newVal);
     }
 
     void WC6::month(int v)
     {
         u32 newVal = rawDate() / 10000;
-        newVal *= 100;
-        newVal += v;
-        newVal *= 100;
-        newVal += rawDate() % 100;
+        newVal     *= 100;
+        newVal     += v;
+        newVal     *= 100;
+        newVal     += rawDate() % 100;
         rawDate(newVal);
     }
 
     void WC6::day(int v)
     {
         u32 newVal = rawDate() / 100;
-        newVal *= 100;
-        newVal += v;
+        newVal     *= 100;
+        newVal     += v;
         rawDate(newVal);
     }
 
@@ -262,8 +263,8 @@ namespace pksm
     std::string WC6::nickname(void) const
     {
         return LittleEndian::convertTo<u16>(data + 0x86) != 0
-                   ? StringUtils::getString(data, 0x86, 12)
-                   : "Pokemon Name";
+                 ? StringUtils::getString(data, 0x86, 12)
+                 : "Pokemon Name";
     } // Localization::speciesName(species()); }
 
     Nature WC6::nature(void) const
@@ -281,11 +282,17 @@ namespace pksm
         u8 abilitynum, type = abilityType();
 
         if (type == 2)
+        {
             abilitynum = 2;
+        }
         else if (type == 4)
+        {
             abilitynum = 2;
+        }
         else
+        {
             abilitynum = 0;
+        }
 
         return PersonalXYORAS::ability(u16(species()), abilitynum);
     }

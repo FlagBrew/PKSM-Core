@@ -28,9 +28,9 @@
 #define ITEM_HPP
 
 #include "enums/Generation.hpp"
-#include "utils/ValueConverter.hpp"
 #include "utils/coretypes.h"
 #include "utils/endian.hpp"
+#include "utils/ValueConverter.hpp"
 
 namespace pksm
 {
@@ -75,21 +75,34 @@ namespace pksm
         Item1(u8* data = nullptr)
         {
             if (data)
+            {
                 std::copy(data, data + 2, itemData.data());
+            }
             else
+            {
                 itemData = {0, 0};
+            }
         }
+
         [[nodiscard]] Generation generation(void) const override { return Generation::ONE; }
+
         [[nodiscard]] u16 maxCount(void) const override { return 0xFF; }
+
         [[nodiscard]] u16 id(void) const override
         {
             return ItemConverter::g1ToNational(itemData[0]);
         }
+
         void id(u16 v) override { itemData[0] = ItemConverter::nationalToG1(v); }
+
         [[nodiscard]] u16 id1(void) const { return itemData[0]; }
+
         void id1(u16 v) { itemData[0] = u8(v); }
+
         [[nodiscard]] u16 count(void) const override { return itemData[1]; }
+
         void count(u16 v) override { itemData[1] = u8(v); }
+
         [[nodiscard]] std::vector<u8> bytes(void) const override
         {
             return std::vector<u8>{itemData.begin(), itemData.end()};
@@ -105,21 +118,34 @@ namespace pksm
         Item2(u8* data = nullptr)
         {
             if (data)
+            {
                 std::copy(data, data + 2, itemData.data());
+            }
             else
+            {
                 itemData = {0, 0};
+            }
         }
+
         [[nodiscard]] Generation generation(void) const override { return Generation::TWO; }
+
         [[nodiscard]] u16 maxCount(void) const override { return 0xFF; }
+
         [[nodiscard]] u16 id(void) const override
         {
             return ItemConverter::g2ToNational(itemData[0]);
         }
+
         void id(u16 v) override { itemData[0] = ItemConverter::nationalToG2(v); }
+
         [[nodiscard]] u16 id2(void) const { return itemData[0]; }
+
         void id2(u16 v) { itemData[0] = u8(v); }
+
         [[nodiscard]] u16 count(void) const override { return itemData[1]; }
+
         void count(u16 v) override { itemData[1] = u8(v); }
+
         [[nodiscard]] std::vector<u8> bytes(void) const override
         {
             return std::vector<u8>{itemData.begin(), itemData.end()};
@@ -148,25 +174,36 @@ namespace pksm
                 key      = securityKey;
             }
         }
+
         [[nodiscard]] Generation generation(void) const override { return Generation::THREE; }
+
         [[nodiscard]] u16 maxCount(void) const override { return 0xFFFF; }
+
         [[nodiscard]] u16 id(void) const override
         {
             return ItemConverter::g3ToNational(LittleEndian::convertTo<u16>(itemData.data()));
         }
+
         void id(u16 v) override
         {
             LittleEndian::convertFrom<u16>(itemData.data(), ItemConverter::nationalToG3(v));
         }
+
         [[nodiscard]] u16 id3(void) const { return LittleEndian::convertTo<u16>(itemData.data()); }
+
         void id3(u16 v) { LittleEndian::convertFrom<u16>(itemData.data(), v); }
+
         [[nodiscard]] u16 count(void) const override
         {
             return LittleEndian::convertTo<u16>(itemData.data() + 2);
         }
+
         void count(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data() + 2, v); }
+
         [[nodiscard]] u16 securityKey(void) const { return key; }
+
         void securityKey(u16 v) { key = v; }
+
         [[nodiscard]] std::vector<u8> bytes(void) const override
         {
             std::vector<u8> data{itemData.begin(), itemData.end()};
@@ -193,18 +230,25 @@ namespace pksm
                 itemData = {0, 0, 0, 0};
             }
         }
+
         [[nodiscard]] Generation generation(void) const override { return Generation::FOUR; }
+
         [[nodiscard]] u16 maxCount(void) const override { return 0xFFFF; }
+
         [[nodiscard]] u16 id(void) const override
         {
             return LittleEndian::convertTo<u16>(itemData.data());
         }
+
         void id(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data(), v); }
+
         [[nodiscard]] u16 count(void) const override
         {
             return LittleEndian::convertTo<u16>(itemData.data() + 2);
         }
+
         void count(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data() + 2, v); }
+
         [[nodiscard]] std::vector<u8> bytes(void) const override
         {
             return std::vector<u8>{itemData.begin(), itemData.end()};
@@ -228,18 +272,25 @@ namespace pksm
                 itemData = {0, 0, 0, 0};
             }
         }
+
         [[nodiscard]] Generation generation(void) const override { return Generation::FIVE; }
+
         [[nodiscard]] u16 maxCount(void) const override { return 0xFFFF; }
+
         [[nodiscard]] u16 id(void) const override
         {
             return LittleEndian::convertTo<u16>(itemData.data());
         }
+
         void id(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data(), v); }
+
         [[nodiscard]] u16 count(void) const override
         {
             return LittleEndian::convertTo<u16>(itemData.data() + 2);
         }
+
         void count(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data() + 2, v); }
+
         [[nodiscard]] std::vector<u8> bytes(void) const override
         {
             return std::vector<u8>{itemData.begin(), itemData.end()};
@@ -263,18 +314,25 @@ namespace pksm
                 itemData = {0, 0, 0, 0};
             }
         }
+
         [[nodiscard]] Generation generation(void) const override { return Generation::SIX; }
+
         [[nodiscard]] u16 maxCount(void) const override { return 0xFFFF; }
+
         [[nodiscard]] u16 id(void) const override
         {
             return LittleEndian::convertTo<u16>(itemData.data());
         }
+
         void id(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data(), v); }
+
         [[nodiscard]] u16 count(void) const override
         {
             return LittleEndian::convertTo<u16>(itemData.data() + 2);
         }
+
         void count(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data() + 2, v); }
+
         [[nodiscard]] std::vector<u8> bytes(void) const override
         {
             return std::vector<u8>{itemData.begin(), itemData.end()};
@@ -303,30 +361,44 @@ namespace pksm
                 itemData = LittleEndian::convertTo<u32>(data);
             }
         }
+
         [[nodiscard]] Generation generation(void) const override { return Generation::SEVEN; }
+
         [[nodiscard]] u16 maxCount(void) const override { return 0x3FF; }
+
         [[nodiscard]] u16 id(void) const override { return itemData & 0x3FF; }
+
         void id(u16 v) override { itemData = ((itemData & ~0x3FF) | std::min((u32)v, (u32)0x3FF)); }
+
         [[nodiscard]] u16 count(void) const override { return (itemData >> 10) & 0x3FF; }
+
         void count(u16 v) override
         {
             itemData = (itemData & ~(0x3FF << 10)) | (std::min((u32)v, (u32)0x3FF) << 10);
         }
+
         [[nodiscard]] u16 freeSpaceIndex(void) const { return (itemData >> 20) & 0x3FF; }
+
         void freeSpaceIndex(u16 v)
         {
             itemData = (itemData & ~(0x3FF << 20)) | (std::min((u32)v, (u32)0x3FF) << 20);
         }
+
         [[nodiscard]] bool newFlag(void) const { return (itemData >> 30) & 1; }
+
         void newFlag(bool v) { itemData = (itemData & ~(1 << 30)) | (v ? 1 << 30 : 0); }
+
         [[nodiscard]] bool reserved(void) const { return (itemData >> 31) & 1; }
+
         void reserved(bool v) { itemData = (itemData & ~(1u << 31)) | (v ? 1u << 31 : 0); }
+
         [[nodiscard]] std::vector<u8> bytes(void) const override
         {
             std::vector<u8> ret = {0, 0, 0, 0};
             LittleEndian::convertFrom<u32>(ret.data(), itemData);
             return ret;
         }
+
         [[nodiscard]] operator Item7b(void) const override;
         [[nodiscard]] operator Item8(void) const override;
     };
@@ -352,28 +424,40 @@ namespace pksm
                 itemData = LittleEndian::convertTo<u32>(data);
             }
         }
+
         [[nodiscard]] Generation generation(void) const override { return Generation::LGPE; }
+
         [[nodiscard]] u16 maxCount(void) const override { return 0x7FFF; }
+
         [[nodiscard]] u16 id(void) const override { return itemData & 0x7FFF; }
+
         void id(u16 v) override
         {
             itemData = ((itemData & ~0x7FFF) | std::min((u32)v, (u32)0x7FFF));
         }
+
         [[nodiscard]] u16 count(void) const override { return (itemData >> 15) & 0x7FFF; }
+
         void count(u16 v) override
         {
             itemData = (itemData & ~(0x7FFF << 15)) | (std::min((u32)v, (u32)0x7FFF) << 15);
         }
+
         [[nodiscard]] bool newFlag(void) const { return (itemData >> 30) & 1; }
+
         void newFlag(bool v) { itemData = (itemData & ~(1 << 30)) | (v ? 1 << 30 : 0); }
+
         [[nodiscard]] bool reserved(void) const { return (itemData >> 31) & 1; }
+
         void reserved(bool v) { itemData = (itemData & ~(1u << 31)) | (v ? 1u << 31 : 0); }
+
         [[nodiscard]] std::vector<u8> bytes(void) const override
         {
             std::vector<u8> ret = {0, 0, 0, 0};
             LittleEndian::convertFrom<u32>(ret.data(), itemData);
             return ret;
         }
+
         [[nodiscard]] operator Item7(void) const override;
         [[nodiscard]] operator Item8(void) const override;
     };
@@ -399,28 +483,40 @@ namespace pksm
                 itemData = LittleEndian::convertTo<u32>(data);
             }
         }
+
         [[nodiscard]] Generation generation(void) const override { return Generation::SEVEN; }
+
         [[nodiscard]] u16 maxCount(void) const override { return 0x7FFF; }
+
         [[nodiscard]] u16 id(void) const override { return itemData & 0x7FFF; }
+
         void id(u16 v) override
         {
             itemData = ((itemData & ~0x7FFF) | std::min((u32)v, (u32)0x7FFF));
         }
+
         [[nodiscard]] u16 count(void) const override { return (itemData >> 15) & 0x7FFF; }
+
         void count(u16 v) override
         {
             itemData = (itemData & ~(0x7FFF << 15)) | (std::min((u32)v, (u32)0x7FFF) << 15);
         }
+
         [[nodiscard]] bool newFlag(void) const { return (itemData >> 30) & 1; }
+
         void newFlag(bool v) { itemData = (itemData & ~(1 << 30)) | (v ? 1 << 30 : 0); }
+
         [[nodiscard]] bool reserved(void) const { return (itemData >> 31) & 1; }
+
         void reserved(bool v) { itemData = (itemData & ~(1u << 31)) | (v ? 1u << 31 : 0); }
+
         [[nodiscard]] std::vector<u8> bytes(void) const override
         {
             std::vector<u8> ret = {0, 0, 0, 0};
             LittleEndian::convertFrom<u32>(ret.data(), itemData);
             return ret;
         }
+
         [[nodiscard]] operator Item7(void) const override;
         [[nodiscard]] operator Item7b(void) const override;
     };

@@ -77,6 +77,7 @@ namespace pksm
         void decrypt(void) override;
         void encrypt(void) override;
         [[nodiscard]] bool isEncrypted(void) const override;
+
         [[nodiscard]] bool isParty(void) const override { return getLength() == PARTY_LENGTH; }
 
         [[nodiscard]] u32 encryptionConstant(void) const override;
@@ -114,9 +115,12 @@ namespace pksm
         void alternativeForm(u16 v) override;
         [[nodiscard]] u16 ev(Stat ev) const override;
         void ev(Stat ev, u16 v) override;
+
         // Stubbed; data no longer exists
         [[nodiscard]] u8 contest(u8) const override { return 0; }
+
         void contest(u8, u8) override {}
+
         // Replaced by
         [[nodiscard]] u8 awakened(Stat stat) const;
         void awakened(Stat stat, u8 v);
@@ -130,8 +134,11 @@ namespace pksm
         void pkrsDays(u8 v) override;
         [[nodiscard]] u8 pkrsStrain(void) const override;
         void pkrsStrain(u8 v) override;
+
         [[nodiscard]] bool hasRibbon(Ribbon) const override { return false; }
+
         [[nodiscard]] bool ribbon(Ribbon) const override { return false; }
+
         void ribbon(Ribbon, bool) override {}
 
         [[nodiscard]] std::string nickname(void) const override;
@@ -231,50 +238,62 @@ namespace pksm
         {
             return PersonalLGPE::baseHP(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseAtk(void) const override
         {
             return PersonalLGPE::baseAtk(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseDef(void) const override
         {
             return PersonalLGPE::baseDef(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseSpe(void) const override
         {
             return PersonalLGPE::baseSpe(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseSpa(void) const override
         {
             return PersonalLGPE::baseSpa(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseSpd(void) const override
         {
             return PersonalLGPE::baseSpd(formSpecies());
         }
+
         [[nodiscard]] inline Type type1(void) const override
         {
             return PersonalLGPE::type1(formSpecies());
         }
+
         [[nodiscard]] inline Type type2(void) const override
         {
             return PersonalLGPE::type2(formSpecies());
         }
+
         [[nodiscard]] inline u8 genderType(void) const override
         {
             return PersonalLGPE::gender(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseFriendship(void) const override
         {
             return PersonalLGPE::baseFriendship(formSpecies());
         }
+
         [[nodiscard]] inline u8 expType(void) const override
         {
             return PersonalLGPE::expType(formSpecies());
         }
+
         [[nodiscard]] inline Ability abilities(u8 n) const override
         {
             return PersonalLGPE::ability(formSpecies(), n);
         }
+
         [[nodiscard]] inline u16 formStatIndex(void) const override
         {
             return PersonalLGPE::formStatIndex(formSpecies());

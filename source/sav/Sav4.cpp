@@ -154,6 +154,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u16>(&data[Trainer1 + 0x10]);
     }
+
     void Sav4::TID(u16 v)
     {
         LittleEndian::convertFrom<u16>(&data[Trainer1 + 0x10], v);
@@ -163,6 +164,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u16>(&data[Trainer1 + 0x12]);
     }
+
     void Sav4::SID(u16 v)
     {
         LittleEndian::convertFrom<u16>(&data[Trainer1 + 0x12], v);
@@ -170,16 +172,18 @@ namespace pksm
 
     GameVersion Sav4::version(void) const
     {
-        return game == Game::DP   ? GameVersion::D
-               : game == Game::Pt ? GameVersion::Pt
-                                  : GameVersion::HG;
+        return game == Game::DP ? GameVersion::D
+             : game == Game::Pt ? GameVersion::Pt
+                                : GameVersion::HG;
     }
+
     void Sav4::version(GameVersion) {}
 
     Gender Sav4::gender(void) const
     {
         return Gender{data[Trainer1 + 0x18]};
     }
+
     void Sav4::gender(Gender v)
     {
         data[Trainer1 + 0x18] = u8(v);
@@ -189,6 +193,7 @@ namespace pksm
     {
         return Language(data[Trainer1 + 0x19]);
     }
+
     void Sav4::language(Language v)
     {
         data[Trainer1 + 0x19] = u8(v);
@@ -198,6 +203,7 @@ namespace pksm
     {
         return StringUtils::transString45(StringUtils::getString4(data.get(), Trainer1, 8));
     }
+
     void Sav4::otName(const std::string_view& v)
     {
         StringUtils::setString4(data.get(), StringUtils::transString45(v), Trainer1, 8);
@@ -207,6 +213,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u32>(&data[Trainer1 + 0x14]);
     }
+
     void Sav4::money(u32 v)
     {
         LittleEndian::convertFrom<u32>(&data[Trainer1 + 0x14], v);
@@ -216,6 +223,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u16>(&data[Trainer1 + 0x20]);
     } // Returns Coins @ Game Corner
+
     void Sav4::BP(u32 v)
     {
         LittleEndian::convertFrom<u32>(&data[Trainer1 + 0x20], v);
@@ -244,6 +252,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u16>(&data[Trainer1 + 0x22]);
     }
+
     void Sav4::playedHours(u16 v)
     {
         LittleEndian::convertFrom<u16>(&data[Trainer1 + 0x22], v);
@@ -253,6 +262,7 @@ namespace pksm
     {
         return data[Trainer1 + 0x24];
     }
+
     void Sav4::playedMinutes(u8 v)
     {
         data[Trainer1 + 0x24] = v;
@@ -262,6 +272,7 @@ namespace pksm
     {
         return data[Trainer1 + 0x25];
     }
+
     void Sav4::playedSeconds(u8 v)
     {
         data[Trainer1 + 0x25] = v;
@@ -284,6 +295,7 @@ namespace pksm
         return Box + PK4::BOX_LENGTH * box * 30 + (game == Game::HGSS ? box * 0x10 : 0) +
                slot * PK4::BOX_LENGTH;
     }
+
     u32 Sav4::partyOffset(u8 slot) const
     {
         return Party + slot * PK4::PARTY_LENGTH;
@@ -385,6 +397,7 @@ namespace pksm
         return StringUtils::transString45(StringUtils::getString4(
             data.get(), boxOffset(18, 0) + box * 0x28 + (game == Game::HGSS ? 0x8 : 0), 9));
     }
+
     void Sav4::boxName(u8 box, const std::string_view& name)
     {
         StringUtils::setString4(data.get(), StringUtils::transString45(name),
@@ -395,8 +408,10 @@ namespace pksm
     {
         // Pt's  Special Wallpapers 1-8 are shifted by +0x8
         // HG/SS Special Wallpapers 1-8 (Primo Phrases) are shifted by +0x10
-        if (value >= 0x10) // special
+        if (value >= 0x10)
+        { // special
             return value + shift;
+        }
         return value;
     }
 
@@ -404,27 +419,38 @@ namespace pksm
     {
         int offset = boxOffset(maxBoxes(), 0);
         if (game == Game::HGSS)
+        {
             offset += 0x8;
+        }
         offset += (maxBoxes() * 0x28) + box;
 
         int v = data[offset];
 
         if (game != Game::DP)
+        {
             v = adjustWallpaper(v, -(game == Game::Pt ? 0x8 : 0x10));
+        }
         return v;
     }
+
     void Sav4::boxWallpaper(u8 box, u8 v)
     {
         if (game != Game::DP)
+        {
             v = adjustWallpaper(v, game == Game::Pt ? 0x8 : 0x10);
+        }
 
         int offset = boxOffset(maxBoxes(), 0);
         if (game == Game::HGSS)
+        {
             offset += 0x8;
+        }
         offset += (maxBoxes() * 0x28) + box;
 
         if (offset < 0 || box > maxBoxes())
+        {
             return;
+        }
         data[offset] = v;
     }
 
@@ -432,6 +458,7 @@ namespace pksm
     {
         return data[Party - 4];
     }
+
     void Sav4::partyCount(u8 v)
     {
         data[Party - 4] = v;
@@ -468,7 +495,7 @@ namespace pksm
         if ((data[ofs + brSize * 1] & mask) == 0) // Not seen
         {
             data[ofs + brSize * 1] |= mask; // Set seen
-            u8 gr = pk.genderType();
+            u8 gr                  = pk.genderType();
             switch (gr)
             {
                 case 255: // Genderless
@@ -483,12 +510,14 @@ namespace pksm
                 default: // Male or Female
                     bool m = (data[ofs + brSize * 2] & mask) != 0;
                     bool f = (data[ofs + brSize * 3] & mask) != 0;
-                    if (m || f) // bit already set?
+                    if (m || f)
+                    { // bit already set?
                         break;
-                    u8 gender = u8(pk.gender()) & 1;
+                    }
+                    u8 gender              = u8(pk.gender()) & 1;
                     data[ofs + brSize * 2] &= ~mask; // unset
                     data[ofs + brSize * 3] &= ~mask; // unset
-                    gender ^= 1; // Set OTHER gender seen bit so it appears second
+                    gender                 ^= 1; // Set OTHER gender seen bit so it appears second
                     data[ofs + brSize * (2 + gender)] |= mask;
                     break;
             }
@@ -504,9 +533,13 @@ namespace pksm
                 {
                     u8 val = data[formOffset + 4 + i];
                     if (val == pk.alternativeForm())
+                    {
                         break; // already set
+                    }
                     if (val != 0xFF)
+                    {
                         continue; // keep searching
+                    }
 
                     data[formOffset + 4 + i] = u8(pk.alternativeForm());
                     break; // form now set
@@ -545,7 +578,9 @@ namespace pksm
                 }
             }
             if (dpl == 0)
+            {
                 return;
+            }
         }
 
         // Set the Language
@@ -561,7 +596,9 @@ namespace pksm
                 break;
         }
         if (lang > 5)
-            lang = 0;                 // no KOR+
+        {
+            lang = 0; // no KOR+
+        }
         lang = (lang < 0) ? 1 : lang; // default English
         data[languageFlags + (game == Game::DP ? dpl : u16(pk.species()))] |= (u8)(1 << lang);
     }
@@ -675,7 +712,9 @@ namespace pksm
         }
 
         if (game == Game::DP)
+        {
             return {};
+        }
 
         int languageFlags = formOffset + (game == Game::HGSS ? 0x3C : 0x20);
         int formOffset2   = languageFlags + 0x1F4;
@@ -690,7 +729,9 @@ namespace pksm
                 return getDexFormValues(data[formOffset2 + 5], 1, 2);
             case Species::Pichu:
                 if (game == Game::HGSS)
+                {
                     return getDexFormValues(data[formOffset2 + 6], 2, 3);
+                }
             default:
                 break;
         }
@@ -748,7 +789,9 @@ namespace pksm
                 int len = forms.size();
                 forms.resize(0x1C);
                 for (size_t i = len; i < forms.size(); i++)
+                {
                     forms[i] = 0xFF;
+                }
                 std::copy(forms.begin(), forms.end(), data.get() + ofs);
                 return;
             }
@@ -757,7 +800,9 @@ namespace pksm
         }
 
         if (game == Game::DP)
+        {
             return;
+        }
 
         int languageFlags = formOffset + (game == Game::HGSS ? 0x3C : 0x20);
         int formOffset2   = languageFlags + 0x1F4;
@@ -803,7 +848,9 @@ namespace pksm
         {
             int val = forms[i];
             if (val == 255)
+            {
                 val = n1;
+            }
 
             v |= u32(val << (bitsPerForm * i));
         }
@@ -905,37 +952,39 @@ namespace pksm
 
     std::vector<std::pair<Sav::Pouch, int>> Sav4::pouches(void) const
     {
-        return {{Pouch::NormalItem, game == Game::DP   ? 161
-                                    : game == Game::Pt ? 162
-                                                       : 162},
-            {Pouch::KeyItem, game == Game::DP   ? 37
+        return {
+            {Pouch::NormalItem, game == Game::DP   ? 161
+                                : game == Game::Pt ? 162
+                                                   : 162},
+            {Pouch::KeyItem,    game == Game::DP   ? 37
                              : game == Game::Pt ? 40
-                                                : 38},
-            {Pouch::TM, game == Game::DP   ? 100
+                                                : 38       },
+            {Pouch::TM,         game == Game::DP   ? 100
                         : game == Game::Pt ? 100
-                                           : 100},
-            {Pouch::Mail, game == Game::DP   ? 12
+                                           : 100                },
+            {Pouch::Mail,       game == Game::DP   ? 12
                           : game == Game::Pt ? 12
-                                             : 12},
-            {Pouch::Medicine, game == Game::DP   ? 38
+                                             : 12             },
+            {Pouch::Medicine,   game == Game::DP   ? 38
                               : game == Game::Pt ? 38
-                                                 : 38},
-            {Pouch::Berry, game == Game::DP   ? 64
+                                                 : 38     },
+            {Pouch::Berry,      game == Game::DP   ? 64
                            : game == Game::Pt ? 64
-                                              : 64},
-            {Pouch::Ball, game == Game::DP   ? 15
+                                              : 64           },
+            {Pouch::Ball,       game == Game::DP   ? 15
                           : game == Game::Pt ? 15
-                                             : 24},
-            {Pouch::Battle, game == Game::DP   ? 13
+                                             : 24             },
+            {Pouch::Battle,     game == Game::DP   ? 13
                             : game == Game::Pt ? 13
-                                               : 13}};
+                                               : 13         }
+        };
     }
 
     std::map<Sav::Pouch, std::vector<int>> Sav4::validItems() const
     {
         return {
             {Pouch::NormalItem,
-                {68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88,
+             {68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88,
                     89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106,
                     107, 108, 109, 110, 111, 112, 135, 136, 213, 214, 215, 216, 217, 218, 219, 220,
                     221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236,
@@ -944,29 +993,30 @@ namespace pksm
                     269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284,
                     285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300,
                     301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316,
-                    317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327}},
-            {Pouch::KeyItem, {434, 435, 437, 444, 445, 446, 447, 450, 456, 464, 465, 466, 468, 469,
+                    317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327}                                         },
+            {Pouch::KeyItem,    {434, 435, 437, 444, 445, 446, 447, 450, 456, 464, 465, 466, 468, 469,
                                  470, 471, 472, 473, 474, 475, 476, 477, 478, 479, 480, 481, 482,
                                  483, 484, 501, 502, 503, 504, 532, 533, 534, 535, 536}},
             {Pouch::TM,
-                {328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343,
+             {328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343,
                     344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359,
                     360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375,
                     376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391,
                     392, 393, 394, 395, 396, 397, 398, 399, 400, 401, 402, 403, 404, 405, 406, 407,
                     408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423,
-                    424, 425, 426, 427}},
-            {Pouch::Mail, {137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148}},
+                    424, 425, 426, 427}                                                                            },
+            {Pouch::Mail,       {137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148}                       },
             {Pouch::Medicine,
-                {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,
-                    38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54}},
-            {Pouch::Berry, {149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162,
+             {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,
+                    38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54}                            },
+            {Pouch::Berry,      {149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162,
                                163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176,
                                177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190,
                                191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204,
-                               205, 206, 207, 208, 209, 210, 211, 212}},
-            {Pouch::Ball, {1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 492, 493, 494, 495,
-                              496, 497, 498, 499, 500}},
-            {Pouch::Battle, {55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67}}};
+                               205, 206, 207, 208, 209, 210, 211, 212}                   },
+            {Pouch::Ball,       {1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 492, 493, 494, 495,
+                              496, 497, 498, 499, 500}                                    },
+            {Pouch::Battle,     {55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67}                               }
+        };
     }
 }

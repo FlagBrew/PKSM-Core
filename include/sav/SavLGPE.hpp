@@ -56,7 +56,9 @@ namespace pksm
     public:
         SavLGPE(const std::shared_ptr<u8[]>& dt, size_t length);
         void resign(void);
+
         void finishEditing(void) override { resign(); }
+
         void beginEditing(void) override {}
 
         [[nodiscard]] u16 boxedPkm(void) const;
@@ -76,20 +78,30 @@ namespace pksm
         void version(GameVersion v) override;
         [[nodiscard]] Gender gender(void) const override;
         void gender(Gender v) override;
+
         [[nodiscard]] u8 subRegion(void) const override { return 0; }
+
         void subRegion(u8) override {}
+
         [[nodiscard]] u8 country(void) const override { return 0; }
+
         void country(u8) override {}
+
         [[nodiscard]] u8 consoleRegion(void) const override { return 0; }
+
         void consoleRegion(u8) override {}
+
         [[nodiscard]] Language language(void) const override;
         void language(Language v) override;
         [[nodiscard]] std::string otName(void) const override;
         void otName(const std::string_view& v) override;
         [[nodiscard]] u32 money(void) const override;
         void money(u32 v) override;
+
         [[nodiscard]] u32 BP(void) const override { return 0; }
+
         void BP(u32) override {}
+
         [[nodiscard]] u8 badges(void) const override;
         [[nodiscard]] u16 playedHours(void) const override;
         void playedHours(u16 v) override;
@@ -99,10 +111,15 @@ namespace pksm
         void playedSeconds(u8 v) override;
 
         [[nodiscard]] u8 currentBox(void) const override { return 0; }
+
         void currentBox(u8) override {}
+
         [[nodiscard]] u8 unlockedBoxes(void) const override { return maxBoxes(); }
+
         void unlockedBoxes(u8 v) override {}
+
         [[nodiscard]] u8 legendBoxUnlockSize(void) const override { return 0; }
+
         [[nodiscard]] u32 boxOffset(u8 box, u8 slot) const override;
         [[nodiscard]] u32 partyOffset(u8 slot) const override;
 
@@ -122,27 +139,37 @@ namespace pksm
         void dex(const PKX& pk) override;
         [[nodiscard]] int dexSeen(void) const override;
         [[nodiscard]] int dexCaught(void) const override;
+
         [[nodiscard]] int currentGiftAmount(void) const override { return 0; } // Data not stored
+
         void mysteryGift(const WCX& wc, int& pos) override;
         [[nodiscard]] std::unique_ptr<WCX> mysteryGift(
             int pos) const override; // Always returns null: Data not stored
         void cryptBoxData(bool crypted) override;
+
         [[nodiscard]] std::string boxName(u8) const override
         {
             return "";
         } // There are no actual boxes. They are emulated for interface compatibility
+
         void boxName(u8, const std::string_view&) override {}
+
         [[nodiscard]] u8 boxWallpaper(u8) const override { return 0; }
+
         void boxWallpaper(u8, u8) override {}
+
         [[nodiscard]] u8 partyCount(void) const override;
         void partyCount(u8 count) override;
 
         [[nodiscard]] int maxSlot(void) const override { return 1000; }
+
         [[nodiscard]] int maxBoxes(void) const override
         {
             return 34;
         } // ish; stupid 1000-slot list makes this dumb
+
         [[nodiscard]] size_t maxWondercards(void) const override { return 1; } // Data not stored
+
         [[nodiscard]] Generation generation(void) const override { return Generation::LGPE; }
 
         void item(const Item& item, Pouch pouch, u16 slot) override;

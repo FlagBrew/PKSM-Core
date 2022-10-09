@@ -48,8 +48,11 @@ namespace pksm
 
     public:
         Sav7(const std::shared_ptr<u8[]>& data, u32 length) : Sav(data, length) {}
+
         virtual void resign(void) = 0;
+
         void finishEditing(void) override { resign(); }
+
         void beginEditing(void) override {}
 
         [[nodiscard]] u16 TID(void) const override;
@@ -87,7 +90,9 @@ namespace pksm
         void currentBox(u8 v) override;
         [[nodiscard]] u8 unlockedBoxes(void) const override;
         void unlockedBoxes(u8 v) override;
+
         [[nodiscard]] u8 legendBoxUnlockSize(void) const override { return 8; }
+
         [[nodiscard]] u32 boxOffset(u8 box, u8 slot) const override;
         [[nodiscard]] u32 partyOffset(u8 slot) const override;
 
@@ -118,7 +123,9 @@ namespace pksm
         void partyCount(u8 count) override;
 
         [[nodiscard]] int maxBoxes(void) const override { return 32; }
+
         [[nodiscard]] size_t maxWondercards(void) const override { return 48; }
+
         [[nodiscard]] Generation generation(void) const override { return Generation::SEVEN; }
 
         void item(const Item& item, Pouch pouch, u16 slot) override;

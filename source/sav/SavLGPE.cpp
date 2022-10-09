@@ -112,6 +112,7 @@ namespace pksm
         }
         return ret;
     }
+
     void SavLGPE::partyCount(u8) {}
 
     void SavLGPE::fixParty()
@@ -428,7 +429,7 @@ namespace pksm
             {
                 break;
             }
-            f = formtable[i + 1];
+            f         = formtable[i + 1];
             formindex += f - 1;
         }
         return f > formct ? -1 : formindex;
@@ -460,14 +461,14 @@ namespace pksm
         int bd1          = baseSpecies >> 3;
         int bm1          = baseSpecies & 7;
 
-        int brSeen = shift * brSize;
+        int brSeen              = shift * brSize;
         data[off + brSeen + bd] |= (u8)(1 << bm);
 
         bool displayed = false;
         for (u8 i = 0; i < 4; i++)
         {
             int brDisplayed = (4 + i) * brSize;
-            displayed |= (data[off + brDisplayed + bd1] & (1 << bm1)) != 0;
+            displayed       |= (data[off + brDisplayed + bd1] & (1 << bm1)) != 0;
         }
 
         if (!displayed && baseSpecies != index)
@@ -475,11 +476,13 @@ namespace pksm
             for (u8 i = 0; i < 4; i++)
             {
                 int brDisplayed = (4 + i) * brSize;
-                displayed |= (data[off + brDisplayed + bd] & (1 << bm)) != 0;
+                displayed       |= (data[off + brDisplayed + bd] & (1 << bm)) != 0;
             }
         }
         if (displayed)
+        {
             return;
+        }
 
         data[off + (4 + shift) * brSize + bd] |= (1 << bm);
     }
@@ -517,7 +520,9 @@ namespace pksm
         int PokeDexLanguageFlags = PokeDex + 0x550;
 
         if (!(availableSpecies().count(pk.species()) > 0) || pk.egg())
+        {
             return;
+        }
 
         int bit    = n - 1;
         int bd     = bit >> 3;
@@ -525,7 +530,9 @@ namespace pksm
         int gender = u8(pk.gender()) % 2;
         int shiny  = pk.shiny() ? 1 : 0;
         if (n == 351)
+        {
             shiny = 0;
+        }
         int shift = gender | (shiny << 1);
 
         if (n == 327) // Spinda
@@ -542,7 +549,7 @@ namespace pksm
             }
         }
 
-        int off = PokeDex + 0x08 + 0x80;
+        int off        = PokeDex + 0x08 + 0x80;
         data[off + bd] |= (1 << bm);
 
         int formstart = pk.alternativeForm();
@@ -564,8 +571,10 @@ namespace pksm
                 if (fc > 1)
                 { // actually has forms
                     int f = dexFormIndex(n, fc, MaxSpeciesID - 1);
-                    if (f >= 0) // bit index valid
+                    if (f >= 0)
+                    { // bit index valid
                         bitIndex = f + form;
+                    }
                 }
             }
             setDexFlags(bitIndex, gender, shiny, n - 1);
@@ -576,13 +585,19 @@ namespace pksm
         if (lang <= 10 && lang != 6 && lang != 0)
         {
             if (lang >= 7)
+            {
                 lang--;
+            }
             lang--;
             if (lang < 0)
+            {
                 lang = 1;
+            }
             int lbit = bit * langCount + lang;
             if (lbit >> 3 < 920)
+            {
                 data[PokeDexLanguageFlags + (lbit >> 3)] |= (u8)(1 << (lbit & 7));
+            }
         }
     }
 
@@ -958,35 +973,43 @@ namespace pksm
 
     std::vector<std::pair<Sav::Pouch, int>> SavLGPE::pouches() const
     {
-        return {{Pouch::Medicine, 60}, {Pouch::TM, 108}, {Pouch::Candy, 200},
-            {Pouch::ZCrystals, 150}, {Pouch::CatchingItem, 50}, {Pouch::Battle, 150},
-            {Pouch::NormalItem, 150}};
+        return {
+            {Pouch::Medicine,     60 },
+            {Pouch::TM,           108},
+            {Pouch::Candy,        200},
+            {Pouch::ZCrystals,    150},
+            {Pouch::CatchingItem, 50 },
+            {Pouch::Battle,       150},
+            {Pouch::NormalItem,   150}
+        };
     }
 
     std::map<Sav::Pouch, std::vector<int>> SavLGPE::validItems() const
     {
-        return {{Pouch::Medicine, {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32,
-                                      38, 39, 40, 41, 709, 903}},
+        return {
+            {Pouch::Medicine,     {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 38,
+                                  39, 40, 41, 709, 903}                                     },
             {Pouch::TM,
-                {328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343,
+             {328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343,
                     344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359,
                     360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375,
-                    376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387}},
+                    376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387}                                          },
             {Pouch::Candy,
-                {50, 960, 961, 962, 963, 964, 965, 966, 967, 968, 969, 970, 971, 972, 973, 974, 975,
+             {50, 960, 961, 962, 963, 964, 965, 966, 967, 968, 969, 970, 971, 972, 973, 974, 975,
                     976, 977, 978, 979, 980, 981, 982, 983, 984, 985, 986, 987, 988, 989, 990, 991,
                     992, 993, 994, 995, 996, 997, 998, 999, 1000, 1001, 1002, 1003, 1004, 1005,
                     1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 1016, 1017, 1018,
                     1019, 1020, 1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1029, 1030, 1031,
                     1032, 1033, 1034, 1035, 1036, 1037, 1038, 1039, 1040, 1041, 1042, 1043, 1044,
-                    1045, 1046, 1047, 1048, 1049, 1050, 1051, 1052, 1053, 1054, 1055, 1056, 1057}},
-            {Pouch::ZCrystals, {51, 53, 81, 82, 83, 84, 85, 849}},
-            {Pouch::CatchingItem, {1, 2, 3, 4, 12, 164, 166, 168, 861, 862, 863, 864, 865, 866}},
-            {Pouch::Battle, {55, 56, 57, 58, 59, 60, 61, 62, 656, 659, 660, 661, 662, 663, 671, 672,
-                                675, 676, 678, 679, 760, 762, 770, 773}},
-            {Pouch::NormalItem, {76, 77, 78, 79, 86, 87, 88, 89, 90, 91, 92, 93, 101, 102, 103, 113,
+                    1045, 1046, 1047, 1048, 1049, 1050, 1051, 1052, 1053, 1054, 1055, 1056, 1057}                        },
+            {Pouch::ZCrystals,    {51, 53, 81, 82, 83, 84, 85, 849}                                                      },
+            {Pouch::CatchingItem, {1, 2, 3, 4, 12, 164, 166, 168, 861, 862, 863, 864, 865, 866}                          },
+            {Pouch::Battle,       {55, 56, 57, 58, 59, 60, 61, 62, 656, 659, 660, 661, 662, 663, 671, 672,
+                                675, 676, 678, 679, 760, 762, 770, 773}                       },
+            {Pouch::NormalItem,   {76, 77, 78, 79, 86, 87, 88, 89, 90, 91, 92, 93, 101, 102, 103, 113,
                                     115, 121, 122, 123, 124, 125, 126, 127, 128, 442, 571, 632, 651,
                                     795, 796, 872, 873, 874, 875, 876, 877, 878, 885, 886, 887, 888,
-                                    889, 890, 891, 892, 893, 894, 895, 896, 900, 901, 902}}};
+                                    889, 890, 891, 892, 893, 894, 895, 896, 900, 901, 902}}
+        };
     }
 }

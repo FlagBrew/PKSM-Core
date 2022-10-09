@@ -37,27 +37,28 @@ namespace
 {
     struct DexEntry
     {
-        u64 seenNonShinyMale : 63;
-        u64 seenNonShinyMaleGiga : 1;
-        u64 seenNonShinyFemale : 63;
+        u64 seenNonShinyMale       : 63;
+        u64 seenNonShinyMaleGiga   : 1;
+        u64 seenNonShinyFemale     : 63;
         u64 seenNonShinyFemaleGiga : 1;
-        u64 seenShinyMale : 63;
-        u64 seenShinyMaleGiga : 1;
-        u64 seenShinyFemale : 63;
-        u64 seenShinyFemaleGiga : 1;
+        u64 seenShinyMale          : 63;
+        u64 seenShinyMaleGiga      : 1;
+        u64 seenShinyFemale        : 63;
+        u64 seenShinyFemaleGiga    : 1;
         // Obtained info
-        u32 owned : 1;
-        u32 ownedGiga : 1;
-        u32 languages : 13;     // flags
+        u32 owned         : 1;
+        u32 ownedGiga     : 1;
+        u32 languages     : 13; // flags
         u32 displayFormID : 13; // value
-        u32 displayGiga : 1;
+        u32 displayGiga   : 1;
         u32 displayGender : 2;
-        u32 displayShiny : 1;
+        u32 displayShiny  : 1;
 
         u32 battled : 32;
-        u32 unk1 : 32;
-        u32 unk2 : 32;
+        u32 unk1    : 32;
+        u32 unk2    : 32;
     };
+
     static_assert(sizeof(DexEntry) == 0x30);
 
     void setProperLocation(DexEntry& entry, u16 form, bool shiny, pksm::Gender gender)
@@ -203,6 +204,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u16>(getBlock(Status)->decryptedData() + 0xA0);
     }
+
     void SavSWSH::TID(u16 v)
     {
         LittleEndian::convertFrom<u16>(getBlock(Status)->decryptedData() + 0xA0, v);
@@ -213,6 +215,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u16>(getBlock(Status)->decryptedData() + 0xA2);
     }
+
     void SavSWSH::SID(u16 v)
     {
         LittleEndian::convertFrom<u16>(getBlock(Status)->decryptedData() + 0xA2, v);
@@ -223,6 +226,7 @@ namespace pksm
     {
         return GameVersion(getBlock(Status)->decryptedData()[0xA4]);
     }
+
     void SavSWSH::version(GameVersion v)
     {
         getBlock(Status)->decryptedData()[0xA4] = u8(v);
@@ -232,6 +236,7 @@ namespace pksm
     {
         return Gender{getBlock(Status)->decryptedData()[0xA5]};
     }
+
     void SavSWSH::gender(Gender v)
     {
         getBlock(Status)->decryptedData()[0xA5] = u8(v);
@@ -241,6 +246,7 @@ namespace pksm
     {
         return Language(getBlock(Status)->decryptedData()[0xA7]);
     }
+
     void SavSWSH::language(Language v)
     {
         getBlock(Status)->decryptedData()[0xA7] = u8(v);
@@ -250,6 +256,7 @@ namespace pksm
     {
         return StringUtils::getString(getBlock(Status)->decryptedData(), 0xB0, 13);
     }
+
     void SavSWSH::otName(const std::string_view& v)
     {
         StringUtils::setString(getBlock(Status)->decryptedData(), v, 0xB0, 13);
@@ -260,6 +267,7 @@ namespace pksm
     {
         return std::string((char*)getBlock(TrainerCard)->decryptedData() + 0x39, 3);
     }
+
     void SavSWSH::jerseyNum(const std::string_view& v)
     {
         for (size_t i = 0; i < std::min(v.size(), (size_t)3); i++)
@@ -272,6 +280,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u32>(getBlock(Misc)->decryptedData());
     }
+
     void SavSWSH::money(u32 v)
     {
         LittleEndian::convertFrom<u32>(getBlock(Misc)->decryptedData(), v);
@@ -281,6 +290,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u32>(getBlock(Misc)->decryptedData() + 4);
     }
+
     void SavSWSH::BP(u32 v)
     {
         LittleEndian::convertFrom<u32>(getBlock(Misc)->decryptedData() + 4, v);
@@ -295,6 +305,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u16>(getBlock(PlayTime)->decryptedData());
     }
+
     void SavSWSH::playedHours(u16 v)
     {
         LittleEndian::convertFrom<u16>(getBlock(PlayTime)->decryptedData(), v);
@@ -304,6 +315,7 @@ namespace pksm
     {
         return getBlock(PlayTime)->decryptedData()[2];
     }
+
     void SavSWSH::playedMinutes(u8 v)
     {
         getBlock(PlayTime)->decryptedData()[2] = v;
@@ -313,6 +325,7 @@ namespace pksm
     {
         return getBlock(PlayTime)->decryptedData()[3];
     }
+
     void SavSWSH::playedSeconds(u8 v)
     {
         getBlock(PlayTime)->decryptedData()[3] = v;
@@ -363,6 +376,7 @@ namespace pksm
                 break;
         }
     }
+
     std::unique_ptr<Item> SavSWSH::item(Pouch pouch, u16 slot) const
     {
         switch (pouch)
@@ -391,26 +405,37 @@ namespace pksm
                 return std::make_unique<Item8>();
         }
     }
+
     std::vector<std::pair<Sav::Pouch, int>> SavSWSH::pouches(void) const
     {
-        return {{Pouch::Medicine, 60}, {Pouch::Ball, 30}, {Pouch::Battle, 20}, {Pouch::Berry, 80},
-            {Pouch::NormalItem, 550}, {Pouch::TM, 210}, {Pouch::Treasure, 100},
-            {Pouch::Ingredient, 100}, {Pouch::KeyItem, 64}};
+        return {
+            {Pouch::Medicine,   60 },
+            {Pouch::Ball,       30 },
+            {Pouch::Battle,     20 },
+            {Pouch::Berry,      80 },
+            {Pouch::NormalItem, 550},
+            {Pouch::TM,         210},
+            {Pouch::Treasure,   100},
+            {Pouch::Ingredient, 100},
+            {Pouch::KeyItem,    64 }
+        };
     }
+
     std::map<Sav::Pouch, std::vector<int>> SavSWSH::validItems(void) const
     {
-        return {{Pouch::Medicine,
-                    {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36,
-                        37, 38, 39, 40, 41, 42, 43, 54, 134, 54, 591, 708, 709, 852, 903}},
-            {Pouch::Ball, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 492, 493, 494,
-                              495, 496, 497, 498, 499, 500, 576, 851}},
-            {Pouch::Battle, {55, 56, 57, 58, 59, 60, 61, 62, 63, 1580}},
-            {Pouch::Berry, {149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162,
+        return {
+            {Pouch::Medicine,
+             {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,
+                    38, 39, 40, 41, 42, 43, 54, 134, 54, 591, 708, 709, 852, 903}                              },
+            {Pouch::Ball,       {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 492, 493, 494,
+                              495, 496, 497, 498, 499, 500, 576, 851}                 },
+            {Pouch::Battle,     {55, 56, 57, 58, 59, 60, 61, 62, 63, 1580}                                     },
+            {Pouch::Berry,      {149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162,
                                163, 169, 170, 171, 172, 173, 174, 184, 185, 186, 187, 188, 189, 190,
                                191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204,
                                205, 206, 207, 208, 209, 210, 211, 212, 686, 687, 688}},
             {Pouch::NormalItem,
-                {45, 46, 47, 48, 49, 50, 51, 52, 53, 76, 77, 79, 80, 81, 82, 83, 84, 85, 107, 108,
+             {45, 46, 47, 48, 49, 50, 51, 52, 53, 76, 77, 79, 80, 81, 82, 83, 84, 85, 107, 108,
                     109, 110, 112, 116, 117, 118, 119, 135, 136, 213, 214, 215, 217, 218, 219, 220,
                     221, 222, 223, 224, 225, 228, 234, 236, 237, 238, 239, 240, 241, 242, 243, 244,
                     245, 246, 247, 248, 249, 250, 251, 253, 254, 255, 257, 229, 230, 231, 232, 233,
@@ -460,9 +485,9 @@ namespace pksm
                     1535, 1536, 1537, 1538, 1539, 1540, 1541, 1542, 1543, 1544, 1545, 1546, 1547,
                     1548, 1549, 1550, 1551, 1552, 1553, 1554, 1555, 1556, 1557, 1558, 1559, 1560,
                     1561, 1562, 1563, 1564, 1565, 1566, 1567, 1568, 1569, 1570, 1571, 1572, 1573,
-                    1574, 1575, 1576, 1577, 1578, 1581, 1582, 1588}},
+                    1574, 1575, 1576, 1577, 1578, 1581, 1582, 1588}                                            },
             {Pouch::TM,
-                {328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343,
+             {328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343,
                     344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359,
                     360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375,
                     376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391,
@@ -475,23 +500,25 @@ namespace pksm
                     1179, 1180, 1181, 1182, 1183, 1184, 1185, 1186, 1187, 1188, 1189, 1190, 1191,
                     1192, 1193, 1194, 1195, 1196, 1197, 1198, 1199, 1200, 1201, 1202, 1203, 1204,
                     1205, 1206, 1207, 1208, 1209, 1210, 1211, 1212, 1213, 1214, 1215, 1216, 1217,
-                    1218, 1219, 1220, 1221, 1222, 1223, 1224, 1225, 1226, 1227, 1228, 1229, 1579}},
-            {Pouch::Treasure, {86, 87, 88, 89, 90, 91, 92, 94, 106, 571, 580, 581, 582, 583, 795,
-                                  796, 1105, 1106, 1107, 1108}},
+                    1218, 1219, 1220, 1221, 1222, 1223, 1224, 1225, 1226, 1227, 1228, 1229, 1579}              },
+            {Pouch::Treasure,   {86, 87, 88, 89, 90, 91, 92, 94, 106, 571, 580, 581, 582, 583, 795,
+                                  796, 1105, 1106, 1107, 1108}                    },
             {Pouch::Ingredient,
-                {1084, 1085, 1086, 1087, 1088, 1089, 1090, 1091, 1092, 1093, 1094, 1095, 1096, 1097,
-                    1098, 1099, 1256, 1257, 1258, 1259, 1260, 1261, 1262, 1263, 1264}},
+             {1084, 1085, 1086, 1087, 1088, 1089, 1090, 1091, 1092, 1093, 1094, 1095, 1096, 1097,
+                    1098, 1099, 1256, 1257, 1258, 1259, 1260, 1261, 1262, 1263, 1264}                          },
             {Pouch::KeyItem,
-                {78, 628, 629, 631, 632, 628, 629, 631, 632, 638, 703, 703, 847, 943, 944, 945, 946,
+             {78, 628, 629, 631, 632, 628, 629, 631, 632, 638, 703, 703, 847, 943, 944, 945, 946,
                     943, 944, 945, 946, 1074, 1075, 1076, 1077, 1080, 1081, 1100, 1074, 1075, 1076,
                     1077, 1080, 1081, 1100, 1255, 1266, 1267, 1255, 1266, 1267, 1269, 1270, 1271,
-                    1278, 1269, 1270, 1271, 1278, 1583, 1584, 1585, 1586, 1587, 1589}}};
+                    1278, 1269, 1270, 1271, 1278, 1583, 1584, 1585, 1586, 1587, 1589}                          }
+        };
     }
 
     u8 SavSWSH::currentBox() const
     {
         return LittleEndian::convertTo<u32>(getBlock(0x017C3CBB)->decryptedData());
     }
+
     void SavSWSH::currentBox(u8 box)
     {
         LittleEndian::convertFrom<u32>(getBlock(0x017C3CBB)->decryptedData(), box);
@@ -501,6 +528,7 @@ namespace pksm
     {
         return StringUtils::getString(getBlock(BoxLayout)->decryptedData(), box * 0x22, 17);
     }
+
     void SavSWSH::boxName(u8 box, const std::string_view& name)
     {
         StringUtils::setString(getBlock(BoxLayout)->decryptedData(), name, box * 0x22, 17);
@@ -510,6 +538,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u32>(getBlock(0x017C3CBB)->decryptedData() + box * 4);
     }
+
     void SavSWSH::boxWallpaper(u8 box, u8 v)
     {
         LittleEndian::convertFrom<u32>(getBlock(0x2EB1B190)->decryptedData() + box * 4, v);
@@ -519,6 +548,7 @@ namespace pksm
     {
         return PK8::PARTY_LENGTH * slot + PK8::PARTY_LENGTH * 30 * box;
     }
+
     u32 SavSWSH::partyOffset(u8 slot) const
     {
         return PK8::PARTY_LENGTH * slot;
@@ -528,6 +558,7 @@ namespace pksm
     {
         return getBlock(Party)->decryptedData()[PK8::PARTY_LENGTH * 6];
     }
+
     void SavSWSH::partyCount(u8 count)
     {
         getBlock(Party)->decryptedData()[PK8::PARTY_LENGTH * 6] = count;
@@ -539,6 +570,7 @@ namespace pksm
         return PKX::getPKM<Generation::EIGHT>(
             getBlock(Party)->decryptedData() + offset, PK8::PARTY_LENGTH);
     }
+
     std::unique_ptr<PKX> SavSWSH::pkm(u8 box, u8 slot) const
     {
         u32 offset = boxOffset(box, slot);
@@ -560,6 +592,7 @@ namespace pksm
                 pk8->rawData(), getBlock(Box)->decryptedData() + boxOffset(box, slot));
         }
     }
+
     void SavSWSH::pkm(const PKX& pk, u8 slot)
     {
         if (pk.generation() == Generation::EIGHT)
@@ -866,6 +899,7 @@ namespace pksm
             }
         }
     }
+
     std::unique_ptr<WCX> SavSWSH::mysteryGift(int) const
     {
         return nullptr;
@@ -907,8 +941,8 @@ namespace pksm
             }
 
             setProperLocation(entry, form, pk.shiny(), pk.gender());
-            entry.owned = 1;
-            entry.languages |= 1 << u8(pk.language());
+            entry.owned         = 1;
+            entry.languages     |= 1 << u8(pk.language());
             entry.displayFormID = form;
             entry.displayShiny  = pk.shiny() ? 1 : 0;
 

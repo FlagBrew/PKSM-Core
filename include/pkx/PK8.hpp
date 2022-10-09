@@ -77,6 +77,7 @@ namespace pksm
         void decrypt(void) override;
         void encrypt(void) override;
         [[nodiscard]] bool isEncrypted(void) const override;
+
         [[nodiscard]] bool isParty(void) const override { return getLength() == PARTY_LENGTH; }
 
         [[nodiscard]] u32 encryptionConstant(void) const override;
@@ -192,12 +193,19 @@ namespace pksm
         void version(GameVersion v) override;
         u8 battleVersion(void) const;
         void battleVersion(u8 v);
+
         u8 country(void) const { return 0; }
+
         void country(u8) {}
+
         u8 region(void) const { return 0; }
+
         void region(u8) {}
+
         u8 consoleRegion(void) const { return 0; }
+
         void consoleRegion(u8) {}
+
         Language language(void) const override;
         void language(Language v) override;
         u32 formDuration(void) const;
@@ -261,30 +269,46 @@ namespace pksm
         u16 formSpecies(void) const override;
 
         inline u8 baseHP(void) const override { return PersonalSWSH::baseHP(formSpecies()); }
+
         inline u8 baseAtk(void) const override { return PersonalSWSH::baseAtk(formSpecies()); }
+
         inline u8 baseDef(void) const override { return PersonalSWSH::baseDef(formSpecies()); }
+
         inline u8 baseSpe(void) const override { return PersonalSWSH::baseSpe(formSpecies()); }
+
         inline u8 baseSpa(void) const override { return PersonalSWSH::baseSpa(formSpecies()); }
+
         inline u8 baseSpd(void) const override { return PersonalSWSH::baseSpd(formSpecies()); }
+
         inline Type type1(void) const override { return PersonalSWSH::type1(formSpecies()); }
+
         inline Type type2(void) const override { return PersonalSWSH::type2(formSpecies()); }
+
         inline u8 genderType(void) const override { return PersonalSWSH::gender(formSpecies()); }
+
         inline u8 baseFriendship(void) const override
         {
             return PersonalSWSH::baseFriendship(formSpecies());
         }
+
         inline u8 expType(void) const override { return PersonalSWSH::expType(formSpecies()); }
+
         inline Ability abilities(u8 n) const override
         {
             return PersonalSWSH::ability(formSpecies(), n);
         }
+
         inline u16 formStatIndex(void) const override
         {
             return PersonalSWSH::formStatIndex(formSpecies());
         }
+
         inline u16 pokedexIndex(void) const { return PersonalSWSH::pokedexIndex(formSpecies()); }
+
         inline u16 armordexIndex(void) const { return PersonalSWSH::armordexIndex(formSpecies()); }
+
         inline u16 crowndexIndex(void) const { return PersonalSWSH::crowndexIndex(formSpecies()); }
+
         inline bool canLearnTR(u8 trID) const
         {
             return PersonalSWSH::canLearnTR(formSpecies(), trID);

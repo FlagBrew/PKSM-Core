@@ -76,9 +76,13 @@ namespace pksm::crypto
             for (u32 j = 0; j < 0x8; j++)
             {
                 if ((crc & 0x8000) > 0)
+                {
                     crc = (crc << 1) ^ 0x1021;
+                }
                 else
+                {
                     crc <<= 1;
+                }
             }
         }
         return crc;
@@ -88,6 +92,7 @@ namespace pksm::crypto
     {
         return ~internal::crc16(buf, 0xFFFF);
     }
+
     u16 crc16_noinvert(std::span<const u8> buf)
     {
         return internal::crc16(buf, 0);
@@ -97,7 +102,9 @@ namespace pksm::crypto
     {
         u8 val = 255;
         for (size_t i = 0; i < buf.size(); i++)
+        {
             val -= buf[i];
+        }
         return val;
     }
 
@@ -115,7 +122,9 @@ namespace pksm::crypto
     {
         u32 val = 0;
         for (size_t i = 0; i < buf.size(); i += 4)
+        {
             val += LittleEndian::convertTo<u32>(buf.data() + i);
+        }
         return val;
     }
 }

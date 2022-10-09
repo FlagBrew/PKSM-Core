@@ -40,6 +40,7 @@ namespace pksm
         [[nodiscard]] std::string_view extension() const override { return ".wc4"; }
 
         static constexpr int length = 856;
+
         [[nodiscard]] std::string title(void) const override { return name; };
 
         [[nodiscard]] u16 ID(void) const override { return id; }

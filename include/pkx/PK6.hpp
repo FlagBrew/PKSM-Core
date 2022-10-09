@@ -74,6 +74,7 @@ namespace pksm
         void decrypt(void) override;
         void encrypt(void) override;
         [[nodiscard]] bool isEncrypted(void) const override;
+
         [[nodiscard]] bool isParty(void) const override { return getLength() == PARTY_LENGTH; }
 
         [[nodiscard]] bool untraded(void) const;
@@ -183,11 +184,13 @@ namespace pksm
         void fullness(u8 v);
         [[nodiscard]] u8 enjoyment(void) const;
         void enjoyment(u8 v);
+
         // TODO
         // u32 formDuration(void) const;
         // void formDuration(u32 v);
 
         [[nodiscard]] bool hyperTrain(Stat) const override { return false; }
+
         void hyperTrain(Stat, bool) override {}
 
         [[nodiscard]] std::string otName(void) const override;
@@ -255,50 +258,62 @@ namespace pksm
         {
             return PersonalXYORAS::baseHP(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseAtk(void) const override
         {
             return PersonalXYORAS::baseAtk(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseDef(void) const override
         {
             return PersonalXYORAS::baseDef(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseSpe(void) const override
         {
             return PersonalXYORAS::baseSpe(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseSpa(void) const override
         {
             return PersonalXYORAS::baseSpa(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseSpd(void) const override
         {
             return PersonalXYORAS::baseSpd(formSpecies());
         }
+
         [[nodiscard]] inline Type type1(void) const override
         {
             return PersonalXYORAS::type1(formSpecies());
         }
+
         [[nodiscard]] inline Type type2(void) const override
         {
             return PersonalXYORAS::type2(formSpecies());
         }
+
         [[nodiscard]] inline u8 genderType(void) const override
         {
             return PersonalXYORAS::gender(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseFriendship(void) const override
         {
             return PersonalXYORAS::baseFriendship(formSpecies());
         }
+
         [[nodiscard]] inline u8 expType(void) const override
         {
             return PersonalXYORAS::expType(formSpecies());
         }
+
         [[nodiscard]] inline Ability abilities(u8 n) const override
         {
             return PersonalXYORAS::ability(formSpecies(), n);
         }
+
         [[nodiscard]] inline u16 formStatIndex(void) const override
         {
             return PersonalXYORAS::formStatIndex(formSpecies());

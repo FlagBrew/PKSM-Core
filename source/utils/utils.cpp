@@ -288,6 +288,7 @@ namespace
         }
         return codepoint;
     }
+
     char32_t swapCodepoints67(char32_t codepoint)
     {
         switch (codepoint)
@@ -337,9 +338,13 @@ namespace
     char16_t tofullwidth(char16_t c)
     {
         if (c == ' ')
+        {
             c = u'　';
+        }
         else if (c >= '!' && c <= '~')
+        {
             c += 0xFEE0;
+        }
         return c;
     }
 }
@@ -469,33 +474,43 @@ std::pair<std::array<char, 4>, size_t> StringUtils::codepointToUTF8(char32_t cod
 {
     if (codepoint < 0x0000'0080)
     {
-        return {{(char)codepoint, 0, 0, 0}, 1};
+        return {
+            {(char)codepoint, 0, 0, 0},
+            1
+        };
     }
     else if (codepoint < 0x0000'0800)
     {
         return {
-            {(char)(0xC0 | ((codepoint >> 6) & 0x1F)), (char)(0x80 | (codepoint & 0x3F)), 0, 0}, 2};
+            {(char)(0xC0 | ((codepoint >> 6) & 0x1F)), (char)(0x80 | (codepoint & 0x3F)), 0, 0},
+            2
+        };
     }
     else if (codepoint < 0x0001'0000)
     {
-        return {{(char)(0xE0 | ((codepoint >> 12) & 0x0F)),
-                    (char)(0x80 | ((codepoint >> 6) & 0x3F)), (char)(0x80 | (codepoint & 0x3F)), 0},
-            3};
+        return {
+            {(char)(0xE0 | ((codepoint >> 12) & 0x0F)), (char)(0x80 | ((codepoint >> 6) & 0x3F)),
+             (char)(0x80 | (codepoint & 0x3F)), 0},
+            3
+        };
     }
     // Current maximum codepoint is defined to be U+10FFFF
     else if (codepoint < 0x0011'0000)
     {
         return {
             {(char)(0xF0 | ((codepoint >> 18) & 0x07)), (char)(0x80 | ((codepoint >> 12) & 0x3F)),
-                (char)(0x80 | ((codepoint >> 6) & 0x3F)), (char)(0x80 | (codepoint & 0x3F))},
-            4};
+             (char)(0x80 | ((codepoint >> 6) & 0x3F)), (char)(0x80 | (codepoint & 0x3F))},
+            4
+        };
     }
     else
     {
-        return {{(char)(0xE0 | ((CODEPOINT_INVALID >> 12) & 0x1F)),
-                    (char)(0x80 | ((CODEPOINT_INVALID >> 6) & 0x3F)),
-                    (char)(0x80 | (CODEPOINT_INVALID & 0x3F)), 0},
-            3};
+        return {
+            {(char)(0xE0 | ((CODEPOINT_INVALID >> 12) & 0x1F)),
+             (char)(0x80 | ((CODEPOINT_INVALID >> 6) & 0x3F)),
+             (char)(0x80 | (CODEPOINT_INVALID & 0x3F)), 0},
+            3
+        };
     }
 }
 
@@ -503,18 +518,26 @@ std::pair<std::array<char16_t, 2>, size_t> StringUtils::codepointToUTF16(char32_
 {
     if (codepoint <= 0x0000'D7FF || (codepoint >= 0x0000'E000 && codepoint < 0x0001'0000))
     {
-        return {{(u16)codepoint, 0}, 1};
+        return {
+            {(u16)codepoint, 0},
+            1
+        };
     }
     // Current maximum codepoint is defined to be U+10FFFF
     else if (codepoint >= 0x0001'0000 && codepoint < 0x0011'0000)
     {
         codepoint -= 0x10000; // Make it fit in 20 bits
         return {
-            {(u16)(0xD800 | ((codepoint >> 10) & 0x3FF)), (u16)(0xDC00 | (codepoint & 0x03FF))}, 2};
+            {(u16)(0xD800 | ((codepoint >> 10) & 0x3FF)), (u16)(0xDC00 | (codepoint & 0x03FF))},
+            2
+        };
     }
     else
     {
-        return {{CODEPOINT_INVALID, 0}, 1};
+        return {
+            {CODEPOINT_INVALID, 0},
+            1
+        };
     }
 }
 
@@ -577,7 +600,7 @@ std::pair<char32_t, size_t> StringUtils::UTF16toCodepoint(const char16_t* src, s
     {
         codepoint = (char32_t(src[0] & 0x03FF) << 10) | (src[1] & 0x03FF);
         codepoint += 0x10000; // 20->21 bits
-        size = 2;
+        size      = 2;
     }
 
     return {codepoint, size};
@@ -693,7 +716,9 @@ std::string StringUtils::getString4(const u8* data, int ofs, int len)
     {
         u16 temp = LittleEndian::convertTo<u16>(data + ofs + i);
         if (temp == 0xFFFF)
+        {
             break;
+        }
         auto found =
             std::find(pksm::internal::G4Values.begin(), pksm::internal::G4Values.end(), temp);
         // Treat an invalid value as a terminator
@@ -704,7 +729,9 @@ std::string StringUtils::getString4(const u8* data, int ofs, int len)
         u16 codepoint =
             pksm::internal::G4Chars[std::distance(pksm::internal::G4Values.begin(), found)];
         if (codepoint == 0xFFFF)
+        {
             break;
+        }
         auto [data, size] = codepointToUTF8((char32_t)codepoint);
         output.append(data.data(), size);
     }
@@ -760,7 +787,8 @@ std::string& StringUtils::toUpper(std::string& in)
     // Just saying, I have NO clue why two outer braces levels are necessary
     static constexpr std::array<std::pair<std::string_view, std::string_view>, 12> transStrings = {
         {{"í", "Í"}, {"ó", "Ó"}, {"ú", "Ú"}, {"é", "É"}, {"á", "Á"}, {"ì", "Ì"}, {"ò", "Ò"},
-            {"ù", "Ù"}, {"è", "È"}, {"à", "À"}, {"ñ", "Ñ"}, {"æ", "Æ"}}};
+         {"ù", "Ù"}, {"è", "È"}, {"à", "À"}, {"ñ", "Ñ"}, {"æ", "Æ"}}
+    };
     for (const auto& str : transStrings)
     {
         size_t found;
@@ -784,7 +812,8 @@ std::string& StringUtils::toLower(std::string& in)
     // Just saying, I have NO clue why two outer braces levels are necessary
     static constexpr std::array<std::pair<std::string_view, std::string_view>, 12> transStrings = {
         {{"Í", "í"}, {"Ó", "ó"}, {"Ú", "ú"}, {"É", "é"}, {"Á", "á"}, {"Ì", "ì"}, {"Ò", "ò"},
-            {"Ù", "ù"}, {"È", "è"}, {"À", "à"}, {"Ñ", "ñ"}, {"Æ", "æ"}}};
+         {"Ù", "ù"}, {"È", "è"}, {"À", "à"}, {"Ñ", "ñ"}, {"Æ", "æ"}}
+    };
     for (const auto& str : transStrings)
     {
         size_t found;
@@ -860,7 +889,9 @@ void StringUtils::setString3(
     auto& characters   = jp ? pksm::internal::G3_JP : pksm::internal::G3_EN;
     std::u16string str = StringUtils::UTF8toUTF16(v);
     if (jp)
+    {
         str = StringUtils::toFullWidth(str);
+    }
 
     size_t outPos;
     for (outPos = 0; outPos < std::min((size_t)len, str.size()); outPos++)
@@ -999,9 +1030,13 @@ std::string StringUtils::getString1(
             char16_t codepoint =
                 pksm::internal::G1JPChars[std::distance(pksm::internal::G1JPVals.begin(), found)];
             if (codepoint == u'\0')
+            {
                 break;
+            }
             if (codepoint == pksm::internal::tradeOTChar)
+            {
                 continue;
+            }
             if (transporter)
             {
                 switch (codepoint)
@@ -1030,9 +1065,13 @@ std::string StringUtils::getString1(
             char16_t codepoint =
                 pksm::internal::G1ENChars[std::distance(pksm::internal::G1ENVals.begin(), found)];
             if (codepoint == u'\0')
+            {
                 break;
+            }
             if (codepoint == pksm::internal::tradeOTChar)
+            {
                 continue;
+            }
             if (transporter)
             {
                 switch (codepoint)
@@ -1123,7 +1162,9 @@ std::string StringUtils::getString2(
     // every language other than KOR is the same as last gen, and as well the case of the trade ot
     // char is handled there
     if (lang != pksm::Language::KOR || data[ofs] == 0x5D)
+    {
         return getString1(data, ofs, len, lang, transporter);
+    }
 
     std::string ret;
     ret.reserve(len);

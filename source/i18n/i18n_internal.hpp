@@ -96,12 +96,13 @@ namespace i18n
     std::string folder(pksm::Language lang);
 
     void load(pksm::Language lang, const std::string& name, std::vector<std::string>& array);
+
     template <std::integral T>
     void load(pksm::Language lang, const std::string& name, std::map<T, std::string>& map)
     {
         std::string path = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name)
-                               ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
-                               : _PKSMCORE_LANG_FOLDER + folder(pksm::Language::ENG) + name;
+                             ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
+                             : _PKSMCORE_LANG_FOLDER + folder(pksm::Language::ENG) + name;
 
         std::string tmp;
         FILE* values = fopen(path.c_str(), "rt");

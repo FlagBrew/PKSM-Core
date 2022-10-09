@@ -35,22 +35,27 @@ namespace
     {
         return (x & y) ^ (~x & z);
     }
+
     inline u32 MAJ(u32 x, u32 y, u32 z)
     {
         return (x & y) ^ (x & z) ^ (y & z);
     }
+
     inline u32 EP0(u32 x)
     {
         return std::rotr(x, 2) ^ std::rotr(x, 13) ^ std::rotr(x, 22);
     }
+
     inline u32 EP1(u32 x)
     {
         return std::rotr(x, 6) ^ std::rotr(x, 11) ^ std::rotr(x, 25);
     }
+
     inline u32 SIG0(u32 x)
     {
         return std::rotr(x, 7) ^ std::rotr(x, 18) ^ (x >> 3);
     }
+
     inline u32 SIG1(u32 x)
     {
         return std::rotr(x, 17) ^ std::rotr(x, 19) ^ (x >> 10);
@@ -85,9 +90,13 @@ namespace pksm::crypto
         uint32_t a, b, c, d, e, f, g, h, i, j, t1, t2, m[64];
 
         for (i = 0, j = 0; i < 16; ++i, j += 4)
+        {
             m[i] = (data[j] << 24) | (data[j + 1] << 16) | (data[j + 2] << 8) | (data[j + 3]);
+        }
         for (; i < 64; ++i)
+        {
             m[i] = SIG1(m[i - 2]) + m[i - 7] + SIG0(m[i - 15]) + m[i - 16];
+        }
 
         a = state[0];
         b = state[1];
@@ -130,7 +139,7 @@ namespace pksm::crypto
             if (dataLength == 64)
             {
                 update();
-                bitLength += 512;
+                bitLength  += 512;
                 dataLength = 0;
             }
         }
@@ -147,27 +156,31 @@ namespace pksm::crypto
         {
             data[i++] = 0x80;
             while (i < 56)
+            {
                 data[i++] = 0x00;
+            }
         }
         else
         {
             data[i++] = 0x80;
             while (i < 64)
+            {
                 data[i++] = 0x00;
+            }
             update();
             std::fill_n(data, 56, 0);
         }
 
         // Append to the padding the total message's length in bits and transform.
         bitLength += dataLength * 8;
-        data[63] = bitLength;
-        data[62] = bitLength >> 8;
-        data[61] = bitLength >> 16;
-        data[60] = bitLength >> 24;
-        data[59] = bitLength >> 32;
-        data[58] = bitLength >> 40;
-        data[57] = bitLength >> 48;
-        data[56] = bitLength >> 56;
+        data[63]  = bitLength;
+        data[62]  = bitLength >> 8;
+        data[61]  = bitLength >> 16;
+        data[60]  = bitLength >> 24;
+        data[59]  = bitLength >> 32;
+        data[58]  = bitLength >> 40;
+        data[57]  = bitLength >> 48;
+        data[56]  = bitLength >> 56;
         update();
 
         // Since this implementation uses little endian byte ordering and SHA uses big endian,

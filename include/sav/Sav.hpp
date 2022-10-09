@@ -36,9 +36,9 @@
 #include "enums/Species.hpp"
 #include "pkx/PKX.hpp"
 #include "sav/Item.hpp"
+#include "utils/coretypes.h"
 #include "utils/DateTime.hpp"
 #include "utils/VersionTables.hpp"
-#include "utils/coretypes.h"
 #include "wcx/WCX.hpp"
 #include <map>
 #include <memory>
@@ -115,7 +115,9 @@ namespace pksm
         };
 
         virtual ~Sav() = default;
+
         Sav(const std::shared_ptr<u8[]>& data, u32 length) : data(data), length(length) {}
+
         Sav(const Sav& save)            = delete;
         Sav& operator=(const Sav& save) = delete;
         // Readies the save for serialization in signed/encrypted form
@@ -195,35 +197,47 @@ namespace pksm
         virtual void fixParty(void); // Has to be overridden by SavLGPE because it works stupidly
 
         [[nodiscard]] virtual int maxSlot(void) const { return maxBoxes() * 30; }
+
         [[nodiscard]] virtual int maxBoxes(void) const          = 0;
         [[nodiscard]] virtual size_t maxWondercards(void) const = 0;
         [[nodiscard]] virtual Generation generation(void) const = 0;
+
         [[nodiscard]] const std::set<int>& availableItems(void) const
         {
             return VersionTables::availableItems(version());
         }
+
         [[nodiscard]] const std::set<Move>& availableMoves(void) const
         {
             return VersionTables::availableMoves(version());
         }
+
         [[nodiscard]] const std::set<Species>& availableSpecies(void) const
         {
             return VersionTables::availableSpecies(version());
         }
+
         [[nodiscard]] const std::set<Ability>& availableAbilities(void) const
         {
             return VersionTables::availableAbilities(version());
         }
+
         [[nodiscard]] const std::set<Ball>& availableBalls(void) const
         {
             return VersionTables::availableBalls(version());
         }
+
         // Not guaranteed to be useful
         [[nodiscard]] int maxItem() const { return VersionTables::maxItem(version()); }
+
         [[nodiscard]] Move maxMove() const { return VersionTables::maxMove(version()); }
+
         [[nodiscard]] Species maxSpecies() const { return VersionTables::maxSpecies(version()); }
+
         [[nodiscard]] Ability maxAbility() const { return VersionTables::maxAbility(version()); }
+
         [[nodiscard]] Ball maxBall() const { return VersionTables::maxBall(version()); }
+
         [[nodiscard]] u8 formCount(Species s) const
         {
             return VersionTables::formCount(version(), s);
@@ -235,6 +249,7 @@ namespace pksm
         [[nodiscard]] virtual std::map<Pouch, std::vector<int>> validItems(void) const = 0;
 
         [[nodiscard]] u32 getLength() const { return length; }
+
         [[nodiscard]] const std::shared_ptr<u8[]>& rawData() const { return data; }
     };
 }

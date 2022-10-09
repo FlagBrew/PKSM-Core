@@ -59,7 +59,9 @@ namespace pksm
     {
         std::array<int, BLOCK_COUNT> order;
         for (int i = 0; i < BLOCK_COUNT; i++)
+        {
             order[i] = LittleEndian::convertTo<s16>(&dt[ofs + (i * SIZE_BLOCK) + 0xFF4]);
+        }
         return order;
     }
 
@@ -69,9 +71,13 @@ namespace pksm
         int zeroBlock1 = std::find(blockOrder1.begin(), blockOrder1.end(), 0) - blockOrder1.begin();
         int zeroBlock2 = std::find(blockOrder2.begin(), blockOrder2.end(), 0) - blockOrder2.begin();
         if (size_t(zeroBlock2) == blockOrder2.size())
+        {
             return 0;
+        }
         if (size_t(zeroBlock1) == blockOrder1.size())
+        {
             return 1;
+        }
         u32 count1 = LittleEndian::convertTo<u32>(&dt[(zeroBlock1 * SIZE_BLOCK) + 0x0FFC]);
         u32 count2 = LittleEndian::convertTo<u32>(&dt[(zeroBlock2 * SIZE_BLOCK) + 0xEFFC]);
         return count1 > count2 ? 0 : 1;
@@ -104,9 +110,13 @@ namespace pksm
                 // ^ byte pattern in Emerald saves, is all zero in Ruby/Sapphire as far as I can
                 // tell. Some saves have had data @ 0x550
                 if (LittleEndian::convertTo<u64>(&dt[blockOfs0 + 0xEE0]) != 0)
+                {
                     return Game::E;
+                }
                 if (LittleEndian::convertTo<u64>(&dt[blockOfs0 + 0xEE8]) != 0)
+                {
                     return Game::E;
+                }
                 return Game::RS;
         }
     }
@@ -139,7 +149,9 @@ namespace pksm
         for (const auto& seenFlagOffset : seenFlagOffsets)
         {
             if (seenFlagOffset >= 0)
+            {
                 seenFlagOffsetsTemp.push_back(seenFlagOffset);
+            }
         }
         seenFlagOffsets = seenFlagOffsetsTemp;
     }
@@ -157,7 +169,9 @@ namespace pksm
             int ofs   = ABO() + (i * SIZE_BLOCK);
             int index = blockOrder[i];
             if (index == -1)
+            {
                 continue;
+            }
             u16 chk = calculateChecksum({&data[ofs], chunkLength[index]});
             LittleEndian::convertFrom<u16>(&data[ofs + 0xFF6], chk);
         }
@@ -190,6 +204,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u16>(&data[blockOfs[0] + 0xA]);
     }
+
     void Sav3::TID(u16 v)
     {
         LittleEndian::convertFrom<u16>(&data[blockOfs[0] + 0xA], v);
@@ -199,6 +214,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u16>(&data[blockOfs[0] + 0xC]);
     }
+
     void Sav3::SID(u16 v)
     {
         LittleEndian::convertFrom<u16>(&data[blockOfs[0] + 0xC], v);
@@ -206,16 +222,18 @@ namespace pksm
 
     GameVersion Sav3::version(void) const
     {
-        return game == Game::RS  ? GameVersion::S
-               : game == Game::E ? GameVersion::E
-                                 : GameVersion::FR;
+        return game == Game::RS ? GameVersion::S
+             : game == Game::E  ? GameVersion::E
+                                : GameVersion::FR;
     }
+
     void Sav3::version(GameVersion) {}
 
     Gender Sav3::gender(void) const
     {
         return Gender{data[blockOfs[0] + 8]};
     }
+
     void Sav3::gender(Gender v)
     {
         data[blockOfs[0] + 8] = u8(v);
@@ -226,6 +244,7 @@ namespace pksm
         // TODO: Other languages? Is this unused?
         return japanese ? Language::JPN : Language::ENG;
     }
+
     void Sav3::language(Language)
     {
         // TODO: Unused?
@@ -235,6 +254,7 @@ namespace pksm
     {
         return StringUtils::getString3(data.get(), blockOfs[0], japanese ? 5 : 7, japanese);
     }
+
     void Sav3::otName(const std::string_view& v)
     {
         StringUtils::setString3(
@@ -254,6 +274,7 @@ namespace pksm
                 return int(game);
         }
     }
+
     void Sav3::money(u32 v)
     {
         switch (game)
@@ -276,6 +297,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u16>(&data[blockOfs[0] + 0xEB8]);
     }
+
     void Sav3::BP(u32 v)
     {
         if (v > 9999)
@@ -293,13 +315,15 @@ namespace pksm
     bool Sav3::getEventFlag(int flagNumber) const
     {
         if (flagNumber >= 8 * (game == Game::E ? 300 : 288))
+        {
             return 0;
+        }
 
         int start = eventFlag;
         if (game == Game::FRLG && flagNumber >= 0x500)
         {
             flagNumber -= 0x500;
-            start = blockOfs[2];
+            start      = blockOfs[2];
         }
         return FlagUtil::getFlag(data.get(), start + (flagNumber >> 3), flagNumber & 7);
     }
@@ -307,13 +331,15 @@ namespace pksm
     void Sav3::setEventFlag(int flagNumber, bool value)
     {
         if (flagNumber >= 8 * (game == Game::E ? 300 : 288))
+        {
             return;
+        }
 
         int start = eventFlag;
         if (game == Game::FRLG && flagNumber >= 0x500)
         {
             flagNumber -= 0x500;
-            start = blockOfs[2];
+            start      = blockOfs[2];
         }
         FlagUtil::setFlag(data.get(), start + (flagNumber >> 3), flagNumber & 7, value);
     }
@@ -339,7 +365,9 @@ namespace pksm
         for (int i = 0; i < 8; i++)
         {
             if (getEventFlag(startFlag + i))
+            {
                 ret++;
+            }
         }
 
         return ret;
@@ -349,6 +377,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u16>(&data[blockOfs[0] + 0xE]);
     }
+
     void Sav3::playedHours(u16 v)
     {
         LittleEndian::convertFrom<u16>(&data[blockOfs[0] + 0xE], v);
@@ -358,6 +387,7 @@ namespace pksm
     {
         return data[blockOfs[0] + 0x10];
     }
+
     void Sav3::playedMinutes(u8 v)
     {
         data[blockOfs[0] + 0x10] = v;
@@ -367,6 +397,7 @@ namespace pksm
     {
         return data[blockOfs[0] + 0x11];
     }
+
     void Sav3::playedSeconds(u8 v)
     {
         data[blockOfs[0] + 0x11] = v;
@@ -378,6 +409,7 @@ namespace pksm
     {
         return data[blockOfs[5]];
     }
+
     void Sav3::currentBox(u8 v)
     {
         data[blockOfs[5]] = v;
@@ -401,6 +433,7 @@ namespace pksm
     {
         return PKX::getPKM<Generation::THREE>(&data[partyOffset(slot)], PK3::PARTY_LENGTH);
     }
+
     std::unique_ptr<PKX> Sav3::pkm(u8 box, u8 slot) const
     {
         u32 offset = boxOffset(box, slot);
@@ -429,6 +462,7 @@ namespace pksm
             std::ranges::copy(pk3->rawData(), &data[partyOffset(slot)]);
         }
     }
+
     void Sav3::pkm(const PKX& pk, u8 box, u8 slot, bool applyTrade)
     {
         if (pk.generation() == Generation::THREE)
@@ -467,12 +501,18 @@ namespace pksm
     bool Sav3::canSetDex(Species species)
     {
         if (species == Species::None)
+        {
             return false;
+        }
         if (species > Species::Deoxys)
+        {
             return false;
+        }
         if (std::find_if(blockOfs.begin(), blockOfs.end(),
                 [](const int& val) { return val < 0; }) != blockOfs.end())
+        {
             return false;
+        }
         return true;
     }
 
@@ -480,6 +520,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u32>(&data[PokeDex + 0x4]);
     }
+
     void Sav3::dexPIDUnown(u32 v)
     {
         LittleEndian::convertFrom<u32>(&data[PokeDex + 0x4], v);
@@ -489,6 +530,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u32>(&data[PokeDex + 0x8]);
     }
+
     void Sav3::dexPIDSpinda(u32 v)
     {
         LittleEndian::convertFrom<u32>(&data[PokeDex + 0x8], v);
@@ -497,17 +539,23 @@ namespace pksm
     void Sav3::dex(const PKX& pk)
     {
         if (!canSetDex(pk.species()) || pk.egg())
+        {
             return;
+        }
 
         switch (pk.species())
         {
             case Species::Unown:
                 if (!getSeen(pk.species()))
+                {
                     dexPIDUnown(pk.PID());
+                }
                 break;
             case Species::Spinda: // Spinda
                 if (!getSeen(pk.species()))
+                {
                     dexPIDSpinda(pk.PID());
+                }
                 break;
             default:
                 break;
@@ -546,7 +594,9 @@ namespace pksm
         int ofs = bit >> 3;
 
         for (int o : seenFlagOffsets)
+        {
             FlagUtil::setFlag(data.get(), o + ofs, bit & 7, seen);
+        }
     }
 
     int Sav3::dexSeen(void) const
@@ -603,6 +653,7 @@ namespace pksm
         return StringUtils::getString3(
             data.get(), boxOffset(maxBoxes(), 0) + (box * 9), 9, japanese);
     }
+
     void Sav3::boxName(u8 box, const std::string_view& v)
     {
         return StringUtils::setString3(
@@ -612,13 +663,14 @@ namespace pksm
     u8 Sav3::boxWallpaper(u8 box) const
     {
         int offset = boxOffset(maxBoxes(), 0);
-        offset += (maxBoxes() * 0x9) + box;
+        offset     += (maxBoxes() * 0x9) + box;
         return data[offset];
     }
+
     void Sav3::boxWallpaper(u8 box, u8 v)
     {
-        int offset = boxOffset(maxBoxes(), 0);
-        offset += (maxBoxes() * 0x9) + box;
+        int offset   = boxOffset(maxBoxes(), 0);
+        offset       += (maxBoxes() * 0x9) + box;
         data[offset] = v;
     }
 
@@ -626,6 +678,7 @@ namespace pksm
     {
         return data[blockOfs[1] + (game == Game::FRLG ? 0x34 : 0x234)];
     }
+
     void Sav3::partyCount(u8 v)
     {
         data[blockOfs[1] + (game == Game::FRLG ? 0x34 : 0x234)] = v;
@@ -667,6 +720,7 @@ namespace pksm
                 return;
         }
     }
+
     std::unique_ptr<Item> Sav3::item(Pouch pouch, u16 slot) const
     {
         switch (pouch)
@@ -691,115 +745,157 @@ namespace pksm
 
     std::vector<std::pair<Sav::Pouch, int>> Sav3::pouches(void) const
     {
-        return {{Pouch::NormalItem, (OFS_PouchKeyItem - OFS_PouchHeldItem) / 4},
-            {Pouch::KeyItem, (OFS_PouchBalls - OFS_PouchKeyItem) / 4},
-            {Pouch::Ball, (OFS_PouchTMHM - OFS_PouchBalls) / 4},
-            {Pouch::TM, (OFS_PouchBerry - OFS_PouchTMHM) / 4},
-            {Pouch::Berry, game == Game::FRLG ? 43 : 46},
-            {Pouch::PCItem, (OFS_PouchHeldItem - OFS_PCItem) / 4}};
+        return {
+            {Pouch::NormalItem, (OFS_PouchKeyItem - OFS_PouchHeldItem) / 4},
+            {Pouch::KeyItem,    (OFS_PouchBalls - OFS_PouchKeyItem) / 4   },
+            {Pouch::Ball,       (OFS_PouchTMHM - OFS_PouchBalls) / 4      },
+            {Pouch::TM,         (OFS_PouchBerry - OFS_PouchTMHM) / 4      },
+            {Pouch::Berry,      game == Game::FRLG ? 43 : 46              },
+            {Pouch::PCItem,     (OFS_PouchHeldItem - OFS_PCItem) / 4      }
+        };
     }
 
     u16 Sav3::rtcInitialDay(void) const
     {
         if (game == Game::FRLG)
+        {
             return 0;
+        }
         return LittleEndian::convertTo<u16>(&data[blockOfs[0] + 0x98]);
     }
+
     void Sav3::rtcInitialDay(u16 v)
     {
         if (game == Game::FRLG)
+        {
             return;
+        }
         LittleEndian::convertFrom<u16>(&data[blockOfs[0] + 0x98], v);
     }
 
     u8 Sav3::rtcInitialHour(void) const
     {
         if (game == Game::FRLG)
+        {
             return 0;
+        }
         return data[blockOfs[0] + 0x98 + 2];
     }
+
     void Sav3::rtcInitialHour(u8 v)
     {
         if (game == Game::FRLG)
+        {
             return;
+        }
         data[blockOfs[0] + 0x98 + 2] = v;
     }
 
     u8 Sav3::rtcInitialMinute(void) const
     {
         if (game == Game::FRLG)
+        {
             return 0;
+        }
         return data[blockOfs[0] + 0x98 + 3];
     }
+
     void Sav3::rtcInitialMinute(u8 v)
     {
         if (game == Game::FRLG)
+        {
             return;
+        }
         data[blockOfs[0] + 0x98 + 3] = v;
     }
 
     u8 Sav3::rtcInitialSecond(void) const
     {
         if (game == Game::FRLG)
+        {
             return 0;
+        }
         return data[blockOfs[0] + 0x98 + 4];
     }
+
     void Sav3::rtcInitialSecond(u8 v)
     {
         if (game == Game::FRLG)
+        {
             return;
+        }
         data[blockOfs[0] + 0x98 + 4] = v;
     }
 
     u16 Sav3::rtcElapsedDay(void) const
     {
         if (game == Game::FRLG)
+        {
             return 0;
+        }
         return LittleEndian::convertTo<u16>(&data[blockOfs[0] + 0xA0]);
     }
+
     void Sav3::rtcElapsedDay(u16 v)
     {
         if (game == Game::FRLG)
+        {
             return;
+        }
         LittleEndian::convertFrom<u16>(&data[blockOfs[0] + 0xA0], v);
     }
 
     u8 Sav3::rtcElapsedHour(void) const
     {
         if (game == Game::FRLG)
+        {
             return 0;
+        }
         return data[blockOfs[0] + 0xA0 + 2];
     }
+
     void Sav3::rtcElapsedHour(u8 v)
     {
         if (game == Game::FRLG)
+        {
             return;
+        }
         data[blockOfs[0] + 0xA0 + 2] = v;
     }
 
     u8 Sav3::rtcElapsedMinute(void) const
     {
         if (game == Game::FRLG)
+        {
             return 0;
+        }
         return data[blockOfs[0] + 0xA0 + 3];
     }
+
     void Sav3::rtcElapsedMinute(u8 v)
     {
         if (game == Game::FRLG)
+        {
             return;
+        }
         data[blockOfs[0] + 0xA0 + 3] = v;
     }
 
     u8 Sav3::rtcElapsedSecond(void) const
     {
         if (game == Game::FRLG)
+        {
             return 0;
+        }
         return data[blockOfs[0] + 0xA0 + 4];
     }
+
     void Sav3::rtcElapsedSecond(u8 v)
     {
         if (game == Game::FRLG)
+        {
             return;
+        }
         data[blockOfs[0] + 0xA0 + 4] = v;
     }
 }

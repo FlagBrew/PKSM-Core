@@ -88,10 +88,12 @@ namespace pksm
         [[nodiscard]] u8 alternativeForm(void) const override;
         [[nodiscard]] Gender gender(void) const override;
         [[nodiscard]] u16 heldItem(void) const override;
+
         [[nodiscard]] Language language(void) const override
         {
             return Language::UNUSED;
         } // Apparently all WCs are now multi-language?
+
         [[nodiscard]] u8 level(void) const override;
         [[nodiscard]] u8 metLevel(void) const override;
         [[nodiscard]] Move move(u8 index) const override;
@@ -114,17 +116,22 @@ namespace pksm
         [[nodiscard]] Species species(void) const override;
         [[nodiscard]] u16 eggLocation(void) const override;
         [[nodiscard]] u16 metLocation(void) const override;
+
         [[nodiscard]] u8 contest(u8) const override { return 0; }
+
         [[nodiscard]] u8 awakened(Stat index) const;
         [[nodiscard]] u8 iv(Stat index) const override;
         [[nodiscard]] u16 ev(Stat index) const;
         [[nodiscard]] u16 additionalItem(void) const;
+
         [[nodiscard]] bool hasRibbon(Ribbon) const override { return false; }
+
         [[nodiscard]] bool ribbon(Ribbon) const override { return false; }
 
         [[nodiscard]] u16 formSpecies(void) const override;
 
         [[nodiscard]] int size(void) const override { return length; }
+
         [[nodiscard]] const u8* rawData(void) const override { return data; }
     };
 }

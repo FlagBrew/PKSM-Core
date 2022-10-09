@@ -62,8 +62,11 @@ namespace pksm
 
     public:
         Sav4(const std::shared_ptr<u8[]>& data, u32 length) : Sav(data, length) {}
+
         void resign(void);
+
         void finishEditing(void) override { resign(); }
+
         void beginEditing(void) override {}
 
         [[nodiscard]] u16 TID(void) const override;
@@ -74,12 +77,19 @@ namespace pksm
         void version(GameVersion v) override;
         [[nodiscard]] Gender gender(void) const override;
         void gender(Gender v) override;
+
         [[nodiscard]] u8 subRegion(void) const override { return 0; }
+
         void subRegion(u8) override {}
+
         [[nodiscard]] u8 country(void) const override { return 0; }
+
         void country(u8) override {}
+
         [[nodiscard]] u8 consoleRegion(void) const override { return 0; }
+
         void consoleRegion(u8) override {}
+
         [[nodiscard]] Language language(void) const override;
         void language(Language v) override;
         [[nodiscard]] std::string otName(void) const override;
@@ -98,9 +108,13 @@ namespace pksm
 
         [[nodiscard]] u8 currentBox(void) const override;
         void currentBox(u8 v) override;
+
         [[nodiscard]] u8 unlockedBoxes(void) const override { return maxBoxes(); }
+
         void unlockedBoxes(u8 v) override {}
+
         [[nodiscard]] u8 legendBoxUnlockSize(void) const override { return 0; }
+
         [[nodiscard]] u32 boxOffset(u8 box, u8 slot) const override;
         [[nodiscard]] u32 partyOffset(u8 slot) const override;
 
@@ -133,9 +147,13 @@ namespace pksm
         void partyCount(u8 count) override;
 
         [[nodiscard]] int maxBoxes(void) const override { return 18; }
+
         [[nodiscard]] size_t maxWondercards(void) const override { return 8; }
+
         [[nodiscard]] Generation generation(void) const override { return Generation::FOUR; }
+
         [[nodiscard]] int getGBO(void) const { return gbo; }
+
         [[nodiscard]] int getSBO(void) const { return sbo; }
 
         void item(const Item& item, Pouch pouch, u16 slot) override;

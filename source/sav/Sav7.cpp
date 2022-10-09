@@ -37,6 +37,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u16>(&data[TrainerCard]);
     }
+
     void Sav7::TID(u16 v)
     {
         LittleEndian::convertFrom<u16>(&data[TrainerCard], v);
@@ -46,6 +47,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u16>(&data[TrainerCard + 2]);
     }
+
     void Sav7::SID(u16 v)
     {
         LittleEndian::convertFrom<u16>(&data[TrainerCard + 2], v);
@@ -55,6 +57,7 @@ namespace pksm
     {
         return GameVersion(data[TrainerCard + 4]);
     }
+
     void Sav7::version(GameVersion v)
     {
         data[TrainerCard + 4] = u8(v);
@@ -64,6 +67,7 @@ namespace pksm
     {
         return Gender{data[TrainerCard + 5]};
     }
+
     void Sav7::gender(Gender v)
     {
         data[TrainerCard + 5] = u8(v);
@@ -73,6 +77,7 @@ namespace pksm
     {
         return data[TrainerCard + 0x2E];
     }
+
     void Sav7::subRegion(u8 v)
     {
         data[TrainerCard + 0x2E] = v;
@@ -82,6 +87,7 @@ namespace pksm
     {
         return data[TrainerCard + 0x2F];
     }
+
     void Sav7::country(u8 v)
     {
         data[TrainerCard + 0x2F] = v;
@@ -91,6 +97,7 @@ namespace pksm
     {
         return data[TrainerCard + 0x34];
     }
+
     void Sav7::consoleRegion(u8 v)
     {
         data[TrainerCard + 0x34] = v;
@@ -100,6 +107,7 @@ namespace pksm
     {
         return Language(data[TrainerCard + 0x35]);
     }
+
     void Sav7::language(Language v)
     {
         data[TrainerCard + 0x35] = u8(v);
@@ -110,6 +118,7 @@ namespace pksm
         return StringUtils::transString67(
             StringUtils::getString(data.get(), TrainerCard + 0x38, 13));
     }
+
     void Sav7::otName(const std::string_view& v)
     {
         return StringUtils::setString(
@@ -120,6 +129,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u32>(&data[Misc + 0x4]);
     }
+
     void Sav7::money(u32 v)
     {
         LittleEndian::convertFrom<u32>(&data[Misc + 0x4], v > 9999999 ? 9999999 : v);
@@ -129,6 +139,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u32>(&data[Misc + 0x11C]);
     }
+
     void Sav7::BP(u32 v)
     {
         LittleEndian::convertFrom<u32>(&data[Misc + 0x11C], v > 9999 ? 9999 : v);
@@ -149,6 +160,7 @@ namespace pksm
     {
         return LittleEndian::convertTo<u16>(&data[PlayTime]);
     }
+
     void Sav7::playedHours(u16 v)
     {
         LittleEndian::convertFrom<u16>(&data[PlayTime], v);
@@ -158,6 +170,7 @@ namespace pksm
     {
         return data[PlayTime + 2];
     }
+
     void Sav7::playedMinutes(u8 v)
     {
         data[PlayTime + 2] = v;
@@ -167,6 +180,7 @@ namespace pksm
     {
         return data[PlayTime + 3];
     }
+
     void Sav7::playedSeconds(u8 v)
     {
         data[PlayTime + 3] = v;
@@ -176,6 +190,7 @@ namespace pksm
     {
         return data[LastViewedBox];
     }
+
     void Sav7::currentBox(u8 v)
     {
         data[LastViewedBox] = v;
@@ -185,6 +200,7 @@ namespace pksm
     {
         return data[LastViewedBox - 2];
     }
+
     void Sav7::unlockedBoxes(u8 v)
     {
         data[LastViewedBox - 2] = v;
@@ -294,14 +310,14 @@ namespace pksm
         int bd1          = baseSpecies >> 3;
         int bm1          = baseSpecies & 7;
 
-        int brSeen = shift * brSize;
+        int brSeen              = shift * brSize;
         data[ofs + brSeen + bd] |= 1 << bm;
 
         bool displayed = false;
         for (u8 i = 0; i < 4; i++)
         {
             int brDisplayed = (4 + i) * brSize;
-            displayed |= (data[ofs + brDisplayed + bd1] & (1 << bm1)) != 0;
+            displayed       |= (data[ofs + brDisplayed + bd1] & (1 << bm1)) != 0;
         }
 
         if (!displayed && baseSpecies != index)
@@ -309,11 +325,13 @@ namespace pksm
             for (u8 i = 0; i < 4; i++)
             {
                 int brDisplayed = (4 + i) * brSize;
-                displayed |= (data[ofs + brDisplayed + bd] & (1 << bm)) != 0;
+                displayed       |= (data[ofs + brDisplayed + bd] & (1 << bm)) != 0;
             }
         }
         if (displayed)
+        {
             return;
+        }
 
         data[ofs + (4 + shift) * brSize + bd] |= (1 << bm);
     }
@@ -377,7 +395,9 @@ namespace pksm
 
             case Species::Minior: // 774:
                 if (formIn <= 6)
+                {
                     break;
+                }
                 else
                 {
                     int count = dexFormCount(u16(species));
@@ -387,7 +407,9 @@ namespace pksm
                 }
             case Species::Zygarde: // 718:
                 if (formIn > 1)
+                {
                     break;
+                }
                 else
                 {
                     int count = dexFormCount(u16(species));
@@ -407,7 +429,9 @@ namespace pksm
     void Sav7::dex(const PKX& pk)
     {
         if (!(availableSpecies().count(pk.species()) > 0) || pk.egg())
+        {
             return;
+        }
 
         int bit    = u16(pk.species()) - 1;
         int bd     = bit >> 3;
@@ -415,7 +439,9 @@ namespace pksm
         int gender = u8(pk.gender()) % 2;
         int shiny  = pk.shiny() ? 1 : 0;
         if (pk.species() == Species::Castform)
+        {
             shiny = 0;
+        }
         int shift = gender | (shiny << 1);
 
         if (pk.species() == Species::Spinda)
@@ -432,7 +458,7 @@ namespace pksm
             }
         }
 
-        int off = PokeDex + 0x08 + 0x80;
+        int off        = PokeDex + 0x08 + 0x80;
         data[off + bd] |= 1 << bm;
 
         int formstart = pk.alternativeForm();
@@ -455,8 +481,10 @@ namespace pksm
                 { // actually has forms
                     int f = dexFormIndex(
                         u16(pk.species()), fc, u16(VersionTables::maxSpecies(version())) - 1);
-                    if (f >= 0) // bit index valid
+                    if (f >= 0)
+                    { // bit index valid
                         bitIndex = f + form;
+                    }
                 }
             }
             setDexFlags(bitIndex, gender, shiny, u16(pk.species()) - 1);
@@ -467,13 +495,19 @@ namespace pksm
         if (lang <= 10 && lang != 6 && lang != 0)
         {
             if (lang >= 7)
+            {
                 lang--;
+            }
             lang--;
             if (lang < 0)
+            {
                 lang = 1;
+            }
             int lbit = bit * langCount + lang;
             if (lbit >> 3 < 920)
+            {
                 data[PokeDexLanguageFlags + (lbit >> 3)] |= (1 << (lbit & 7));
+            }
         }
     }
 
@@ -538,6 +572,7 @@ namespace pksm
         return StringUtils::transString67(
             StringUtils::getString(data.get(), PCLayout + 0x22 * box, 17));
     }
+
     void Sav7::boxName(u8 box, const std::string_view& name)
     {
         StringUtils::setString(
@@ -548,6 +583,7 @@ namespace pksm
     {
         return data[PCLayout + 1472 + box];
     }
+
     void Sav7::boxWallpaper(u8 box, u8 v)
     {
         data[PCLayout + 1472 + box] = v;
@@ -557,6 +593,7 @@ namespace pksm
     {
         return data[Party + 6 * PK7::PARTY_LENGTH];
     }
+
     void Sav7::partyCount(u8 v)
     {
         data[Party + 6 * PK7::PARTY_LENGTH] = v;
@@ -656,13 +693,17 @@ namespace pksm
     {
         std::vector<std::pair<Pouch, int>> pouches = {
             {Pouch::NormalItem, game == Game::SM ? 430 : 427},
-            {Pouch::KeyItem, game == Game::SM ? 184 : 198}, {Pouch::TM, 108},
-            {Pouch::Medicine, game == Game::SM ? 64 : 60},
-            {Pouch::Berry, game == Game::SM ? 72 : 67},
-            {Pouch::ZCrystals, game == Game::SM ? 30 : 35}};
+            {Pouch::KeyItem,    game == Game::SM ? 184 : 198},
+            {Pouch::TM,         108                         },
+            {Pouch::Medicine,   game == Game::SM ? 64 : 60  },
+            {Pouch::Berry,      game == Game::SM ? 72 : 67  },
+            {Pouch::ZCrystals,  game == Game::SM ? 30 : 35  }
+        };
 
         if (game == Game::USUM)
+        {
             pouches.push_back({Pouch::RotomPower, 11});
+        }
 
         return pouches;
     }

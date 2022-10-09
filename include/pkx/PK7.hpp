@@ -77,6 +77,7 @@ namespace pksm
         void decrypt(void) override;
         void encrypt(void) override;
         [[nodiscard]] bool isEncrypted(void) const override;
+
         [[nodiscard]] bool isParty(void) const override { return getLength() == PARTY_LENGTH; }
 
         [[nodiscard]] u32 encryptionConstant(void) const override;
@@ -248,50 +249,62 @@ namespace pksm
         {
             return PersonalSMUSUM::baseHP(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseAtk(void) const override
         {
             return PersonalSMUSUM::baseAtk(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseDef(void) const override
         {
             return PersonalSMUSUM::baseDef(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseSpe(void) const override
         {
             return PersonalSMUSUM::baseSpe(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseSpa(void) const override
         {
             return PersonalSMUSUM::baseSpa(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseSpd(void) const override
         {
             return PersonalSMUSUM::baseSpd(formSpecies());
         }
+
         [[nodiscard]] inline Type type1(void) const override
         {
             return PersonalSMUSUM::type1(formSpecies());
         }
+
         [[nodiscard]] inline Type type2(void) const override
         {
             return PersonalSMUSUM::type2(formSpecies());
         }
+
         [[nodiscard]] inline u8 genderType(void) const override
         {
             return PersonalSMUSUM::gender(formSpecies());
         }
+
         [[nodiscard]] inline u8 baseFriendship(void) const override
         {
             return PersonalSMUSUM::baseFriendship(formSpecies());
         }
+
         [[nodiscard]] inline u8 expType(void) const override
         {
             return PersonalSMUSUM::expType(formSpecies());
         }
+
         [[nodiscard]] inline Ability abilities(u8 n) const override
         {
             return PersonalSMUSUM::ability(formSpecies(), n);
         }
+
         [[nodiscard]] inline u16 formStatIndex(void) const override
         {
             return PersonalSMUSUM::formStatIndex(formSpecies());

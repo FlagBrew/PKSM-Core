@@ -36,6 +36,7 @@
 namespace pksm
 {
     class Gender;
+
     namespace internal
     {
         class Gender_impl
@@ -54,6 +55,7 @@ namespace pksm
             } v;
 
             constexpr explicit Gender_impl(GenderEnum v) : v(v) {}
+
             constexpr Gender_impl(const Gender_impl&)            = default;
             constexpr Gender_impl(Gender_impl&&)                 = default;
             constexpr Gender_impl& operator=(const Gender_impl&) = default;
@@ -65,6 +67,7 @@ namespace pksm
             {
                 return T(v);
             }
+
             constexpr operator GenderEnum() const noexcept { return v; }
 
             [[nodiscard]] constexpr std::strong_ordering operator<=>(
@@ -79,16 +82,21 @@ namespace pksm
 
     public:
         using EnumType = internal::Gender_impl::GenderEnum;
+
         constexpr Gender() noexcept : impl(EnumType::INVALID) {}
+
         constexpr Gender(const internal::Gender_impl& impl) noexcept : impl(impl) {}
+
         constexpr explicit Gender(std::underlying_type_t<EnumType> v) noexcept : impl(EnumType{v})
         {
         }
+
         template <std::integral T>
         constexpr explicit operator T() const noexcept
         {
             return T(impl);
         }
+
         constexpr operator EnumType() const noexcept { return static_cast<EnumType>(impl); }
 
         [[nodiscard]] constexpr std::strong_ordering operator<=>(

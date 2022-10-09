@@ -39,6 +39,7 @@ namespace i18n
         std::map<u16, std::string> locations7;
         std::map<u16, std::string> locationsLGPE;
         std::map<u16, std::string> locations8;
+
         void clear() noexcept
         {
             locations2.clear();
@@ -52,11 +53,13 @@ namespace i18n
         }
     };
 
-    std::unordered_map<pksm::Language, Locations> locationss = std::invoke([] {
-        std::unordered_map<pksm::Language, Locations> ret;
-        MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
-        return ret;
-    });
+    std::unordered_map<pksm::Language, Locations> locationss = std::invoke(
+        []
+        {
+            std::unordered_map<pksm::Language, Locations> ret;
+            MAP(MAKE_GENERIC_LANGMAP, LANGUAGES_TO_USE)
+            return ret;
+        });
 
     void initLocation(pksm::Language lang)
     {
