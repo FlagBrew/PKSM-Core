@@ -244,159 +244,15 @@ namespace
     constexpr size_t Dada             = 207;
     constexpr size_t IceRider         = 208;
     constexpr size_t ShadowRider      = 209;
-
-    constexpr std::array Venusaur{Default, Mega};
-    constexpr std::array Charizard{Default, MegaX, MegaY};
-    constexpr std::array Blastoise{Default, Mega};
-    constexpr std::array Beedrill{Default, Mega};
-    constexpr std::array Pidgeot{Default, Mega};
-    constexpr std::array Rattata{Default, Alolan};
-    constexpr std::array Raticate{Default, Alolan, Totem};
-    constexpr std::array PikachuSix{Default, RockStar, Belle, PopStar, PhD, Libre, Cosplay};
-    constexpr std::array PikachuSeven{
-        Default, Original, Hoenn, Sinnoh, Unova, Kalos, Alola, Partner, Default, World};
-    constexpr std::array Raichu{Default, Alolan};
-    constexpr std::array Sandslash{Default, Alolan};
-    constexpr std::array Ninetales{Default, Alolan};
-    constexpr std::array Dugtrio{Default, Alolan};
-    constexpr std::array Meowth{Default, Alolan, Galarian};
-    constexpr std::array Persian{Default, Alolan};
-    constexpr std::array Alakazam{Default, Mega};
-    constexpr std::array Golem{Default, Alolan};
-    constexpr std::array Rapidash{Default, Galarian};
-    constexpr std::array Slowpoke{Default, Galarian};
-    constexpr std::array Slowbro{Default, Mega, Galarian};
-    constexpr std::array Slowking{Default, Galarian};
-    constexpr std::array Farfetchd{Default, Galarian};
-    constexpr std::array Muk{Default, Alolan};
-    constexpr std::array Gengar{Default, Mega};
-    constexpr std::array Exeggutor{Default, Alolan};
-    constexpr std::array Marowak{Default, Alolan, Totem};
-    constexpr std::array Weezing{Default, Galarian};
-    constexpr std::array MrMime{Default, Galarian};
-    constexpr std::array Kangaskhan{Default, Mega};
-    constexpr std::array Pinsir{Default, Mega};
-    constexpr std::array Gyarados{Default, Mega};
-    constexpr std::array Aerodactyl{Default, Mega};
-    constexpr std::array Articuno{Default, Galarian};
-    constexpr std::array Zapdos{Default, Galarian};
-    constexpr std::array Moltres{Default, Galarian};
-    constexpr std::array Mewtwo{Default, MegaX, MegaY};
-    constexpr std::array Pichu{Default, SpikyEared};
-    constexpr std::array Ampharos{Default, Mega};
-    constexpr std::array Unown{A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W,
-        X, Y, Z, ExclamationPoint, QuestionMark};
-    constexpr std::array Steelix{Default, Mega};
-    constexpr std::array Scizor{Default, Mega};
-    constexpr std::array Heracross{Default, Mega};
-    constexpr std::array Corsola{Default, Galarian};
-    constexpr std::array Houndoom{Default, Mega};
-    constexpr std::array Tyranitar{Default, Mega};
-    constexpr std::array Sceptile{Default, Mega};
-    constexpr std::array Blaziken{Default, Mega};
-    constexpr std::array Swampert{Default, Mega};
-    constexpr std::array Linoone{Default, Galarian};
-    constexpr std::array Gardevoir{Default, Mega};
-    constexpr std::array Sableye{Default, Mega};
-    constexpr std::array Mawile{Default, Mega};
-    constexpr std::array Aggron{Default, Mega};
-    constexpr std::array Medicham{Default, Mega};
-    constexpr std::array Manectric{Default, Mega};
-    constexpr std::array Sharpedo{Default, Mega};
-    constexpr std::array Camerupt{Default, Mega};
-    constexpr std::array Altaria{Default, Mega};
-    constexpr std::array Castform{Default, Sunny, Rainy, Snowy};
-    constexpr std::array Banette{Default, Mega};
-    constexpr std::array Absol{Default, Mega};
-    constexpr std::array Glalie{Default, Mega};
-    constexpr std::array Salamence{Default, Mega};
-    constexpr std::array Metagross{Default, Mega};
-    constexpr std::array Latias{Default, Mega};
-    constexpr std::array Latios{Default, Mega};
-    constexpr std::array Kyogre{Default, Primal};
-    constexpr std::array Groudon{Default, Primal};
-    constexpr std::array Rayquaza{Default, Mega};
-    constexpr std::array Deoxys{Normal, Attack, Defense, Speed};
-    constexpr std::array Burmy{Plant, Sandy, Trash};
-    constexpr std::array Wormadam{Plant, Sandy, Trash};
-    constexpr std::array Cherrim{Overcast, Sunshine};
-    constexpr std::array Shellos{WestSea, EastSea};
-    constexpr std::array Gastrodon{WestSea, EastSea};
-    constexpr std::array Lopunny{Default, Mega};
-    constexpr std::array Garchomp{Default, Mega};
-    constexpr std::array Lucario{Default, Mega};
-    constexpr std::array Abomasnow{Default, Mega};
-    constexpr std::array Gallade{Default, Mega};
-    constexpr std::array Rotom{Default, Heat, Wash, Fridge, Fan, Mow};
-    constexpr std::array Giratina{Altered, Origin};
-    constexpr std::array Shaymin{Land, Sky};
-    constexpr std::array Arceus{Default, Fighting, Flying, Poison, Ground, Rock, Bug, Ghost, Steel,
-        Fire, Water, Grass, Electric, Psychic, Ice, Dragon, Dark, Fairy};
-    constexpr std::array Audino{Default, Mega};
-    constexpr std::array Basculin{RedStriped, BlueStriped};
-    constexpr std::array Darumaka{Default, Galarian};
-    constexpr std::array Darmanitan{Default, Zen, Galarian, Zen};
-    constexpr std::array Yamask{Default, Galarian};
-    constexpr std::array Sawsbuck{Spring, Summer, Autumn, Winter};
-    constexpr std::array Stunfisk{Default, Galarian};
-    constexpr std::array Tornadus{Incarnate, Therian};
-    constexpr std::array Thundurus{Incarnate, Therian};
-    constexpr std::array Landorus{Incarnate, Therian};
-    constexpr std::array Kyurem{Default, WhiteKyurem, Black};
-    constexpr std::array Keldeo{Ordinary, Resolute};
-    constexpr std::array Meloetta{Aria, Pirouette};
-    constexpr std::array Genesect{Default, Water, Electric, Fire, Ice};
-    constexpr std::array Greninja{Default, BattleBond, Ash};
-    constexpr std::array Vivillon{IcySnow, Polar, Tundra, Continental, Garden, Elegant, Meadow,
-        Modern, Marine, Archipelago, HighPlains, Sandstorm, River, Monsoon, Savanna, Sun, Ocean,
-        Jungle, Fancy, PokeBall};
-    constexpr std::array Flabebe{RedFlower, YellowFlower, OrangeFlower, BlueFlower, WhiteFlower};
-    constexpr std::array Floette{
-        RedFlower, YellowFlower, OrangeFlower, BlueFlower, WhiteFlower, EternalFlower};
-    constexpr std::array Florges{RedFlower, YellowFlower, OrangeFlower, BlueFlower, WhiteFlower};
-    constexpr std::array Furfrou{
-        Natural, Heart, Star, Diamond, Debutante, Matron, Dandy, LaReine, Kabuki, Pharaoh};
-    constexpr std::array Meowstic{Default, Female};
-    constexpr std::array Aegislash{Shield, Blade};
-    constexpr std::array Pumpkaboo{Average, Small, Large, Super};
-    constexpr std::array Gourgeist{Average, Small, Large, Super};
-    constexpr std::array Zygarde{_50Percent, _10Percent, _10Percent_PC, _50Percent_PC, _100Percent};
-    constexpr std::array Diancie{Default, Mega};
-    constexpr std::array Hoopa{Confined, Unbound};
-    constexpr std::array Gumshoos{Default, Totem};
-    constexpr std::array Vikavolt{Default, Totem};
-    constexpr std::array Oricorio{Baile, PomPom, Pau, Sensu};
-    constexpr std::array Ribombee{Default, Totem};
-    constexpr std::array Rockruff{Default, Dusk};
-    constexpr std::array Lycanroc{Midday, Midnight, Dusk};
-    constexpr std::array Wishiwashi{Solo, School};
-    constexpr std::array Araquanid{Default, Totem};
-    constexpr std::array Lurantis{Default, Totem};
-    constexpr std::array Salazzle{Default, Totem};
-    constexpr std::array Silvally{Default, Fighting, Flying, Poison, Ground, Rock, Bug, Ghost,
-        Steel, Fire, Water, Grass, Electric, Psychic, Ice, Dragon, Dark, Fairy};
-    constexpr std::array Minior{CoveredRed, CoveredOrange, CoveredYellow, CoveredGreen, CoveredBlue,
-        CoveredIndigo, CoveredViolet, Red, Orange, Yellow, Green, Blue, Indigo, Violet};
-    constexpr std::array Togedemaru{Default, Totem};
-    constexpr std::array Mimikyu{Default, Default, Totem, Totem};
-    constexpr std::array Kommoo{Default, Totem};
-    constexpr std::array Necrozma{Default, DawnWings, DuskMane, Ultra};
-    constexpr std::array Magearna{Default, OriginalColor};
-    constexpr std::array Cramorant{Default, Gulping, Gorging};
-    constexpr std::array Toxtricity{AmpedForm, LowKey};
-    constexpr std::array Indeedee{Default, Female};
-    constexpr std::array Polteageist{Phony, Antique};
-    constexpr std::array Alcremie{VanillaCream, RubyCream, MatchaCream, MintCream, LemonCream,
-        SaltedCream, RubySwirl, CaramelSwirl, RainbowSwirl};
-    constexpr std::array Morpeko{Default, HangryMode};
-    constexpr std::array Eiscue{Default, NoiceFace};
-    constexpr std::array Zacian{Default, Crowned};
-    constexpr std::array Zamazenta{Default, Crowned};
-    constexpr std::array Eternatus{Default, Eternamax};
-    constexpr std::array Urshifu{SingleStrike, RapidStrike};
-    constexpr std::array Zarude{Default, Dada};
-    constexpr std::array Calyrex{Default, IceRider, ShadowRider};
 }
+
+#define FA(...)                                                                                    \
+    []<std::array Values = {__VA_ARGS__}>() consteval                                              \
+        ->std::span<const typename decltype(Values)::value_type>                                   \
+    {                                                                                              \
+        return Values;                                                                             \
+    }                                                                                              \
+    ()
 
 namespace i18n
 {
@@ -420,9 +276,9 @@ namespace i18n
         formss[lang].clear();
     }
 
-    const std::span<const size_t> formIndices(pksm::GameVersion version, pksm::Species species)
+    std::span<const size_t> formIndices(pksm::GameVersion version, pksm::Species species)
     {
-        // TODO: Gigantamax and Isle of Armor Galarian additions, including Slowbro
+        // TODO: Gigantamax. How do those work?
         u8 forms = pksm::VersionTables::formCount(version, species);
 
         constexpr std::array DefaultFormArray{Default};
@@ -430,447 +286,471 @@ namespace i18n
         switch (species)
         {
             case pksm::Species::Venusaur:
-                ret = Venusaur;
-                break;
+                ret = FA(Default, Mega);
             case pksm::Species::Charizard:
-                ret = Charizard;
+                ret = FA(Default, MegaX, MegaY);
                 break;
             case pksm::Species::Blastoise:
-                ret = Blastoise;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Beedrill:
-                ret = Beedrill;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Pidgeot:
-                ret = Pidgeot;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Rattata:
-                ret = Rattata;
+                ret = FA(Default, Alolan);
                 break;
             case pksm::Species::Raticate:
-                ret = Raticate;
+                ret = FA(Default, Alolan, Totem);
                 break;
             case pksm::Species::Pikachu:
                 switch ((pksm::Generation)version)
                 {
                     case pksm::Generation::SIX:
-                        ret = PikachuSix;
+                        ret = FA(Default, RockStar, Belle, PopStar, PhD, Libre, Cosplay);
                         break;
                     case pksm::Generation::SEVEN:
                     case pksm::Generation::LGPE:
-                        ret = PikachuSeven;
+                    case pksm::Generation::EIGHT:
+                        ret = FA(Default, Original, Hoenn, Sinnoh, Unova, Kalos, Alola, Partner,
+                            Default, World);
                         break;
                     default:
                         break;
                 }
                 break;
             case pksm::Species::Raichu:
-                ret = Raichu;
+                ret = FA(Default, Alolan);
                 break;
             case pksm::Species::Sandshrew:
             case pksm::Species::Sandslash:
-                ret = Sandslash;
+                ret = FA(Default, Alolan);
                 break;
             case pksm::Species::Vulpix:
             case pksm::Species::Ninetales:
-                ret = Ninetales;
+                ret = FA(Default, Alolan);
                 break;
             case pksm::Species::Diglett:
             case pksm::Species::Dugtrio:
-                ret = Dugtrio;
+                ret = FA(Default, Alolan);
                 break;
             case pksm::Species::Meowth:
-                ret = Meowth;
+                ret = FA(Default, Alolan, Galarian);
                 break;
             case pksm::Species::Persian:
-                ret = Persian;
+                ret = FA(Default, Alolan);
                 break;
             case pksm::Species::Alakazam:
-                ret = Alakazam;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Geodude:
             case pksm::Species::Graveler:
             case pksm::Species::Golem:
-                ret = Golem;
+                ret = FA(Default, Alolan);
                 break;
             case pksm::Species::Ponyta:
             case pksm::Species::Rapidash:
-                ret = Rapidash;
+                ret = FA(Default, Galarian);
                 break;
             case pksm::Species::Slowpoke:
-                ret = Slowpoke;
+                ret = FA(Default, Galarian);
                 break;
             case pksm::Species::Slowbro:
-                ret = Slowbro;
+                switch ((pksm::Generation)version)
+                {
+                    case pksm::Generation::SIX:
+                    case pksm::Generation::SEVEN:
+                        ret = FA(Default, Mega);
+                        break;
+                    case pksm::Generation::EIGHT:
+                        ret = FA(Default, Galarian);
+                        break;
+                    default:
+                        break;
+                }
                 break;
             case pksm::Species::Slowking:
-                ret = Slowking;
+                ret = FA(Default, Galarian);
                 break;
             case pksm::Species::Farfetchd:
-                ret = Farfetchd;
+                ret = FA(Default, Galarian);
                 break;
             case pksm::Species::Grimer:
             case pksm::Species::Muk:
-                ret = Muk;
+                ret = FA(Default, Alolan);
                 break;
             case pksm::Species::Gengar:
-                ret = Gengar;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Exeggutor:
-                ret = Exeggutor;
+                ret = FA(Default, Alolan);
                 break;
             case pksm::Species::Marowak:
-                ret = Marowak;
+                ret = FA(Default, Alolan, Totem);
                 break;
             case pksm::Species::Weezing:
-                ret = Weezing;
-                break;
-            case pksm::Species::MrMime:
-                ret = MrMime;
+                ret = FA(Default, Galarian);
                 break;
             case pksm::Species::Kangaskhan:
-                ret = Kangaskhan;
+                ret = FA(Default, Mega);
+                break;
+            case pksm::Species::MrMime:
+                ret = FA(Default, Galarian);
                 break;
             case pksm::Species::Pinsir:
-                ret = Pinsir;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Gyarados:
-                ret = Gyarados;
+                ret = FA(Default, Mega);
+                break;
+            case pksm::Species::Eevee:
+                ret = FA(Default, Default);
                 break;
             case pksm::Species::Aerodactyl:
-                ret = Aerodactyl;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Articuno:
-                ret = Articuno;
+                ret = FA(Default, Galarian);
                 break;
             case pksm::Species::Zapdos:
-                ret = Zapdos;
+                ret = FA(Default, Galarian);
                 break;
             case pksm::Species::Moltres:
-                ret = Moltres;
+                ret = FA(Default, Galarian);
                 break;
             case pksm::Species::Mewtwo:
-                ret = Mewtwo;
+                ret = FA(Default, MegaX, MegaY);
                 break;
             case pksm::Species::Pichu:
-                ret = Pichu;
+                ret = FA(Default, SpikyEared);
                 break;
             case pksm::Species::Ampharos:
-                ret = Ampharos;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Unown:
-                ret = Unown;
+                ret = FA(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y,
+                    Z, ExclamationPoint, QuestionMark);
                 break;
             case pksm::Species::Steelix:
-                ret = Steelix;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Scizor:
-                ret = Scizor;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Heracross:
-                ret = Heracross;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Corsola:
-                ret = Corsola;
+                ret = FA(Default, Galarian);
                 break;
             case pksm::Species::Houndoom:
-                ret = Houndoom;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Tyranitar:
-                ret = Tyranitar;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Sceptile:
-                ret = Sceptile;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Blaziken:
-                ret = Blaziken;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Swampert:
-                ret = Swampert;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Zigzagoon:
             case pksm::Species::Linoone:
-                ret = Linoone;
+                ret = FA(Default, Galarian);
                 break;
             case pksm::Species::Gardevoir:
-                ret = Gardevoir;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Sableye:
-                ret = Sableye;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Mawile:
-                ret = Mawile;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Aggron:
-                ret = Aggron;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Medicham:
-                ret = Medicham;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Manectric:
-                ret = Manectric;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Sharpedo:
-                ret = Sharpedo;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Camerupt:
-                ret = Camerupt;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Altaria:
-                ret = Altaria;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Castform:
-                ret = Castform;
+                ret = FA(Default, Sunny, Rainy, Snowy);
                 break;
             case pksm::Species::Banette:
-                ret = Banette;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Absol:
-                ret = Absol;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Glalie:
-                ret = Glalie;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Salamence:
-                ret = Salamence;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Metagross:
-                ret = Metagross;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Latias:
-                ret = Latias;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Latios:
-                ret = Latios;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Kyogre:
-                ret = Kyogre;
+                ret = FA(Default, Primal);
                 break;
             case pksm::Species::Groudon:
-                ret = Groudon;
+                ret = FA(Default, Primal);
                 break;
             case pksm::Species::Rayquaza:
-                ret = Rayquaza;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Deoxys:
-                ret = Deoxys;
+                ret = FA(Normal, Attack, Defense, Speed);
                 break;
             case pksm::Species::Burmy:
-                ret = Burmy;
+                ret = FA(Plant, Sandy, Trash);
                 break;
             case pksm::Species::Wormadam:
-                ret = Wormadam;
+                ret = FA(Plant, Sandy, Trash);
                 break;
             case pksm::Species::Cherrim:
-                ret = Cherrim;
+                ret = FA(Overcast, Sunshine);
                 break;
             case pksm::Species::Shellos:
-                ret = Shellos;
+                ret = FA(WestSea, EastSea);
                 break;
             case pksm::Species::Gastrodon:
-                ret = Gastrodon;
+                ret = FA(WestSea, EastSea);
                 break;
             case pksm::Species::Lopunny:
-                ret = Lopunny;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Garchomp:
-                ret = Garchomp;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Lucario:
-                ret = Lucario;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Abomasnow:
-                ret = Abomasnow;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Gallade:
-                ret = Gallade;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Rotom:
-                ret = Rotom;
+                ret = FA(Default, Heat, Wash, Fridge, Fan, Mow);
                 break;
             case pksm::Species::Giratina:
-                ret = Giratina;
+                ret = FA(Altered, Origin);
                 break;
             case pksm::Species::Shaymin:
-                ret = Shaymin;
+                ret = FA(Land, Sky);
                 break;
             case pksm::Species::Arceus:
-                ret = Arceus;
+                ret = FA(Default, Fighting, Flying, Poison, Ground, Rock, Bug, Ghost, Steel, Fire,
+                    Water, Grass, Electric, Psychic, Ice, Dragon, Dark, Fairy);
                 break;
             case pksm::Species::Audino:
-                ret = Audino;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Basculin:
-                ret = Basculin;
+                ret = FA(RedStriped, BlueStriped);
                 break;
             case pksm::Species::Darumaka:
-                ret = Darumaka;
+                ret = FA(Default, Galarian);
                 break;
             case pksm::Species::Darmanitan:
-                ret = Darmanitan;
+                ret = FA(Default, Zen, Galarian, Zen);
                 break;
             case pksm::Species::Yamask:
-                ret = Yamask;
+                ret = FA(Default, Galarian);
                 break;
             case pksm::Species::Deerling:
             case pksm::Species::Sawsbuck:
-                ret = Sawsbuck;
+                ret = FA(Spring, Summer, Autumn, Winter);
                 break;
             case pksm::Species::Stunfisk:
-                ret = Stunfisk;
+                ret = FA(Default, Galarian);
                 break;
             case pksm::Species::Tornadus:
-                ret = Tornadus;
+                ret = FA(Incarnate, Therian);
                 break;
             case pksm::Species::Thundurus:
-                ret = Thundurus;
+                ret = FA(Incarnate, Therian);
                 break;
             case pksm::Species::Landorus:
-                ret = Landorus;
+                ret = FA(Incarnate, Therian);
                 break;
             case pksm::Species::Kyurem:
-                ret = Kyurem;
+                ret = FA(Default, WhiteKyurem, Black);
                 break;
             case pksm::Species::Keldeo:
-                ret = Keldeo;
+                ret = FA(Ordinary, Resolute);
                 break;
             case pksm::Species::Meloetta:
-                ret = Meloetta;
+                ret = FA(Aria, Pirouette);
                 break;
             case pksm::Species::Genesect:
-                ret = Genesect;
+                ret = FA(Default, Water, Electric, Fire, Ice);
                 break;
             case pksm::Species::Greninja:
-                ret = Greninja;
+                ret = FA(Default, BattleBond, Ash);
                 break;
             case pksm::Species::Scatterbug:
             case pksm::Species::Spewpa:
             case pksm::Species::Vivillon:
-                ret = Vivillon;
+                ret = FA(IcySnow, Polar, Tundra, Continental, Garden, Elegant, Meadow, Modern,
+                    Marine, Archipelago, HighPlains, Sandstorm, River, Monsoon, Savanna, Sun, Ocean,
+                    Jungle, Fancy, PokeBall);
                 break;
             case pksm::Species::Flabebe:
-                ret = Flabebe;
+                ret = FA(RedFlower, YellowFlower, OrangeFlower, BlueFlower, WhiteFlower);
                 break;
             case pksm::Species::Floette:
-                ret = Floette;
+                ret = FA(
+                    RedFlower, YellowFlower, OrangeFlower, BlueFlower, WhiteFlower, EternalFlower);
                 break;
             case pksm::Species::Florges:
-                ret = Florges;
+                ret = FA(RedFlower, YellowFlower, OrangeFlower, BlueFlower, WhiteFlower);
                 break;
             case pksm::Species::Furfrou:
-                ret = Furfrou;
+                ret = FA(Natural, Heart, Star, Diamond, Debutante, Matron, Dandy, LaReine, Kabuki,
+                    Pharaoh);
                 break;
             case pksm::Species::Meowstic:
-                ret = Meowstic;
+                ret = FA(Default, Female);
                 break;
             case pksm::Species::Aegislash:
-                ret = Aegislash;
+                ret = FA(Shield, Blade);
                 break;
             case pksm::Species::Pumpkaboo:
-                ret = Pumpkaboo;
+                ret = FA(Average, Small, Large, Super);
                 break;
             case pksm::Species::Gourgeist:
-                ret = Gourgeist;
+                ret = FA(Average, Small, Large, Super);
                 break;
             case pksm::Species::Zygarde:
-                ret = Zygarde;
+                ret = FA(_50Percent, _10Percent, _10Percent_PC, _50Percent_PC, _100Percent);
                 break;
             case pksm::Species::Diancie:
-                ret = Diancie;
+                ret = FA(Default, Mega);
                 break;
             case pksm::Species::Hoopa:
-                ret = Hoopa;
+                ret = FA(Confined, Unbound);
                 break;
             case pksm::Species::Gumshoos:
-                ret = Gumshoos;
+                ret = FA(Default, Totem);
                 break;
             case pksm::Species::Vikavolt:
-                ret = Vikavolt;
+                ret = FA(Default, Totem);
                 break;
             case pksm::Species::Oricorio:
-                ret = Oricorio;
+                ret = FA(Baile, PomPom, Pau, Sensu);
                 break;
             case pksm::Species::Ribombee:
-                ret = Ribombee;
+                ret = FA(Default, Totem);
                 break;
             case pksm::Species::Rockruff:
-                ret = Rockruff;
+                ret = FA(Default, Dusk);
                 break;
             case pksm::Species::Lycanroc:
-                ret = Lycanroc;
+                ret = FA(Midday, Midnight, Dusk);
                 break;
             case pksm::Species::Wishiwashi:
-                ret = Wishiwashi;
+                ret = FA(Solo, School);
                 break;
             case pksm::Species::Araquanid:
-                ret = Araquanid;
+                ret = FA(Default, Totem);
                 break;
             case pksm::Species::Lurantis:
-                ret = Lurantis;
+                ret = FA(Default, Totem);
                 break;
             case pksm::Species::Salazzle:
-                ret = Salazzle;
+                ret = FA(Default, Totem);
                 break;
             case pksm::Species::Silvally:
-                ret = Silvally;
+                ret = FA(Default, Fighting, Flying, Poison, Ground, Rock, Bug, Ghost, Steel, Fire,
+                    Water, Grass, Electric, Psychic, Ice, Dragon, Dark, Fairy);
                 break;
             case pksm::Species::Minior:
-                ret = Minior;
+                ret = FA(CoveredRed, CoveredOrange, CoveredYellow, CoveredGreen, CoveredBlue,
+                    CoveredIndigo, CoveredViolet, Red, Orange, Yellow, Green, Blue, Indigo, Violet);
                 break;
             case pksm::Species::Togedemaru:
-                ret = Togedemaru;
+                ret = FA(Default, Totem);
                 break;
             case pksm::Species::Mimikyu:
-                ret = Mimikyu;
+                ret = FA(Default, Default, Totem, Totem);
                 break;
             case pksm::Species::Kommoo:
-                ret = Kommoo;
+                ret = FA(Default, Totem);
                 break;
             case pksm::Species::Necrozma:
-                ret = Necrozma;
+                ret = FA(Default, DawnWings, DuskMane, Ultra);
                 break;
             case pksm::Species::Magearna:
-                ret = Magearna;
+                ret = FA(Default, OriginalColor);
                 break;
             case pksm::Species::Cramorant:
-                ret = Cramorant;
+                ret = FA(Default, Gulping, Gorging);
                 break;
             case pksm::Species::Toxtricity:
-                ret = Toxtricity;
+                ret = FA(AmpedForm, LowKey);
                 break;
             case pksm::Species::Indeedee:
-                ret = Indeedee;
+                ret = FA(Default, Female);
                 break;
             case pksm::Species::Sinistea:
             case pksm::Species::Polteageist:
-                ret = Polteageist;
+                ret = FA(Phony, Antique);
                 break;
             case pksm::Species::Alcremie:
-                ret = Alcremie;
-                break;
-            case pksm::Species::Morpeko:
-                ret = Morpeko;
+                ret = FA(VanillaCream, RubyCream, MatchaCream, MintCream, LemonCream, SaltedCream,
+                    RubySwirl, CaramelSwirl, RainbowSwirl);
                 break;
             case pksm::Species::Eiscue:
-                ret = Eiscue;
+                ret = FA(Default, NoiceFace);
+                break;
+            case pksm::Species::Morpeko:
+                ret = FA(Default, HangryMode);
                 break;
             case pksm::Species::Zacian:
-                ret = Zacian;
+                ret = FA(Default, Crowned);
                 break;
             case pksm::Species::Zamazenta:
-                ret = Zamazenta;
+                ret = FA(Default, Crowned);
                 break;
             case pksm::Species::Eternatus:
-                ret = Eternatus;
+                ret = FA(Default, Eternamax);
                 break;
             case pksm::Species::Urshifu:
-                ret = Urshifu;
+                ret = FA(SingleStrike, RapidStrike);
                 break;
             case pksm::Species::Zarude:
-                ret = Zarude;
+                ret = FA(Default, Dada);
                 break;
             case pksm::Species::Calyrex:
-                ret = Calyrex;
+                ret = FA(Default, IceRider, ShadowRider);
                 break;
             default:
                 break;
