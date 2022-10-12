@@ -281,8 +281,7 @@ namespace i18n
         // TODO: Gigantamax. How do those work?
         u8 forms = pksm::VersionTables::formCount(version, species);
 
-        constexpr std::array DefaultFormArray{Default};
-        std::span<const size_t> ret = DefaultFormArray;
+        std::span<const size_t> ret = FA(Default);
         switch (species)
         {
             case pksm::Species::Venusaur:
