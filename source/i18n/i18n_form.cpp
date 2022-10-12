@@ -28,7 +28,6 @@
 #include "enums/Species.hpp"
 #include "i18n_internal.hpp"
 #include "personal/personal.hpp"
-#include "utils/BidirectionalMap.hpp"
 #include "utils/VersionTables.hpp"
 #include <ranges>
 #include <span>
