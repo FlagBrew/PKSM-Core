@@ -287,6 +287,7 @@ namespace i18n
         {
             case pksm::Species::Venusaur:
                 ret = FA(Default, Mega);
+                break;
             case pksm::Species::Charizard:
                 ret = FA(Default, MegaX, MegaY);
                 break;
