@@ -24,7 +24,7 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "WCX.hpp"
+#include "wcx/WCX.hpp"
 
 namespace pksm
 {
