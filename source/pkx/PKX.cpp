@@ -363,9 +363,22 @@ namespace pksm
     u32 PKX::getRandomPID(Species species, Gender gender, GameVersion originGame, Nature nature,
         u8 form, u8 abilityNum, bool shiny, u16 tsv, u32 oldPid, Generation gen)
     {
+        const int psvShift = gen >= Generation::SIX ? 4 : 3;
+        auto testShiny     = [tsv, psvShift](u32 newId)
+        {
+            u16 psv = (newId >> 16 ^ (newId & 0xFFFF)) >> psvShift;
+            return tsv == psv;
+        };
         if (originGame >= GameVersion::X) // Origin game over gen 5
         {
-            return pksm::randomNumber(0, 0xFFFFFFFF);
+            u32 retId;
+            do
+            {
+                retId = pksm::randomNumber(0, 0xFFFFFFFF);
+            }
+            while (shiny != testShiny(retId));
+
+            return retId;
         }
 
         u8 (*genderTypeFinder)(u16 species) = nullptr;
@@ -406,7 +419,6 @@ namespace pksm
         bool g3unown  = (originGame <= GameVersion::LG || gen == Generation::THREE) &&
                        species == Species::Unown;
         u32 abilityBits = oldPid & (abilityNum == 2 ? 0x00010001 : 0);
-        int psvShift    = gen >= Generation::SIX ? 4 : 3;
         while (true)
         {
             u32 possiblePID = pksm::randomNumber(0, 0xFFFFFFFF);
@@ -427,8 +439,7 @@ namespace pksm
                 continue;
             }
 
-            u16 psv = (possiblePID >> 16 ^ (possiblePID & 0xFFFF)) >> psvShift;
-            if ((tsv == psv) != shiny)
+            if (testShiny(possiblePID) != shiny)
             {
                 continue;
             }
