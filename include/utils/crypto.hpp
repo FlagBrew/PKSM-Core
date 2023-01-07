@@ -73,6 +73,32 @@ namespace pksm::crypto
 
     [[nodiscard]] std::array<u8, 32> sha256(std::span<const u8> data);
 
+    class SHA1
+    {
+    private:
+        u8 data[64];
+        u32 dataLength;
+        u64 bitLength;
+        std::array<u32, 5> state;
+
+        void update();
+
+    public:
+        SHA1() { reinitialize(); }
+
+        void reinitialize()
+        {
+            dataLength = 0;
+            bitLength  = 0;
+            state      = {0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0};
+        }
+
+        void update(std::span<const u8> data);
+        [[nodiscard]] std::array<u8, 20> finish();
+    };
+
+    [[nodiscard]] std::array<u8, 20> sha1(std::span<const u8> data);
+
     namespace swsh
     {
         class SCBlock
