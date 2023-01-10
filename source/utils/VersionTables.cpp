@@ -250,7 +250,7 @@ namespace pksm
             case GameVersion::YW:
             {
                 static const std::set<Move> items = std::invoke(
-                    []() { return create_set_consecutive<Move>(Move::None, Move::Substitute); });
+                    []() { return create_set_consecutive<Move>(Move::None, Move::Struggle); });
                 return items;
             }
             case GameVersion::GD:
