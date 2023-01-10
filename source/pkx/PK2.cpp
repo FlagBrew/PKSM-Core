@@ -877,5 +877,6 @@ namespace pksm
         {
             partyStat(static_cast<Stat>(pstat), stat(static_cast<Stat>(pstat)));
         }
+        partyCurrHP(stat(Stat::HP));
     }
 }

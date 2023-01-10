@@ -711,6 +711,7 @@ namespace pksm
         {
             partyStat(static_cast<Stat>(pstat), stat(static_cast<Stat>(pstat)));
         }
+        partyCurrHP(stat(Stat::HP));
     }
 
     void PK1::writeG1Types()
