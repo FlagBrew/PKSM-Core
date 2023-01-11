@@ -45,6 +45,12 @@ namespace
 #endif
 }
 
+pksm::UniformRandomBitGenerator::result_type
+    pksm::UniformRandomBitGenerator::operator()() const noexcept
+{
+    return randomNumbers(max());
+}
+
 u32 pksm::randomNumber(u32 minInclusive, u32 maxInclusive)
 {
     if (!seeded)

@@ -185,47 +185,23 @@ namespace pksm
         pk7->otFriendship(PersonalSMUSUM::baseFriendship(u16(species())));
         pk7->htFriendship(pk7->otFriendship());
 
+        std::array<Stat, 6> stats = {
+            Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
+        std::shuffle(stats.begin(), stats.end(), UniformRandomBitGenerator{});
+
+        u8 perfectStats = 3;
         if (species() == Species::Mew)
         {
-            u8 imperfectStat = randomNumber(0, 5);
-            u8 imperfectIV   = randomNumber(0, 31);
-            for (u8 i = 0; i < 6; i++)
-            {
-                if (i == imperfectStat)
-                {
-                    pk7->iv(Stat{i}, imperfectIV);
-                }
-                else
-                {
-                    pk7->iv(Stat{i}, 31);
-                }
-            }
+            perfectStats = 5;
         }
-        else
-        {
-            u8 imperfectStats[3] = {0};
-            do
-            {
-                for (u8 i = 0; i < 3; i++)
-                {
-                    imperfectStats[i] = randomNumber(0, 5);
-                }
-            }
-            while (imperfectStats[0] == imperfectStats[1] ||
-                   imperfectStats[0] == imperfectStats[2] ||
-                   imperfectStats[1] == imperfectStats[2]);
 
-            for (u8 i = 0; i < 6; i++)
-            {
-                if (i == imperfectStats[0] || i == imperfectStats[1] || i == imperfectStats[2])
-                {
-                    pk7->iv(Stat{i}, randomNumber(0, 31));
-                }
-                else
-                {
-                    pk7->iv(Stat{i}, 31);
-                }
-            }
+        for (const auto& s : stats | std::views::take(perfectStats))
+        {
+            pk7->iv(s, 31);
+        }
+        for (const auto& s : stats | std::views::drop(perfectStats))
+        {
+            pk7->iv(s, randomNumber(0, 31));
         }
 
         if (pk7->shiny() && !shiny())

@@ -35,6 +35,23 @@ namespace pksm
     void seedRand(std::seed_seq& seed);
     void seedRand(u32 seed);
     [[nodiscard]] u32 randomNumber(u32 minInclusive, u32 maxInclusive);
+
+    struct UniformRandomBitGenerator
+    {
+        using result_type = u32;
+
+        static constexpr result_type min() noexcept
+        {
+            return std::numeric_limits<result_type>::min();
+        }
+
+        static constexpr result_type max() noexcept
+        {
+            return std::numeric_limits<result_type>::max();
+        }
+
+        result_type operator()() const noexcept;
+    };
 }
 
 #endif
