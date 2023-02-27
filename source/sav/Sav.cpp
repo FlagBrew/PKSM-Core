@@ -72,6 +72,7 @@ namespace pksm
             case 0x80000:
                 return checkDSType(dt);
             case 0x20000:
+            case 0x20010:
                 return checkGBAType(dt);
             case 0x8000:
             case 0x10000:
