@@ -159,7 +159,7 @@
 0x009e|Ile Sevii 9
 0x009f|Camp de Vacances
 0x00a0|Labyrinthe d'O
-0x00a1Pré Île 5
+0x00a1|Pré Île 5
 0x00a2|Mémorial
 0x00a3|Ile du Lointain
 0x00a4|Chemin Vert
