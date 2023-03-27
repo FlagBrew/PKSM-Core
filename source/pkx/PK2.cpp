@@ -290,7 +290,7 @@ namespace pksm
     std::unique_ptr<PKX> PK2::clone() const
     {
         return PKX::getPKM<Generation::TWO>(
-            const_cast<u8*>(data), japanese ? JP_LENGTH_WITH_NAMES : INT_LENGTH_WITH_NAMES);
+            data, japanese ? JP_LENGTH_WITH_NAMES : INT_LENGTH_WITH_NAMES);
     }
 
     u8 PK2::currentFriendship() const

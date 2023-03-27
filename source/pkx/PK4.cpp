@@ -265,8 +265,7 @@ namespace pksm
 
     std::unique_ptr<PKX> PK4::clone(void) const
     {
-        return PKX::getPKM<Generation::FOUR>(
-            const_cast<u8*>(data), isParty() ? PARTY_LENGTH : BOX_LENGTH);
+        return PKX::getPKM<Generation::FOUR>(data, isParty() ? PARTY_LENGTH : BOX_LENGTH);
     }
 
     Generation PK4::generation(void) const
@@ -1203,7 +1202,7 @@ namespace pksm
 
     std::unique_ptr<PK5> PK4::convertToG5(Sav&) const
     {
-        auto pk5 = PKX::getPKM<Generation::FIVE>(const_cast<u8*>(data), PK5::BOX_LENGTH);
+        auto pk5 = PKX::getPKM<Generation::FIVE>(data, PK5::BOX_LENGTH);
 
         // Clear HGSS data
         LittleEndian::convertFrom<u16>(data + 0x86, 0);

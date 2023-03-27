@@ -207,8 +207,7 @@ namespace pksm
 
     std::unique_ptr<PKX> PK7::clone(void) const
     {
-        return PKX::getPKM<Generation::SEVEN>(
-            const_cast<u8*>(data), isParty() ? PARTY_LENGTH : BOX_LENGTH);
+        return PKX::getPKM<Generation::SEVEN>(data, isParty() ? PARTY_LENGTH : BOX_LENGTH);
     }
 
     Generation PK7::generation(void) const
@@ -1236,7 +1235,7 @@ namespace pksm
 
     std::unique_ptr<PK6> PK7::convertToG6(Sav& save) const
     {
-        auto pk6 = PKX::getPKM<Generation::SIX>(const_cast<u8*>(data), PK6::BOX_LENGTH);
+        auto pk6 = PKX::getPKM<Generation::SIX>(data, PK6::BOX_LENGTH);
 
         // markvalue field moved, clear old gen 7 data
         LittleEndian::convertFrom<u16>(data + 0x16, 0);

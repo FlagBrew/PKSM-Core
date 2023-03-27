@@ -261,7 +261,7 @@ namespace pksm
     std::unique_ptr<PKX> PK1::clone() const
     {
         return PKX::getPKM<Generation::ONE>(
-            const_cast<u8*>(data), japanese ? JP_LENGTH_WITH_NAMES : INT_LENGTH_WITH_NAMES);
+            data, japanese ? JP_LENGTH_WITH_NAMES : INT_LENGTH_WITH_NAMES);
     }
 
     u16 PK1::TID() const
