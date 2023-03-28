@@ -70,6 +70,7 @@ namespace pksm
             case 0x65600:
                 return std::make_unique<SavXY>(dt);
             case 0x80000:
+            case 0x8007A:
                 return checkDSType(dt);
             case 0x20000:
             case 0x20010:
