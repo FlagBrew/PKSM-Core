@@ -167,7 +167,8 @@ namespace pksm
         pk7->metLocation(0x753D);
         pk7->gender(gender());
         pk7->nicknamed(false);
-        pk7->otName(japanese ? StringUtils::fixJapaneseNameTransporter(otName()) : otName());
+        pk7->otName(japanese ? StringUtils::fixJapaneseNameTransporter(transferOT(save.language()))
+                             : transferOT(save.language()));
 
         pk7->currentHandler(1);
         pk7->htName(save.otName());
@@ -233,7 +234,7 @@ namespace pksm
         {
             pk7->fatefulEncounter(true);
         }
-        else if (!nicknamed())
+        else if (nicknamed())
         {
             pk7->nicknamed(true);
             pk7->nickname(japanese ? StringUtils::fixJapaneseNameTransporter(nicknameTransporter())
@@ -315,6 +316,12 @@ namespace pksm
     void PK1::otName(const std::string_view& v)
     {
         StringUtils::setString1(shiftedData, v, 44, japanese ? 6 : 11, lang, japanese ? 6 : 11);
+    }
+
+    std::string PK1::transferOT(Language newLang) const
+    {
+        return StringUtils::getString1(
+            shiftedData, 44, japanese ? 6 : 11, shiftedData[44] == 0x5D ? newLang : lang, true);
     }
 
     u8 PK1::speciesID1() const

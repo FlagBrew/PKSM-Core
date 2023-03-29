@@ -135,6 +135,7 @@ namespace pksm
         void language(Language v) override;
         [[nodiscard]] std::string otName(void) const override;
         void otName(const std::string_view& v) override;
+        [[nodiscard]] std::string transferOT(Language lang) const;
 
         [[nodiscard]] u16 markValue(void) const override { return 0; }
 
