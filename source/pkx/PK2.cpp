@@ -189,7 +189,7 @@ namespace pksm
         pk7->geoRegion(0, save.subRegion());
 
         pk7->healPP();
-        pk7->language(language());
+        pk7->language(save.language());
         pk7->nickname(species().localize(pk7->language()));
 
         pk7->otFriendship(PersonalSMUSUM::baseFriendship(u16(species())));

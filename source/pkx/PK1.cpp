@@ -151,6 +151,7 @@ namespace pksm
         pk7->species(species());
         pk7->TID(TID());
         pk7->level(level());
+        pk7->metLevel(level());
         pk7->nature(nature());
         pk7->ball(ball());
         pk7->metDate(Date::today());
@@ -179,7 +180,7 @@ namespace pksm
         pk7->geoRegion(0, save.subRegion());
 
         pk7->healPP();
-        pk7->language(language());
+        pk7->language(save.language());
         pk7->nickname(species().localize(pk7->language()));
 
         pk7->otFriendship(PersonalSMUSUM::baseFriendship(u16(species())));
