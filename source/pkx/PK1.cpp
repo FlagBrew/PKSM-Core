@@ -76,6 +76,10 @@ namespace pksm
         pk2->PPUp(1, PPUp(1));
         pk2->PPUp(2, PPUp(2));
         pk2->PPUp(3, PPUp(3));
+        pk2->PP(0, PP(0));
+        pk2->PP(1, PP(1));
+        pk2->PP(2, PP(2));
+        pk2->PP(3, PP(3));
         pk2->iv(Stat::ATK, iv(Stat::ATK));
         pk2->iv(Stat::DEF, iv(Stat::DEF));
         pk2->iv(Stat::SPD, iv(Stat::SPD));

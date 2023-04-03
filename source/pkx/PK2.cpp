@@ -79,6 +79,7 @@ namespace pksm
             {
                 pk1->move(i, move(i));
                 pk1->PPUp(i, PPUp(i));
+                pk1->PP(i, PP(i));
             }
         }
 
