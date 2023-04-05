@@ -439,7 +439,7 @@ namespace BigEndian
     constexpr void convertFrom(u8* dest, R&& range)
     {
         return EndianTraits::EndianCommon::convertFrom<R, std::endian::big>(
-            dest, std::forward<R>(range));
+            dest, std::forward<decltype(range)>(range));
     }
 
     template <EndianTraits::EndianConvertible T>
@@ -459,7 +459,7 @@ namespace BigEndian
         requires EndianTraits::EndianConvertible<std::ranges::range_value_t<R>>
     constexpr std::vector<u8> convertFrom(R&& range)
     {
-        return EndianTraits::EndianCommon::convertFrom<R, std::endian::big>(std::forward<R>(range));
+        return EndianTraits::EndianCommon::convertFrom<R, std::endian::big>(std::forward<decltype(range)>(range));
     }
 
     template <EndianTraits::EndianConvertible T, size_t N>
@@ -507,7 +507,7 @@ namespace LittleEndian
     constexpr void convertFrom(u8* dest, R&& range)
     {
         return EndianTraits::EndianCommon::convertFrom<R, std::endian::little>(
-            dest, std::forward<R>(range));
+            dest, std::forward<decltype(range)>(range));
     }
 
     template <EndianTraits::EndianConvertible T>
@@ -528,7 +528,7 @@ namespace LittleEndian
     constexpr std::vector<u8> convertFrom(R&& range)
     {
         return EndianTraits::EndianCommon::convertFrom<R, std::endian::little>(
-            std::forward<R>(range));
+            std::forward<decltype(range)>(range));
     }
 
     template <EndianTraits::EndianConvertible T, size_t N>

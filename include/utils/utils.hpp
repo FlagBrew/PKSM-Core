@@ -185,24 +185,24 @@ namespace StringUtils
             if constexpr (std::is_same_v<RetType, std::string> &&
                           std::is_convertible_v<First, std::string_view>)
             {
-                std::string_view view{std::forward<First>(f)};
+                std::string_view view{std::forward<decltype(f)>(f)};
                 ret.append(view.data(), view.size());
             }
             else if constexpr (std::is_same_v<RetType, std::u16string> &&
                                std::is_convertible_v<First, std::u16string_view>)
             {
-                std::u16string_view view{std::forward<First>(f)};
+                std::u16string_view view{std::forward<decltype(f)>(f)};
                 ret.append(view.data(), view.size());
             }
             else if constexpr (std::is_same_v<RetType, std::u32string> &&
                                std::is_convertible_v<First, std::u32string_view>)
             {
-                std::u32string_view view{std::forward<First>(f)};
+                std::u32string_view view{std::forward<decltype(f)>(f)};
                 ret.append(view.data(), view.size());
             }
             else
             {
-                auto view = toGenericView(std::forward<First>(f));
+                auto view = toGenericView(std::forward<decltype(f)>(f));
                 size_t i  = 0;
                 while (i < view.size())
                 {
@@ -244,7 +244,7 @@ namespace StringUtils
 
             if constexpr (sizeof...(rest) != 0)
             {
-                concatImpl(ret, std::forward<Params>(rest)...);
+                concatImpl(ret, std::forward<decltype(rest)>(rest)...);
             }
         }
 
@@ -274,34 +274,38 @@ namespace StringUtils
             {
                 if constexpr (std::is_convertible_v<First, std::string_view>)
                 {
-                    return toView(std::forward<First>(f)).size() +
-                           concatMaxSizeInCodeUnits<StringType>(std::forward<Params>(args)...);
+                    return toView(std::forward<decltype(f)>(f)).size() +
+                           concatMaxSizeInCodeUnits<StringType>(
+                               std::forward<decltype(args)>(args)...);
                 }
                 else if constexpr (std::is_convertible_v<First, std::u16string_view>)
                 {
-                    return toView(std::forward<First>(f)).size() * 2 +
-                           concatMaxSizeInCodeUnits<StringType>(std::forward<Params>(args)...);
+                    return toView(std::forward<decltype(f)>(f)).size() * 2 +
+                           concatMaxSizeInCodeUnits<StringType>(
+                               std::forward<decltype(args)>(args)...);
                 }
                 else if constexpr (std::is_convertible_v<First, std::u32string_view>)
                 {
-                    return toView(std::forward<First>(f)).size() * 4 +
-                           concatMaxSizeInCodeUnits<StringType>(std::forward<Params>(args)...);
+                    return toView(std::forward<decltype(f)>(f)).size() * 4 +
+                           concatMaxSizeInCodeUnits<StringType>(
+                               std::forward<decltype(args)>(args)...);
                 }
             }
             else if constexpr (std::is_same_v<StringType, std::u16string>)
             {
                 if constexpr (std::is_convertible_v<First, std::u32string_view>)
                 {
-                    return toView(std::forward<First>(f)).size() * 2 +
-                           concatMaxSizeInCodeUnits<StringType>(std::forward<Params>(args)...);
+                    return toView(std::forward<decltype(f)>(f)).size() * 2 +
+                           concatMaxSizeInCodeUnits<StringType>(
+                               std::forward<decltype(args)>(args)...);
                 }
-                return toView(std::forward<First>(f)).size() +
-                       concatMaxSizeInCodeUnits<StringType>(std::forward<Params>(args)...);
+                return toView(std::forward<decltype(f)>(f)).size() +
+                       concatMaxSizeInCodeUnits<StringType>(std::forward<decltype(args)>(args)...);
             }
             else if constexpr (std::is_same_v<StringType, std::u32string>)
             {
-                return toView(std::forward<First>(f)).size() +
-                       concatMaxSizeInCodeUnits<StringType>(std::forward<Params>(args)...);
+                return toView(std::forward<decltype(f)>(f)).size() +
+                       concatMaxSizeInCodeUnits<StringType>(std::forward<decltype(args)>(args)...);
             }
         }
     }
@@ -377,7 +381,8 @@ namespace StringUtils
 
         RetType ret;
 
-        ret.reserve(internal::concatMaxSizeInCodeUnits<RetType>(std::forward<Params>(rest)...));
+        ret.reserve(
+            internal::concatMaxSizeInCodeUnits<RetType>(std::forward<decltype(rest)>(rest)...));
 
         internal::concatImpl(ret, rest...);
 
