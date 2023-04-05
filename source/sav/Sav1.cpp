@@ -131,10 +131,10 @@ namespace pksm
         fixBoxes();
         fixParty();
         fixItemLists();
+        std::copy(&data[OFS_CURRENT_BOX], &data[OFS_CURRENT_BOX] + boxSize,
+            &data[boxStart(originalCurrentBox, false)]);
         if (currentBox() != originalCurrentBox)
         {
-            std::copy(&data[OFS_CURRENT_BOX], &data[OFS_CURRENT_BOX] + boxSize,
-                &data[boxStart(originalCurrentBox, false)]);
             std::copy(&data[boxStart(currentBox())], &data[boxStart(currentBox())] + boxSize,
                 &data[OFS_CURRENT_BOX]);
         }

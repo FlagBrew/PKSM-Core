@@ -67,7 +67,6 @@ namespace pksm
             OFS_PC_ITEMS          = 0x2476;
             OFS_CURRENT_BOX_INDEX = 0x26FC;
             OFS_BOX_NAMES         = 0x26FF;
-            OFS_CHANGED_BOX       = 0x284C;
             OFS_PARTY             = 0x28CC;
             OFS_POKEDEX_CAUGHT    = 0x2A8E;
             OFS_POKEDEX_SEEN      = 0x2AAE;
@@ -81,7 +80,6 @@ namespace pksm
         {
             OFS_TIME_PLAYED  = 0x2034;
             OFS_PALETTE      = 0x204C;
-            OFS_CHANGED_BOX  = 0x2842;
             OFS_CURRENT_BOX  = 0x2D10;
             OFS_CHECKSUM_ONE = 0x2D0D;
             OFS_CHECKSUM_TWO = 0x7F0D;
@@ -122,7 +120,6 @@ namespace pksm
         }
         else
         {
-            OFS_CHANGED_BOX = 0x284C;
             if (versionOfGame == GameVersion::C)
             {
                 OFS_TIME_PLAYED       = 0x2052;
@@ -242,13 +239,11 @@ namespace pksm
         // Poor man's bubble sort-like thing
         for (int i = 0; i < maxBoxes(); i++)
         {
-            int numPkm = maxPkmInBox;
             for (int j = maxPkmInBox - 1; j > 0; j--)
             {
                 auto checkPKM = pkm(i, j);
                 if (checkPKM->species() == Species::None)
                 {
-                    numPkm--;
                     continue;
                 }
                 auto prevPKM = pkm(i, j - 1);
@@ -256,8 +251,7 @@ namespace pksm
                 {
                     pkm(*checkPKM, i, j - 1, false);
                     pkm(*prevPKM, i, j, false);
-                    numPkm = maxPkmInBox;
-                    j      = maxPkmInBox; // reset loop
+                    j = maxPkmInBox; // reset loop
                 }
             }
             fixBox(i);
@@ -271,10 +265,10 @@ namespace pksm
         fixBoxes();
         fixParty();
         fixItemLists();
+        std::copy(&data[OFS_CURRENT_BOX], &data[OFS_CURRENT_BOX] + boxSize,
+            &data[boxStart(originalCurrentBox, false)]);
         if (currentBox() != originalCurrentBox)
         {
-            std::copy(&data[OFS_CURRENT_BOX], &data[OFS_CURRENT_BOX] + boxSize,
-                &data[boxStart(originalCurrentBox, false)]);
             std::copy(&data[boxStart(currentBox())], &data[boxStart(currentBox())] + boxSize,
                 &data[OFS_CURRENT_BOX]);
         }
@@ -429,7 +423,7 @@ namespace pksm
 
     void Sav2::currentBox(u8 v)
     {
-        data[OFS_CURRENT_BOX_INDEX] = (data[OFS_CHANGED_BOX] & 0x80) | (v & 0x7F);
+        data[OFS_CURRENT_BOX_INDEX] = (data[OFS_CURRENT_BOX_INDEX] & 0x80) | (v & 0x7F);
     }
 
     u32 Sav2::boxOffset(u8 box, u8 slot) const
