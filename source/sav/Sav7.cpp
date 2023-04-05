@@ -268,7 +268,7 @@ namespace pksm
             else if (otName() == pk7.otName() && TID() == pk7.TID() && SID() == pk7.SID() &&
                      gender() == pk7.otGender())
             {
-                pk7.currentHandler(0);
+                pk7.currentHandler(PKXHandler::OT);
             }
             else
             {
@@ -278,7 +278,7 @@ namespace pksm
                     pk7.htAffection(0);
                     pk7.htName(otName());
                 }
-                pk7.currentHandler(1);
+                pk7.currentHandler(PKXHandler::NonOT);
                 pk7.htGender(gender());
             }
         }

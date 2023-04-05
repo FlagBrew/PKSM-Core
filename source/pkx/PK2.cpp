@@ -179,7 +179,7 @@ namespace pksm
         pk7->nicknamed(false);
         pk7->alternativeForm(alternativeForm());
 
-        pk7->currentHandler(1);
+        pk7->currentHandler(PKXHandler::NonOT);
         pk7->htName(save.otName());
         pk7->htGender(save.gender());
 
@@ -293,16 +293,6 @@ namespace pksm
     {
         return PKX::getPKM<Generation::TWO>(
             data, japanese ? JP_LENGTH_WITH_NAMES : INT_LENGTH_WITH_NAMES);
-    }
-
-    u8 PK2::currentFriendship() const
-    {
-        return otFriendship();
-    }
-
-    void PK2::currentFriendship(u8 v)
-    {
-        otFriendship(v);
     }
 
     u16 PK2::TID() const

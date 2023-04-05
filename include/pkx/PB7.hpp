@@ -163,8 +163,8 @@ namespace pksm
         void htName(const std::string_view& v);
         [[nodiscard]] Gender htGender(void) const;
         void htGender(Gender v);
-        [[nodiscard]] u8 currentHandler(void) const override;
-        void currentHandler(u8 v) override;
+        [[nodiscard]] PKXHandler currentHandler(void) const override;
+        void currentHandler(PKXHandler v) override;
         [[nodiscard]] u8 htFriendship(void) const;
         void htFriendship(u8 v);
         [[nodiscard]] u8 htIntensity(void) const;
@@ -203,10 +203,6 @@ namespace pksm
         [[nodiscard]] Language language(void) const override;
         void language(Language v) override;
 
-        [[nodiscard]] u8 currentFriendship(void) const override;
-        void currentFriendship(u8 v) override;
-        [[nodiscard]] u8 oppositeFriendship(void) const;
-        void oppositeFriendship(u8 v);
         void refreshChecksum(void) override;
         [[nodiscard]] Type hpType(void) const override;
         void hpType(Type v) override;

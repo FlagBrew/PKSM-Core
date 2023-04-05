@@ -676,7 +676,7 @@ namespace pksm
                     pk8->htName(otName());
                     pk8->htGender(gender());
                     pk8->htLanguage(language());
-                    pk8->currentHandler(1);
+                    pk8->currentHandler(PKXHandler::NonOT);
                 }
 
                 pk8->otIntensity(wc8.otIntensity());

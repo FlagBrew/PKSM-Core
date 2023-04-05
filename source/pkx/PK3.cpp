@@ -187,16 +187,6 @@ namespace pksm
 
     void PK3::encryptionConstant(u32) {}
 
-    u8 PK3::currentFriendship(void) const
-    {
-        return otFriendship();
-    }
-
-    void PK3::currentFriendship(u8 v)
-    {
-        otFriendship(v);
-    }
-
     u8 PK3::abilityNumber(void) const
     {
         return abilityBit() ? 2 : 1;

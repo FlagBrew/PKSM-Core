@@ -438,14 +438,14 @@ namespace pksm
         data[0x92] = u8(v);
     }
 
-    u8 PB7::currentHandler(void) const
+    PKXHandler PB7::currentHandler(void) const
     {
-        return data[0x93];
+        return data[0x93] == 0 ? PKXHandler::OT : PKXHandler::NonOT;
     }
 
-    void PB7::currentHandler(u8 v)
+    void PB7::currentHandler(PKXHandler v)
     {
-        data[0x93] = v;
+        data[0x93] = v == PKXHandler::OT ? 0 : 1;
     }
 
     u8 PB7::htFriendship(void) const
@@ -678,40 +678,6 @@ namespace pksm
     void PB7::language(Language v)
     {
         data[0xE3] = u8(v);
-    }
-
-    u8 PB7::currentFriendship(void) const
-    {
-        return currentHandler() == 0 ? otFriendship() : htFriendship();
-    }
-
-    void PB7::currentFriendship(u8 v)
-    {
-        if (currentHandler() == 0)
-        {
-            otFriendship(v);
-        }
-        else
-        {
-            htFriendship(v);
-        }
-    }
-
-    u8 PB7::oppositeFriendship(void) const
-    {
-        return currentHandler() == 1 ? otFriendship() : htFriendship();
-    }
-
-    void PB7::oppositeFriendship(u8 v)
-    {
-        if (currentHandler() == 1)
-        {
-            otFriendship(v);
-        }
-        else
-        {
-            htFriendship(v);
-        }
     }
 
     void PB7::refreshChecksum(void)

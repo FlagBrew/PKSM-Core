@@ -795,14 +795,14 @@ namespace pksm
         data[0xC3] = u8(lang);
     }
 
-    u8 PK8::currentHandler(void) const
+    PKXHandler PK8::currentHandler(void) const
     {
-        return data[0xC4];
+        return data[0xC4] == 0 ? PKXHandler::OT : PKXHandler::NonOT;
     }
 
-    void PK8::currentHandler(u8 v)
+    void PK8::currentHandler(PKXHandler v)
     {
-        data[0xC4] = v;
+        data[0xC4] = v == PKXHandler::OT ? 0 : 1;
     }
 
     u16 PK8::htID(void) const
@@ -1186,40 +1186,6 @@ namespace pksm
         if (isParty())
         {
             LittleEndian::convertFrom<u16>(data + 0x156, v);
-        }
-    }
-
-    u8 PK8::currentFriendship(void) const
-    {
-        return currentHandler() == 0 ? otFriendship() : htFriendship();
-    }
-
-    void PK8::currentFriendship(u8 v)
-    {
-        if (currentHandler() == 0)
-        {
-            otFriendship(v);
-        }
-        else
-        {
-            htFriendship(v);
-        }
-    }
-
-    u8 PK8::oppositeFriendship(void) const
-    {
-        return currentHandler() == 1 ? otFriendship() : htFriendship();
-    }
-
-    void PK8::oppositeFriendship(u8 v)
-    {
-        if (currentHandler() == 1)
-        {
-            otFriendship(v);
-        }
-        else
-        {
-            htFriendship(v);
         }
     }
 

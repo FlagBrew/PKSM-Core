@@ -72,11 +72,11 @@ namespace pksm
                 if (pk.otName() != otName() || pk.TID() != TID() || pk.SID() != SID() ||
                     pk.gender() != gender())
                 {
-                    pk.currentHandler(0);
+                    pk.currentHandler(PKXHandler::OT);
                 }
                 else
                 {
-                    pk.currentHandler(1);
+                    pk.currentHandler(PKXHandler::NonOT);
                     PK8& pk8 = static_cast<PK8&>(pk);
                     pk8.htName(otName());
                     pk8.currentFriendship(pk.baseFriendship());

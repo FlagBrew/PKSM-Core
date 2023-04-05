@@ -382,7 +382,7 @@ namespace pksm
             else if (!(otName() == pb7.otName() && TID() == pb7.TID() && SID() == pb7.SID() &&
                          gender() == pb7.otGender()))
             {
-                pb7.currentHandler(0);
+                pb7.currentHandler(PKXHandler::OT);
             }
             else
             {
@@ -391,7 +391,7 @@ namespace pksm
                     pb7.htFriendship(pb7.currentFriendship()); // copy friendship instead of
                                                                // resetting (don't alter CP)
                 }
-                pb7.currentHandler(1);
+                pb7.currentHandler(PKXHandler::NonOT);
                 pb7.htName(otName());
                 pb7.htGender(gender());
             }
@@ -748,7 +748,7 @@ namespace pksm
                 {
                     pb7->otName(otName());
                     pb7->otGender(gender());
-                    pb7->currentHandler(0);
+                    pb7->currentHandler(PKXHandler::OT);
                 }
                 else
                 {
@@ -757,7 +757,7 @@ namespace pksm
                     pb7->otGender(wb7.otGender());
                     pb7->htGender(gender());
                     pb7->otFriendship(PersonalLGPE::baseFriendship(pb7->formSpecies()));
-                    pb7->currentHandler(1);
+                    pb7->currentHandler(PKXHandler::NonOT);
                 }
 
                 int numPerfectIVs = 0;

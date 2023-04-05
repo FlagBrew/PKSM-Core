@@ -170,13 +170,13 @@ namespace pksm
         void htGender(Gender v);
         Language htLanguage(void) const;
         void htLanguage(Language lang);
-        u8 currentHandler(void) const override;
-        void currentHandler(u8 v) override;
+        PKXHandler currentHandler(void) const override;
+        void currentHandler(PKXHandler v) override;
         // Unused
         u16 htID(void) const;
         void htID(u16 v);
-        u8 htFriendship(void) const;
-        void htFriendship(u8 v);
+        u8 htFriendship(void) const override;
+        void htFriendship(u8 v) override;
         u8 htIntensity(void) const;
         void htIntensity(u8 v);
         u8 htMemory(void) const;
@@ -253,10 +253,6 @@ namespace pksm
         void dynamaxType(u16 v);
         void updatePartyData(void) override;
 
-        u8 currentFriendship(void) const override;
-        void currentFriendship(u8 v) override;
-        u8 oppositeFriendship(void) const;
-        void oppositeFriendship(u8 v);
         void refreshChecksum(void) override;
         Type hpType(void) const override;
         void hpType(Type v) override;

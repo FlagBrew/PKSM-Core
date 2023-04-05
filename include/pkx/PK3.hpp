@@ -101,12 +101,10 @@ namespace pksm
 
         [[nodiscard]] u32 encryptionConstant(void) const override;
         void encryptionConstant(u32 v) override;
-        [[nodiscard]] u8 currentFriendship(void) const override;
-        void currentFriendship(u8 v) override;
 
-        [[nodiscard]] u8 currentHandler(void) const override { return 0; }
+        [[nodiscard]] PKXHandler currentHandler(void) const override { return PKXHandler::OT; }
 
-        void currentHandler(u8) override {}
+        void currentHandler(PKXHandler) override {}
 
         [[nodiscard]] u8 abilityNumber(void) const override;
         void abilityNumber(u8 v) override;
@@ -150,6 +148,11 @@ namespace pksm
         void experience(u32 v) override;
         [[nodiscard]] u8 otFriendship(void) const override;
         void otFriendship(u8 v) override;
+
+        [[nodiscard]] u8 htFriendship(void) const override { return baseFriendship(); }
+
+        void htFriendship(u8 v) override {}
+
         [[nodiscard]] Ability ability(void) const override;
         void ability(Ability v) override;
         [[nodiscard]] bool abilityBit(void) const;

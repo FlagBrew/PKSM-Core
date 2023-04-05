@@ -364,16 +364,6 @@ namespace pksm
 
     void PK5::encryptionConstant(u32) {}
 
-    u8 PK5::currentFriendship(void) const
-    {
-        return otFriendship();
-    }
-
-    void PK5::currentFriendship(u8 v)
-    {
-        otFriendship(v);
-    }
-
     u8 PK5::abilityNumber(void) const
     {
         return hiddenAbility() ? 4 : 1 << ((PID() >> 16) & 1);
@@ -1338,7 +1328,7 @@ namespace pksm
         pk6->country(save.country());
         pk6->consoleRegion(save.consoleRegion());
 
-        pk6->currentHandler(1);
+        pk6->currentHandler(PKXHandler::NonOT);
         pk6->htName(save.otName());
         pk6->htGender(save.gender());
         pk6->geoRegion(0, save.subRegion());

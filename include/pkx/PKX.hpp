@@ -35,6 +35,7 @@
 #include "enums/Language.hpp"
 #include "enums/Move.hpp"
 #include "enums/Nature.hpp"
+#include "enums/PKXHandler.hpp"
 #include "enums/Ribbon.hpp"
 #include "enums/Species.hpp"
 #include "enums/Stat.hpp"
@@ -268,14 +269,16 @@ namespace pksm
         void healPP(u8 move) { PP(move, maxPP(move)); }
 
         // BLOCK C
-        [[nodiscard]] virtual u8 currentHandler(void) const = 0;
-        virtual void currentHandler(u8 v)                   = 0;
+        [[nodiscard]] virtual PKXHandler currentHandler(void) const = 0;
+        virtual void currentHandler(PKXHandler v)                   = 0;
 
         // BLOCK D
         [[nodiscard]] virtual std::string otName(void) const = 0;
         virtual void otName(const std::string_view& v)       = 0;
         [[nodiscard]] virtual u8 otFriendship(void) const    = 0;
         virtual void otFriendship(u8 v)                      = 0;
+        [[nodiscard]] virtual u8 htFriendship(void) const    = 0;
+        virtual void htFriendship(u8 v)                      = 0;
 
         // Raw information handled in private functions
         [[nodiscard]] virtual Date eggDate(void) const
@@ -317,13 +320,45 @@ namespace pksm
         [[nodiscard]] Language language(void) const override  = 0;
         void language(Language v) override                    = 0;
 
-        [[nodiscard]] virtual u8 currentFriendship(void) const = 0;
-        virtual void currentFriendship(u8 v)                   = 0;
-        virtual void refreshChecksum(void)                     = 0;
-        [[nodiscard]] virtual Type hpType(void) const          = 0;
-        virtual void hpType(Type v)                            = 0;
-        [[nodiscard]] u16 TSV(void) const override             = 0;
-        [[nodiscard]] virtual u16 PSV(void) const              = 0;
+        [[nodiscard]] u8 currentFriendship(void) const
+        {
+            return currentHandler() == PKXHandler::OT ? otFriendship() : htFriendship();
+        }
+
+        void currentFriendship(u8 v)
+        {
+            if (currentHandler() == PKXHandler::OT)
+            {
+                otFriendship(v);
+            }
+            else
+            {
+                htFriendship(v);
+            }
+        }
+
+        [[nodiscard]] u8 oppositeFriendship(void) const
+        {
+            return currentHandler() == PKXHandler::NonOT ? otFriendship() : htFriendship();
+        }
+
+        void oppositeFriendship(u8 v)
+        {
+            if (currentHandler() == PKXHandler::NonOT)
+            {
+                otFriendship(v);
+            }
+            else
+            {
+                htFriendship(v);
+            }
+        }
+
+        virtual void refreshChecksum(void)            = 0;
+        [[nodiscard]] virtual Type hpType(void) const = 0;
+        virtual void hpType(Type v)                   = 0;
+        [[nodiscard]] u16 TSV(void) const override    = 0;
+        [[nodiscard]] virtual u16 PSV(void) const     = 0;
         [[nodiscard]] u32 versionTID(void) const;
         [[nodiscard]] u32 versionSID(void) const;
         [[nodiscard]] u32 formatTID(void) const;

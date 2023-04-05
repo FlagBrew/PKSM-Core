@@ -268,7 +268,7 @@ namespace pksm
             else if (otName() == pk6.otName() && TID() == pk6.TID() && SID() == pk6.SID() &&
                      gender() == pk6.otGender())
             {
-                pk6.currentHandler(0);
+                pk6.currentHandler(PKXHandler::OT);
 
                 if (!pk6.untraded() &&
                     (country() != pk6.geoCountry(0) || subRegion() != pk6.geoRegion(0)))
@@ -302,7 +302,7 @@ namespace pksm
                     pk6.htAffection(0);
                     pk6.htName(otName());
                 }
-                pk6.currentHandler(1);
+                pk6.currentHandler(PKXHandler::NonOT);
                 pk6.htGender(gender());
 
                 if (pk6.htMemory() == 0)

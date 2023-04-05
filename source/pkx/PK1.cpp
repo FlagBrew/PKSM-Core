@@ -174,7 +174,7 @@ namespace pksm
         pk7->otName(japanese ? StringUtils::fixJapaneseNameTransporter(transferOT(save.language()))
                              : transferOT(save.language()));
 
-        pk7->currentHandler(1);
+        pk7->currentHandler(PKXHandler::NonOT);
         pk7->htName(save.otName());
         pk7->htGender(save.gender());
 

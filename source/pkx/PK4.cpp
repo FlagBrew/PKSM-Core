@@ -280,16 +280,6 @@ namespace pksm
 
     void PK4::encryptionConstant(u32) {}
 
-    u8 PK4::currentFriendship(void) const
-    {
-        return otFriendship();
-    }
-
-    void PK4::currentFriendship(u8 v)
-    {
-        otFriendship(v);
-    }
-
     u8 PK4::abilityNumber(void) const
     {
         return 1 << (PID() & 1);

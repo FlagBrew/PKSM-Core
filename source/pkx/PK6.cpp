@@ -676,14 +676,14 @@ namespace pksm
         data[0x92] = u8(v);
     }
 
-    u8 PK6::currentHandler(void) const
+    PKXHandler PK6::currentHandler(void) const
     {
-        return data[0x93];
+        return data[0x93] == 0 ? PKXHandler::OT : PKXHandler::NonOT;
     }
 
-    void PK6::currentHandler(u8 v)
+    void PK6::currentHandler(PKXHandler v)
     {
-        data[0x93] = v;
+        data[0x93] = v == PKXHandler::OT ? 0 : 1;
     }
 
     u8 PK6::geoRegion(u8 region) const
@@ -1024,40 +1024,6 @@ namespace pksm
     void PK6::language(Language v)
     {
         data[0xE3] = u8(v);
-    }
-
-    u8 PK6::currentFriendship(void) const
-    {
-        return currentHandler() == 0 ? otFriendship() : htFriendship();
-    }
-
-    void PK6::currentFriendship(u8 v)
-    {
-        if (currentHandler() == 0)
-        {
-            otFriendship(v);
-        }
-        else
-        {
-            htFriendship(v);
-        }
-    }
-
-    u8 PK6::oppositeFriendship(void) const
-    {
-        return currentHandler() == 1 ? otFriendship() : htFriendship();
-    }
-
-    void PK6::oppositeFriendship(u8 v)
-    {
-        if (currentHandler() == 1)
-        {
-            otFriendship(v);
-        }
-        else
-        {
-            htFriendship(v);
-        }
     }
 
     void PK6::refreshChecksum(void)
@@ -1487,7 +1453,7 @@ namespace pksm
         pk7->geoCountry(0, save.country());
         pk7->geoRegion(0, save.subRegion());
 
-        pk7->currentHandler(1);
+        pk7->currentHandler(PKXHandler::NonOT);
 
         pk7->refreshChecksum();
         return pk7;
