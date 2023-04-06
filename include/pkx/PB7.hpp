@@ -230,6 +230,20 @@ namespace pksm
         [[nodiscard]] u8 weight(void) const;
         void weight(u8 v);
 
+        u8 maxIV(void) const override { return 31; }
+
+        u16 maxEV(void) const override { return 252; }
+
+        u32 maxEVTotal(void) const override { return 510; }
+
+        u16 secondaryStatCalc(Stat stat) const override { return awakened(stat); }
+
+        void secondaryStatCalc(Stat stat, u16 v) override { awakened(stat, v); }
+
+        u16 maxSecondaryStatCalc(void) const override { return 200; }
+
+        u32 maxSecondaryStatCalcTotal(void) const override { return 200 * 6; }
+
         [[nodiscard]] inline u8 baseHP(void) const override
         {
             return PersonalLGPE::baseHP(formSpecies());

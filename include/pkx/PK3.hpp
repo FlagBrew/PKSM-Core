@@ -245,6 +245,20 @@ namespace pksm
         void partyLevel(u8 v) override;
         void updatePartyData(void) override;
 
+        u16 secondaryStatCalc(Stat stat) const override { return ev(stat); }
+
+        void secondaryStatCalc(Stat stat, u16 v) override { ev(stat, v); }
+
+        u16 maxSecondaryStatCalc(void) const override { return maxEV(); }
+
+        u32 maxSecondaryStatCalcTotal(void) const override { return maxEVTotal(); }
+
+        u8 maxIV(void) const override { return 31; }
+
+        u16 maxEV(void) const override { return 252; }
+
+        u32 maxEVTotal(void) const override { return 510; }
+
         [[nodiscard]] inline u8 baseHP(void) const override
         {
             return PersonalRSFRLGE::baseHP(formSpecies());

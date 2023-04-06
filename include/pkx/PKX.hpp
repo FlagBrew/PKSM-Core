@@ -401,6 +401,15 @@ namespace pksm
         // Takes any calculated stats and writes them into the party offsets, provided they exist
         virtual void updatePartyData(void) = 0;
 
+        virtual u8 maxIV(void) const       = 0;
+        virtual u16 maxEV(void) const      = 0;
+        virtual u32 maxEVTotal(void) const = 0;
+
+        virtual u16 secondaryStatCalc(Stat stat) const    = 0;
+        virtual void secondaryStatCalc(Stat stat, u16 v)  = 0;
+        virtual u16 maxSecondaryStatCalc(void) const      = 0;
+        virtual u32 maxSecondaryStatCalcTotal(void) const = 0;
+
         // Personal interface
         [[nodiscard]] virtual u8 baseHP(void) const         = 0;
         [[nodiscard]] virtual u8 baseAtk(void) const        = 0;

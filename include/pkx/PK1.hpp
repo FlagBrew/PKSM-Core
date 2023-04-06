@@ -287,6 +287,20 @@ namespace pksm
 
         void writeG1Types(void);
 
+        u16 secondaryStatCalc(Stat stat) const override { return ev(stat); }
+
+        void secondaryStatCalc(Stat stat, u16 v) override { ev(stat, v); }
+
+        u16 maxSecondaryStatCalc(void) const override { return maxEV(); }
+
+        u32 maxSecondaryStatCalcTotal(void) const override { return maxEVTotal(); }
+
+        u8 maxIV(void) const override { return 0xF; }
+
+        u16 maxEV(void) const override { return 0xFFFF; }
+
+        u32 maxEVTotal(void) const override { return 0xFFFFFFFF; }
+
         [[nodiscard]] inline u8 baseHP(void) const override
         {
             return PersonalRGBY::baseHP(u8(species()));
