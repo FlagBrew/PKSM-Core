@@ -94,6 +94,9 @@ namespace i18n
                 callback(lang);
             }
             found->second = LangState::INITIALIZED;
+#ifndef _PKSMCORE_DISABLE_THREAD_SAFETY
+            found->second.notify_all();
+#endif
         }
     }
 
@@ -106,8 +109,7 @@ namespace i18n
 #ifndef _PKSMCORE_DISABLE_THREAD_SAFETY
                 while (lang.second != LangState::INITIALIZED)
                 {
-                    timespec time = {0, 100000};
-                    nanosleep(&time, nullptr);
+                    lang.second.wait(LangState::INITIALIZING);
                 }
 #endif
 

@@ -87,8 +87,7 @@ namespace i18n
 #ifndef _PKSMCORE_DISABLE_THREAD_SAFETY
         while (found->second != LangState::INITIALIZED)
         {
-            timespec time = {0, 100000};
-            nanosleep(&time, nullptr);
+            found->second.wait(LangState::INITIALIZING);
         }
 #endif
     }
