@@ -121,8 +121,8 @@ namespace pksm
         }
     }
 
-    Sav3::Sav3(const std::shared_ptr<u8[]>& dt, const std::vector<int>& flagOffsets)
-        : Sav(dt, 0x20000), seenFlagOffsets(flagOffsets)
+    Sav3::Sav3(const std::shared_ptr<u8[]>& dt, SmallVector<int, 3>&& flagOffsets)
+        : Sav(dt, 0x20000), seenFlagOffsets(std::forward<SmallVector<int, 3>&&>(flagOffsets))
     {
         loadBlocks();
 
@@ -145,7 +145,7 @@ namespace pksm
         // LoadEReaderBerryData();
 
         // Sanity Check SeenFlagOffsets -- early saves may not have block 4 initialized yet
-        std::vector<int> seenFlagOffsetsTemp;
+        SmallVector<int, 3> seenFlagOffsetsTemp;
         for (const auto& seenFlagOffset : seenFlagOffsets)
         {
             if (seenFlagOffset >= 0)
@@ -743,15 +743,15 @@ namespace pksm
         }
     }
 
-    std::vector<std::pair<Sav::Pouch, int>> Sav3::pouches(void) const
+    SmallVector<std::pair<Sav::Pouch, int>, 15> Sav3::pouches(void) const
     {
         return {
-            {Pouch::NormalItem, (OFS_PouchKeyItem - OFS_PouchHeldItem) / 4},
-            {Pouch::KeyItem,    (OFS_PouchBalls - OFS_PouchKeyItem) / 4   },
-            {Pouch::Ball,       (OFS_PouchTMHM - OFS_PouchBalls) / 4      },
-            {Pouch::TM,         (OFS_PouchBerry - OFS_PouchTMHM) / 4      },
-            {Pouch::Berry,      game == Game::FRLG ? 43 : 46              },
-            {Pouch::PCItem,     (OFS_PouchHeldItem - OFS_PCItem) / 4      }
+            std::pair{Pouch::NormalItem, (OFS_PouchKeyItem - OFS_PouchHeldItem) / 4},
+            std::pair{Pouch::KeyItem,    (OFS_PouchBalls - OFS_PouchKeyItem) / 4   },
+            std::pair{Pouch::Ball,       (OFS_PouchTMHM - OFS_PouchBalls) / 4      },
+            std::pair{Pouch::TM,         (OFS_PouchBerry - OFS_PouchTMHM) / 4      },
+            std::pair{Pouch::Berry,      game == Game::FRLG ? 43 : 46              },
+            std::pair{Pouch::PCItem,     (OFS_PouchHeldItem - OFS_PCItem) / 4      }
         };
     }
 

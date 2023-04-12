@@ -406,24 +406,24 @@ namespace pksm
         }
     }
 
-    std::vector<std::pair<Sav::Pouch, int>> SavSWSH::pouches(void) const
+    SmallVector<std::pair<Sav::Pouch, int>, 15> SavSWSH::pouches(void) const
     {
         return {
-            {Pouch::Medicine,   60 },
-            {Pouch::Ball,       30 },
-            {Pouch::Battle,     20 },
-            {Pouch::Berry,      80 },
-            {Pouch::NormalItem, 550},
-            {Pouch::TM,         210},
-            {Pouch::Treasure,   100},
-            {Pouch::Ingredient, 100},
-            {Pouch::KeyItem,    64 }
+            std::pair{Pouch::Medicine,   60 },
+            std::pair{Pouch::Ball,       30 },
+            std::pair{Pouch::Battle,     20 },
+            std::pair{Pouch::Berry,      80 },
+            std::pair{Pouch::NormalItem, 550},
+            std::pair{Pouch::TM,         210},
+            std::pair{Pouch::Treasure,   100},
+            std::pair{Pouch::Ingredient, 100},
+            std::pair{Pouch::KeyItem,    64 }
         };
     }
 
-    std::map<Sav::Pouch, std::vector<int>> SavSWSH::validItems(void) const
+    const std::map<Sav::Pouch, std::vector<int>>& SavSWSH::validItems(void) const
     {
-        return {
+        static std::map<Sav::Pouch, std::vector<int>> items = {
             {Pouch::Medicine,
              {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,
                     38, 39, 40, 41, 42, 43, 54, 134, 54, 591, 708, 709, 852, 903}                              },
@@ -512,6 +512,8 @@ namespace pksm
                     1077, 1080, 1081, 1100, 1255, 1266, 1267, 1255, 1266, 1267, 1269, 1270, 1271,
                     1278, 1269, 1270, 1271, 1278, 1583, 1584, 1585, 1586, 1587, 1589}                          }
         };
+
+        return items;
     }
 
     u8 SavSWSH::currentBox() const

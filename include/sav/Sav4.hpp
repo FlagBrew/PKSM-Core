@@ -29,6 +29,7 @@
 
 #include "personal/personal.hpp"
 #include "sav/Sav.hpp"
+#include "utils/SmallVector.hpp"
 
 namespace pksm
 {
@@ -45,11 +46,11 @@ namespace pksm
         void GBO(void);
         void SBO(void);
 
-        [[nodiscard]] bool checkInsertForm(std::vector<u8>& forms, u8 formNum);
-        [[nodiscard]] std::vector<u8> getForms(Species species);
-        [[nodiscard]] std::vector<u8> getDexFormValues(u32 v, u8 bitsPerForm, u8 readCt);
-        void setForms(std::vector<u8> forms, Species species);
-        [[nodiscard]] u32 setDexFormValues(std::vector<u8> forms, u8 bitsPerForm, u8 readCt);
+        [[nodiscard]] bool checkInsertForm(SmallVector<u8, 0x20>& forms, u8 formNum);
+        [[nodiscard]] SmallVector<u8, 0x20> getForms(Species species);
+        [[nodiscard]] SmallVector<u8, 0x20> getDexFormValues(u32 v, u8 bitsPerForm, u8 readCt);
+        void setForms(SmallVector<u8, 0x20> forms, Species species);
+        [[nodiscard]] u32 setDexFormValues(SmallVector<u8, 0x20> forms, u8 bitsPerForm, u8 readCt);
 
         enum class CountType
         {
@@ -158,8 +159,8 @@ namespace pksm
 
         void item(const Item& item, Pouch pouch, u16 slot) override;
         [[nodiscard]] std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
-        [[nodiscard]] std::vector<std::pair<Pouch, int>> pouches(void) const override;
-        [[nodiscard]] std::map<Pouch, std::vector<int>> validItems(void) const override;
+        [[nodiscard]] SmallVector<std::pair<Pouch, int>, 15> pouches(void) const override;
+        [[nodiscard]] const std::map<Pouch, std::vector<int>>& validItems(void) const override;
     };
 }
 

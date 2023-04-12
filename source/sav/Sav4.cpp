@@ -523,8 +523,8 @@ namespace pksm
             }
         }
 
-        int formOffset        = PokeDex + 4 + (brSize * 4) + 4;
-        std::vector<u8> forms = getForms(pk.species());
+        int formOffset              = PokeDex + 4 + (brSize * 4) + 4;
+        SmallVector<u8, 0x20> forms = getForms(pk.species());
         if (forms.size() > 0)
         {
             if (pk.species() == Species::Unown)
@@ -642,17 +642,18 @@ namespace pksm
         return ret;
     }
 
-    bool Sav4::checkInsertForm(std::vector<u8>& forms, u8 formNum)
+    bool Sav4::checkInsertForm(SmallVector<u8, 0x20>& forms, u8 formNum)
     {
+        SmallVector<u8, 0x20> dummy;
         for (size_t i = 0; i < forms.size(); i++)
         {
             if (forms[i] == formNum)
             {
                 return false;
             }
+            dummy.emplace_back(0xFF);
         }
 
-        std::vector<u8> dummy(forms.size(), 0xFF);
         if (std::equal(forms.begin(), forms.end(), dummy.begin()))
         {
             forms[0] = formNum;
@@ -679,7 +680,7 @@ namespace pksm
         return true;
     }
 
-    std::vector<u8> Sav4::getForms(Species species)
+    SmallVector<u8, 0x20> Sav4::getForms(Species species)
     {
         static constexpr u8 brSize = 0x40;
         if (species == Species::Deoxys)
@@ -703,7 +704,7 @@ namespace pksm
             case Species::Unown:
             {
                 int ofs = formOffset + 4;
-                std::vector<u8> forms(0x1C);
+                SmallVector<u8, 0x20> forms(0x1C);
                 std::copy(data.get() + ofs, data.get() + ofs + 0x1C, forms.begin());
                 return forms;
             }
@@ -739,9 +740,9 @@ namespace pksm
         return {};
     }
 
-    std::vector<u8> Sav4::getDexFormValues(u32 v, u8 bitsPerForm, u8 readCt)
+    SmallVector<u8, 0x20> Sav4::getDexFormValues(u32 v, u8 bitsPerForm, u8 readCt)
     {
-        std::vector<u8> forms(readCt);
+        SmallVector<u8, 0x20> forms(readCt);
 
         u8 n1 = 0xFF >> (8 - bitsPerForm);
         for (int i = 0; i < readCt; i++)
@@ -758,7 +759,7 @@ namespace pksm
         return forms;
     }
 
-    void Sav4::setForms(std::vector<u8> forms, Species species)
+    void Sav4::setForms(SmallVector<u8, 0x20> forms, Species species)
     {
         static constexpr u8 brSize = 0x40;
         if (species == Species::Deoxys)
@@ -787,10 +788,9 @@ namespace pksm
             {
                 int ofs = formOffset + 4;
                 int len = forms.size();
-                forms.resize(0x1C);
-                for (size_t i = len; i < forms.size(); i++)
+                for (size_t i = len; i < 0x1C; i++)
                 {
-                    forms[i] = 0xFF;
+                    forms.emplace_back(0xFF);
                 }
                 std::copy(forms.begin(), forms.end(), data.get() + ofs);
                 return;
@@ -840,7 +840,7 @@ namespace pksm
         }
     }
 
-    u32 Sav4::setDexFormValues(std::vector<u8> forms, u8 bitsPerForm, u8 readCt)
+    u32 Sav4::setDexFormValues(SmallVector<u8, 0x20> forms, u8 bitsPerForm, u8 readCt)
     {
         int n1 = 0xFF >> (8 - bitsPerForm);
         u32 v  = 0xFFFFFFFF << (readCt * bitsPerForm);
@@ -950,39 +950,39 @@ namespace pksm
         }
     }
 
-    std::vector<std::pair<Sav::Pouch, int>> Sav4::pouches(void) const
+    SmallVector<std::pair<Sav::Pouch, int>, 15> Sav4::pouches(void) const
     {
         return {
-            {Pouch::NormalItem, game == Game::DP   ? 161
-                                : game == Game::Pt ? 162
-                                                   : 162},
-            {Pouch::KeyItem,    game == Game::DP   ? 37
-                             : game == Game::Pt ? 40
-                                                : 38       },
-            {Pouch::TM,         game == Game::DP   ? 100
-                        : game == Game::Pt ? 100
-                                           : 100                },
-            {Pouch::Mail,       game == Game::DP   ? 12
-                          : game == Game::Pt ? 12
-                                             : 12             },
-            {Pouch::Medicine,   game == Game::DP   ? 38
-                              : game == Game::Pt ? 38
-                                                 : 38     },
-            {Pouch::Berry,      game == Game::DP   ? 64
-                           : game == Game::Pt ? 64
-                                              : 64           },
-            {Pouch::Ball,       game == Game::DP   ? 15
-                          : game == Game::Pt ? 15
-                                             : 24             },
-            {Pouch::Battle,     game == Game::DP   ? 13
-                            : game == Game::Pt ? 13
-                                               : 13         }
+            std::pair{Pouch::NormalItem, game == Game::DP   ? 161
+                                         : game == Game::Pt ? 162
+                                                            : 162},
+            std::pair{Pouch::KeyItem,    game == Game::DP   ? 37
+                                      : game == Game::Pt ? 40
+                                                         : 38       },
+            std::pair{Pouch::TM,         game == Game::DP   ? 100
+                                 : game == Game::Pt ? 100
+                                                    : 100                },
+            std::pair{Pouch::Mail,       game == Game::DP   ? 12
+                                   : game == Game::Pt ? 12
+                                                      : 12             },
+            std::pair{Pouch::Medicine,   game == Game::DP   ? 38
+                                       : game == Game::Pt ? 38
+                                                          : 38     },
+            std::pair{Pouch::Berry,      game == Game::DP   ? 64
+                                    : game == Game::Pt ? 64
+                                                       : 64           },
+            std::pair{Pouch::Ball,       game == Game::DP   ? 15
+                                   : game == Game::Pt ? 15
+                                                      : 24             },
+            std::pair{Pouch::Battle,     game == Game::DP   ? 13
+                                     : game == Game::Pt ? 13
+                                                        : 13         }
         };
     }
 
-    std::map<Sav::Pouch, std::vector<int>> Sav4::validItems() const
+    const std::map<Sav::Pouch, std::vector<int>>& Sav4::validItems() const
     {
-        return {
+        static std::map<Sav::Pouch, std::vector<int>> items = {
             {Pouch::NormalItem,
              {68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88,
                     89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106,
@@ -1018,5 +1018,7 @@ namespace pksm
                               496, 497, 498, 499, 500}                                    },
             {Pouch::Battle,     {55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67}                               }
         };
+
+        return items;
     }
 }

@@ -30,6 +30,7 @@
 #include "enums/Generation.hpp"
 #include "utils/coretypes.h"
 #include "utils/endian.hpp"
+#include "utils/SmallVector.hpp"
 #include "utils/ValueConverter.hpp"
 
 namespace pksm
@@ -47,14 +48,14 @@ namespace pksm
     class Item
     {
     public:
-        virtual ~Item()                                         = default;
-        [[nodiscard]] virtual Generation generation(void) const = 0;
-        [[nodiscard]] virtual u16 maxCount(void) const          = 0;
-        [[nodiscard]] virtual u16 id(void) const                = 0;
-        [[nodiscard]] virtual u16 count(void) const             = 0;
-        [[nodiscard]] virtual std::vector<u8> bytes(void) const = 0;
-        virtual void id(u16 id)                                 = 0;
-        virtual void count(u16 id)                              = 0;
+        virtual ~Item()                                            = default;
+        [[nodiscard]] virtual Generation generation(void) const    = 0;
+        [[nodiscard]] virtual u16 maxCount(void) const             = 0;
+        [[nodiscard]] virtual u16 id(void) const                   = 0;
+        [[nodiscard]] virtual u16 count(void) const                = 0;
+        [[nodiscard]] virtual SmallVector<u8, 4> bytes(void) const = 0;
+        virtual void id(u16 id)                                    = 0;
+        virtual void count(u16 id)                                 = 0;
         [[nodiscard]] virtual operator Item1(void) const;
         [[nodiscard]] virtual operator Item2(void) const;
         [[nodiscard]] virtual operator Item3(void) const;
@@ -103,9 +104,9 @@ namespace pksm
 
         void count(u16 v) override { itemData[1] = u8(v); }
 
-        [[nodiscard]] std::vector<u8> bytes(void) const override
+        [[nodiscard]] SmallVector<u8, 4> bytes(void) const override
         {
-            return std::vector<u8>{itemData.begin(), itemData.end()};
+            return {std::span(itemData)};
         }
     };
 
@@ -146,9 +147,9 @@ namespace pksm
 
         void count(u16 v) override { itemData[1] = u8(v); }
 
-        [[nodiscard]] std::vector<u8> bytes(void) const override
+        [[nodiscard]] SmallVector<u8, 4> bytes(void) const override
         {
-            return std::vector<u8>{itemData.begin(), itemData.end()};
+            return {std::span(itemData)};
         }
     };
 
@@ -204,12 +205,12 @@ namespace pksm
 
         void securityKey(u16 v) { key = v; }
 
-        [[nodiscard]] std::vector<u8> bytes(void) const override
+        [[nodiscard]] SmallVector<u8, 4> bytes(void) const override
         {
-            std::vector<u8> data{itemData.begin(), itemData.end()};
+            std::array<u8, 4> data = itemData;
             LittleEndian::convertFrom<u16>(
                 data.data() + 2, LittleEndian::convertTo<u16>(data.data() + 2) ^ key);
-            return data;
+            return {std::span(data)};
         }
     };
 
@@ -249,9 +250,9 @@ namespace pksm
 
         void count(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data() + 2, v); }
 
-        [[nodiscard]] std::vector<u8> bytes(void) const override
+        [[nodiscard]] SmallVector<u8, 4> bytes(void) const override
         {
-            return std::vector<u8>{itemData.begin(), itemData.end()};
+            return {std::span(itemData)};
         }
     };
 
@@ -291,9 +292,9 @@ namespace pksm
 
         void count(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data() + 2, v); }
 
-        [[nodiscard]] std::vector<u8> bytes(void) const override
+        [[nodiscard]] SmallVector<u8, 4> bytes(void) const override
         {
-            return std::vector<u8>{itemData.begin(), itemData.end()};
+            return {std::span(itemData)};
         }
     };
 
@@ -333,9 +334,9 @@ namespace pksm
 
         void count(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data() + 2, v); }
 
-        [[nodiscard]] std::vector<u8> bytes(void) const override
+        [[nodiscard]] SmallVector<u8, 4> bytes(void) const override
         {
-            return std::vector<u8>{itemData.begin(), itemData.end()};
+            return {std::span(itemData)};
         }
     };
 
@@ -392,11 +393,11 @@ namespace pksm
 
         void reserved(bool v) { itemData = (itemData & ~(1u << 31)) | (v ? 1u << 31 : 0); }
 
-        [[nodiscard]] std::vector<u8> bytes(void) const override
+        [[nodiscard]] SmallVector<u8, 4> bytes(void) const override
         {
-            std::vector<u8> ret = {0, 0, 0, 0};
-            LittleEndian::convertFrom<u32>(ret.data(), itemData);
-            return ret;
+            u8 data[4];
+            LittleEndian::convertFrom<u32>(data, itemData);
+            return {std::span(data)};
         }
 
         [[nodiscard]] operator Item7b(void) const override;
@@ -451,11 +452,11 @@ namespace pksm
 
         void reserved(bool v) { itemData = (itemData & ~(1u << 31)) | (v ? 1u << 31 : 0); }
 
-        [[nodiscard]] std::vector<u8> bytes(void) const override
+        [[nodiscard]] SmallVector<u8, 4> bytes(void) const override
         {
-            std::vector<u8> ret = {0, 0, 0, 0};
-            LittleEndian::convertFrom<u32>(ret.data(), itemData);
-            return ret;
+            u8 data[4];
+            LittleEndian::convertFrom<u32>(data, itemData);
+            return {std::span(data)};
         }
 
         [[nodiscard]] operator Item7(void) const override;
@@ -510,11 +511,11 @@ namespace pksm
 
         void reserved(bool v) { itemData = (itemData & ~(1u << 31)) | (v ? 1u << 31 : 0); }
 
-        [[nodiscard]] std::vector<u8> bytes(void) const override
+        [[nodiscard]] SmallVector<u8, 4> bytes(void) const override
         {
-            std::vector<u8> ret = {0, 0, 0, 0};
-            LittleEndian::convertFrom<u32>(ret.data(), itemData);
-            return ret;
+            u8 data[4];
+            LittleEndian::convertFrom<u32>(data, itemData);
+            return {std::span(data)};
         }
 
         [[nodiscard]] operator Item7(void) const override;

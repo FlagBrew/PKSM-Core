@@ -971,22 +971,22 @@ namespace pksm
         return nullptr;
     }
 
-    std::vector<std::pair<Sav::Pouch, int>> SavLGPE::pouches() const
+    SmallVector<std::pair<Sav::Pouch, int>, 15> SavLGPE::pouches() const
     {
         return {
-            {Pouch::Medicine,     60 },
-            {Pouch::TM,           108},
-            {Pouch::Candy,        200},
-            {Pouch::ZCrystals,    150},
-            {Pouch::CatchingItem, 50 },
-            {Pouch::Battle,       150},
-            {Pouch::NormalItem,   150}
+            std::pair{Pouch::Medicine,     60 },
+            std::pair{Pouch::TM,           108},
+            std::pair{Pouch::Candy,        200},
+            std::pair{Pouch::ZCrystals,    150},
+            std::pair{Pouch::CatchingItem, 50 },
+            std::pair{Pouch::Battle,       150},
+            std::pair{Pouch::NormalItem,   150}
         };
     }
 
-    std::map<Sav::Pouch, std::vector<int>> SavLGPE::validItems() const
+    const std::map<Sav::Pouch, std::vector<int>>& SavLGPE::validItems() const
     {
-        return {
+        static std::map<Sav::Pouch, std::vector<int>> items = {
             {Pouch::Medicine,     {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 38,
                                   39, 40, 41, 709, 903}                                     },
             {Pouch::TM,
@@ -1011,5 +1011,7 @@ namespace pksm
                                     795, 796, 872, 873, 874, 875, 876, 877, 878, 885, 886, 887, 888,
                                     889, 890, 891, 892, 893, 894, 895, 896, 900, 901, 902}}
         };
+
+        return items;
     }
 }

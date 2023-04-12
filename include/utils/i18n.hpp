@@ -38,6 +38,7 @@
 #include "enums/Species.hpp"
 #include "enums/Type.hpp"
 #include "utils/coretypes.h"
+#include "utils/SmallVector.hpp"
 #include <map>
 #include <string>
 #include <vector>
@@ -88,7 +89,7 @@ namespace i18n
     void exitForm(pksm::Language lang);
     [[nodiscard]] const std::string& form(
         pksm::Language lang, pksm::GameVersion version, pksm::Species species, u8 form);
-    [[nodiscard]] std::vector<std::string> forms(
+    [[nodiscard]] SmallVector<std::string, 0x20> forms(
         pksm::Language lang, pksm::GameVersion version, pksm::Species species);
     // No good raw interface for this
 

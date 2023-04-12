@@ -775,11 +775,11 @@ namespace i18n
         return emptyString;
     }
 
-    std::vector<std::string> forms(
+    SmallVector<std::string, 0x20> forms(
         pksm::Language lang, pksm::GameVersion version, pksm::Species species)
     {
         checkInitialized(lang);
-        std::vector<std::string> ret;
+        SmallVector<std::string, 0x20> ret;
         auto indices = formIndices(version, species);
         for (const auto& index : indices)
         {

@@ -66,9 +66,9 @@ namespace pksm
         }
     }
 
-    std::map<Sav::Pouch, std::vector<int>> SavORAS::validItems() const
+    const std::map<Sav::Pouch, std::vector<int>>& SavORAS::validItems() const
     {
-        return {
+        static std::map<Sav::Pouch, std::vector<int>> items = {
             {Pouch::NormalItem,
              {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 55, 56, 57, 58, 59, 60, 61,
                     62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81,
@@ -112,5 +112,7 @@ namespace pksm
                                191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204,
                                205, 206, 207, 208, 209, 210, 211, 212, 686, 687, 688}         }
         };
+
+        return items;
     }
 }

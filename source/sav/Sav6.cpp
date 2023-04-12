@@ -797,14 +797,14 @@ namespace pksm
         }
     }
 
-    std::vector<std::pair<Sav::Pouch, int>> Sav6::pouches(void) const
+    SmallVector<std::pair<Sav::Pouch, int>, 15> Sav6::pouches(void) const
     {
         return {
-            {Pouch::NormalItem, game == Game::XY ? 286 : 305},
-            {Pouch::KeyItem,    game == Game::XY ? 31 : 47  },
-            {Pouch::TM,         game == Game::XY ? 105 : 107},
-            {Pouch::Medicine,   game == Game::XY ? 51 : 54  },
-            {Pouch::Berry,      67                          }
+            std::pair{Pouch::NormalItem, game == Game::XY ? 286 : 305},
+            std::pair{Pouch::KeyItem,    game == Game::XY ? 31 : 47  },
+            std::pair{Pouch::TM,         game == Game::XY ? 105 : 107},
+            std::pair{Pouch::Medicine,   game == Game::XY ? 51 : 54  },
+            std::pair{Pouch::Berry,      67                          }
         };
     }
 }

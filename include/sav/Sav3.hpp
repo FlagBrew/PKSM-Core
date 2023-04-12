@@ -50,7 +50,7 @@ namespace pksm
         static constexpr int SIZE_BLOCK_USED = 0xF80;
 
         std::array<int, BLOCK_COUNT> blockOrder, blockOfs;
-        std::vector<int> seenFlagOffsets;
+        SmallVector<int, 3> seenFlagOffsets;
 
         void loadBlocks();
         [[nodiscard]] static std::array<int, BLOCK_COUNT> getBlockOrder(
@@ -96,7 +96,7 @@ namespace pksm
         [[nodiscard]] bool getSeen(Species species) const;
         void setSeen(Species species, bool seen);
 
-        Sav3(const std::shared_ptr<u8[]>& data, const std::vector<int>& seenFlagOffsets);
+        Sav3(const std::shared_ptr<u8[]>& data, SmallVector<int, 3>&& seenFlagOffsets);
 
     public:
         static constexpr int SIZE_BLOCK = 0x1000;
@@ -200,9 +200,9 @@ namespace pksm
 
         void item(const Item& item, Pouch pouch, u16 slot) override;
         [[nodiscard]] std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
-        [[nodiscard]] std::vector<std::pair<Pouch, int>> pouches(void) const override;
+        [[nodiscard]] SmallVector<std::pair<Pouch, int>, 15> pouches(void) const override;
         // G3 item IDs
-        [[nodiscard]] virtual std::map<Pouch, std::vector<int>> validItems3(void) const = 0;
+        [[nodiscard]] virtual const std::map<Pouch, std::vector<int>>& validItems3(void) const = 0;
 
         [[nodiscard]] u16 rtcInitialDay(void) const;
         void rtcInitialDay(u16 v);

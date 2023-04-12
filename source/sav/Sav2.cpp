@@ -853,7 +853,7 @@ namespace pksm
         switch (pouch)
         {
             case Pouch::TM:
-                while (validItems2()[Pouch::TM][index] != write[0])
+                while (validItems2().at(Pouch::TM)[index] != write[0])
                 {
                     index++;
                 }
@@ -888,7 +888,7 @@ namespace pksm
         {
             case Pouch::TM:
                 // apparently they store the counts of the TMs
-                itemData[0] = validItems2()[Pouch::TM][slot];
+                itemData[0] = validItems2().at(Pouch::TM)[slot];
                 itemData[1] = data[OFS_TM_POUCH + slot];
                 returnVal   = std::make_unique<Item2>(itemData.data());
                 break;
@@ -917,97 +917,177 @@ namespace pksm
         return returnVal;
     }
 
-    std::vector<std::pair<Sav::Pouch, int>> Sav2::pouches() const
+    SmallVector<std::pair<Sav::Pouch, int>, 15> Sav2::pouches() const
     {
         return {
-            {Pouch::TM,         57},
-            {Pouch::NormalItem, 20},
-            {Pouch::KeyItem,    26},
-            {Pouch::Ball,       12},
-            {Pouch::PCItem,     50}
+            std::pair{Pouch::TM,         57},
+            std::pair{Pouch::NormalItem, 20},
+            std::pair{Pouch::KeyItem,    26},
+            std::pair{Pouch::Ball,       12},
+            std::pair{Pouch::PCItem,     50}
         };
     }
 
-    std::map<Sav::Pouch, std::vector<int>> Sav2::validItems2() const
+    const std::map<Sav::Pouch, std::vector<int>>& Sav2::validItems2() const
     {
-        std::map<Sav::Pouch, std::vector<int>> items = {
-            {Pouch::TM,         {191, 192, 193, 194, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206,
+        static std::map<Sav::Pouch, std::vector<int>> itemsNonC = std::invoke(
+            []
+            {
+                std::map<Sav::Pouch, std::vector<int>> items = {
+                    {Pouch::TM,
+                     {191, 192, 193, 194, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206,
                             207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 221,
                             222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235,
                             236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249}},
-            {Pouch::NormalItem,
-             {3, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 26, 27, 28,
-                    29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 46, 47, 48, 49,
-                    51, 52, 53, 57, 60, 62, 63, 64, 65, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82,
-                    83, 84, 85, 86, 87, 88, 89, 91, 92, 93, 94, 95, 96, 97, 98, 99, 101, 102, 103,
-                    104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 117, 118, 119, 121, 122,
-                    123, 124, 125, 126, 131, 132, 138, 139, 140, 143, 144, 146, 150, 151, 152, 156,
-                    158, 163, 167, 168, 169, 170, 172, 173, 174, 180, 181, 182, 183, 184, 185, 186,
-                    187, 188, 189}                                                                                      },
-            {Pouch::KeyItem,
-             {7, 54, 55, 58, 59, 61, 66, 67, 68, 69, 71, 127, 128, 130, 133, 134, 175, 178}                             },
-            {Pouch::Ball,       {1, 2, 4, 5, 157, 159, 160, 161, 164, 165, 166}                                         },
-            {Pouch::PCItem,     {}                                                                                      }
-        };
+                    {Pouch::NormalItem,
+                     {3, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 26,
+                            27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44,
+                            46, 47, 48, 49, 51, 52, 53, 57, 60, 62, 63, 64, 65, 72, 73, 74, 75, 76,
+                            77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 91, 92, 93, 94, 95,
+                            96, 97, 98, 99, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111,
+                            112, 113, 114, 117, 118, 119, 121, 122, 123, 124, 125, 126, 131, 132,
+                            138, 139, 140, 143, 144, 146, 150, 151, 152, 156, 158, 163, 167, 168,
+                            169, 170, 172, 173, 174, 180, 181, 182, 183, 184, 185, 186, 187, 188,
+                            189}                                                                 },
+                    {Pouch::KeyItem,    {7, 54, 55, 58, 59, 61, 66, 67, 68, 69, 71, 127, 128, 130, 133,
+                                         134, 175, 178}      },
+                    {Pouch::Ball,       {1, 2, 4, 5, 157, 159, 160, 161, 164, 165, 166}          },
+                    {Pouch::PCItem,     {}                                                       }
+                };
 
-        // Crystal added four key items
-        if (version() == GameVersion::C)
-        {
-            std::vector<int> crystalKey = {70, 115, 116, 129};
-            items[Pouch::KeyItem].insert(
-                items[Pouch::KeyItem].end(), crystalKey.begin(), crystalKey.end());
-        }
+                // PC can hold any item
+                items[Pouch::PCItem].insert(
+                    items[Pouch::PCItem].end(), items[Pouch::TM].begin(), items[Pouch::TM].end());
+                items[Pouch::PCItem].insert(items[Pouch::PCItem].end(),
+                    items[Pouch::NormalItem].begin(), items[Pouch::NormalItem].end());
+                items[Pouch::PCItem].insert(items[Pouch::PCItem].end(),
+                    items[Pouch::KeyItem].begin(), items[Pouch::KeyItem].end());
+                items[Pouch::PCItem].insert(items[Pouch::PCItem].end(), items[Pouch::Ball].begin(),
+                    items[Pouch::Ball].end());
 
-        // PC can hold any item
-        items[Pouch::PCItem].insert(
-            items[Pouch::PCItem].end(), items[Pouch::TM].begin(), items[Pouch::TM].end());
-        items[Pouch::PCItem].insert(items[Pouch::PCItem].end(), items[Pouch::NormalItem].begin(),
-            items[Pouch::NormalItem].end());
-        items[Pouch::PCItem].insert(
-            items[Pouch::PCItem].end(), items[Pouch::KeyItem].begin(), items[Pouch::KeyItem].end());
-        items[Pouch::PCItem].insert(
-            items[Pouch::PCItem].end(), items[Pouch::Ball].begin(), items[Pouch::Ball].end());
+                return items;
+            });
 
-        return items;
+        static std::map<Sav::Pouch, std::vector<int>> itemsC = std::invoke(
+            []
+            {
+                std::map<Sav::Pouch, std::vector<int>> items = {
+                    {Pouch::TM,
+                     {191, 192, 193, 194, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206,
+                            207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 221,
+                            222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235,
+                            236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249}},
+                    {Pouch::NormalItem,
+                     {3, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 26,
+                            27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44,
+                            46, 47, 48, 49, 51, 52, 53, 57, 60, 62, 63, 64, 65, 72, 73, 74, 75, 76,
+                            77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 91, 92, 93, 94, 95,
+                            96, 97, 98, 99, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111,
+                            112, 113, 114, 117, 118, 119, 121, 122, 123, 124, 125, 126, 131, 132,
+                            138, 139, 140, 143, 144, 146, 150, 151, 152, 156, 158, 163, 167, 168,
+                            169, 170, 172, 173, 174, 180, 181, 182, 183, 184, 185, 186, 187, 188,
+                            189}                                                                 },
+                    {Pouch::KeyItem,    {7, 54, 55, 58, 59, 61, 66, 67, 68, 69, 71, 127, 128, 130, 133,
+                                         134, 175, 178,
+                                         // Crystal added four key items
+                                         70, 115, 116, 129}  },
+                    {Pouch::Ball,       {1, 2, 4, 5, 157, 159, 160, 161, 164, 165, 166}          },
+                    {Pouch::PCItem,     {}                                                       }
+                };
+
+                // PC can hold any item
+                items[Pouch::PCItem].insert(
+                    items[Pouch::PCItem].end(), items[Pouch::TM].begin(), items[Pouch::TM].end());
+                items[Pouch::PCItem].insert(items[Pouch::PCItem].end(),
+                    items[Pouch::NormalItem].begin(), items[Pouch::NormalItem].end());
+                items[Pouch::PCItem].insert(items[Pouch::PCItem].end(),
+                    items[Pouch::KeyItem].begin(), items[Pouch::KeyItem].end());
+                items[Pouch::PCItem].insert(items[Pouch::PCItem].end(), items[Pouch::Ball].begin(),
+                    items[Pouch::Ball].end());
+
+                return items;
+            });
+
+        return version() == GameVersion::C ? itemsC : itemsNonC;
     }
 
-    std::map<Sav::Pouch, std::vector<int>> Sav2::validItems() const
+    const std::map<Sav::Pouch, std::vector<int>>& Sav2::validItems() const
     {
-        std::map<Sav::Pouch, std::vector<int>> items = {
-            {Pouch::TM,         {328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342,
+        static std::map<Sav::Pouch, std::vector<int>> itemsNonC = std::invoke(
+            []
+            {
+                std::map<Sav::Pouch, std::vector<int>> items = {
+                    {Pouch::TM,
+                     {328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342,
+                            343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356,
+                            357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370,
+                            371, 372, 373, 374, 375, 376, 377, 420, 421, 422, 423, 424, 425, 426}    },
+                    {Pouch::NormalItem,
+                     {213, 81, 18, 19, 20, 21, 22, 23, 24, 25, 26, 17, 78, 79, 41, 82, 83, 84,
+                            45, 46, 47, 48, 256, 49, 50, 60, 85, 257, 92, 63, 27, 28, 29, 55, 76,
+                            77, 56, 30, 31, 32, 57, 58, 59, 61, 216, 891, 51, 38, 39, 40, 33, 217,
+                            151, 890, 237, 244, 149, 153, 152, 245, 221, 156, 150, 485, 86, 87, 222,
+                            487, 223, 486, 488, 224, 243, 248, 490, 241, 491, 489, 240, 473, 259,
+                            228, 246, 242, 157, 88, 89, 229, 247, 504, 239, 258, 230, 34, 35, 36,
+                            37, 238, 231, 90, 91, 249, 43, 232, 233, 250, 234, 154, 235, 44, 236,
+                            80, 252, 155, 158}                                                       },
+                    {Pouch::KeyItem,    {450, 444, 445, 446, 447, 478, 464, 456, 484, 482, 475, 481,
+                                         479, 476, 480, 477, 483}},
+                    {Pouch::Ball,       {1, 2, 3, 4, 495, 493, 494, 492, 497, 498, 496}              },
+                    {Pouch::PCItem,     {}                                                           }
+                };
+
+                items[Pouch::PCItem].insert(
+                    items[Pouch::PCItem].end(), items[Pouch::TM].begin(), items[Pouch::TM].end());
+                items[Pouch::PCItem].insert(items[Pouch::PCItem].end(),
+                    items[Pouch::NormalItem].begin(), items[Pouch::NormalItem].end());
+                items[Pouch::PCItem].insert(items[Pouch::PCItem].end(),
+                    items[Pouch::KeyItem].begin(), items[Pouch::KeyItem].end());
+                items[Pouch::PCItem].insert(items[Pouch::PCItem].end(), items[Pouch::Ball].begin(),
+                    items[Pouch::Ball].end());
+
+                return items;
+            });
+
+        static std::map<Sav::Pouch, std::vector<int>> itemsC = std::invoke(
+            []
+            {
+                std::map<Sav::Pouch, std::vector<int>> items = {
+                    {Pouch::TM,
+                     {328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342,
                             343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356,
                             357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370,
                             371, 372, 373, 374, 375, 376, 377, 420, 421, 422, 423, 424, 425, 426}},
-            {Pouch::NormalItem,
-             {213, 81, 18, 19, 20, 21, 22, 23, 24, 25, 26, 17, 78, 79, 41, 82, 83, 84, 45, 46,
-                    47, 48, 256, 49, 50, 60, 85, 257, 92, 63, 27, 28, 29, 55, 76, 77, 56, 30, 31,
-                    32, 57, 58, 59, 61, 216, 891, 51, 38, 39, 40, 33, 217, 151, 890, 237, 244, 149,
-                    153, 152, 245, 221, 156, 150, 485, 86, 87, 222, 487, 223, 486, 488, 224, 243,
-                    248, 490, 241, 491, 489, 240, 473, 259, 228, 246, 242, 157, 88, 89, 229, 247,
-                    504, 239, 258, 230, 34, 35, 36, 37, 238, 231, 90, 91, 249, 43, 232, 233, 250,
-                    234, 154, 235, 44, 236, 80, 252, 155, 158}                                                          },
-            {Pouch::KeyItem,    {450, 444, 445, 446, 447, 478, 464, 456, 484, 482, 475, 481, 479, 476,
-                                 480, 477, 483}                                             },
-            {Pouch::Ball,       {1, 2, 3, 4, 495, 493, 494, 492, 497, 498, 496}                                         },
-            {Pouch::PCItem,     {}                                                                                      }
-        };
+                    {Pouch::NormalItem,
+                     {213, 81, 18, 19, 20, 21, 22, 23, 24, 25, 26, 17, 78, 79, 41, 82, 83, 84,
+                            45, 46, 47, 48, 256, 49, 50, 60, 85, 257, 92, 63, 27, 28, 29, 55, 76,
+                            77, 56, 30, 31, 32, 57, 58, 59, 61, 216, 891, 51, 38, 39, 40, 33, 217,
+                            151, 890, 237, 244, 149, 153, 152, 245, 221, 156, 150, 485, 86, 87, 222,
+                            487, 223, 486, 488, 224, 243, 248, 490, 241, 491, 489, 240, 473, 259,
+                            228, 246, 242, 157, 88, 89, 229, 247, 504, 239, 258, 230, 34, 35, 36,
+                            37, 238, 231, 90, 91, 249, 43, 232, 233, 250, 234, 154, 235, 44, 236,
+                            80, 252, 155, 158}                                                   },
+                    {Pouch::KeyItem,    {450, 444, 445, 446, 447, 478, 464, 456, 484, 482, 475, 481,
+                                         479, 476, 480, 477, 483,
+                                         // crystal added four key items
+                                         474, 472}           },
+                    {Pouch::Ball,       {1, 2, 3, 4, 495, 493, 494, 492, 497, 498, 496}          },
+                    {Pouch::PCItem,     {}                                                       }
+                };
 
-        if (version() == GameVersion::C)
-        {
-            std::vector<int> crystalKey = {474, 472};
-            items[Pouch::KeyItem].insert(
-                items[Pouch::KeyItem].end(), crystalKey.begin(), crystalKey.end());
-        }
+                items[Pouch::PCItem].insert(
+                    items[Pouch::PCItem].end(), items[Pouch::TM].begin(), items[Pouch::TM].end());
+                items[Pouch::PCItem].insert(items[Pouch::PCItem].end(),
+                    items[Pouch::NormalItem].begin(), items[Pouch::NormalItem].end());
+                items[Pouch::PCItem].insert(items[Pouch::PCItem].end(),
+                    items[Pouch::KeyItem].begin(), items[Pouch::KeyItem].end());
+                items[Pouch::PCItem].insert(items[Pouch::PCItem].end(), items[Pouch::Ball].begin(),
+                    items[Pouch::Ball].end());
 
-        items[Pouch::PCItem].insert(
-            items[Pouch::PCItem].end(), items[Pouch::TM].begin(), items[Pouch::TM].end());
-        items[Pouch::PCItem].insert(items[Pouch::PCItem].end(), items[Pouch::NormalItem].begin(),
-            items[Pouch::NormalItem].end());
-        items[Pouch::PCItem].insert(
-            items[Pouch::PCItem].end(), items[Pouch::KeyItem].begin(), items[Pouch::KeyItem].end());
-        items[Pouch::PCItem].insert(
-            items[Pouch::PCItem].end(), items[Pouch::Ball].begin(), items[Pouch::Ball].end());
-        return items;
+                return items;
+            });
+
+        return version() == GameVersion::C ? itemsC : itemsNonC;
     }
 
     u8 Sav2::pouchEntryCount(Pouch pouch) const
