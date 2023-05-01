@@ -85,6 +85,16 @@ namespace pksm
             }
         }
 
+        using Item::operator Item1;
+        using Item::operator Item2;
+        using Item::operator Item3;
+        using Item::operator Item4;
+        using Item::operator Item5;
+        using Item::operator Item6;
+        using Item::operator Item7;
+        using Item::operator Item7b;
+        using Item::operator Item8;
+
         [[nodiscard]] Generation generation(void) const override { return Generation::ONE; }
 
         [[nodiscard]] u16 maxCount(void) const override { return 0xFF; }
@@ -127,6 +137,16 @@ namespace pksm
                 itemData = {0, 0};
             }
         }
+
+        using Item::operator Item1;
+        using Item::operator Item2;
+        using Item::operator Item3;
+        using Item::operator Item4;
+        using Item::operator Item5;
+        using Item::operator Item6;
+        using Item::operator Item7;
+        using Item::operator Item7b;
+        using Item::operator Item8;
 
         [[nodiscard]] Generation generation(void) const override { return Generation::TWO; }
 
@@ -175,6 +195,16 @@ namespace pksm
                 key      = securityKey;
             }
         }
+
+        using Item::operator Item1;
+        using Item::operator Item2;
+        using Item::operator Item3;
+        using Item::operator Item4;
+        using Item::operator Item5;
+        using Item::operator Item6;
+        using Item::operator Item7;
+        using Item::operator Item7b;
+        using Item::operator Item8;
 
         [[nodiscard]] Generation generation(void) const override { return Generation::THREE; }
 
@@ -232,6 +262,16 @@ namespace pksm
             }
         }
 
+        using Item::operator Item1;
+        using Item::operator Item2;
+        using Item::operator Item3;
+        using Item::operator Item4;
+        using Item::operator Item5;
+        using Item::operator Item6;
+        using Item::operator Item7;
+        using Item::operator Item7b;
+        using Item::operator Item8;
+
         [[nodiscard]] Generation generation(void) const override { return Generation::FOUR; }
 
         [[nodiscard]] u16 maxCount(void) const override { return 0xFFFF; }
@@ -274,6 +314,16 @@ namespace pksm
             }
         }
 
+        using Item::operator Item1;
+        using Item::operator Item2;
+        using Item::operator Item3;
+        using Item::operator Item4;
+        using Item::operator Item5;
+        using Item::operator Item6;
+        using Item::operator Item7;
+        using Item::operator Item7b;
+        using Item::operator Item8;
+
         [[nodiscard]] Generation generation(void) const override { return Generation::FIVE; }
 
         [[nodiscard]] u16 maxCount(void) const override { return 0xFFFF; }
@@ -315,6 +365,16 @@ namespace pksm
                 itemData = {0, 0, 0, 0};
             }
         }
+
+        using Item::operator Item1;
+        using Item::operator Item2;
+        using Item::operator Item3;
+        using Item::operator Item4;
+        using Item::operator Item5;
+        using Item::operator Item6;
+        using Item::operator Item7;
+        using Item::operator Item7b;
+        using Item::operator Item8;
 
         [[nodiscard]] Generation generation(void) const override { return Generation::SIX; }
 
@@ -400,6 +460,14 @@ namespace pksm
             return {std::span(data)};
         }
 
+        using Item::operator Item1;
+        using Item::operator Item2;
+        using Item::operator Item3;
+        using Item::operator Item4;
+        using Item::operator Item5;
+        using Item::operator Item6;
+        using Item::operator Item7;
+
         [[nodiscard]] operator Item7b(void) const override;
         [[nodiscard]] operator Item8(void) const override;
     };
@@ -459,6 +527,14 @@ namespace pksm
             return {std::span(data)};
         }
 
+        using Item::operator Item1;
+        using Item::operator Item2;
+        using Item::operator Item3;
+        using Item::operator Item4;
+        using Item::operator Item5;
+        using Item::operator Item6;
+        using Item::operator Item7b;
+
         [[nodiscard]] operator Item7(void) const override;
         [[nodiscard]] operator Item8(void) const override;
     };
@@ -517,6 +593,14 @@ namespace pksm
             LittleEndian::convertFrom<u32>(data, itemData);
             return {std::span(data)};
         }
+
+        using Item::operator Item1;
+        using Item::operator Item2;
+        using Item::operator Item3;
+        using Item::operator Item4;
+        using Item::operator Item5;
+        using Item::operator Item6;
+        using Item::operator Item8;
 
         [[nodiscard]] operator Item7(void) const override;
         [[nodiscard]] operator Item7b(void) const override;
