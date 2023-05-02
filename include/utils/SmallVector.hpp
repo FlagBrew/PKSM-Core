@@ -281,7 +281,10 @@ public:
     template <typename... Args>
     constexpr SmallVector(Args&&... args) noexcept(
         (noexcept(emplace_back(std::forward<decltype(args)>(args))) && ...))
-        requires ((std::convertible_to<decltype(args), T> || std::constructible_from<decltype(args), T>) && ...) && (sizeof...(Args) <= Size)
+        requires ((std::convertible_to<decltype(args), T> ||
+                      std::constructible_from<decltype(args), T>) &&
+                     ...) &&
+                 (sizeof...(Args) <= Size)
     {
         (emplace_back(std::forward<decltype(args)>(args)) && ...);
     }
@@ -333,6 +336,14 @@ public:
         }
     }
 
+    constexpr void clear() noexcept(noexcept(pop_back()))
+    {
+        while (size())
+        {
+            pop_back();
+        }
+    }
+
     constexpr const_reference operator[](size_type i) const noexcept { return alldata[i].a; }
 
     constexpr reference operator[](size_type i) noexcept { return alldata[i].a; }
@@ -340,6 +351,8 @@ public:
     constexpr size_type size() const noexcept { return populated; }
 
     constexpr size_type capacity() const noexcept { return Size; }
+
+    constexpr bool empty() const noexcept { return size() == 0; }
 
     constexpr iterator begin() noexcept { return iterator{alldata.data()}; }
 
