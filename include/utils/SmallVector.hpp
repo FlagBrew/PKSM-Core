@@ -35,148 +35,69 @@
 #include <span>
 #include <type_traits>
 
-namespace SmallVectorInternals
-{
-    template <typename T>
-    union STVData
-    {
-        T a;
-        unsigned char b;
-
-        constexpr STVData() : b() {}
-
-        constexpr ~STVData() {}
-    };
-
-    template <typename T>
-    struct STVIterator
-    {
-    private:
-        using data_type =
-            std::conditional_t<std::is_const_v<T>, const STVData<std::remove_cv_t<T>>, STVData<T>>;
-        data_type* data;
-
-    public:
-        constexpr STVIterator() = default;
-
-        constexpr explicit STVIterator(data_type* d) : data(d) {}
-
-        using difference_type   = decltype(data - data);
-        using value_type        = T;
-        using pointer           = T*;
-        using const_pointer     = const T*;
-        using reference         = value_type&;
-        using const_reference   = const value_type&;
-        using iterator_category = std::random_access_iterator_tag;
-        using iterator_concept  = std::random_access_iterator_tag;
-
-        constexpr reference operator*() noexcept { return data->a; }
-
-        constexpr const_reference operator*() const noexcept { return data->a; }
-
-        constexpr pointer operator->() noexcept { return &data->a; }
-
-        constexpr const_pointer operator->() const noexcept { return &data->a; }
-
-        constexpr reference operator[](difference_type i) noexcept { return (data + i)->a; }
-
-        constexpr const_reference operator[](difference_type i) const noexcept
-        {
-            return (data + i)->a;
-        }
-
-        constexpr bool operator==(const STVIterator&) const noexcept  = default;
-        constexpr auto operator<=>(const STVIterator&) const noexcept = default;
-
-        constexpr STVIterator& operator++() noexcept
-        {
-            data++;
-            return *this;
-        }
-
-        constexpr STVIterator operator++(int) noexcept
-        {
-            STVIterator ret;
-            data++;
-            return ret;
-        }
-
-        constexpr STVIterator& operator--() noexcept
-        {
-            data--;
-            return *this;
-        }
-
-        constexpr STVIterator operator--(int) noexcept
-        {
-            STVIterator ret;
-            data--;
-            return ret;
-        }
-
-        constexpr difference_type operator-(const STVIterator& o) const noexcept
-        {
-            return data - o.data;
-        }
-
-        constexpr STVIterator& operator+=(difference_type d) noexcept
-        {
-            data += d;
-            return *this;
-        }
-
-        constexpr STVIterator& operator-=(difference_type d) noexcept
-        {
-            data -= d;
-            return *this;
-        }
-    };
-} // namespace SmallVectorInternals
-
-template <typename T>
-constexpr SmallVectorInternals::STVIterator<T> operator+(
-    const SmallVectorInternals::STVIterator<T>& it,
-    typename SmallVectorInternals::STVIterator<T>::difference_type i)
-{
-    auto ret = it;
-    ret      += i;
-    return ret;
-}
-
-template <typename T>
-constexpr SmallVectorInternals::STVIterator<T> operator+(
-    typename SmallVectorInternals::STVIterator<T>::difference_type i,
-    const typename SmallVectorInternals::STVIterator<T>& it)
-{
-    auto ret = it;
-    ret      += i;
-    return ret;
-}
-
-template <typename T>
-constexpr SmallVectorInternals::STVIterator<T> operator-(
-    const SmallVectorInternals::STVIterator<T>& it,
-    typename SmallVectorInternals::STVIterator<T>::difference_type i)
-{
-    auto ret = it;
-    ret      -= i;
-    return ret;
-}
-
 template <typename T, std::size_t Size>
-    requires std::is_destructible_v<T>
+    requires std::same_as<T, std::remove_cvref_t<T>> && (Size > 0) && std::is_destructible_v<T>
 class SmallVector
 {
 private:
-    static_assert(sizeof(SmallVectorInternals::STVData<T>) == sizeof(T),
-        "A union of a char and a T was larger than T. Why is your compiler bad?");
+    template <typename U, std::size_t OSize>
+        requires std::same_as<U, std::remove_cvref_t<U>> && (OSize > 0) && std::is_destructible_v<U>
+    friend class SmallVector;
 
-    std::array<SmallVectorInternals::STVData<T>, Size> alldata;
-    std::size_t populated{0};
+    // Once again, I really wish anonymous structures were a thing
+    // This allows the data array to have its lifetime start without its elements' lifetime starting
+    union SVData
+    {
+        struct SubData
+        {
+            T data[Size];
+            std::size_t populated;
+        } data;
 
-    constexpr SmallVector& self() { return *this; }
+        constexpr SVData() { data.populated = 0; }
 
-    constexpr const SmallVector& self() const { return *this; }
+        constexpr ~SVData() {}
+    } alldata;
+
+    constexpr std::size_t& populated() { return alldata.data.populated; }
+
+    constexpr std::size_t populated() const { return alldata.data.populated; }
+
+    static constexpr bool nothrow_movable =
+        std::is_nothrow_move_constructible_v<T> &&
+        (!std::is_move_assignable_v<T> || std::is_nothrow_move_assignable_v<T>);
+
+    static constexpr bool nothrow_copyable =
+        std::is_nothrow_copy_constructible_v<T> &&
+        (!std::is_copy_assignable_v<T> || std::is_nothrow_copy_assignable_v<T>);
+
+    static constexpr void nothrow_migrate(T* dest, T&& src) noexcept(nothrow_movable)
+    {
+        if constexpr (std::is_nothrow_move_assignable_v<T> ||
+                      (std::is_move_assignable_v<T> && !std::is_nothrow_move_constructible_v<T>))
+        {
+            *dest = std::forward<T&&>(src);
+        }
+        else
+        {
+            std::destroy_at(dest);
+            std::construct_at(dest, std::move(*src));
+        }
+    }
+
+    static constexpr void nothrow_migrate(T* dest, const T& src) noexcept(nothrow_copyable)
+    {
+        if constexpr (std::is_nothrow_copy_assignable_v<T> ||
+                      (std::is_copy_assignable_v<T> && !std::is_nothrow_copy_constructible_v<T>))
+        {
+            *dest = src;
+        }
+        else
+        {
+            std::destroy_at(dest);
+            std::construct_at(dest, *src);
+        }
+    }
 
 public:
     using value_type             = T;
@@ -186,8 +107,8 @@ public:
     using const_reference        = const value_type&;
     using pointer                = value_type*;
     using const_pointer          = const value_type*;
-    using iterator               = SmallVectorInternals::STVIterator<value_type>;
-    using const_iterator         = SmallVectorInternals::STVIterator<const value_type>;
+    using iterator               = T*;
+    using const_iterator         = const T*;
     using reverse_iterator       = std::reverse_iterator<iterator>;
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
@@ -195,37 +116,37 @@ public:
 
     constexpr ~SmallVector() noexcept(std::is_nothrow_destructible_v<T>)
     {
-        for (std::size_t i = 0; i < size(); i++)
-        {
-            std::destroy_at(&self()[i]);
-        }
+        std::destroy_n(data(), size());
     }
 
-    constexpr SmallVector(const SmallVector& o) noexcept(noexcept(push_back(o[0])))
-        requires std::is_copy_constructible_v<T>
+    template <std::size_t OSize = Size>
+        requires (OSize <= Size) && std::is_copy_constructible_v<T>
+    constexpr SmallVector(const SmallVector<T, OSize>& o) noexcept(noexcept(emplace_back(o[0])))
     {
         for (std::size_t i = 0; i < o.size(); i++)
         {
-            push_back(o[i]);
+            emplace_back(o[i]);
         }
     }
 
-    constexpr SmallVector(SmallVector&& o) noexcept(
+    template <std::size_t OSize = Size>
+        requires (OSize <= Size) && std::is_move_constructible_v<T>
+    constexpr SmallVector(SmallVector<T, OSize>&& o) noexcept(
         noexcept(emplace_back(std::move(o[0]))) && std::is_nothrow_destructible_v<T>)
-        requires std::is_move_constructible_v<T>
     {
         for (std::size_t i = 0; i < o.size(); i++)
         {
             emplace_back(std::move(o[i]));
-            std::destroy_at(&o[i]);
         }
-        o.populated = 0;
+        std::destroy_n(o.data(), o.size());
+        o.populated() = 0;
     }
 
-    constexpr SmallVector& operator=(const SmallVector& o) noexcept(
-        std::is_nothrow_destructible_v<T>&& std::is_nothrow_copy_constructible_v<T>&&
-            std::is_nothrow_copy_assignable_v<T>)
-        requires std::is_copy_constructible_v<T> && std::is_copy_assignable_v<T>
+    template <std::size_t OSize = Size>
+        requires (OSize <= Size) && std::is_copy_constructible_v<T>
+    constexpr SmallVector& operator=(const SmallVector<T, OSize>& o) noexcept(
+        noexcept(nothrow_migrate(std::addressof(data()[0]), o[0])) &&
+        std::is_nothrow_destructible_v<T>)
     {
         std::size_t minsize     = std::min(size(), o.size());
         std::size_t targetsize  = o.size();
@@ -233,25 +154,28 @@ public:
 
         for (std::size_t i = 0; i < minsize; i++)
         {
-            self()[i] = o[i];
+            nothrow_migrate(&data()[i], o[i]);
         }
         for (std::size_t i = minsize; i < targetsize; i++)
         {
-            std::construct_at(&self()[i], o[i]);
+            std::construct_at(&data()[i], o[i]);
         }
+        // not destroy_n to avoid overflow
         for (std::size_t i = targetsize; i < currentsize; i++)
         {
-            std::destroy_at(&self()[i]);
+            std::destroy_at(&data()[i]);
         }
 
-        populated = o.populated;
+        populated() = o.populated();
 
         return *this;
     }
 
-    constexpr SmallVector& operator=(SmallVector&& o) noexcept(std::is_nothrow_destructible_v<T>&&
-            std::is_nothrow_move_constructible_v<T>&& std::is_nothrow_move_assignable_v<T>)
-        requires std::is_move_constructible_v<T> || std::is_move_assignable_v<T>
+    template <std::size_t OSize = Size>
+        requires (OSize <= Size) && std::is_move_constructible_v<T>
+    constexpr SmallVector& operator=(SmallVector<T, OSize>&& o) noexcept(
+        noexcept(nothrow_migrate(std::addressof(data()[0]), std::move(o[0]))) &&
+        std::is_nothrow_destructible_v<T>)
     {
         std::size_t minsize     = std::min(size(), o.size());
         std::size_t targetsize  = o.size();
@@ -259,32 +183,30 @@ public:
 
         for (std::size_t i = 0; i < minsize; i++)
         {
-            self()[i] = std::move(o[i]);
+            nothrow_migrate(&data()[i], std::move(o[i]));
             std::destroy_at(&o[i]);
         }
         for (std::size_t i = minsize; i < targetsize; i++)
         {
-            std::construct_at(&self()[i], std::move(o[i]));
+            std::construct_at(&data()[i], std::move(o[i]));
             std::destroy_at(&o[i]);
         }
+        // not destroy_n to avoid overflow
         for (std::size_t i = targetsize; i < currentsize; i++)
         {
-            std::destroy_at(self()[i]);
+            std::destroy_at(data()[i]);
         }
 
-        populated   = o.populated;
-        o.populated = 0;
+        populated()   = o.populated();
+        o.populated() = 0;
 
         return *this;
     }
 
     template <typename... Args>
+        requires (std::convertible_to<Args, T> && ...) && (sizeof...(Args) <= Size)
     constexpr SmallVector(Args&&... args) noexcept(
         (noexcept(emplace_back(std::forward<decltype(args)>(args))) && ...))
-        requires ((std::convertible_to<decltype(args), T> ||
-                      std::constructible_from<decltype(args), T>) &&
-                     ...) &&
-                 (sizeof...(Args) <= Size)
     {
         (emplace_back(std::forward<decltype(args)>(args)) && ...);
     }
@@ -292,8 +214,8 @@ public:
     template <std::size_t SpanSize, typename Contained>
         requires std::convertible_to<Contained, T> && (SpanSize <= Size) &&
                  (SpanSize != std::dynamic_extent)
-    constexpr SmallVector(const std::span<Contained, SpanSize>& in) noexcept(
-        noexcept(emplace_back(in[0])))
+    constexpr explicit(!std::is_same_v<std::remove_cvref_t<Contained>, T>) SmallVector(
+        const std::span<Contained, SpanSize>& in) noexcept(noexcept(emplace_back(in[0])))
     {
         for (std::size_t i = 0; i < in.size(); i++)
         {
@@ -307,7 +229,19 @@ public:
     {
         if (size() < capacity())
         {
-            std::construct_at(&self()[populated++], std::forward<const T&>(value));
+            std::construct_at(&data()[populated()++], std::forward<const T&>(value));
+            return true;
+        }
+
+        return false;
+    }
+
+    constexpr bool push_back(T&& value) noexcept(std::is_nothrow_move_constructible_v<T>)
+        requires std::is_move_constructible_v<T>
+    {
+        if (size() < capacity())
+        {
+            std::construct_at(&data()[populated()++], std::forward<T&&>(value));
             return true;
         }
 
@@ -321,7 +255,7 @@ public:
     {
         if (size() < capacity())
         {
-            std::construct_at(&self()[populated++], std::forward<decltype(args)>(args)...);
+            std::construct_at(&data()[populated()++], std::forward<decltype(args)>(args)...);
             return true;
         }
 
@@ -330,44 +264,193 @@ public:
 
     constexpr void pop_back() noexcept(std::is_nothrow_destructible_v<T>)
     {
-        if (size() > 0)
+        if (!empty())
         {
-            std::destroy_at(&self()[--populated]);
+            std::destroy_at(&data()[--populated()]);
         }
     }
 
-    constexpr void clear() noexcept(noexcept(pop_back()))
+    constexpr void clear() noexcept(std::is_nothrow_destructible_v<T>)
     {
-        while (size())
-        {
-            pop_back();
-        }
+        std::destroy_n(begin(), size());
+        populated() = 0;
     }
 
-    constexpr const_reference operator[](size_type i) const noexcept { return alldata[i].a; }
+    constexpr iterator erase(const_iterator pos) noexcept(
+        noexcept(nothrow_migrate(std::addressof(data()[0]), std::move(data()[0]))) &&
+        std::is_nothrow_destructible_v<T>)
+    {
+        iterator movedest  = begin() + (pos - begin());
+        iterator movestart = movedest + 1;
+        iterator moveend   = end();
 
-    constexpr reference operator[](size_type i) noexcept { return alldata[i].a; }
+        while (movestart != moveend)
+        {
+            nothrow_migrate(std::addressof(*(movedest++)), std::move(*(movestart++)));
+        }
 
-    constexpr size_type size() const noexcept { return populated; }
+        std::destroy_at(&data()[--populated()]);
+
+        return begin() + (pos - begin());
+    }
+
+    constexpr iterator erase(const_iterator first, const_iterator last) noexcept(
+        noexcept(nothrow_migrate(std::addressof(data()[0]), std::move(data()[0]))) &&
+        std::is_nothrow_destructible_v<T>)
+    {
+        if (last <= first)
+        {
+            return begin() + (last - begin());
+        }
+        iterator movedest  = begin() + (first - begin());
+        iterator movestart = begin() + (last - begin());
+        iterator moveend   = end();
+
+        while (movestart != moveend)
+        {
+            nothrow_migrate(std::addressof(*(movedest++)), std::move(*(movestart++)));
+        }
+
+        std::destroy_n(&data()[populated() - (last - first)], last - first);
+
+        populated() -= (last - first);
+
+        return begin() + (last - first);
+    }
+
+    constexpr bool insert(const_iterator pos, const T& data) noexcept(
+        noexcept(nothrow_migrate(std::addressof(data()[0]), std::move(data()[0]))) && noexcept(
+            nothrow_migrate(std::addressof(data()[0]), data()[0])))
+        requires std::is_copy_constructible_v<T>
+    {
+        if (pos == end())
+        {
+            return push_back(std::forward<const T&>(data));
+        }
+        if (size() < capacity())
+        {
+            for (auto i = end() - 1; i >= pos; i--)
+            {
+                // Special case to increase size
+                if (i + 1 == end())
+                {
+                    emplace_back(std::move(*(end() - 1)));
+                }
+                else
+                {
+                    nothrow_migrate(std::addressof(*(i + 1)), std::move(*i));
+                }
+            }
+
+            nothrow_migrate(begin() + (pos - begin()), data);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    constexpr bool insert(const_iterator pos, T&& data) noexcept(
+        noexcept(nothrow_migrate(std::addressof(data()[0]), std::move(data()[0]))))
+        requires std::is_move_constructible_v<T>
+    {
+        if (pos == end())
+        {
+            return push_back(std::forward<T&&>(data));
+        }
+        if (size() < capacity())
+        {
+            for (auto i = end() - 1; i >= pos; i--)
+            {
+                // Special case to increase size
+                if (i + 1 == end())
+                {
+                    emplace_back(std::move(*i));
+                }
+                else
+                {
+                    nothrow_migrate(std::addressof(*(i + 1)), std::move(*i));
+                }
+            }
+
+            nothrow_migrate(begin() + (pos - begin()), std::forward<T&&>(data));
+
+            return true;
+        }
+
+        return false;
+    }
+
+    template <typename... Args>
+    constexpr bool emplace(const_iterator pos, Args&&... args) noexcept(
+        noexcept(nothrow_migrate(std::addressof(data()[0]), std::move(data()[0]))) &&
+        std::is_nothrow_constructible_v<T, decltype(args)...>)
+        requires std::is_constructible_v<T, decltype(args)...>
+    {
+        if (pos == end())
+        {
+            return emplace_back(std::forward<decltype(args)>(args)...);
+        }
+        else if (size() < capacity())
+        {
+            for (auto i = end() - 1; i >= pos; i--)
+            {
+                // Special case to increase size
+                if (i + 1 == end())
+                {
+                    emplace_back(std::move(*i));
+                }
+                else
+                {
+                    nothrow_migrate(std::addressof(*(i + 1)), std::move(*i));
+                }
+            }
+
+            T data{std::forward<decltype(args)>(args)...};
+
+            nothrow_migrate(begin() + (pos - begin()), std::move(data));
+
+            return true;
+        }
+
+        return false;
+    }
+
+    constexpr T* data() noexcept { return alldata.data.data; }
+
+    constexpr const T* data() const noexcept { return alldata.data.data; }
+
+    constexpr const_reference operator[](std::size_t i) const noexcept { return data()[i]; }
+
+    constexpr reference operator[](std::size_t i) noexcept { return data()[i]; }
+
+    constexpr reference front() noexcept { return *begin(); }
+
+    constexpr const_reference front() const noexcept { return *begin(); }
+
+    constexpr reference back() noexcept { return *rbegin(); }
+
+    constexpr const_reference back() const noexcept { return *rbegin(); }
+
+    constexpr size_type size() const noexcept { return populated(); }
 
     constexpr size_type capacity() const noexcept { return Size; }
 
+    constexpr size_type max_size() const noexcept { return Size; }
+
     constexpr bool empty() const noexcept { return size() == 0; }
 
-    constexpr iterator begin() noexcept { return iterator{alldata.data()}; }
+    constexpr iterator begin() noexcept { return iterator{data()}; }
 
-    constexpr iterator end() noexcept { return iterator{alldata.data()} + size(); }
+    constexpr iterator end() noexcept { return iterator{data()} + size(); }
 
     constexpr reverse_iterator rbegin() noexcept { return std::make_reverse_iterator(end()); }
 
     constexpr reverse_iterator rend() noexcept { return std::make_reverse_iterator(begin()); }
 
-    constexpr const_iterator begin() const noexcept { return const_iterator{alldata.data()}; }
+    constexpr const_iterator begin() const noexcept { return const_iterator{data()}; }
 
-    constexpr const_iterator end() const noexcept
-    {
-        return const_iterator{alldata.data()} + size();
-    }
+    constexpr const_iterator end() const noexcept { return const_iterator{data()} + size(); }
 
     constexpr const_reverse_iterator rbegin() const noexcept
     {
@@ -379,12 +462,9 @@ public:
         return std::make_reverse_iterator(begin());
     }
 
-    constexpr const_iterator cbegin() const noexcept { return const_iterator{alldata.data()}; }
+    constexpr const_iterator cbegin() const noexcept { return const_iterator{data()}; }
 
-    constexpr const_iterator cend() const noexcept
-    {
-        return const_iterator{alldata.data()} + size();
-    }
+    constexpr const_iterator cend() const noexcept { return const_iterator{data()} + size(); }
 
     constexpr const_reverse_iterator crbegin() const noexcept
     {
