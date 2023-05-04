@@ -704,10 +704,27 @@ namespace pksm
 
     void PK1::writeG1Types()
     {
-        shiftedData[5] =
-            type1() < Type::Steel ? u8(type1()) : (20 + (u8(type1()) - u8(Type::Fire)));
-        shiftedData[6] =
-            type2() < Type::Steel ? u8(type2()) : (20 + (u8(type2()) - u8(Type::Fire)));
+        static constexpr auto convType = [](Type t) -> u8
+        {
+            switch (t)
+            {
+                case Type::Normal:
+                case Type::Fighting:
+                case Type::Flying:
+                case Type::Poison:
+                case Type::Ground:
+                case Type::Rock:
+                case Type::Bug:
+                    return u8(t);
+                case Type::Ghost:
+                case Type::Steel:
+                    return u8(t) + 1;
+                default:
+                    return u8(t) + 11;
+            }
+        };
+        shiftedData[5] = convType(type1());
+        shiftedData[6] = convType(type2());
     }
 
     // gen 2 stuff because this is a gen 2 construct
