@@ -714,8 +714,8 @@ namespace pksm
                 case Type::Poison:
                 case Type::Ground:
                 case Type::Rock:
-                case Type::Bug:
                     return u8(t);
+                case Type::Bug:
                 case Type::Ghost:
                 case Type::Steel:
                     return u8(t) + 1;
