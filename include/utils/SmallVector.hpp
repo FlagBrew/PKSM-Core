@@ -81,7 +81,7 @@ private:
         else
         {
             std::destroy_at(dest);
-            std::construct_at(dest, std::move(*src));
+            std::construct_at(dest, std::forward<T&&>(src));
         }
     }
 
@@ -90,12 +90,12 @@ private:
         if constexpr (std::is_nothrow_copy_assignable_v<T> ||
                       (std::is_copy_assignable_v<T> && !std::is_nothrow_copy_constructible_v<T>))
         {
-            *dest = src;
+            *dest = std::forward<const T&>(src);
         }
         else
         {
             std::destroy_at(dest);
-            std::construct_at(dest, *src);
+            std::construct_at(dest, std::forward<const T&>(src));
         }
     }
 
@@ -154,16 +154,16 @@ public:
 
         for (std::size_t i = 0; i < minsize; i++)
         {
-            nothrow_migrate(&data()[i], o[i]);
+            nothrow_migrate(std::addressof(data()[i]), o[i]);
         }
         for (std::size_t i = minsize; i < targetsize; i++)
         {
-            std::construct_at(&data()[i], o[i]);
+            std::construct_at(std::addressof(data()[i]), o[i]);
         }
         // not destroy_n to avoid overflow
         for (std::size_t i = targetsize; i < currentsize; i++)
         {
-            std::destroy_at(&data()[i]);
+            std::destroy_at(std::addressof(data()[i]));
         }
 
         populated() = o.populated();
@@ -183,18 +183,18 @@ public:
 
         for (std::size_t i = 0; i < minsize; i++)
         {
-            nothrow_migrate(&data()[i], std::move(o[i]));
-            std::destroy_at(&o[i]);
+            nothrow_migrate(std::addressof(data()[i]), std::move(o[i]));
+            std::destroy_at(std::addressof(o[i]));
         }
         for (std::size_t i = minsize; i < targetsize; i++)
         {
-            std::construct_at(&data()[i], std::move(o[i]));
-            std::destroy_at(&o[i]);
+            std::construct_at(std::addressof(data()[i]), std::move(o[i]));
+            std::destroy_at(std::addressof(o[i]));
         }
         // not destroy_n to avoid overflow
         for (std::size_t i = targetsize; i < currentsize; i++)
         {
-            std::destroy_at(data()[i]);
+            std::destroy_at(std::addressof(data()[i]));
         }
 
         populated()   = o.populated();
@@ -229,7 +229,7 @@ public:
     {
         if (size() < capacity())
         {
-            std::construct_at(&data()[populated()++], std::forward<const T&>(value));
+            std::construct_at(std::addressof(data()[populated()++]), std::forward<const T&>(value));
             return true;
         }
 
@@ -241,7 +241,7 @@ public:
     {
         if (size() < capacity())
         {
-            std::construct_at(&data()[populated()++], std::forward<T&&>(value));
+            std::construct_at(std::addressof(data()[populated()++]), std::forward<T&&>(value));
             return true;
         }
 
@@ -255,7 +255,7 @@ public:
     {
         if (size() < capacity())
         {
-            std::construct_at(&data()[populated()++], std::forward<decltype(args)>(args)...);
+            std::construct_at(std::addressof(data()[populated()++]), std::forward<decltype(args)>(args)...);
             return true;
         }
 
@@ -266,7 +266,7 @@ public:
     {
         if (!empty())
         {
-            std::destroy_at(&data()[--populated()]);
+            std::destroy_at(std::addressof(data()[--populated()]));
         }
     }
 
@@ -289,7 +289,7 @@ public:
             nothrow_migrate(std::addressof(*(movedest++)), std::move(*(movestart++)));
         }
 
-        std::destroy_at(&data()[--populated()]);
+        std::destroy_at(std::addressof(data()[--populated()]));
 
         return begin() + (pos - begin());
     }
@@ -311,7 +311,7 @@ public:
             nothrow_migrate(std::addressof(*(movedest++)), std::move(*(movestart++)));
         }
 
-        std::destroy_n(&data()[populated() - (last - first)], last - first);
+        std::destroy_n(std::addressof(data()[populated() - (last - first)]), last - first);
 
         populated() -= (last - first);
 
