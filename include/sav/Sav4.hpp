@@ -159,8 +159,6 @@ namespace pksm
 
         void item(const Item& item, Pouch pouch, u16 slot) override;
         [[nodiscard]] std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
-        [[nodiscard]] SmallVector<std::pair<Pouch, int>, 15> pouches(void) const override;
-        [[nodiscard]] const std::map<Pouch, std::vector<int>>& validItems(void) const override;
     };
 }
 

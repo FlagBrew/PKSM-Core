@@ -244,10 +244,11 @@ namespace pksm
             return VersionTables::formCount(version(), s);
         }
 
-        virtual void item(const Item& item, Pouch pouch, u16 slot)                            = 0;
-        [[nodiscard]] virtual std::unique_ptr<Item> item(Pouch pouch, u16 slot) const         = 0;
-        [[nodiscard]] virtual SmallVector<std::pair<Pouch, int>, 15> pouches(void) const      = 0;
-        [[nodiscard]] virtual const std::map<Pouch, std::vector<int>>& validItems(void) const = 0;
+        virtual void item(const Item& item, Pouch pouch, u16 slot)                       = 0;
+        [[nodiscard]] virtual std::unique_ptr<Item> item(Pouch pouch, u16 slot) const    = 0;
+        [[nodiscard]] virtual SmallVector<std::pair<Pouch, int>, 15> pouches(void) const = 0;
+        [[nodiscard]] virtual SmallVector<std::pair<Pouch, std::span<const int>>, 15> validItems(
+            void) const = 0;
 
         [[nodiscard]] u32 getLength() const { return length; }
 

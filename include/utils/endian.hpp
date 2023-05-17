@@ -459,7 +459,8 @@ namespace BigEndian
         requires EndianTraits::EndianConvertible<std::ranges::range_value_t<R>>
     constexpr std::vector<u8> convertFrom(R&& range)
     {
-        return EndianTraits::EndianCommon::convertFrom<R, std::endian::big>(std::forward<decltype(range)>(range));
+        return EndianTraits::EndianCommon::convertFrom<R, std::endian::big>(
+            std::forward<decltype(range)>(range));
     }
 
     template <EndianTraits::EndianConvertible T, size_t N>

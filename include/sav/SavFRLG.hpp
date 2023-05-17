@@ -36,8 +36,10 @@ namespace pksm
     public:
         explicit SavFRLG(const std::shared_ptr<u8[]>& dt);
 
-        [[nodiscard]] const std::map<Pouch, std::vector<int>>& validItems(void) const override;
-        [[nodiscard]] const std::map<Pouch, std::vector<int>>& validItems3(void) const override;
+        [[nodiscard]] SmallVector<std::pair<Pouch, std::span<const int>>, 15> validItems(
+            void) const override;
+        [[nodiscard]] SmallVector<std::pair<Pouch, std::span<const int>>, 15> validItems3(
+            void) const override;
     };
 }
 

@@ -78,7 +78,8 @@ namespace pksm
 
         void resign(void) override;
 
-        [[nodiscard]] const std::map<Pouch, std::vector<int>>& validItems(void) const override;
+        [[nodiscard]] SmallVector<std::pair<Pouch, std::span<const int>>, 15> validItems(
+            void) const override;
     };
 }
 

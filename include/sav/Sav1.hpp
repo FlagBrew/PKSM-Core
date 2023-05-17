@@ -176,9 +176,11 @@ namespace pksm
         void item(const Item& tItem, Pouch pouch, u16 slot) override;
         [[nodiscard]] std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
         [[nodiscard]] SmallVector<std::pair<Pouch, int>, 15> pouches(void) const override;
-        [[nodiscard]] const std::map<Pouch, std::vector<int>>& validItems(void) const override;
+        [[nodiscard]] SmallVector<std::pair<Pouch, std::span<const int>>, 15> validItems(
+            void) const override;
         // Gen I Item IDs
-        [[nodiscard]] const std::map<Pouch, std::vector<int>>& validItems1(void) const;
+        [[nodiscard]] SmallVector<std::pair<Pouch, std::span<const int>>, 15> validItems1(
+            void) const;
         void fixItemLists(void);
     };
 }

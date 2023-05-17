@@ -202,7 +202,8 @@ namespace pksm
         [[nodiscard]] std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
         [[nodiscard]] SmallVector<std::pair<Pouch, int>, 15> pouches(void) const override;
         // G3 item IDs
-        [[nodiscard]] virtual const std::map<Pouch, std::vector<int>>& validItems3(void) const = 0;
+        [[nodiscard]] virtual SmallVector<std::pair<Pouch, std::span<const int>>, 15> validItems3(
+            void) const = 0;
 
         [[nodiscard]] u16 rtcInitialDay(void) const;
         void rtcInitialDay(u16 v);

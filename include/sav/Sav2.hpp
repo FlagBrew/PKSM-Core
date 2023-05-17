@@ -55,6 +55,8 @@ namespace pksm
 
         [[nodiscard]] static u16 calculateChecksum(u8* start, const u8* end);
 
+        std::span<const int> tmItems2() const;
+
     public:
         Sav2(const std::shared_ptr<u8[]>& data, u32 length,
             std::tuple<GameVersion, Language, bool> versionAndLanguage);
@@ -176,10 +178,12 @@ namespace pksm
         void item(const Item& tItem, Pouch pouch, u16 slot) override;
         [[nodiscard]] std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
         [[nodiscard]] SmallVector<std::pair<Pouch, int>, 15> pouches(void) const override;
-        [[nodiscard]] const std::map<Pouch, std::vector<int>>& validItems(void) const override;
+        [[nodiscard]] SmallVector<std::pair<Pouch, std::span<const int>>, 15> validItems(
+            void) const override;
 
         // Gen II Item IDs
-        [[nodiscard]] const std::map<Pouch, std::vector<int>>& validItems2(void) const;
+        [[nodiscard]] SmallVector<std::pair<Pouch, std::span<const int>>, 15> validItems2(
+            void) const;
 
         // apparently weird stuff happens if you ignore this
         [[nodiscard]] u8 pouchEntryCount(Pouch pouch) const;

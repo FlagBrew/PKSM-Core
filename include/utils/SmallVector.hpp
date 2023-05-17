@@ -255,7 +255,8 @@ public:
     {
         if (size() < capacity())
         {
-            std::construct_at(std::addressof(data()[populated()++]), std::forward<decltype(args)>(args)...);
+            std::construct_at(
+                std::addressof(data()[populated()++]), std::forward<decltype(args)>(args)...);
             return true;
         }
 
