@@ -157,8 +157,7 @@ namespace pksm
         static constexpr std::array ZCrystals = {807, 808, 809, 810, 811, 812, 813, 814, 815, 816,
             817, 818, 819, 820, 821, 822, 823, 824, 825, 826, 827, 828, 829, 830, 831, 832, 833,
             834, 835, 927, 928, 929, 930, 931, 932};
-        static constexpr std::array Battle    = {
-            949, 950, 951, 952, 953, 954, 955, 956, 957, 958, 959};
+        static constexpr std::array RotomPower = { 949, 950, 951, 952, 953, 954, 955, 956, 957, 958, 959};
 
         return {
             std::pair{Pouch::NormalItem, std::span{NormalItem}},
@@ -167,7 +166,7 @@ namespace pksm
             std::pair{Pouch::Medicine,   std::span{Medicine}  },
             std::pair{Pouch::Berry,      std::span{Berry}     },
             std::pair{Pouch::ZCrystals,  std::span{ZCrystals} },
-            std::pair{Pouch::Battle,     std::span{Battle}    }
+            std::pair{Pouch::RotomPower, std::span{RotomPower}}
         };
     }
 }
