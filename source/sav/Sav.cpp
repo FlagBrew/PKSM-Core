@@ -59,22 +59,29 @@ namespace pksm
 {
     std::unique_ptr<Sav> Sav::getSave(const std::shared_ptr<u8[]>& dt, size_t length)
     {
+        std::unique_ptr<Sav> ret = nullptr;
         switch (length)
         {
             case 0x6CC00:
-                return std::make_unique<SavUSUM>(dt);
+                ret = std::make_unique<SavUSUM>(dt);
+                break;
             case 0x6BE00:
-                return std::make_unique<SavSUMO>(dt);
+                ret = std::make_unique<SavSUMO>(dt);
+                break;
             case 0x76000:
-                return std::make_unique<SavORAS>(dt);
+                ret = std::make_unique<SavORAS>(dt);
+                break;
             case 0x65600:
-                return std::make_unique<SavXY>(dt);
+                ret = std::make_unique<SavXY>(dt);
+                break;
             case 0x80000:
             case 0x8007A:
-                return checkDSType(dt);
+                ret = checkDSType(dt);
+                break;
             case 0x20000:
             case 0x20010:
-                return checkGBAType(dt);
+                ret = checkGBAType(dt);
+                break;
             case 0x8000:
             case 0x10000:
             // Gen II VC saves
@@ -83,10 +90,12 @@ namespace pksm
             // Emulator standard saves
             case 0x8030:
             case 0x10030:
-                return checkGBType(dt, length);
+                ret = checkGBType(dt, length);
+                break;
             case 0xB8800:
             case 0x100000:
-                return std::make_unique<SavLGPE>(dt, length);
+                ret = std::make_unique<SavLGPE>(dt, length);
+                break;
             case SavSWSH::SIZE_G8SWSH:
             case SavSWSH::SIZE_G8SWSH_1:
             case SavSWSH::SIZE_G8SWSH_2:
@@ -95,10 +104,19 @@ namespace pksm
             case SavSWSH::SIZE_G8SWSH_3A:
             case SavSWSH::SIZE_G8SWSH_3B:
             case SavSWSH::SIZE_G8SWSH_3C:
-                return std::make_unique<SavSWSH>(dt, length);
+                ret = std::make_unique<SavSWSH>(dt, length);
+                break;
             default:
-                return std::unique_ptr<Sav>(nullptr);
+                ret = std::unique_ptr<Sav>(nullptr);
+                break;
         }
+
+        if (ret)
+        {
+            ret->fullLength = length;
+        }
+
+        return ret;
     }
 
     std::unique_ptr<Sav> Sav::checkGBType(const std::shared_ptr<u8[]>& dt, size_t length)

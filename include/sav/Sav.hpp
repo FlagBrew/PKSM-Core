@@ -79,6 +79,7 @@ namespace pksm
 
         const std::shared_ptr<u8[]> data;
         const u32 length;
+        u32 fullLength;
         [[nodiscard]] static std::unique_ptr<Sav> checkGBType(
             const std::shared_ptr<u8[]>& dt, size_t length);
         [[nodiscard]] static std::unique_ptr<Sav> checkGBAType(const std::shared_ptr<u8[]>& dt);
@@ -251,6 +252,8 @@ namespace pksm
             void) const = 0;
 
         [[nodiscard]] u32 getLength() const { return length; }
+
+        [[nodiscard]] u32 getEntireLengthIncludingFooter() const { return fullLength; }
 
         [[nodiscard]] const std::shared_ptr<u8[]>& rawData() const { return data; }
     };
