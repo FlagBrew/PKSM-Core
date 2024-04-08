@@ -949,4 +949,22 @@ namespace pksm
                 return nullptr;
         }
     }
+
+    std::vector<std::unique_ptr<PK4>> Sav4::PalParkMons()
+    {   
+         std::vector<std::unique_ptr<PK4>> palParkMons;
+
+         // Check the first few bytes of the offset, if they are empty, there's no mons
+         if (data[PalPark] == 0x00 && data[PalPark+1] == 00 && data[PalPark+2] == 0x00) {
+            return palParkMons;
+         }
+
+         palParkMons.reserve(6);
+
+         for (int i = 0; i < 6; i++) {
+            palParkMons.push_back(PKX::getPKM<Generation::FOUR>(&data[PalPark+(PK4::PARTY_LENGTH * i)], PK4::PARTY_LENGTH));
+         }
+
+        return palParkMons;
+    }
 }

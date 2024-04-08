@@ -39,6 +39,7 @@ namespace pksm
         int Trainer1;
         int MailItems, PouchBalls, BattleItems;
         int GBOOffset, SBOOffset;
+        int PalPark;
 
         int gbo = -1;
         int sbo = -1;
@@ -159,6 +160,8 @@ namespace pksm
 
         void item(const Item& item, Pouch pouch, u16 slot) override;
         [[nodiscard]] std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
+
+        [[nodiscard]] std::vector<std::unique_ptr<PK4>> PalParkMons();
     };
 }
 
