@@ -955,7 +955,7 @@ namespace pksm
          std::vector<std::unique_ptr<PK4>> palParkMons;
 
          // Check the first few bytes of the offset, if they are empty, there's no mons
-         if (data[PalPark] == 0x00 && data[PalPark+1] == 00 && data[PalPark+2] == 0x00) {
+         if (data[PalPark] == 0x00 && data[PalPark+1] == 0x00 && data[PalPark+2] == 0x00) {
             return palParkMons;
          }
 
@@ -966,5 +966,26 @@ namespace pksm
          }
 
         return palParkMons;
+    }
+
+    void Sav4::PalParkMons(std::vector<std::unique_ptr<PK4>> mons) 
+    {
+        if(mons.size() != 6) {
+            return;
+        }
+        
+        for (int i = 0; i < 6; i++) {
+            
+            mons[i]->decrypt();
+            // Set the values that would normally be set by migration
+            mons[i]->metLevel(mons[i]->level());
+            mons[i]->encounterType(0); // encounter type 0 is palpark
+            mons[i]->metLocation(0x0037); // location is palpark
+            // Version should likely be set on the mon incoming to this function.
+            mons[i]->updatePartyData();
+            mons[i]->encrypt();
+
+            std::ranges::copy(mons[i]->rawData(), &data[PalPark+(PK4::PARTY_LENGTH * i)]);
+        }
     }
 }
