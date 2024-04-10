@@ -160,9 +160,10 @@ namespace pksm
 
         void item(const Item& item, Pouch pouch, u16 slot) override;
         [[nodiscard]] std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
-        
-        void PalParkMons(std::vector<std::unique_ptr<PK4>> mons);
-        [[nodiscard]] std::vector<std::unique_ptr<PK4>> PalParkMons(void);
+
+        void palPark(std::span<std::unique_ptr<PK4>, 6> mons);
+        void palPark(std::span<std::unique_ptr<PK4>, 0> mons);
+        [[nodiscard]] std::optional<std::array<std::unique_ptr<PK4>, 6>> palPark(void) const;
     };
 }
 
