@@ -51,6 +51,7 @@ namespace pksm
         PouchBerry      = 0xBE0 + gbo;
         PouchBalls      = 0xCE0 + gbo;
         BattleItems     = 0xD1C + gbo;
+        PalPark         = 0xBA28 + gbo;
         Box             = 0xC104 + sbo;
     }
 

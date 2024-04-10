@@ -949,4 +949,57 @@ namespace pksm
                 return nullptr;
         }
     }
+
+    std::optional<std::array<std::unique_ptr<PK4>, 6>> Sav4::palPark() const
+    {
+        std::optional<std::array<std::unique_ptr<PK4>, 6>> ret = std::nullopt;
+
+        if (auto pk4 = PKX::getPKM<Generation::FOUR>(&data[PalPark], PK4::PARTY_LENGTH);
+            pk4->species() != pksm::Species::None)
+        {
+            ret = {std::move(pk4),
+                PKX::getPKM<Generation::FOUR>(
+                    &data[PalPark + (PK4::PARTY_LENGTH * 1)], PK4::PARTY_LENGTH),
+                PKX::getPKM<Generation::FOUR>(
+                    &data[PalPark + (PK4::PARTY_LENGTH * 2)], PK4::PARTY_LENGTH),
+                PKX::getPKM<Generation::FOUR>(
+                    &data[PalPark + (PK4::PARTY_LENGTH * 3)], PK4::PARTY_LENGTH),
+                PKX::getPKM<Generation::FOUR>(
+                    &data[PalPark + (PK4::PARTY_LENGTH * 4)], PK4::PARTY_LENGTH),
+                PKX::getPKM<Generation::FOUR>(
+                    &data[PalPark + (PK4::PARTY_LENGTH * 5)], PK4::PARTY_LENGTH)};
+        }
+
+        return ret;
+    }
+
+    void Sav4::palPark(std::span<std::unique_ptr<PK4>, 0> mons)
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            std::fill_n(&data[PalPark + i * PK4::PARTY_LENGTH], PK4::PARTY_LENGTH, 0);
+        }
+    }
+
+    void Sav4::palPark(std::span<std::unique_ptr<PK4>, 6> mons)
+    {
+        if (mons.size() != 6)
+        {
+            return;
+        }
+
+        for (int i = 0; i < 6; i++)
+        {
+            mons[i]->decrypt();
+            // Set the values that would normally be set by migration
+            mons[i]->metLevel(mons[i]->level());
+            mons[i]->encounterType(0);    // encounter type 0 is palpark
+            mons[i]->metLocation(0x0037); // location is palpark
+            // Version should likely be set on the mon incoming to this function.
+            mons[i]->updatePartyData();
+            mons[i]->encrypt();
+
+            std::ranges::copy(mons[i]->rawData(), &data[PalPark + (PK4::PARTY_LENGTH * i)]);
+        }
+    }
 }
