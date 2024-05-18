@@ -27,8 +27,8 @@
 #include "utils/VersionTables.hpp"
 #include "personal/personal.hpp"
 #include "ppCount.hpp"
+#include <algorithm>
 #include <functional>
-#include <unordered_map>
 
 namespace
 {
