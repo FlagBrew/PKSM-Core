@@ -48,11 +48,11 @@
 0x002f|Route 132
 0x0030|Route 133
 0x0031|Route 134
-0x0032|Underwater (Route 124)
-0x0033|Underwater (Route 126)
-0x0034|Underwater (Route 127)
-0x0035|Underwater (Route 128)
-0x0036|Underwater (Sootopolis City)
+0x0032|Underwater (Route 124)
+0x0033|Underwater (Route 126)
+0x0034|Underwater (Route 127)
+0x0035|Underwater (Route 128)
+0x0036|Underwater (Sootopolis City)
 0x0037|Granite Cave
 0x0038|Mt. Chimney
 0x0039|Safari Zone (RSE)
@@ -62,12 +62,12 @@
 0x003d|Abandoned Ship
 0x003e|New Mauville
 0x003f|Meteor Falls
-0x0040|Meteor Falls (unused)
+0x0040|Meteor Falls (unused)
 0x0041|Mt. Pyre
 0x0042|Hideout
 0x0043|Shoal Cave
 0x0044|Seafloor Cavern
-0x0045|Underwater (Seafloor Cavern)
+0x0045|Underwater (Seafloor Cavern)
 0x0046|Victory Road (RSE)
 0x0047|Mirage Island
 0x0048|Cave of Origin
@@ -77,7 +77,7 @@
 0x004c|Jagged Pass
 0x004d|Jagged Pass (2)
 0x004e|Sealed Chamber
-0x004f|Underwater (Route 134)
+0x004f|Underwater (Route 134)
 0x0050|Scorched Slab
 0x0051|Island Cave
 0x0052|Desert Ruins
@@ -97,8 +97,8 @@
 0x0060|Cinnabar Island
 0x0061|Indigo Plateau
 0x0062|Saffron City
-0x0063|Route 4 (Pokémon Center)
-0x0064|Route 10 (Pokémon Center)
+0x0063|Route 4 (Pokémon Center)
+0x0064|Route 10 (Pokémon Center)
 0x0065|Route 1
 0x0066|Route 2
 0x0067|Route 3
@@ -127,8 +127,8 @@
 0x007e|Viridian Forest
 0x007f|Mt. Moon
 0x0080|S.S. Anne
-0x0081|Underground Path (Routes 5-6)
-0x0082|Underground Path (Routes 7-8)
+0x0081|Underground Path (Routes 5-6)
+0x0082|Underground Path (Routes 7-8)
 0x0083|Diglett's Cave
 0x0084|Victory Road (FRLG)
 0x0085|Rocket Hideout
@@ -165,7 +165,7 @@
 0x00a4|Green Path
 0x00a5|Water Path
 0x00a6|Ruin Valley
-0x00a7|Trainer Tower (exterior)
+0x00a7|Trainer Tower (exterior)
 0x00a8|Canyon Entrance
 0x00a9|Sevault Canyon
 0x00aa|Tanoby Ruins
@@ -202,11 +202,11 @@
 0x00c9|Faraway Island
 0x00ca|Artisan Cave
 0x00cb|Marine Cave
-0x00cc|Underwater (Marine Cave)
+0x00cc|Underwater (Marine Cave)
 0x00cd|Terra Cave
-0x00ce|Underwater (Route 105)
-0x00cf|Underwater (Route 125)
-0x00d0|Underwater (Route 129)
+0x00ce|Underwater (Route 105)
+0x00cf|Underwater (Route 125)
+0x00d0|Underwater (Route 129)
 0x00d1|Desert Underpass
 0x00d2|Altering Cave (E)
 0x00d3|Navel Rock (E)
