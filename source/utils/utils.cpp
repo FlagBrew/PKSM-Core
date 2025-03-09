@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM-Core
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -806,14 +806,14 @@ std::string StringUtils::toUpper(const std::string_view& in)
     return toUpper(ret);
 }
 
-std::string& StringUtils::toLower(std::string& in)
+std::string& toLower(std::string& in)
 {
     std::transform(in.begin(), in.end(), in.begin(), ::tolower);
-    // Just saying, I have NO clue why two outer braces levels are necessary
-    static constexpr std::array<std::pair<std::string_view, std::string_view>, 12> transStrings = {
-        {{"Í", "í"}, {"Ó", "ó"}, {"Ú", "ú"}, {"É", "é"}, {"Á", "á"}, {"Ì", "ì"}, {"Ò", "ò"},
-         {"Ù", "ù"}, {"È", "è"}, {"À", "à"}, {"Ñ", "ñ"}, {"Æ", "æ"}}
-    };
+    // Use static const instead of static constexpr for string literals with UTF-8 characters
+    static const std::array<std::pair<std::string, std::string>, 12> transStrings = {{
+        {"Í", "í"}, {"Ó", "ó"}, {"Ú", "ú"}, {"É", "é"}, {"Á", "á"}, {"Ì", "ì"}, {"Ò", "ò"},
+        {"Ù", "ù"}, {"È", "è"}, {"À", "à"}, {"Ñ", "ñ"}, {"Æ", "æ"}
+    }};
     for (const auto& str : transStrings)
     {
         size_t found;
