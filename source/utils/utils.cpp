@@ -806,7 +806,7 @@ std::string StringUtils::toUpper(const std::string_view& in)
     return toUpper(ret);
 }
 
-std::string& toLower(std::string& in)
+std::string& StringUtils::toLower(std::string& in)
 {
     std::transform(in.begin(), in.end(), in.begin(), ::tolower);
     // Use static const instead of static constexpr for string literals with UTF-8 characters
