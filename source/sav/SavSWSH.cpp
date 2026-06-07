@@ -949,7 +949,7 @@ namespace pksm
 
             setProperLocation(entry, form, pk.shiny(), pk.gender());
             entry.owned         = 1;
-            entry.languages     |= 1 << u8(pk.language());
+            entry.languages    |= 1 << u8(pk.language());
             entry.displayFormID = form;
             entry.displayShiny  = pk.shiny() ? 1 : 0;
 

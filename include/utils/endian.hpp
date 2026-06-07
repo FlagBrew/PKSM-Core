@@ -83,7 +83,7 @@ namespace EndianTraits
                 {
                     for (size_t i = 0; i < sizeof(T); i++)
                     {
-                        dest[i] = u8(origVal);
+                        dest[i]   = u8(origVal);
                         origVal >>= 8;
                     }
                 }
@@ -92,7 +92,7 @@ namespace EndianTraits
                     for (size_t i = 0; i < sizeof(T); i++)
                     {
                         dest[sizeof(T) - i - 1] = u8(origVal);
-                        origVal                 >>= 8;
+                        origVal               >>= 8;
                     }
                 }
             }

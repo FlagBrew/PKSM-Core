@@ -247,7 +247,7 @@ namespace
 }
 
 #define FA(...)                                                                                    \
-    []<std::array Values = {__VA_ARGS__}>() consteval                                              \
+    []<std::array Values = { __VA_ARGS__ }>() consteval                                            \
         ->std::span<const typename decltype(Values)::value_type>                                   \
     {                                                                                              \
         return Values;                                                                             \

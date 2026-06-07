@@ -213,7 +213,7 @@ namespace pksm::crypto
         {
             for (size_t i = 0; i < Size; i += 2)
             {
-                key         = seedStep(key);
+                key          = seedStep(key);
                 data[i]     ^= (key >> 16);
                 data[i + 1] ^= (key >> 24);
             }
@@ -224,7 +224,7 @@ namespace pksm::crypto
         {
             for (size_t i = 0; i < data.size(); i += 2)
             {
-                key         = seedStep(key);
+                key          = seedStep(key);
                 data[i]     ^= (key >> 16);
                 data[i + 1] ^= (key >> 24);
             }

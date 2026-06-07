@@ -495,7 +495,7 @@ namespace pksm
         if ((data[ofs + brSize * 1] & mask) == 0) // Not seen
         {
             data[ofs + brSize * 1] |= mask; // Set seen
-            u8 gr                  = pk.genderType();
+            u8 gr                   = pk.genderType();
             switch (gr)
             {
                 case 255: // Genderless
@@ -514,7 +514,7 @@ namespace pksm
                     { // bit already set?
                         break;
                     }
-                    u8 gender              = u8(pk.gender()) & 1;
+                    u8 gender               = u8(pk.gender()) & 1;
                     data[ofs + brSize * 2] &= ~mask; // unset
                     data[ofs + brSize * 3] &= ~mask; // unset
                     gender                 ^= 1; // Set OTHER gender seen bit so it appears second

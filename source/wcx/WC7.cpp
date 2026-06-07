@@ -138,26 +138,26 @@ namespace pksm
     void WC7::year(int v)
     {
         u32 newVal = std::max(0, v - 2000);
-        newVal     *= 10000;
-        newVal     += rawDate() % 10000;
+        newVal    *= 10000;
+        newVal    += rawDate() % 10000;
         rawDate(newVal);
     }
 
     void WC7::month(int v)
     {
         u32 newVal = rawDate() / 10000;
-        newVal     *= 100;
-        newVal     += v;
-        newVal     *= 100;
-        newVal     += rawDate() % 100;
+        newVal    *= 100;
+        newVal    += v;
+        newVal    *= 100;
+        newVal    += rawDate() % 100;
         rawDate(newVal);
     }
 
     void WC7::day(int v)
     {
         u32 newVal = rawDate() / 100;
-        newVal     *= 100;
-        newVal     += v;
+        newVal    *= 100;
+        newVal    += v;
         rawDate(newVal);
     }
 

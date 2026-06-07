@@ -598,9 +598,9 @@ std::pair<char32_t, size_t> StringUtils::UTF16toCodepoint(const char16_t* src, s
     }
     else if (((src[0] & 0xFC00) == 0xD800) && 1 < maxSize && ((src[1] & 0xFC00) == 0xDC00))
     {
-        codepoint = (char32_t(src[0] & 0x03FF) << 10) | (src[1] & 0x03FF);
+        codepoint  = (char32_t(src[0] & 0x03FF) << 10) | (src[1] & 0x03FF);
         codepoint += 0x10000; // 20->21 bits
-        size      = 2;
+        size       = 2;
     }
 
     return {codepoint, size};
@@ -810,10 +810,10 @@ std::string& StringUtils::toLower(std::string& in)
 {
     std::transform(in.begin(), in.end(), in.begin(), ::tolower);
     // Use static const instead of static constexpr for string literals with UTF-8 characters
-    static const std::array<std::pair<std::string, std::string>, 12> transStrings = {{
-        {"Í", "í"}, {"Ó", "ó"}, {"Ú", "ú"}, {"É", "é"}, {"Á", "á"}, {"Ì", "ì"}, {"Ò", "ò"},
-        {"Ù", "ù"}, {"È", "è"}, {"À", "à"}, {"Ñ", "ñ"}, {"Æ", "æ"}
-    }};
+    static const std::array<std::pair<std::string, std::string>, 12> transStrings = {
+        {{"Í", "í"}, {"Ó", "ó"}, {"Ú", "ú"}, {"É", "é"}, {"Á", "á"}, {"Ì", "ì"}, {"Ò", "ò"},
+         {"Ù", "ù"}, {"È", "è"}, {"À", "à"}, {"Ñ", "ñ"}, {"Æ", "æ"}}
+    };
     for (const auto& str : transStrings)
     {
         size_t found;

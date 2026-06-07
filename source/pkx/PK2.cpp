@@ -728,7 +728,7 @@ namespace pksm
         }
 
         u8 noNormal = u8(v) - 1;
-        noNormal    %= 16; // just in case
+        noNormal   %= 16; // just in case
         iv(Stat::ATK, (iv(Stat::ATK) & 0xC) | (noNormal >> 2));
         iv(Stat::DEF, (iv(Stat::DEF) & 0xC) | (noNormal & 0x3));
     }

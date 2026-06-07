@@ -628,8 +628,8 @@ namespace pksm
     void PK6::iv(Stat stat, u8 v)
     {
         u32 buffer = LittleEndian::convertTo<u32>(data + 0x74);
-        buffer     &= ~(0x1F << 5 * u8(stat));
-        buffer     |= v << (5 * u8(stat));
+        buffer    &= ~(0x1F << 5 * u8(stat));
+        buffer    |= v << (5 * u8(stat));
         LittleEndian::convertFrom<u32>(data + 0x74, buffer);
     }
 
@@ -1423,7 +1423,7 @@ namespace pksm
             pk7->rawData()[i] = 0; // unused
         }
         pk7->rawData()[0x72] &= 0xFC; // low 2 bits of super training
-        pk7->rawData()[0xDE] = 0;     // gen 4 encounter type
+        pk7->rawData()[0xDE]  = 0;    // gen 4 encounter type
 
         // marks get expanded from one bit to two.
         u8 oldMarks  = markValue();

@@ -576,10 +576,10 @@ namespace pksm
 
         // Set the Display flag if none are set
         bool displayed = false;
-        displayed      |= (data[ofs + brSize * 5] & mask) != 0;
-        displayed      |= (data[ofs + brSize * 6] & mask) != 0;
-        displayed      |= (data[ofs + brSize * 7] & mask) != 0;
-        displayed      |= (data[ofs + brSize * 8] & mask) != 0;
+        displayed     |= (data[ofs + brSize * 5] & mask) != 0;
+        displayed     |= (data[ofs + brSize * 6] & mask) != 0;
+        displayed     |= (data[ofs + brSize * 7] & mask) != 0;
+        displayed     |= (data[ofs + brSize * 8] & mask) != 0;
         if (!displayed)
         { // offset is already biased by brSize, reuse shiftoff but for the display
           // flags.
@@ -628,7 +628,7 @@ namespace pksm
                 return; // already set
             }
         }
-        bit                                             = f + pk.alternativeForm();
+        bit                                              = f + pk.alternativeForm();
         data[formDex + formLen * (2 + shiny) + bit / 8] |= (u8)(1 << (bit % 8));
     }
 

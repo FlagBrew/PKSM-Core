@@ -533,8 +533,8 @@ namespace pksm
     void PK3::iv(Stat stat, u8 v)
     {
         u32 buffer = LittleEndian::convertTo<u32>(data + 0x48);
-        buffer     &= ~(0x1F << 5 * u8(stat));
-        buffer     |= v << (5 * u8(stat));
+        buffer    &= ~(0x1F << 5 * u8(stat));
+        buffer    |= v << (5 * u8(stat));
         LittleEndian::convertFrom<u32>(data + 0x48, buffer);
     }
 
@@ -600,8 +600,8 @@ namespace pksm
     void PK3::contestRibbonCount(u8 contest, u8 count)
     {
         u16 rawVal = LittleEndian::convertTo<u16>(data + 0x4C);
-        rawVal     &= 0xFFFF ^ (0x7 << (contest * 3));
-        rawVal     |= (count & 0x7) << (contest * 3);
+        rawVal    &= 0xFFFF ^ (0x7 << (contest * 3));
+        rawVal    |= (count & 0x7) << (contest * 3);
         LittleEndian::convertFrom<u16>(data + 0x4C, rawVal);
     }
 

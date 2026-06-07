@@ -99,7 +99,7 @@ namespace pksm::crypto
             if (dataLength == 64)
             {
                 update();
-                bitLength  += 512;
+                bitLength += 512;
                 dataLength = 0;
             }
         }
@@ -133,14 +133,14 @@ namespace pksm::crypto
 
         // Append to the padding the total message's length in bits and transform.
         bitLength += dataLength * 8;
-        data[63]  = bitLength;
-        data[62]  = bitLength >> 8;
-        data[61]  = bitLength >> 16;
-        data[60]  = bitLength >> 24;
-        data[59]  = bitLength >> 32;
-        data[58]  = bitLength >> 40;
-        data[57]  = bitLength >> 48;
-        data[56]  = bitLength >> 56;
+        data[63]   = bitLength;
+        data[62]   = bitLength >> 8;
+        data[61]   = bitLength >> 16;
+        data[60]   = bitLength >> 24;
+        data[59]   = bitLength >> 32;
+        data[58]   = bitLength >> 40;
+        data[57]   = bitLength >> 48;
+        data[56]   = bitLength >> 56;
         update();
 
         // Since this implementation uses little endian byte ordering and SHA uses big endian,

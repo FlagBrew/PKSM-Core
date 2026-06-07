@@ -94,7 +94,7 @@ namespace pksm
             {
                 break;
             }
-            f         = formtable[i + 1];
+            f          = formtable[i + 1];
             formindex += f - 1;
         }
         return f > formct ? -1 : formindex;

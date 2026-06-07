@@ -310,14 +310,14 @@ namespace pksm
         int bd1          = baseSpecies >> 3;
         int bm1          = baseSpecies & 7;
 
-        int brSeen              = shift * brSize;
+        int brSeen               = shift * brSize;
         data[ofs + brSeen + bd] |= 1 << bm;
 
         bool displayed = false;
         for (u8 i = 0; i < 4; i++)
         {
             int brDisplayed = (4 + i) * brSize;
-            displayed       |= (data[ofs + brDisplayed + bd1] & (1 << bm1)) != 0;
+            displayed      |= (data[ofs + brDisplayed + bd1] & (1 << bm1)) != 0;
         }
 
         if (!displayed && baseSpecies != index)
@@ -325,7 +325,7 @@ namespace pksm
             for (u8 i = 0; i < 4; i++)
             {
                 int brDisplayed = (4 + i) * brSize;
-                displayed       |= (data[ofs + brDisplayed + bd] & (1 << bm)) != 0;
+                displayed      |= (data[ofs + brDisplayed + bd] & (1 << bm)) != 0;
             }
         }
         if (displayed)
@@ -458,7 +458,7 @@ namespace pksm
             }
         }
 
-        int off        = PokeDex + 0x08 + 0x80;
+        int off         = PokeDex + 0x08 + 0x80;
         data[off + bd] |= 1 << bm;
 
         int formstart = pk.alternativeForm();

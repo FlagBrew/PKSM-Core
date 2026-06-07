@@ -320,8 +320,8 @@ public:
     }
 
     constexpr bool insert(const_iterator pos, const T& data) noexcept(
-        noexcept(nothrow_migrate(std::addressof(data()[0]), std::move(data()[0]))) && noexcept(
-            nothrow_migrate(std::addressof(data()[0]), data()[0])))
+        noexcept(nothrow_migrate(std::addressof(data()[0]), std::move(data()[0]))) &&
+        noexcept(nothrow_migrate(std::addressof(data()[0]), data()[0])))
         requires std::is_copy_constructible_v<T>
     {
         if (pos == end())

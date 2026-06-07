@@ -51,7 +51,7 @@ namespace i18n
         {
             char setMe                = '0' + (region % 10);
             ret[ret.size() - 5 - pos] = setMe;
-            region                    /= 10;
+            region                   /= 10;
         }
         return ret;
     }

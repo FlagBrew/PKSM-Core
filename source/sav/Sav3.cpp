@@ -323,7 +323,7 @@ namespace pksm
         if (game == Game::FRLG && flagNumber >= 0x500)
         {
             flagNumber -= 0x500;
-            start      = blockOfs[2];
+            start       = blockOfs[2];
         }
         return FlagUtil::getFlag(data.get(), start + (flagNumber >> 3), flagNumber & 7);
     }
@@ -339,7 +339,7 @@ namespace pksm
         if (game == Game::FRLG && flagNumber >= 0x500)
         {
             flagNumber -= 0x500;
-            start      = blockOfs[2];
+            start       = blockOfs[2];
         }
         FlagUtil::setFlag(data.get(), start + (flagNumber >> 3), flagNumber & 7, value);
     }
@@ -663,14 +663,14 @@ namespace pksm
     u8 Sav3::boxWallpaper(u8 box) const
     {
         int offset = boxOffset(maxBoxes(), 0);
-        offset     += (maxBoxes() * 0x9) + box;
+        offset    += (maxBoxes() * 0x9) + box;
         return data[offset];
     }
 
     void Sav3::boxWallpaper(u8 box, u8 v)
     {
         int offset   = boxOffset(maxBoxes(), 0);
-        offset       += (maxBoxes() * 0x9) + box;
+        offset      += (maxBoxes() * 0x9) + box;
         data[offset] = v;
     }
 

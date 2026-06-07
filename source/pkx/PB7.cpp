@@ -391,8 +391,8 @@ namespace pksm
     void PB7::iv(Stat stat, u8 v)
     {
         u32 buffer = LittleEndian::convertTo<u32>(data + 0x74);
-        buffer     &= ~(0x1F << 5 * u8(stat));
-        buffer     |= v << (5 * u8(stat));
+        buffer    &= ~(0x1F << 5 * u8(stat));
+        buffer    |= v << (5 * u8(stat));
         LittleEndian::convertFrom<u32>(data + 0x74, buffer);
     }
 
