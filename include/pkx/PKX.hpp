@@ -142,7 +142,7 @@ namespace pksm
             return nullptr;
         }
 
-        [[nodiscard]] virtual ~PKX();
+        virtual ~PKX();
         PKX(const PKX& pk);
         PKX(PKX&& pk);
         PKX& operator=(const PKX& pk);

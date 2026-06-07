@@ -121,22 +121,23 @@ public:
 
     template <std::size_t OSize = Size>
         requires (OSize <= Size) && std::is_copy_constructible_v<T>
-    constexpr SmallVector(const SmallVector<T, OSize>& o) noexcept(noexcept(emplace_back(o[0])))
+    constexpr SmallVector(const SmallVector<T, OSize>& o) noexcept(
+        noexcept(this->emplace_back(o[0])))
     {
         for (std::size_t i = 0; i < o.size(); i++)
         {
-            emplace_back(o[i]);
+            this->emplace_back(o[i]);
         }
     }
 
     template <std::size_t OSize = Size>
         requires (OSize <= Size) && std::is_move_constructible_v<T>
     constexpr SmallVector(SmallVector<T, OSize>&& o) noexcept(
-        noexcept(emplace_back(std::move(o[0]))) && std::is_nothrow_destructible_v<T>)
+        noexcept(this->emplace_back(std::move(o[0]))) && std::is_nothrow_destructible_v<T>)
     {
         for (std::size_t i = 0; i < o.size(); i++)
         {
-            emplace_back(std::move(o[i]));
+            this->emplace_back(std::move(o[i]));
         }
         std::destroy_n(o.data(), o.size());
         o.populated() = 0;
@@ -145,7 +146,7 @@ public:
     template <std::size_t OSize = Size>
         requires (OSize <= Size) && std::is_copy_constructible_v<T>
     constexpr SmallVector& operator=(const SmallVector<T, OSize>& o) noexcept(
-        noexcept(nothrow_migrate(std::addressof(data()[0]), o[0])) &&
+        noexcept(nothrow_migrate(std::addressof(this->data()[0]), o[0])) &&
         std::is_nothrow_destructible_v<T>)
     {
         std::size_t minsize     = std::min(size(), o.size());
@@ -174,7 +175,7 @@ public:
     template <std::size_t OSize = Size>
         requires (OSize <= Size) && std::is_move_constructible_v<T>
     constexpr SmallVector& operator=(SmallVector<T, OSize>&& o) noexcept(
-        noexcept(nothrow_migrate(std::addressof(data()[0]), std::move(o[0]))) &&
+        noexcept(nothrow_migrate(std::addressof(this->data()[0]), std::move(o[0]))) &&
         std::is_nothrow_destructible_v<T>)
     {
         std::size_t minsize     = std::min(size(), o.size());
@@ -206,20 +207,20 @@ public:
     template <typename... Args>
         requires (std::convertible_to<Args, T> && ...) && (sizeof...(Args) <= Size)
     constexpr SmallVector(Args&&... args) noexcept(
-        (noexcept(emplace_back(std::forward<decltype(args)>(args))) && ...))
+        (noexcept(this->emplace_back(std::forward<decltype(args)>(args))) && ...))
     {
-        (emplace_back(std::forward<decltype(args)>(args)) && ...);
+        (this->emplace_back(std::forward<decltype(args)>(args)) && ...);
     }
 
     template <std::size_t SpanSize, typename Contained>
         requires std::convertible_to<Contained, T> && (SpanSize <= Size) &&
                  (SpanSize != std::dynamic_extent)
     constexpr explicit(!std::is_same_v<std::remove_cvref_t<Contained>, T>) SmallVector(
-        const std::span<Contained, SpanSize>& in) noexcept(noexcept(emplace_back(in[0])))
+        const std::span<Contained, SpanSize>& in) noexcept(noexcept(this->emplace_back(in[0])))
     {
         for (std::size_t i = 0; i < in.size(); i++)
         {
-            emplace_back(in[i]);
+            this->emplace_back(in[i]);
         }
     }
 
@@ -278,7 +279,7 @@ public:
     }
 
     constexpr iterator erase(const_iterator pos) noexcept(
-        noexcept(nothrow_migrate(std::addressof(data()[0]), std::move(data()[0]))) &&
+        noexcept(nothrow_migrate(std::addressof(this->data()[0]), std::move(this->data()[0]))) &&
         std::is_nothrow_destructible_v<T>)
     {
         iterator movedest  = begin() + (pos - begin());
@@ -296,7 +297,7 @@ public:
     }
 
     constexpr iterator erase(const_iterator first, const_iterator last) noexcept(
-        noexcept(nothrow_migrate(std::addressof(data()[0]), std::move(data()[0]))) &&
+        noexcept(nothrow_migrate(std::addressof(this->data()[0]), std::move(this->data()[0]))) &&
         std::is_nothrow_destructible_v<T>)
     {
         if (last <= first)
@@ -320,8 +321,8 @@ public:
     }
 
     constexpr bool insert(const_iterator pos, const T& data) noexcept(
-        noexcept(nothrow_migrate(std::addressof(data()[0]), std::move(data()[0]))) &&
-        noexcept(nothrow_migrate(std::addressof(data()[0]), data()[0])))
+        noexcept(nothrow_migrate(std::addressof(this->data()[0]), std::move(this->data()[0]))) &&
+        noexcept(nothrow_migrate(std::addressof(this->data()[0]), this->data()[0])))
         requires std::is_copy_constructible_v<T>
     {
         if (pos == end())
@@ -352,7 +353,7 @@ public:
     }
 
     constexpr bool insert(const_iterator pos, T&& data) noexcept(
-        noexcept(nothrow_migrate(std::addressof(data()[0]), std::move(data()[0]))))
+        noexcept(nothrow_migrate(std::addressof(this->data()[0]), std::move(this->data()[0]))))
         requires std::is_move_constructible_v<T>
     {
         if (pos == end())
@@ -384,7 +385,7 @@ public:
 
     template <typename... Args>
     constexpr bool emplace(const_iterator pos, Args&&... args) noexcept(
-        noexcept(nothrow_migrate(std::addressof(data()[0]), std::move(data()[0]))) &&
+        noexcept(nothrow_migrate(std::addressof(this->data()[0]), std::move(this->data()[0]))) &&
         std::is_nothrow_constructible_v<T, decltype(args)...>)
         requires std::is_constructible_v<T, decltype(args)...>
     {
