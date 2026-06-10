@@ -95,13 +95,11 @@ namespace pksm
         // Poor man's bubble sort-like thing
         for (int i = 0; i < maxBoxes(); i++)
         {
-            int numPkm = maxPkmInBox;
             for (int j = maxPkmInBox - 1; j > 0; j--)
             {
                 auto checkPKM = pkm(i, j);
                 if (checkPKM->species() == Species::None)
                 {
-                    numPkm--;
                     continue;
                 }
                 auto prevPKM = pkm(i, j - 1);
@@ -109,7 +107,6 @@ namespace pksm
                 {
                     pkm(*checkPKM, i, j - 1, false);
                     pkm(*prevPKM, i, j, false);
-                    numPkm = maxPkmInBox;
                     j      = maxPkmInBox; // reset loop
                 }
             }
