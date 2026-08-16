@@ -786,6 +786,16 @@ namespace pksm
         data[0xAF] = v;
     }
 
+    u32 PK6::formDuration(void) const
+    {
+        return LittleEndian::convertTo<u32>(data + 0x3C);
+    }
+
+    void PK6::formDuration(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(data + 0x3C, v);
+    }
+
     std::string PK6::otName(void) const
     {
         return StringUtils::transString67(StringUtils::getString(data, 0xB0, 13));
