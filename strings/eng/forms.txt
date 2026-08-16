@@ -208,3 +208,54 @@ Rapid Strike Style
 Dada
 Ice
 Shadow
+Ice Face
+Full Belly
+Hero
+Hisui
+Lord
+Lady
+Legend
+Phony
+Antique
+Paldea
+Two-Segment
+Three-Segment
+Zero
+Hero
+Family of Three
+Family of Four
+Curly
+Droopy
+Stretchy
+Green
+Chest
+Roaming
+Apex
+Limited
+Sprinting
+Swimming
+Gliding
+Ultimate
+Low-Power
+Drive
+Aquatic
+Glide
+Combat
+Blaze
+Aqua
+Teal
+Counterfeit
+Unremarkable
+Bloodmoon
+Wellspring
+Hearthflame
+Cornerstone
+Artisan
+Masterpiece
+Terastal
+Stellar
+Medium
+Small
+Large
+Jumbo
+Mega Z
