@@ -192,7 +192,7 @@ namespace pksm
 
     bool PK7::isEncrypted() const
     {
-        return LittleEndian::convertTo<u16>(data + 0xC8) != 0 &&
+        return LittleEndian::convertTo<u16>(data + 0xC8) != 0 ||
                LittleEndian::convertTo<u16>(data + 0x58) != 0;
     }
 
