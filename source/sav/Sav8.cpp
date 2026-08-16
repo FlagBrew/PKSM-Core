@@ -25,7 +25,10 @@
  */
 
 #include "sav/Sav8.hpp"
+#include "pkx/PA8.hpp"
+#include "pkx/PA9.hpp"
 #include "pkx/PK8.hpp"
+#include "pkx/PK9.hpp"
 #include <algorithm>
 
 namespace pksm
@@ -51,12 +54,24 @@ namespace pksm
 
     std::unique_ptr<PKX> Sav8::emptyPkm() const
     {
+        if (game == Game::SV)
+        {
+            return PKX::getPKM<PK9>(nullptr, PK9::BOX_LENGTH);
+        }
+        if (game == Game::ZA)
+        {
+            return PKX::getPKM<PA9>(nullptr, PA9::BOX_LENGTH);
+        }
+        if (game == Game::PLA)
+        {
+            return PKX::getPKM<PA8>(nullptr, PA8::BOX_LENGTH);
+        }
         return PKX::getPKM<Generation::EIGHT>(nullptr, PK8::BOX_LENGTH);
     }
 
     void Sav8::trade(PKX& pk, const Date& date) const
     {
-        if (pk.generation() == Generation::EIGHT)
+        if (pk.generation() == Generation::EIGHT || pk.generation() == Generation::NINE)
         {
             if (pk.egg())
             {
@@ -73,11 +88,18 @@ namespace pksm
                     pk.gender() != gender())
                 {
                     pk.currentHandler(PKXHandler::NonOT);
-                    PK8& pk8 = static_cast<PK8&>(pk);
-                    pk8.htName(otName());
-                    pk8.currentFriendship(pk.baseFriendship());
-                    pk8.htGender(gender());
-                    pk8.htLanguage(language());
+                    pk.currentFriendship(pk.baseFriendship());
+                    // PA8 also reports Generation::EIGHT but stores its
+                    // handler-trainer fields at different offsets
+                    if (pk.generation() == Generation::EIGHT &&
+                        (pk.getLength() == PK8::BOX_LENGTH ||
+                            pk.getLength() == PK8::PARTY_LENGTH))
+                    {
+                        PK8& pk8 = static_cast<PK8&>(pk);
+                        pk8.htName(otName());
+                        pk8.htGender(gender());
+                        pk8.htLanguage(language());
+                    }
                 }
                 else
                 {

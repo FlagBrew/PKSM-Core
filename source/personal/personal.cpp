@@ -34,6 +34,9 @@
 #include "personal7.h"
 #include "personal7b.h"
 #include "personal8.h"
+#include "personal8a.h"
+#include "personal9.h"
+#include "personal9a.h"
 #include "utils/endian.hpp"
 
 #include <memory>
@@ -104,6 +107,24 @@ namespace
     const u8* personal8()
     {
         static auto personal = READ_PERSONAL("personal8", personal8_size);
+        return personal.get();
+    }
+
+    const u8* personal8a()
+    {
+        static auto personal = READ_PERSONAL("personal8a", personal8a_size);
+        return personal.get();
+    }
+
+    const u8* personal9()
+    {
+        static auto personal = READ_PERSONAL("personal9", personal9_size);
+        return personal.get();
+    }
+
+    const u8* personal9a()
+    {
+        static auto personal = READ_PERSONAL("personal9a", personal9a_size);
         return personal.get();
     }
 
@@ -617,6 +638,241 @@ namespace pksm
                        (1 << (trID & 7))) != 0
                      ? true
                      : false;
+        }
+    }
+
+    namespace PersonalPLA
+    {
+        u8 baseHP(u16 formSpecies)
+        {
+            return personal8a()[formSpecies * personal8a_entrysize + 0x00];
+        }
+
+        u8 baseAtk(u16 formSpecies)
+        {
+            return personal8a()[formSpecies * personal8a_entrysize + 0x01];
+        }
+
+        u8 baseDef(u16 formSpecies)
+        {
+            return personal8a()[formSpecies * personal8a_entrysize + 0x02];
+        }
+
+        u8 baseSpe(u16 formSpecies)
+        {
+            return personal8a()[formSpecies * personal8a_entrysize + 0x03];
+        }
+
+        u8 baseSpa(u16 formSpecies)
+        {
+            return personal8a()[formSpecies * personal8a_entrysize + 0x04];
+        }
+
+        u8 baseSpd(u16 formSpecies)
+        {
+            return personal8a()[formSpecies * personal8a_entrysize + 0x05];
+        }
+
+        Type type1(u16 formSpecies)
+        {
+            return Type{personal8a()[formSpecies * personal8a_entrysize + 0x06]};
+        }
+
+        Type type2(u16 formSpecies)
+        {
+            return Type{personal8a()[formSpecies * personal8a_entrysize + 0x07]};
+        }
+
+        u8 gender(u16 formSpecies)
+        {
+            return personal8a()[formSpecies * personal8a_entrysize + 0x12];
+        }
+
+        u8 baseFriendship(u16 formSpecies)
+        {
+            return personal8a()[formSpecies * personal8a_entrysize + 0x14];
+        }
+
+        u8 expType(u16 formSpecies)
+        {
+            return personal8a()[formSpecies * personal8a_entrysize + 0x15];
+        }
+
+        Ability ability(u16 formSpecies, u8 n)
+        {
+            return Ability{LittleEndian::convertTo<u16>(
+                personal8a() + formSpecies * personal8a_entrysize + 0x18 + 2 * n)};
+        }
+
+        u16 formStatIndex(u16 formSpecies)
+        {
+            return LittleEndian::convertTo<u16>(
+                personal8a() + formSpecies * personal8a_entrysize + 0x1E);
+        }
+
+        u8 formCount(u16 formSpecies)
+        {
+            return personal8a()[formSpecies * personal8a_entrysize + 0x20];
+        }
+    }
+
+    namespace PersonalSV
+    {
+        u8 baseHP(u16 formSpecies)
+        {
+            return personal9()[formSpecies * personal9_entrysize + 0x00];
+        }
+
+        u8 baseAtk(u16 formSpecies)
+        {
+            return personal9()[formSpecies * personal9_entrysize + 0x01];
+        }
+
+        u8 baseDef(u16 formSpecies)
+        {
+            return personal9()[formSpecies * personal9_entrysize + 0x02];
+        }
+
+        u8 baseSpe(u16 formSpecies)
+        {
+            return personal9()[formSpecies * personal9_entrysize + 0x03];
+        }
+
+        u8 baseSpa(u16 formSpecies)
+        {
+            return personal9()[formSpecies * personal9_entrysize + 0x04];
+        }
+
+        u8 baseSpd(u16 formSpecies)
+        {
+            return personal9()[formSpecies * personal9_entrysize + 0x05];
+        }
+
+        Type type1(u16 formSpecies)
+        {
+            return Type{personal9()[formSpecies * personal9_entrysize + 0x06]};
+        }
+
+        Type type2(u16 formSpecies)
+        {
+            return Type{personal9()[formSpecies * personal9_entrysize + 0x07]};
+        }
+
+        u8 gender(u16 formSpecies)
+        {
+            return personal9()[formSpecies * personal9_entrysize + 0x0C];
+        }
+
+        u8 baseFriendship(u16 formSpecies)
+        {
+            return personal9()[formSpecies * personal9_entrysize + 0x0E];
+        }
+
+        u8 expType(u16 formSpecies)
+        {
+            return personal9()[formSpecies * personal9_entrysize + 0x0F];
+        }
+
+        Ability ability(u16 formSpecies, u8 n)
+        {
+            return Ability{LittleEndian::convertTo<u16>(
+                personal9() + formSpecies * personal9_entrysize + 0x12 + 2 * n)};
+        }
+
+        u16 formStatIndex(u16 formSpecies)
+        {
+            return LittleEndian::convertTo<u16>(
+                personal9() + formSpecies * personal9_entrysize + 0x18);
+        }
+
+        u8 formCount(u16 formSpecies)
+        {
+            return personal9()[formSpecies * personal9_entrysize + 0x1A];
+        }
+
+        bool isPresentInGame(u16 formSpecies)
+        {
+            return personal9()[formSpecies * personal9_entrysize + 0x1C] != 0;
+        }
+    }
+
+    namespace PersonalZA
+    {
+        u8 baseHP(u16 formSpecies)
+        {
+            return personal9a()[formSpecies * personal9a_entrysize + 0x00];
+        }
+
+        u8 baseAtk(u16 formSpecies)
+        {
+            return personal9a()[formSpecies * personal9a_entrysize + 0x01];
+        }
+
+        u8 baseDef(u16 formSpecies)
+        {
+            return personal9a()[formSpecies * personal9a_entrysize + 0x02];
+        }
+
+        u8 baseSpe(u16 formSpecies)
+        {
+            return personal9a()[formSpecies * personal9a_entrysize + 0x03];
+        }
+
+        u8 baseSpa(u16 formSpecies)
+        {
+            return personal9a()[formSpecies * personal9a_entrysize + 0x04];
+        }
+
+        u8 baseSpd(u16 formSpecies)
+        {
+            return personal9a()[formSpecies * personal9a_entrysize + 0x05];
+        }
+
+        Type type1(u16 formSpecies)
+        {
+            return Type{personal9a()[formSpecies * personal9a_entrysize + 0x06]};
+        }
+
+        Type type2(u16 formSpecies)
+        {
+            return Type{personal9a()[formSpecies * personal9a_entrysize + 0x07]};
+        }
+
+        u8 gender(u16 formSpecies)
+        {
+            return personal9a()[formSpecies * personal9a_entrysize + 0x0C];
+        }
+
+        u8 baseFriendship(u16 formSpecies)
+        {
+            return personal9a()[formSpecies * personal9a_entrysize + 0x0E];
+        }
+
+        u8 expType(u16 formSpecies)
+        {
+            return personal9a()[formSpecies * personal9a_entrysize + 0x0F];
+        }
+
+        Ability ability(u16 formSpecies, u8 n)
+        {
+            return Ability{LittleEndian::convertTo<u16>(
+                personal9a() + formSpecies * personal9a_entrysize + 0x12 + 2 * n)};
+        }
+
+        u16 formStatIndex(u16 formSpecies)
+        {
+            return LittleEndian::convertTo<u16>(
+                personal9a() + formSpecies * personal9a_entrysize + 0x18);
+        }
+
+        u8 formCount(u16 formSpecies)
+        {
+            return personal9a()[formSpecies * personal9a_entrysize + 0x1A];
+        }
+
+        bool isPresentInGame(u16 formSpecies)
+        {
+            return personal9a()[formSpecies * personal9a_entrysize + 0x1C] != 0;
         }
     }
 

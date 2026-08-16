@@ -62,6 +62,87 @@ namespace
         }
         return set;
     }
+
+    // Build a Move set from a consecutive range, excluding dummied moves marked in a bitflag array.
+    // Bit set (1) = move is dummied/invalid.
+    inline std::set<pksm::Move> create_set_excluding_dummied(
+        pksm::Move maxMove, const u8* dummied, size_t dummiedSize)
+    {
+        std::set<pksm::Move> set;
+        for (u16 i = 0; i <= u16(maxMove); i++)
+        {
+            size_t byteIdx = i >> 3;
+            u8 bitIdx      = i & 7;
+            bool isDummied  = (byteIdx < dummiedSize) && ((dummied[byteIdx] & (1 << bitIdx)) != 0);
+            if (!isDummied)
+            {
+                set.insert(pksm::Move{i});
+            }
+        }
+        return set;
+    }
+
+    // Dummied-move bitflag arrays, one bit per move ID
+    // Bit set = move is dummied (not usable in that game)
+
+    // SWSH (Gen 8)
+    constexpr u8 DummiedMoves_SWSH[] = {
+        0x1C, 0x20, 0x00, 0x0C, 0x00, 0x02, 0x02, 0x00, 0x00, 0x00,
+        0x04, 0x00, 0x09, 0x00, 0xA1, 0x22, 0x19, 0x10, 0x36, 0xC0,
+        0x40, 0x0A, 0x00, 0x02, 0x02, 0x00, 0x00, 0x45, 0x10, 0x20,
+        0x00, 0x00, 0x00, 0x02, 0x04, 0x80, 0x66, 0x70, 0x00, 0x50,
+        0x91, 0x00, 0x00, 0x04, 0x64, 0x08, 0x20, 0x67, 0x84, 0x00,
+        0x00, 0x00, 0x00, 0xA4, 0x00, 0x28, 0x03, 0x01, 0x07, 0x20,
+        0x22, 0x00, 0x04, 0x08, 0x10, 0x00, 0x08, 0x02, 0x08, 0x00,
+        0x08, 0x02, 0x00, 0x00, 0x02, 0x01, 0x00, 0xE2, 0xFF, 0xFF,
+        0xFF, 0xFF, 0x07, 0x82, 0x01, 0x40, 0x84, 0xFF, 0x00, 0x80,
+        0xF8, 0xFF, 0x3F,
+    };
+
+    // PLA (Gen 8a)
+    constexpr u8 DummiedMoves_PLA[] = {
+        0x7E, 0xBC, 0xFE, 0xFF, 0xBD, 0xEA, 0xCF, 0x72, 0x7F, 0x1F,
+        0x0E, 0x1F, 0xAB, 0xFD, 0xEF, 0xBE, 0x7D, 0xD7, 0x35, 0xCF,
+        0xD5, 0xEF, 0x5F, 0x0F, 0xEF, 0x9E, 0xFD, 0xFF, 0x7E, 0x5F,
+        0x3B, 0xFD, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xDF, 0xBF, 0xB3,
+        0xBF, 0xAF, 0xF5, 0xE4, 0xF6, 0xFF, 0xFB, 0xFF, 0xFF, 0x2B,
+        0x84, 0x8C, 0x08, 0xA0, 0xDB, 0xAA, 0xC5, 0x21, 0xF0, 0xFB,
+        0xFF, 0xF7, 0xFF, 0xFB, 0xFF, 0xF3, 0xFE, 0xBF, 0xFF, 0xE7,
+        0xFF, 0xFF, 0x7D, 0xFC, 0xF7, 0xDF, 0xFE, 0xFF, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xB7, 0xFF, 0xFF, 0xFF, 0xFF, 0xBF, 0xFF,
+        0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xEF,
+        0xFF, 0xFF, 0xFF, 0x07,
+    };
+
+    // SV (Gen 9)
+    constexpr u8 DummiedMoves_SV[] = {
+        0x1C, 0x20, 0x00, 0x0C, 0x00, 0x02, 0x02, 0x00, 0x04, 0x00,
+        0x04, 0x00, 0x09, 0x00, 0xA1, 0x22, 0x5D, 0x50, 0x36, 0xC8,
+        0x00, 0x0E, 0x00, 0x42, 0x02, 0x00, 0x00, 0x45, 0x10, 0x22,
+        0x00, 0x00, 0x04, 0x0A, 0xA4, 0x80, 0x27, 0x70, 0x00, 0x51,
+        0x91, 0x00, 0x00, 0x04, 0x60, 0x08, 0xA0, 0x67, 0x04, 0x00,
+        0x00, 0x00, 0x00, 0xA4, 0x00, 0x28, 0x01, 0x01, 0x04, 0x28,
+        0x23, 0x00, 0x04, 0x08, 0x10, 0x00, 0x0C, 0x83, 0x07, 0x00,
+        0x8A, 0x02, 0x4C, 0x10, 0x80, 0x03, 0xF0, 0xC3, 0xFF, 0xFF,
+        0xFF, 0xFF, 0x07, 0x80, 0x26, 0xA0, 0x80, 0xFF, 0x11, 0xE1,
+        0xFB, 0xFF, 0xFF, 0x00, 0xEE, 0xFF, 0x7F, 0x08, 0x00, 0x0D,
+    };
+
+    // Z-A (Gen 9a)
+    constexpr u8 DummiedMoves_ZA[] = {
+        0x2E, 0x9C, 0xB0, 0xDF, 0x29, 0x02, 0x0E, 0x40, 0x7E, 0x01,
+        0x04, 0x00, 0x29, 0xC8, 0xA1, 0x3A, 0xD9, 0x59, 0x37, 0xD5,
+        0xE0, 0xAF, 0x3E, 0x6F, 0xC6, 0x02, 0xF5, 0x77, 0x7C, 0x62,
+        0x1B, 0xE8, 0x55, 0xCF, 0xFD, 0xFA, 0x7F, 0xF4, 0xE4, 0x15,
+        0xDF, 0x80, 0xC1, 0xA4, 0xFE, 0xFF, 0xF9, 0xFD, 0xBF, 0x2A,
+        0x02, 0x80, 0x08, 0xA4, 0x83, 0xA1, 0xC7, 0x79, 0xFA, 0xFD,
+        0xEA, 0xF2, 0x7F, 0xDF, 0xFF, 0x25, 0x48, 0xAB, 0xE3, 0xE7,
+        0x2E, 0x13, 0x7C, 0x68, 0xA0, 0xDD, 0x05, 0xC0, 0xFF, 0xFF,
+        0xFF, 0xFF, 0xE7, 0x9D, 0x7F, 0x7F, 0xDF, 0xFF, 0xA9, 0xFE,
+        0xFD, 0xFF, 0xBF, 0xEF, 0xFD, 0xFF, 0xFF, 0x7F, 0xFA, 0x6B,
+        0xFE, 0x0F, 0xFF, 0xBF, 0x7F, 0xFF, 0xBF, 0xBA, 0xFA, 0xFB,
+        0x9E, 0xD1, 0xFF, 0xFF, 0xFF,
+    };
 }
 
 namespace pksm
@@ -234,6 +315,105 @@ namespace pksm
                     std::invoke([]() { return create_set_consecutive<int>(0, 1607); });
                 return items;
             }
+            case GameVersion::PLA:
+            {
+                static const std::set<int> items = {
+                    // Normal Items and PC Items
+                    17, 23, 24, 25, 26, 27, 28, 29, 39, 41,
+                    50, 54, 72, 73, 75, 80, 81, 82, 83, 84,
+                    85, 90, 91, 92, 107, 108, 109, 110, 149, 150,
+                    151, 152, 153, 154, 155, 157, 158, 159, 160, 161,
+                    162, 163, 164, 166, 168, 233, 252, 321, 322, 323,
+                    324, 325, 326, 327, 583,      849,
+                    1125, 1126, 1127, 1128, 1231, 1232, 1233, 1234, 1235, 1236,
+                    1237, 1238, 1239, 1240, 1241, 1242, 1243, 1244, 1245, 1246,
+                    1247, 1248, 1249, 1250, 1251,
+                    1611, 1613, 1614, 1615, 1616, 1617, 1618, 1619, 1620, 1621,
+                    1628, 1630, 1631, 1632, 1633, 1634, 1635, 1636, 1637, 1638,
+                    1651, 1679, 1681, 1682, 1684, 1686, 1687, 1688, 1689, 1690,
+                    1691, 1692, 1693, 1694, 1695, 1696, 1699, 1700, 1701, 1702,
+                    1703, 1704, 1705, 1706, 1707, 1708, 1709, 1710, 1711, 1712,
+                    1713, 1716, 1717, 1720, 1724, 1725, 1726, 1727, 1728, 1732,
+                    1733, 1734, 1735, 1736, 1738, 1739, 1740, 1741, 1742, 1746,
+                    1747, 1748, 1749, 1750, 1754, 1755, 1756, 1757, 1758, 1759,
+                    1760, 1761, 1762, 1764, 1785,
+                    // Key Items
+                    111,
+                    298, 299,
+                    300, 301, 302, 303, 304, 305, 306, 307, 308, 309,
+                    310, 311, 312, 313,
+                    441, 455, 466,
+                    632, 638, 644,
+                    1608, 1609, 1610, 1612, 1622, 1624, 1625, 1626, 1627, 1629,
+                    1639, 1678, 1721, 1722, 1723, 1737, 1743, 1744, 1745, 1763,
+                    1765, 1766, 1767, 1768, 1769, 1771, 1776, 1777, 1778, 1779,
+                    1780, 1782, 1786, 1787, 1788, 1789, 1790, 1792, 1793, 1794,
+                    1795, 1796, 1797, 1798, 1799, 1800, 1801, 1802, 1803, 1804,
+                    1805, 1806, 1807,
+                    1828,
+                };
+                return items;
+            }
+            case GameVersion::SL:
+            case GameVersion::VL:
+            {
+                static const std::set<int> items =
+                    std::invoke([]() { return create_set_consecutive<int>(0, 2557); });
+                return items;
+            }
+            case GameVersion::ZA:
+            {
+                static const std::set<int> items = {
+                    // Medicine
+                    17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 708, 2684,
+                    // Balls
+                    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 492, 493, 494, 495,
+                    496, 497, 498, 499, 576, 851,
+                    // Other (Items)
+                    45, 46, 47, 48, 49, 50, 52, 80, 81, 82, 83, 84, 85, 103, 107, 108, 109, 116,
+                    117, 118, 119, 214, 217, 218, 221, 222, 230, 231, 232, 233, 234, 236, 237, 238,
+                    239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 258,
+                    259, 266, 267, 268, 270, 275, 289, 290, 291, 292, 293, 294, 296, 324, 534, 535,
+                    537, 538, 540, 564, 565, 566, 567, 568, 569, 570, 639, 640, 646, 647, 710, 711,
+                    795, 796, 849, 1124, 1125, 1126, 1127, 1128, 1231, 1232, 1233, 1234, 1235, 1236,
+                    1237, 1238, 1239, 1240, 1241, 1242, 1243, 1244, 1245, 1246, 1247, 1248, 1249,
+                    1250, 1251, 1582, 1592, 1691, 1861, 2137, 2344, 2401, 2558, 2618, 2619,
+                    // Treasure
+                    86, 88, 89, 92, 571, 581, 582,
+                    // Key Items
+                    632, 700, 765, 847, 1278, 2588, 2589, 2590, 2591, 2592, 2595, 2596, 2597, 2598,
+                    2599, 2600, 2601, 2602, 2603, 2604, 2605, 2606, 2607, 2608, 2609, 2610, 2611,
+                    2612, 2613, 2620, 2621, 2622, 2623, 2624, 2625, 2626, 2627, 2628, 2629, 2630,
+                    2631, 2632, 2633, 2634,
+                    // Berries
+                    149, 150, 151, 152, 153, 155, 156, 157, 158, 169, 170, 171, 172, 173, 174, 184,
+                    185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200,
+                    686, 2651, 2652, 2653, 2654, 2655, 2656, 2657, 2658, 2659, 2660, 2661, 2662,
+                    2663, 2664, 2665, 2666, 2667, 2668, 2669, 2670, 2671, 2672, 2673, 2674, 2675,
+                    2676, 2677, 2678, 2679, 2680, 2681, 2682, 2683,
+                    // TMs
+                    328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343,
+                    344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359,
+                    360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375,
+                    376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391,
+                    392, 393, 394, 395, 396, 397, 398, 399, 400, 401, 402, 403, 404, 405, 406, 407,
+                    408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 618, 619, 620, 690,
+                    691, 692, 693, 2160, 2162, 2163, 2164, 2165, 2166, 2167, 2168, 2169, 2170, 2171,
+                    2172, 2173, 2174, 2175, 2176, 2177, 2178, 2179, 2180, 2181, 2182, 2183, 2184,
+                    2185, 2186, 2187, 2188, 2189, 2190, 2191, 2192, 2193, 2194, 2195, 2196, 2197,
+                    2198, 2199, 2200, 2201, 2202, 2203, 2204, 2205, 2206, 2207, 2208, 2209, 2210,
+                    2211, 2212, 2213, 2214, 2215, 2216, 2217, 2218, 2219, 2220, 2221,
+                    // Mega Stones
+                    656, 657, 658, 659, 660, 661, 662, 663, 664, 665, 666, 667, 668, 669, 670, 671,
+                    672, 673, 674, 675, 676, 677, 678, 679, 680, 681, 682, 683, 684, 685, 752, 753,
+                    754, 755, 756, 757, 758, 759, 760, 761, 762, 763, 764, 767, 768, 769, 770, 2559,
+                    2560, 2561, 2562, 2563, 2564, 2565, 2566, 2567, 2568, 2569, 2570, 2571, 2572,
+                    2573, 2574, 2575, 2576, 2577, 2578, 2579, 2580, 2581, 2582, 2583, 2584, 2585,
+                    2586, 2587, 2635, 2636, 2637, 2638, 2639, 2640, 2641, 2642, 2643, 2644, 2645,
+                    2646, 2647, 2648, 2649, 2650,
+                };
+                return items;
+            }
             default:
                 return emptySet;
         }
@@ -380,7 +560,30 @@ namespace pksm
             case GameVersion::SH:
             {
                 static const std::set<Move> items = std::invoke(
-                    []() { return create_set_consecutive<Move>(Move::None, Move::EerieSpell); });
+                    []() { return create_set_excluding_dummied(
+                        Move::EerieSpell, DummiedMoves_SWSH, sizeof(DummiedMoves_SWSH)); });
+                return items;
+            }
+            case GameVersion::PLA:
+            {
+                static const std::set<Move> items = std::invoke(
+                    []() { return create_set_excluding_dummied(
+                        Move::TakeHeart, DummiedMoves_PLA, sizeof(DummiedMoves_PLA)); });
+                return items;
+            }
+            case GameVersion::SL:
+            case GameVersion::VL:
+            {
+                static const std::set<Move> items = std::invoke(
+                    []() { return create_set_excluding_dummied(
+                        Move::MalignantChain, DummiedMoves_SV, sizeof(DummiedMoves_SV)); });
+                return items;
+            }
+            case GameVersion::ZA:
+            {
+                static const std::set<Move> items = std::invoke(
+                    []() { return create_set_excluding_dummied(
+                        Move::NihilLight, DummiedMoves_ZA, sizeof(DummiedMoves_ZA)); });
                 return items;
             }
             default:
@@ -672,6 +875,104 @@ namespace pksm
                     Species::Blacephalon};
                 return items;
             }
+            case GameVersion::SL:
+            case GameVersion::VL:
+            {
+                static const std::set<Species> items = std::invoke([]() {
+                    std::set<Species> ret;
+                    for (u16 i = 1; i <= u16(Species::Pecharunt); i++)
+                    {
+                        if (PersonalSV::isPresentInGame(i))
+                        {
+                            ret.emplace(Species{i});
+                        }
+                    }
+                    return ret;
+                });
+                return items;
+            }
+            case GameVersion::ZA:
+            {
+                // Built from personal_za IsPresentInGame flag at offset 0x1C
+                static const std::set<Species> items = std::invoke([]() {
+                    std::set<Species> ret;
+                    for (u16 i = 1; i <= u16(Species::Pecharunt); i++)
+                    {
+                        if (PersonalZA::isPresentInGame(i))
+                        {
+                            ret.emplace(Species{i});
+                        }
+                    }
+                    return ret;
+                });
+                return items;
+            }
+            case GameVersion::PLA:
+            {
+                static const std::set<Species> items = {
+                    Species::Pikachu, Species::Raichu, Species::Clefairy, Species::Clefable,
+                    Species::Vulpix, Species::Ninetales, Species::Zubat, Species::Golbat,
+                    Species::Paras, Species::Parasect, Species::Psyduck, Species::Golduck,
+                    Species::Growlithe, Species::Arcanine, Species::Abra, Species::Kadabra,
+                    Species::Alakazam, Species::Machop, Species::Machoke, Species::Machamp,
+                    Species::Tentacool, Species::Tentacruel, Species::Geodude, Species::Graveler,
+                    Species::Golem, Species::Ponyta, Species::Rapidash, Species::Magnemite,
+                    Species::Magneton, Species::Gastly, Species::Haunter, Species::Gengar,
+                    Species::Onix, Species::Voltorb, Species::Electrode, Species::Lickitung,
+                    Species::Rhyhorn, Species::Rhydon, Species::Chansey, Species::Tangela,
+                    Species::MrMime, Species::Scyther, Species::Electabuzz, Species::Magmar,
+                    Species::Magikarp, Species::Gyarados, Species::Eevee, Species::Vaporeon,
+                    Species::Jolteon, Species::Flareon, Species::Porygon, Species::Snorlax,
+                    Species::Cyndaquil, Species::Quilava, Species::Typhlosion, Species::Crobat,
+                    Species::Pichu, Species::Cleffa, Species::Togepi, Species::Togetic,
+                    Species::Sudowoodo, Species::Aipom, Species::Yanma, Species::Espeon,
+                    Species::Umbreon, Species::Murkrow, Species::Misdreavus, Species::Unown,
+                    Species::Gligar, Species::Steelix, Species::Qwilfish, Species::Scizor,
+                    Species::Heracross, Species::Sneasel, Species::Teddiursa, Species::Ursaring,
+                    Species::Swinub, Species::Piloswine, Species::Remoraid, Species::Octillery,
+                    Species::Mantine, Species::Porygon2, Species::Stantler, Species::Elekid,
+                    Species::Magby, Species::Blissey, Species::Wurmple, Species::Silcoon,
+                    Species::Beautifly, Species::Cascoon, Species::Dustox, Species::Ralts,
+                    Species::Kirlia, Species::Gardevoir, Species::Nosepass, Species::Roselia,
+                    Species::Barboach, Species::Whiscash, Species::Duskull, Species::Dusclops,
+                    Species::Chimecho, Species::Snorunt, Species::Glalie, Species::Spheal,
+                    Species::Sealeo, Species::Walrein, Species::Turtwig, Species::Grotle,
+                    Species::Torterra, Species::Chimchar, Species::Monferno, Species::Infernape,
+                    Species::Piplup, Species::Prinplup, Species::Empoleon, Species::Starly,
+                    Species::Staravia, Species::Staraptor, Species::Bidoof, Species::Bibarel,
+                    Species::Kricketot, Species::Kricketune, Species::Shinx, Species::Luxio,
+                    Species::Luxray, Species::Budew, Species::Roserade, Species::Cranidos,
+                    Species::Rampardos, Species::Shieldon, Species::Bastiodon, Species::Burmy,
+                    Species::Wormadam, Species::Mothim, Species::Combee, Species::Vespiquen,
+                    Species::Pachirisu, Species::Buizel, Species::Floatzel, Species::Cherubi,
+                    Species::Cherrim, Species::Shellos, Species::Gastrodon, Species::Ambipom,
+                    Species::Drifloon, Species::Drifblim, Species::Buneary, Species::Lopunny,
+                    Species::Mismagius, Species::Honchkrow, Species::Glameow, Species::Purugly,
+                    Species::Chingling, Species::Stunky, Species::Skuntank, Species::Bronzor,
+                    Species::Bronzong, Species::Bonsly, Species::MimeJr, Species::Happiny,
+                    Species::Chatot, Species::Spiritomb, Species::Gible, Species::Gabite,
+                    Species::Garchomp, Species::Munchlax, Species::Riolu, Species::Lucario,
+                    Species::Hippopotas, Species::Hippowdon, Species::Skorupi, Species::Drapion,
+                    Species::Croagunk, Species::Toxicroak, Species::Carnivine, Species::Finneon,
+                    Species::Lumineon, Species::Mantyke, Species::Snover, Species::Abomasnow,
+                    Species::Weavile, Species::Magnezone, Species::Lickilicky, Species::Rhyperior,
+                    Species::Tangrowth, Species::Electivire, Species::Magmortar, Species::Togekiss,
+                    Species::Yanmega, Species::Leafeon, Species::Glaceon, Species::Gliscor,
+                    Species::Mamoswine, Species::PorygonZ, Species::Gallade, Species::Probopass,
+                    Species::Dusknoir, Species::Froslass, Species::Rotom, Species::Uxie,
+                    Species::Mesprit, Species::Azelf, Species::Dialga, Species::Palkia,
+                    Species::Heatran, Species::Regigigas, Species::Giratina, Species::Cresselia,
+                    Species::Phione, Species::Manaphy, Species::Darkrai, Species::Shaymin,
+                    Species::Arceus, Species::Oshawott, Species::Dewott, Species::Samurott,
+                    Species::Petilil, Species::Lilligant, Species::Basculin, Species::Zorua,
+                    Species::Zoroark, Species::Rufflet, Species::Braviary, Species::Tornadus,
+                    Species::Thundurus, Species::Landorus, Species::Sylveon, Species::Goomy,
+                    Species::Sliggoo, Species::Goodra, Species::Bergmite, Species::Avalugg,
+                    Species::Rowlet, Species::Dartrix, Species::Decidueye, Species::Wyrdeer,
+                    Species::Kleavor, Species::Ursaluna, Species::Basculegion, Species::Sneasler,
+                    Species::Overqwil, Species::Enamorus};
+                return items;
+            }
             default:
                 return emptySet;
         }
@@ -784,9 +1085,13 @@ namespace pksm
             }
             case GameVersion::SW:
             case GameVersion::SH:
+            case GameVersion::PLA:
+            case GameVersion::SL:
+            case GameVersion::VL:
+            case GameVersion::ZA:
             {
                 static const std::set<Ability> items = std::invoke([]()
-                    { return create_set_consecutive<Ability>(Ability::Stench, Ability::AsOneG); });
+                    { return create_set_consecutive<Ability>(Ability::Stench, Ability::AsOneG); }); // AsOneG for all these games
                 return items;
             }
             default:
@@ -797,6 +1102,19 @@ namespace pksm
     const std::set<Ball>& VersionTables::availableBalls(GameVersion version)
     {
         static const std::set<Ball> emptySet;
+        if (version == GameVersion::PLA)
+        {
+            static const std::set<Ball> items = std::invoke(
+                []() { return create_set_consecutive<Ball>(Ball::Master, Ball::LAOrigin); });
+            return items;
+        }
+        if (version == GameVersion::SL || version == GameVersion::VL ||
+            version == GameVersion::ZA)
+        {
+            static const std::set<Ball> items = std::invoke(
+                []() { return create_set_consecutive<Ball>(Ball::Master, Ball::Beast); }); // LAOrigin exists in these games too technically, but Beast for now
+            return items;
+        }
         switch ((Generation)version)
         {
             case Generation::ONE:
@@ -895,6 +1213,13 @@ namespace pksm
             case GameVersion::SW:
             case GameVersion::SH:
                 return 1607;
+            case GameVersion::PLA:
+                return 1828;
+            case GameVersion::SL:
+            case GameVersion::VL:
+                return 2557;
+            case GameVersion::ZA:
+                return 2684;
             default:
                 return 0;
         }
@@ -948,6 +1273,13 @@ namespace pksm
             case GameVersion::SW:
             case GameVersion::SH:
                 return Move::EerieSpell;
+            case GameVersion::PLA:
+                return Move::TakeHeart;
+            case GameVersion::SL:
+            case GameVersion::VL:
+                return Move::MalignantChain;
+            case GameVersion::ZA:
+                return Move::NihilLight;
             default:
                 return Move::None;
         }
@@ -1000,6 +1332,12 @@ namespace pksm
             case GameVersion::SW:
             case GameVersion::SH:
                 return Species::Calyrex;
+            case GameVersion::PLA:
+                return Species::Enamorus;
+            case GameVersion::SL:
+            case GameVersion::VL:
+            case GameVersion::ZA:
+                return Species::Pecharunt;
             default:
                 return Species::None;
         }
@@ -1043,7 +1381,11 @@ namespace pksm
                 return Ability::Neuroforce;
             case GameVersion::SW:
             case GameVersion::SH:
-                return Ability::AsOneG;
+            case GameVersion::PLA:
+            case GameVersion::SL:
+            case GameVersion::VL:
+            case GameVersion::ZA:
+                return Ability::AsOneG; // supposedly also AsOneG for all these
             default:
                 return Ability::None;
         }
@@ -1051,6 +1393,15 @@ namespace pksm
 
     Ball VersionTables::maxBall(GameVersion version)
     {
+        if (version == GameVersion::PLA)
+        {
+            return Ball::LAOrigin;
+        }
+        if (version == GameVersion::SL || version == GameVersion::VL ||
+            version == GameVersion::ZA)
+        {
+            return Ball::Beast;
+        }
         switch ((Generation)version)
         {
             case Generation::ONE:
@@ -1066,6 +1417,7 @@ namespace pksm
                 return Ball::Dream;
             case Generation::SEVEN:
             case Generation::LGPE:
+                return Ball::Beast;
             case Generation::EIGHT:
                 return Ball::Beast;
             default:
@@ -1165,6 +1517,13 @@ namespace pksm
             case GameVersion::SW:
             case GameVersion::SH:
                 return PersonalSWSH::formCount(u16(species));
+            case GameVersion::PLA:
+                return PersonalPLA::formCount(u16(species));
+            case GameVersion::SL:
+            case GameVersion::VL:
+                return PersonalSV::formCount(u16(species));
+            case GameVersion::ZA:
+                return PersonalZA::formCount(u16(species));
             default:
                 return 1;
         }
@@ -1180,6 +1539,7 @@ namespace pksm
         u8 val = 0;
         switch (gen)
         {
+            case pksm::Generation::NINE:
             case pksm::Generation::EIGHT:
             case pksm::Generation::SEVEN:
                 val = internal::PP_G8[size_t(move)];

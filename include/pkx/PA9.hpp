@@ -24,19 +24,20 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef PK8_HPP
-#define PK8_HPP
+#ifndef PA9_HPP
+#define PA9_HPP
 
 #include "personal/personal.hpp"
 #include "pkx/PKX.hpp"
 
 namespace pksm
 {
-    class PK8 : public PKX
+    class PA9 : public PKX
     {
     private:
         static constexpr size_t BLOCK_LENGTH     = 80;
         static constexpr size_t ENCRYPTION_START = 8;
+
         [[nodiscard]] int eggYear(void) const override;
         void eggYear(int v) override;
         [[nodiscard]] int eggMonth(void) const override;
@@ -50,29 +51,18 @@ namespace pksm
         [[nodiscard]] int metDay(void) const override;
         void metDay(int v) override;
 
-    protected:
-        static constexpr u16 hyperTrainLookup[6] = {0, 1, 2, 5, 3, 4};
-
     public:
         static constexpr size_t BOX_LENGTH            = 0x148;
         static constexpr size_t PARTY_LENGTH          = 0x158;
-        static constexpr Species FORMAT_SPECIES_LIMIT = Species::Zarude;
+        static constexpr Species FORMAT_SPECIES_LIMIT = Species::Pecharunt;
 
-        PK8(PrivateConstructor, u8* dt, bool party = false, bool directAccess = false);
+        PA9(PrivateConstructor, u8* dt, bool party = false, bool directAccess = false);
 
-        [[nodiscard]] std::string_view extension() const override { return ".pk8"; }
-
-        // std::unique_ptr<PK1> convertToG1(Sav& save) const override;
-        // std::unique_ptr<PK2> convertToG2(Sav& save) const override;
-        // std::unique_ptr<PK3> convertToG3(Sav& save) const override;
-        // std::unique_ptr<PK4> convertToG4(Sav& save) const override;
-        // std::unique_ptr<PK5> convertToG5(Sav& save) const override;
-        // std::unique_ptr<PK6> convertToG6(Sav& save) const override;
-        // std::unique_ptr<PK7> convertToG7(Sav& save) const override;
-        // std::unique_ptr<PB7> convertToLGPE(Sav& save) const override;
-        [[nodiscard]] std::unique_ptr<PKX> convertToG9(Sav& save) const override;
+        [[nodiscard]] std::string_view extension() const override { return ".pa9"; }
 
         [[nodiscard]] std::unique_ptr<PKX> clone(void) const override;
+        [[nodiscard]] std::unique_ptr<PKX> convertToG9(Sav& save) const override;
+        [[nodiscard]] std::unique_ptr<PK8> convertToG8(Sav& save) const override;
 
         [[nodiscard]] Generation generation(void) const override;
         void decrypt(void) override;
@@ -102,22 +92,18 @@ namespace pksm
         u8 abilityNumber(void) const override;
         void abilityNumber(u8 v) override;
         void setAbility(u8 abilityNumber) override;
-        bool favorite(void) const;
-        void favorite(bool v) const;
-        bool canGiga(void) const;
-        void canGiga(bool v) const;
         u16 markValue(void) const override;
         void markValue(u16 v) override;
         u32 PID(void) const override;
         void PID(u32 v) override;
-        Nature origNature(void) const;
-        void origNature(Nature v);
         Nature nature(void) const override;
         void nature(Nature v) override;
         bool fatefulEncounter(void) const override;
         void fatefulEncounter(bool v) override;
         Gender gender(void) const override;
         void gender(Gender g) override;
+        bool isAlpha(void) const;
+        void isAlpha(bool v);
         u16 alternativeForm(void) const override;
         void alternativeForm(u16 v) override;
         u16 ev(Stat ev) const override;
@@ -134,14 +120,6 @@ namespace pksm
         bool hasRibbon(Ribbon rib) const override;
         bool ribbon(Ribbon rib) const override;
         void ribbon(Ribbon rib, bool v) override;
-        u8 ribbonContestCount(void) const;
-        void ribbonContestCount(u8 v);
-        u8 ribbonBattleCount(void) const;
-        void ribbonBattleCount(u8 v);
-        u8 height(void) const;
-        void height(u8 v);
-        u8 weight(void) const;
-        void weight(u8 v);
 
         std::string nickname(void) const override;
         void nickname(const std::string_view& v) override;
@@ -157,77 +135,25 @@ namespace pksm
         void partyCurrHP(u16 v) override;
         u8 iv(Stat iv) const override;
         void iv(Stat iv, u8 v) override;
-        u8 dynamaxLevel(void) const;
-        void dynamaxLevel(u8 v);
 
         bool egg(void) const override;
         void egg(bool v) override;
         bool nicknamed(void) const override;
         void nicknamed(bool v) override;
 
-        std::string htName(void) const;
-        void htName(const std::string_view& v);
-        Gender htGender(void) const;
-        void htGender(Gender v);
-        Language htLanguage(void) const;
-        void htLanguage(Language lang);
+        bool hyperTrain(Stat stat) const override;
+        void hyperTrain(Stat stat, bool v) override;
+
         PKXHandler currentHandler(void) const override;
         void currentHandler(PKXHandler v) override;
-        // Unused
-        u16 htID(void) const;
-        void htID(u16 v);
-        u8 htFriendship(void) const override;
-        void htFriendship(u8 v) override;
-        u8 htIntensity(void) const;
-        void htIntensity(u8 v);
-        u8 htMemory(void) const;
-        void htMemory(u8 v);
-        u8 htFeeling(void) const;
-        void htFeeling(u8 v);
-        u16 htTextVar(void) const;
-        void htTextVar(u16 v);
-        u8 fullness(void) const;
-        void fullness(u8 v);
-        u8 enjoyment(void) const;
-        void enjoyment(u8 v);
-        GameVersion version(void) const override;
-        void version(GameVersion v) override;
-        u8 battleVersion(void) const;
-        void battleVersion(u8 v);
-
-        u8 country(void) const { return 0; }
-
-        void country(u8) {}
-
-        u8 region(void) const { return 0; }
-
-        void region(u8) {}
-
-        u8 consoleRegion(void) const { return 0; }
-
-        void consoleRegion(u8) {}
-
-        Language language(void) const override;
-        void language(Language v) override;
-        u32 formDuration(void) const;
-        void formDuration(u32 v);
-        s8 favRibbon(void) const;
-        void favRibbon(s8 v);
 
         std::string otName(void) const override;
         void otName(const std::string_view& v) override;
         u8 otFriendship(void) const override;
         void otFriendship(u8 v) override;
-        u8 otAffection(void) const;
-        void otAffection(u8 v);
-        u8 otIntensity(void) const;
-        void otIntensity(u8 v);
-        u8 otMemory(void) const;
-        void otMemory(u8 v);
-        u16 otTextVar(void) const;
-        void otTextVar(u16 v);
-        u8 otFeeling(void) const;
-        void otFeeling(u8 v);
+        u8 htFriendship(void) const override;
+        void htFriendship(u8 v) override;
+
         u16 eggLocation(void) const override;
         void eggLocation(u16 v) override;
         u16 metLocation(void) const override;
@@ -238,20 +164,15 @@ namespace pksm
         void metLevel(u8 v) override;
         Gender otGender(void) const override;
         void otGender(Gender v) override;
-
-        bool hyperTrain(Stat stat) const override;
-        void hyperTrain(Stat stat, bool v) override;
-        bool moveRecordFlag(u8 index) const;
-        void moveRecordFlag(u8 index, bool v);
-        u64 homeTracker(void) const;
-        void homeTracker(u64 v);
+        GameVersion version(void) const override;
+        void version(GameVersion v) override;
+        Language language(void) const override;
+        void language(Language v) override;
 
         int partyStat(Stat stat) const override;
         void partyStat(Stat stat, u16 v) override;
         int partyLevel(void) const override;
         void partyLevel(u8 v) override;
-        u16 dynamaxType(void) const;
-        void dynamaxType(u16 v);
         void updatePartyData(void) override;
 
         void refreshChecksum(void) override;
@@ -279,50 +200,39 @@ namespace pksm
 
         u32 maxEVTotal(void) const override { return 510; }
 
-        inline u8 baseHP(void) const override { return PersonalSWSH::baseHP(formSpecies()); }
+        inline u8 baseHP(void) const override { return PersonalZA::baseHP(formSpecies()); }
 
-        inline u8 baseAtk(void) const override { return PersonalSWSH::baseAtk(formSpecies()); }
+        inline u8 baseAtk(void) const override { return PersonalZA::baseAtk(formSpecies()); }
 
-        inline u8 baseDef(void) const override { return PersonalSWSH::baseDef(formSpecies()); }
+        inline u8 baseDef(void) const override { return PersonalZA::baseDef(formSpecies()); }
 
-        inline u8 baseSpe(void) const override { return PersonalSWSH::baseSpe(formSpecies()); }
+        inline u8 baseSpe(void) const override { return PersonalZA::baseSpe(formSpecies()); }
 
-        inline u8 baseSpa(void) const override { return PersonalSWSH::baseSpa(formSpecies()); }
+        inline u8 baseSpa(void) const override { return PersonalZA::baseSpa(formSpecies()); }
 
-        inline u8 baseSpd(void) const override { return PersonalSWSH::baseSpd(formSpecies()); }
+        inline u8 baseSpd(void) const override { return PersonalZA::baseSpd(formSpecies()); }
 
-        inline Type type1(void) const override { return PersonalSWSH::type1(formSpecies()); }
+        inline Type type1(void) const override { return PersonalZA::type1(formSpecies()); }
 
-        inline Type type2(void) const override { return PersonalSWSH::type2(formSpecies()); }
+        inline Type type2(void) const override { return PersonalZA::type2(formSpecies()); }
 
-        inline u8 genderType(void) const override { return PersonalSWSH::gender(formSpecies()); }
+        inline u8 genderType(void) const override { return PersonalZA::gender(formSpecies()); }
 
         inline u8 baseFriendship(void) const override
         {
-            return PersonalSWSH::baseFriendship(formSpecies());
+            return PersonalZA::baseFriendship(formSpecies());
         }
 
-        inline u8 expType(void) const override { return PersonalSWSH::expType(formSpecies()); }
+        inline u8 expType(void) const override { return PersonalZA::expType(formSpecies()); }
 
         inline Ability abilities(u8 n) const override
         {
-            return PersonalSWSH::ability(formSpecies(), n);
+            return PersonalZA::ability(formSpecies(), n);
         }
 
         inline u16 formStatIndex(void) const override
         {
-            return PersonalSWSH::formStatIndex(formSpecies());
-        }
-
-        inline u16 pokedexIndex(void) const { return PersonalSWSH::pokedexIndex(formSpecies()); }
-
-        inline u16 armordexIndex(void) const { return PersonalSWSH::armordexIndex(formSpecies()); }
-
-        inline u16 crowndexIndex(void) const { return PersonalSWSH::crowndexIndex(formSpecies()); }
-
-        inline bool canLearnTR(u8 trID) const
-        {
-            return PersonalSWSH::canLearnTR(formSpecies(), trID);
+            return PersonalZA::formStatIndex(formSpecies());
         }
 
     private:

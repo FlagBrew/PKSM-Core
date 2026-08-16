@@ -945,6 +945,15 @@ namespace pksm
         return nullptr;
     }
 
+    std::unique_ptr<PKX> PK3::convertToG9(Sav& save) const
+    {
+        if (auto pk8 = convertToG8(save))
+        {
+            return pk8->convertToG9(save);
+        }
+        return nullptr;
+    }
+
     u8 PK3::level() const
     {
         u8 i      = 1;

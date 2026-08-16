@@ -278,7 +278,7 @@ namespace i18n
 
     std::span<const size_t> formIndices(pksm::GameVersion version, pksm::Species species)
     {
-        // TODO: Gigantamax. How do those work?
+        // Note: Gigantamax uses the canGigantamax flag in PK8, not a form number, so no form names needed
         u8 forms = pksm::VersionTables::formCount(version, species);
 
         std::span<const size_t> ret = FA(Default);
@@ -314,6 +314,7 @@ namespace i18n
                     case pksm::Generation::SEVEN:
                     case pksm::Generation::LGPE:
                     case pksm::Generation::EIGHT:
+                    case pksm::Generation::NINE:
                         ret = FA(Default, Original, Hoenn, Sinnoh, Unova, Kalos, Alola, Partner,
                             Default, World);
                         break;
@@ -365,6 +366,7 @@ namespace i18n
                         ret = FA(Default, Mega);
                         break;
                     case pksm::Generation::EIGHT:
+                    case pksm::Generation::NINE:
                         ret = FA(Default, Galarian);
                         break;
                     default:

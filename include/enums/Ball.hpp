@@ -74,6 +74,17 @@ namespace pksm
                 Sport,
                 Dream,
                 Beast,
+                Strange,
+                LAPoke,
+                LAGreat,
+                LAUltra,
+                LAFeather,
+                LAWing,
+                LAJet,
+                LAHeavy,
+                LALeaden,
+                LAGigaton,
+                LAOrigin,
 
                 INVALID [[maybe_unused]] =
                     std::numeric_limits<std::underlying_type_t<BallEnum>>::max()
@@ -159,6 +170,17 @@ namespace pksm
         static constexpr internal::Ball_impl Sport{EnumType::Sport};
         static constexpr internal::Ball_impl Dream{EnumType::Dream};
         static constexpr internal::Ball_impl Beast{EnumType::Beast};
+        static constexpr internal::Ball_impl Strange{EnumType::Strange};
+        static constexpr internal::Ball_impl LAPoke{EnumType::LAPoke};
+        static constexpr internal::Ball_impl LAGreat{EnumType::LAGreat};
+        static constexpr internal::Ball_impl LAUltra{EnumType::LAUltra};
+        static constexpr internal::Ball_impl LAFeather{EnumType::LAFeather};
+        static constexpr internal::Ball_impl LAWing{EnumType::LAWing};
+        static constexpr internal::Ball_impl LAJet{EnumType::LAJet};
+        static constexpr internal::Ball_impl LAHeavy{EnumType::LAHeavy};
+        static constexpr internal::Ball_impl LALeaden{EnumType::LALeaden};
+        static constexpr internal::Ball_impl LAGigaton{EnumType::LAGigaton};
+        static constexpr internal::Ball_impl LAOrigin{EnumType::LAOrigin};
 
         static constexpr internal::Ball_impl INVALID{EnumType::INVALID};
     };

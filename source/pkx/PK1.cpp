@@ -267,6 +267,15 @@ namespace pksm
         return nullptr;
     }
 
+    std::unique_ptr<PKX> PK1::convertToG9(Sav& save) const
+    {
+        if (auto pk8 = convertToG8(save))
+        {
+            return pk8->convertToG9(save);
+        }
+        return nullptr;
+    }
+
     std::unique_ptr<PKX> PK1::clone() const
     {
         return PKX::getPKM<Generation::ONE>(

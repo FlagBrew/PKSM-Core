@@ -111,6 +111,14 @@ namespace pksm
         return ret;
     }
 
+    Item::operator Item9a() const
+    {
+        Item9a ret;
+        ret.id(id());
+        ret.count(count());
+        return ret;
+    }
+
     Item7::operator Item7b() const
     {
         Item7b ret;

@@ -62,7 +62,10 @@ namespace pksm
     class PK6;
     class PK7;
     class PK8;
+    class PA8;
+    class PA9;
     class PB7;
+    class PK9;
 
     class PKX : public IPKFilterable
     {
@@ -95,7 +98,7 @@ namespace pksm
         u8* data;
 
     public:
-        static constexpr Species PKSM_MAX_SPECIES = Species::Calyrex;
+        static constexpr Species PKSM_MAX_SPECIES = Species::Pecharunt;
 
         // Returns null if length is not valid for that generation, and a party Pokemon depending on
         // length, or in Gen I and II a Japanese Pokemon depending on length
@@ -173,6 +176,7 @@ namespace pksm
         [[nodiscard]] virtual std::unique_ptr<PK7> convertToG7(Sav& save) const;
         [[nodiscard]] virtual std::unique_ptr<PB7> convertToLGPE(Sav& save) const;
         [[nodiscard]] virtual std::unique_ptr<PK8> convertToG8(Sav& save) const;
+        [[nodiscard]] virtual std::unique_ptr<PKX> convertToG9(Sav& save) const;
         [[nodiscard]] virtual std::unique_ptr<PKX> clone(void) const = 0;
         [[nodiscard]] std::unique_ptr<PKX> partyClone(void) const;
 

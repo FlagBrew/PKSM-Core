@@ -874,6 +874,100 @@ namespace pksm
                 GlacialLance,
                 AstralBarrage,
                 EerieSpell,
+                DireClaw,
+                PsyshieldBash,
+                PowerShift,
+                StoneAxe,
+                SpringtideStorm,
+                MysticalPower,
+                RagingFury,
+                WaveCrash,
+                Chloroblast,
+                MountainGale,
+                VictoryDance,
+                HeadlongRush,
+                BarbBarrage,
+                EsperWing,
+                BitterMalice,
+                Shelter,
+                TripleArrows,
+                InfernalParade,
+                CeaselessEdge,
+                BleakwindStorm,
+                WildboltStorm,
+                SandsearStorm,
+                LunarBlessing,
+                TakeHeart,
+                TeraBlast,
+                SilkTrap,
+                AxeKick,
+                LastRespects,
+                LuminaCrash,
+                OrderUp,
+                JetPunch,
+                SpicyExtract,
+                SpinOut,
+                PopulationBomb,
+                IceSpinner,
+                GlaiveRush,
+                RevivalBlessing,
+                SaltCure,
+                TripleDive,
+                MortalSpin,
+                Doodle,
+                FilletAway,
+                KowtowCleave,
+                FlowerTrick,
+                TorchSong,
+                AquaStep,
+                RagingBull,
+                MakeItRain,
+                Psyblade,
+                HydroSteam,
+                Ruination,
+                CollisionCourse,
+                ElectroDrift,
+                ShedTail,
+                ChillyReception,
+                TidyUp,
+                Snowscape,
+                Pounce,
+                Trailblaze,
+                ChillingWater,
+                HyperDrill,
+                TwinBeam,
+                RageFist,
+                ArmorCannon,
+                BitterBlade,
+                DoubleShock,
+                GigatonHammer,
+                Comeuppance,
+                AquaCutter,
+                BlazingTorque,
+                WickedTorque,
+                NoxiousTorque,
+                CombatTorque,
+                MagicalTorque,
+                BloodMoon,
+                MatchaGotcha,
+                SyrupBomb,
+                IvyCudgel,
+                ElectroShot,
+                TeraStarstorm,
+                FickleBeam,
+                BurningBulwark,
+                Thunderclap,
+                MightyCleave,
+                TachyonCutter,
+                HardPress,
+                DragonCheer,
+                AlluringVoice,
+                TemperFlare,
+                SupercellSlam,
+                PsychicNoise,
+                UpperHand,
+                MalignantChain,
+                NihilLight,
 
                 INVALID [[maybe_unused]] =
                     std::numeric_limits<std::underlying_type_t<MoveEnum>>::max()
@@ -1762,6 +1856,104 @@ namespace pksm
         static constexpr internal::Move_impl GlacialLance{EnumType::GlacialLance};
         static constexpr internal::Move_impl AstralBarrage{EnumType::AstralBarrage};
         static constexpr internal::Move_impl EerieSpell{EnumType::EerieSpell};
+
+        // Legends Arceus and BDSP moves
+        static constexpr internal::Move_impl DireClaw{EnumType::DireClaw};
+        static constexpr internal::Move_impl PsyshieldBash{EnumType::PsyshieldBash};
+        static constexpr internal::Move_impl PowerShift{EnumType::PowerShift};
+        static constexpr internal::Move_impl StoneAxe{EnumType::StoneAxe};
+        static constexpr internal::Move_impl SpringtideStorm{EnumType::SpringtideStorm};
+        static constexpr internal::Move_impl MysticalPower{EnumType::MysticalPower};
+        static constexpr internal::Move_impl RagingFury{EnumType::RagingFury};
+        static constexpr internal::Move_impl WaveCrash{EnumType::WaveCrash};
+        static constexpr internal::Move_impl Chloroblast{EnumType::Chloroblast};
+        static constexpr internal::Move_impl MountainGale{EnumType::MountainGale};
+        static constexpr internal::Move_impl VictoryDance{EnumType::VictoryDance};
+        static constexpr internal::Move_impl HeadlongRush{EnumType::HeadlongRush};
+        static constexpr internal::Move_impl BarbBarrage{EnumType::BarbBarrage};
+        static constexpr internal::Move_impl EsperWing{EnumType::EsperWing};
+        static constexpr internal::Move_impl BitterMalice{EnumType::BitterMalice};
+        static constexpr internal::Move_impl Shelter{EnumType::Shelter};
+        static constexpr internal::Move_impl TripleArrows{EnumType::TripleArrows};
+        static constexpr internal::Move_impl InfernalParade{EnumType::InfernalParade};
+        static constexpr internal::Move_impl CeaselessEdge{EnumType::CeaselessEdge};
+        static constexpr internal::Move_impl BleakwindStorm{EnumType::BleakwindStorm};
+        static constexpr internal::Move_impl WildboltStorm{EnumType::WildboltStorm};
+        static constexpr internal::Move_impl SandsearStorm{EnumType::SandsearStorm};
+        static constexpr internal::Move_impl LunarBlessing{EnumType::LunarBlessing};
+        static constexpr internal::Move_impl TakeHeart{EnumType::TakeHeart};
+
+        // gen 9 moves and up
+        static constexpr internal::Move_impl TeraBlast{EnumType::TeraBlast};
+        static constexpr internal::Move_impl SilkTrap{EnumType::SilkTrap};
+        static constexpr internal::Move_impl AxeKick{EnumType::AxeKick};
+        static constexpr internal::Move_impl LastRespects{EnumType::LastRespects};
+        static constexpr internal::Move_impl LuminaCrash{EnumType::LuminaCrash};
+        static constexpr internal::Move_impl OrderUp{EnumType::OrderUp};
+        static constexpr internal::Move_impl JetPunch{EnumType::JetPunch};
+        static constexpr internal::Move_impl SpicyExtract{EnumType::SpicyExtract};
+        static constexpr internal::Move_impl SpinOut{EnumType::SpinOut};
+        static constexpr internal::Move_impl PopulationBomb{EnumType::PopulationBomb};
+        static constexpr internal::Move_impl IceSpinner{EnumType::IceSpinner};
+        static constexpr internal::Move_impl GlaiveRush{EnumType::GlaiveRush};
+        static constexpr internal::Move_impl RevivalBlessing{EnumType::RevivalBlessing};
+        static constexpr internal::Move_impl SaltCure{EnumType::SaltCure};
+        static constexpr internal::Move_impl TripleDive{EnumType::TripleDive};
+        static constexpr internal::Move_impl MortalSpin{EnumType::MortalSpin};
+        static constexpr internal::Move_impl Doodle{EnumType::Doodle};
+        static constexpr internal::Move_impl FilletAway{EnumType::FilletAway};
+        static constexpr internal::Move_impl KowtowCleave{EnumType::KowtowCleave};
+        static constexpr internal::Move_impl FlowerTrick{EnumType::FlowerTrick};
+        static constexpr internal::Move_impl TorchSong{EnumType::TorchSong};
+        static constexpr internal::Move_impl AquaStep{EnumType::AquaStep};
+        static constexpr internal::Move_impl RagingBull{EnumType::RagingBull};
+        static constexpr internal::Move_impl MakeItRain{EnumType::MakeItRain};
+        static constexpr internal::Move_impl Psyblade{EnumType::Psyblade};
+        static constexpr internal::Move_impl HydroSteam{EnumType::HydroSteam};
+        static constexpr internal::Move_impl Ruination{EnumType::Ruination};
+        static constexpr internal::Move_impl CollisionCourse{EnumType::CollisionCourse};
+        static constexpr internal::Move_impl ElectroDrift{EnumType::ElectroDrift};
+        static constexpr internal::Move_impl ShedTail{EnumType::ShedTail};
+        static constexpr internal::Move_impl ChillyReception{EnumType::ChillyReception};
+        static constexpr internal::Move_impl TidyUp{EnumType::TidyUp};
+        static constexpr internal::Move_impl Snowscape{EnumType::Snowscape};
+        static constexpr internal::Move_impl Pounce{EnumType::Pounce};
+        static constexpr internal::Move_impl Trailblaze{EnumType::Trailblaze};
+        static constexpr internal::Move_impl ChillingWater{EnumType::ChillingWater};
+        static constexpr internal::Move_impl HyperDrill{EnumType::HyperDrill};
+        static constexpr internal::Move_impl TwinBeam{EnumType::TwinBeam};
+        static constexpr internal::Move_impl RageFist{EnumType::RageFist};
+        static constexpr internal::Move_impl ArmorCannon{EnumType::ArmorCannon};
+        static constexpr internal::Move_impl BitterBlade{EnumType::BitterBlade};
+        static constexpr internal::Move_impl DoubleShock{EnumType::DoubleShock};
+        static constexpr internal::Move_impl GigatonHammer{EnumType::GigatonHammer};
+        static constexpr internal::Move_impl Comeuppance{EnumType::Comeuppance};
+        static constexpr internal::Move_impl AquaCutter{EnumType::AquaCutter};
+        static constexpr internal::Move_impl BlazingTorque{EnumType::BlazingTorque};
+        static constexpr internal::Move_impl WickedTorque{EnumType::WickedTorque};
+        static constexpr internal::Move_impl NoxiousTorque{EnumType::NoxiousTorque};
+        static constexpr internal::Move_impl CombatTorque{EnumType::CombatTorque};
+        static constexpr internal::Move_impl MagicalTorque{EnumType::MagicalTorque};
+        static constexpr internal::Move_impl BloodMoon{EnumType::BloodMoon};
+        static constexpr internal::Move_impl MatchaGotcha{EnumType::MatchaGotcha};
+        static constexpr internal::Move_impl SyrupBomb{EnumType::SyrupBomb};
+        static constexpr internal::Move_impl IvyCudgel{EnumType::IvyCudgel};
+        static constexpr internal::Move_impl ElectroShot{EnumType::ElectroShot};
+        static constexpr internal::Move_impl TeraStarstorm{EnumType::TeraStarstorm};
+        static constexpr internal::Move_impl FickleBeam{EnumType::FickleBeam};
+        static constexpr internal::Move_impl BurningBulwark{EnumType::BurningBulwark};
+        static constexpr internal::Move_impl Thunderclap{EnumType::Thunderclap};
+        static constexpr internal::Move_impl MightyCleave{EnumType::MightyCleave};
+        static constexpr internal::Move_impl TachyonCutter{EnumType::TachyonCutter};
+        static constexpr internal::Move_impl HardPress{EnumType::HardPress};
+        static constexpr internal::Move_impl DragonCheer{EnumType::DragonCheer};
+        static constexpr internal::Move_impl AlluringVoice{EnumType::AlluringVoice};
+        static constexpr internal::Move_impl TemperFlare{EnumType::TemperFlare};
+        static constexpr internal::Move_impl SupercellSlam{EnumType::SupercellSlam};
+        static constexpr internal::Move_impl PsychicNoise{EnumType::PsychicNoise};
+        static constexpr internal::Move_impl UpperHand{EnumType::UpperHand};
+        static constexpr internal::Move_impl MalignantChain{EnumType::MalignantChain};
+        static constexpr internal::Move_impl NihilLight{EnumType::NihilLight};
 
         static constexpr internal::Move_impl INVALID{EnumType::INVALID};
     };
