@@ -118,6 +118,14 @@ namespace pksm
                 SW = 44,
                 /// Pokémon Shield (NX)
                 SH = 45,
+                /// Pokémon Legends: Arceus (NX)
+                PLA = 47,
+                /// Pokémon Scarlet (NX)
+                SL = 50,
+                /// Pokémon Violet (NX)
+                VL = 51,
+                /// Pokémon Legends: Z-A (NX)
+                ZA = 52,
 
                 INVALID [[maybe_unused]] =
                     std::numeric_limits<std::underlying_type_t<GameVersionEnum>>::max()
@@ -172,9 +180,14 @@ namespace pksm
                     case GameVersionEnum::GP: // 42:
                     case GameVersionEnum::GE: // 43:
                         return Generation::LGPE;
-                    case GameVersionEnum::SW: // 44:
-                    case GameVersionEnum::SH: // 45:
+                    case GameVersionEnum::SW:  // 44:
+                    case GameVersionEnum::SH:  // 45:
+                    case GameVersionEnum::PLA: // 47:
                         return Generation::EIGHT;
+                    case GameVersionEnum::SL: // 50:
+                    case GameVersionEnum::VL: // 51:
+                    case GameVersionEnum::ZA: // 52:
+                        return Generation::NINE;
                     case GameVersionEnum::RD: // 35:
                     case GameVersionEnum::GN: // 36:
                     case GameVersionEnum::BU: // 37:
@@ -256,6 +269,8 @@ namespace pksm
                     return GameVersion::UM;
                 case Generation::EIGHT:
                     return GameVersion::SH;
+                case Generation::NINE:
+                    return GameVersion::ZA;
                 case Generation::LGPE:
                     return GameVersion::GE;
                 default:
@@ -283,6 +298,8 @@ namespace pksm
                     return GameVersion::SN;
                 case Generation::EIGHT:
                     return GameVersion::SW;
+                case Generation::NINE:
+                    return GameVersion::SL;
                 case Generation::LGPE:
                     return GameVersion::GP;
                 default:
@@ -364,6 +381,14 @@ namespace pksm
         static constexpr internal::GameVersion_impl SW{EnumType::SW};
         /// Pokémon Shield (NX)
         static constexpr internal::GameVersion_impl SH{EnumType::SH};
+        /// Pokémon Legends: Arceus (NX)
+        static constexpr internal::GameVersion_impl PLA{EnumType::PLA};
+        /// Pokémon Scarlet (NX)
+        static constexpr internal::GameVersion_impl SL{EnumType::SL};
+        /// Pokémon Violet (NX)
+        static constexpr internal::GameVersion_impl VL{EnumType::VL};
+        /// Pokémon Legends: Z-A (NX)
+        static constexpr internal::GameVersion_impl ZA{EnumType::ZA};
 
         static constexpr internal::GameVersion_impl INVALID{EnumType::INVALID};
     };

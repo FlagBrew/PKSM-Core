@@ -128,6 +128,7 @@ namespace i18n
                 }
                 break;
             case pksm::Generation::EIGHT:
+            case pksm::Generation::NINE:
                 if (locationss[lang].locations8.count(v) > 0)
                 {
                     return locationss[lang].locations8[v];
@@ -160,6 +161,7 @@ namespace i18n
             case pksm::Generation::LGPE:
                 return locationss[lang].locationsLGPE;
             case pksm::Generation::EIGHT:
+            case pksm::Generation::NINE:
                 return locationss[lang].locations8;
             case pksm::Generation::UNUSED:
             case pksm::Generation::ONE:

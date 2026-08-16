@@ -44,6 +44,8 @@ namespace pksm
     class Item7;
     class Item7b;
     class Item8;
+    class Item8a;
+    class Item9a;
 
     class Item
     {
@@ -53,7 +55,7 @@ namespace pksm
         [[nodiscard]] virtual u16 maxCount(void) const             = 0;
         [[nodiscard]] virtual u16 id(void) const                   = 0;
         [[nodiscard]] virtual u16 count(void) const                = 0;
-        [[nodiscard]] virtual SmallVector<u8, 4> bytes(void) const = 0;
+        [[nodiscard]] virtual SmallVector<u8, 16> bytes(void) const = 0;
         virtual void id(u16 id)                                    = 0;
         virtual void count(u16 id)                                 = 0;
         [[nodiscard]] virtual operator Item1(void) const;
@@ -65,6 +67,7 @@ namespace pksm
         [[nodiscard]] virtual operator Item7(void) const;
         [[nodiscard]] virtual operator Item7b(void) const;
         [[nodiscard]] virtual operator Item8(void) const;
+        [[nodiscard]] virtual operator Item9a(void) const;
     };
 
     class Item1 : public Item
@@ -114,7 +117,7 @@ namespace pksm
 
         void count(u16 v) override { itemData[1] = u8(v); }
 
-        [[nodiscard]] SmallVector<u8, 4> bytes(void) const override
+        [[nodiscard]] SmallVector<u8, 16> bytes(void) const override
         {
             return {std::span(itemData)};
         }
@@ -167,7 +170,7 @@ namespace pksm
 
         void count(u16 v) override { itemData[1] = u8(v); }
 
-        [[nodiscard]] SmallVector<u8, 4> bytes(void) const override
+        [[nodiscard]] SmallVector<u8, 16> bytes(void) const override
         {
             return {std::span(itemData)};
         }
@@ -235,7 +238,7 @@ namespace pksm
 
         void securityKey(u16 v) { key = v; }
 
-        [[nodiscard]] SmallVector<u8, 4> bytes(void) const override
+        [[nodiscard]] SmallVector<u8, 16> bytes(void) const override
         {
             std::array<u8, 4> data = itemData;
             LittleEndian::convertFrom<u16>(
@@ -290,7 +293,7 @@ namespace pksm
 
         void count(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data() + 2, v); }
 
-        [[nodiscard]] SmallVector<u8, 4> bytes(void) const override
+        [[nodiscard]] SmallVector<u8, 16> bytes(void) const override
         {
             return {std::span(itemData)};
         }
@@ -342,7 +345,7 @@ namespace pksm
 
         void count(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data() + 2, v); }
 
-        [[nodiscard]] SmallVector<u8, 4> bytes(void) const override
+        [[nodiscard]] SmallVector<u8, 16> bytes(void) const override
         {
             return {std::span(itemData)};
         }
@@ -394,7 +397,7 @@ namespace pksm
 
         void count(u16 v) override { LittleEndian::convertFrom<u16>(itemData.data() + 2, v); }
 
-        [[nodiscard]] SmallVector<u8, 4> bytes(void) const override
+        [[nodiscard]] SmallVector<u8, 16> bytes(void) const override
         {
             return {std::span(itemData)};
         }
@@ -453,7 +456,7 @@ namespace pksm
 
         void reserved(bool v) { itemData = (itemData & ~(1u << 31)) | (v ? 1u << 31 : 0); }
 
-        [[nodiscard]] SmallVector<u8, 4> bytes(void) const override
+        [[nodiscard]] SmallVector<u8, 16> bytes(void) const override
         {
             u8 data[4];
             LittleEndian::convertFrom<u32>(data, itemData);
@@ -520,7 +523,7 @@ namespace pksm
 
         void reserved(bool v) { itemData = (itemData & ~(1u << 31)) | (v ? 1u << 31 : 0); }
 
-        [[nodiscard]] SmallVector<u8, 4> bytes(void) const override
+        [[nodiscard]] SmallVector<u8, 16> bytes(void) const override
         {
             u8 data[4];
             LittleEndian::convertFrom<u32>(data, itemData);
@@ -587,7 +590,7 @@ namespace pksm
 
         void reserved(bool v) { itemData = (itemData & ~(1u << 31)) | (v ? 1u << 31 : 0); }
 
-        [[nodiscard]] SmallVector<u8, 4> bytes(void) const override
+        [[nodiscard]] SmallVector<u8, 16> bytes(void) const override
         {
             u8 data[4];
             LittleEndian::convertFrom<u32>(data, itemData);
@@ -604,6 +607,106 @@ namespace pksm
 
         [[nodiscard]] operator Item7(void) const override;
         [[nodiscard]] operator Item7b(void) const override;
+    };
+
+    // PLA stores inventory items as u16 id + u16 count (LE). SwSh-style Item8 bit packing does not apply.
+    class Item8a : public Item
+    {
+    private:
+        u16 itemId = 0;
+        u16 itemCount = 0;
+
+    public:
+        Item8a(u8* data = nullptr)
+        {
+            if (data)
+            {
+                itemId = LittleEndian::convertTo<u16>(data);
+                itemCount = LittleEndian::convertTo<u16>(data + 2);
+            }
+        }
+
+        [[nodiscard]] Generation generation(void) const override { return Generation::EIGHT; }
+        [[nodiscard]] u16 maxCount(void) const override { return 0xFFFF; }
+        [[nodiscard]] u16 id(void) const override { return itemId; }
+        void id(u16 v) override { itemId = v; }
+        [[nodiscard]] u16 count(void) const override { return itemCount; }
+        void count(u16 v) override { itemCount = v; }
+
+        [[nodiscard]] SmallVector<u8, 16> bytes(void) const override
+        {
+            u8 data[4];
+            LittleEndian::convertFrom<u16>(data, itemId);
+            LittleEndian::convertFrom<u16>(data + 2, itemCount);
+            return {std::span(data)};
+        }
+
+        using Item::operator Item1;
+        using Item::operator Item2;
+        using Item::operator Item3;
+        using Item::operator Item4;
+        using Item::operator Item5;
+        using Item::operator Item6;
+        using Item::operator Item7;
+        using Item::operator Item7b;
+        using Item::operator Item8;
+        using Item::operator Item9a;
+    };
+
+    class Item9a : public Item
+    {
+    private:
+        std::array<u8, 16> itemData;
+        u16 itemId = 0;
+
+    public:
+        Item9a(u8* data = nullptr, u16 id = 0)
+        {
+            if (data)
+            {
+                std::copy(data, data + 16, itemData.data());
+            }
+            else
+            {
+                itemData = {};
+            }
+            itemId = id;
+        }
+
+        using Item::operator Item1;
+        using Item::operator Item2;
+        using Item::operator Item3;
+        using Item::operator Item4;
+        using Item::operator Item5;
+        using Item::operator Item6;
+        using Item::operator Item7;
+        using Item::operator Item7b;
+        using Item::operator Item8;
+        using Item::operator Item9a;
+
+        [[nodiscard]] Generation generation(void) const override { return Generation::NINE; }
+
+        [[nodiscard]] u16 maxCount(void) const override { return 999; }
+
+        [[nodiscard]] u16 id(void) const override { return itemId; }
+
+        void id(u16 v) override { itemId = v; }
+
+        [[nodiscard]] u16 count(void) const override
+        {
+            return static_cast<u16>(
+                std::min(LittleEndian::convertTo<u32>(itemData.data() + 4), u32(0xFFFF)));
+        }
+
+        void count(u16 v) override
+        {
+            LittleEndian::convertFrom<u32>(itemData.data() + 4, u32(v));
+        }
+
+        [[nodiscard]] SmallVector<u8, 16> bytes(void) const override
+        {
+            return {std::span(itemData)};
+        }
     };
 }
 

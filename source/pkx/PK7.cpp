@@ -1379,6 +1379,15 @@ namespace pksm
         return pk8;
     }
 
+    std::unique_ptr<PKX> PK7::convertToG9(Sav& save) const
+    {
+        if (auto pk8 = convertToG8(save))
+        {
+            return pk8->convertToG9(save);
+        }
+        return nullptr;
+    }
+
     int PK7::partyCurrHP(void) const
     {
         if (!isParty())

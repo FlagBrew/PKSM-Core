@@ -67,6 +67,7 @@ namespace pksm
         [[nodiscard]] std::unique_ptr<PK7> convertToG7(Sav& save) const override;
         // std::unique_ptr<PB7> convertToLGPE(Sav& save) const override;
         [[nodiscard]] std::unique_ptr<PK8> convertToG8(Sav& save) const override;
+        [[nodiscard]] std::unique_ptr<PKX> convertToG9(Sav& save) const override;
 
         [[nodiscard]] std::unique_ptr<PKX> clone(void) const override;
 
