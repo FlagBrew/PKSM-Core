@@ -415,6 +415,16 @@ namespace pksm
         return Nature{data[0x20]};
     }
 
+    Nature PA8::statNature(void) const
+    {
+        return Nature{data[0x21]};
+    }
+
+    void PA8::statNature(Nature v)
+    {
+        data[0x21] = u8(v);
+    }
+
     void PA8::nature(Nature v)
     {
         data[0x20] = u8(v);
@@ -577,6 +587,20 @@ namespace pksm
     {
         u32 buffer = LittleEndian::convertTo<u32>(data + 0x94);
         return (u8)((buffer >> 5 * u8(stat)) & 0x1F);
+    }
+
+    u8 PA8::effortLevel(Stat stat) const
+    {
+        return data[0xA4 + u8(stat)];
+    }
+
+    void PA8::effortLevel(Stat stat, u8 v)
+    {
+        if (v > 10)
+        {
+            v = 10;
+        }
+        data[0xA4 + u8(stat)] = v;
     }
 
     void PA8::iv(Stat stat, u8 v)
