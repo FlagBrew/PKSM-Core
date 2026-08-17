@@ -38,6 +38,8 @@ namespace pksm
         static constexpr std::array<u16, 25> gigaSpecies = {6, 12, 25, 52, 68, 94, 99, 131, 133,
             143, 569, 823, 826, 834, 839, 841, 842, 844, 851, 858, 861, 869, 879, 884, 890};
 
+        [[nodiscard]] u8* dexEntryAddr(u16 species) const;
+
     public:
         static constexpr size_t SIZE_G8SWSH    = 0x1716B3; // 1.0
         static constexpr size_t SIZE_G8SWSH_1  = 0x17195E; // 1.0 -> 1.1

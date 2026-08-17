@@ -962,13 +962,40 @@ namespace pksm
         }
     }
 
+    u8* SavSWSH::dexEntryAddr(u16 species) const
+    {
+        if (u16 index = PersonalSWSH::pokedexIndex(species))
+        {
+            return getBlock(PokeDex)->decryptedData() + sizeof(DexEntry) * (index - 1);
+        }
+        if (u16 index = PersonalSWSH::armordexIndex(species))
+        {
+            if (auto block = getBlock(ArmorDex))
+            {
+                return block->decryptedData() + sizeof(DexEntry) * (index - 1);
+            }
+            return nullptr;
+        }
+        if (u16 index = PersonalSWSH::crowndexIndex(species))
+        {
+            if (auto block = getBlock(CrownDex))
+            {
+                return block->decryptedData() + sizeof(DexEntry) * (index - 1);
+            }
+        }
+        return nullptr;
+    }
+
     int SavSWSH::dexSeen() const
     {
         int ret = 0;
         for (const auto& i : availableSpecies())
         {
-            u16 index       = PersonalSWSH::pokedexIndex(u16(i));
-            u8* entryOffset = getBlock(PokeDex)->decryptedData() + index * sizeof(DexEntry);
+            const u8* entryOffset = dexEntryAddr(u16(i));
+            if (!entryOffset)
+            {
+                continue;
+            }
             for (size_t j = 0; j < 0x20; j++) // Entire seen region size
             {
                 if (entryOffset[j])
@@ -986,9 +1013,8 @@ namespace pksm
         int ret = 0;
         for (const auto& i : availableSpecies())
         {
-            u16 index       = PersonalSWSH::pokedexIndex(u16(i));
-            u8* entryOffset = getBlock(PokeDex)->decryptedData() + index * sizeof(DexEntry);
-            if (entryOffset[0x20] & 3)
+            const u8* entryOffset = dexEntryAddr(u16(i));
+            if (entryOffset && (entryOffset[0x20] & 3))
             {
                 ret++;
             }
