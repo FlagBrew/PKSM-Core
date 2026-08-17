@@ -608,7 +608,7 @@ namespace pksm
 
         u16 crowndexIndex(u16 species)
         {
-            return LittleEndian::convertTo<u16>(personal8() + species + personal8_entrysize + 0x18);
+            return LittleEndian::convertTo<u16>(personal8() + species * personal8_entrysize + 0x18);
         }
 
         bool canLearnTR(u16 species, u8 trID)
