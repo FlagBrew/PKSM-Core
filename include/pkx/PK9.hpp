@@ -98,6 +98,10 @@ namespace pksm
         void PID(u32 v) override;
         Nature nature(void) const override;
         void nature(Nature v) override;
+        // Stat nature ("minted" nature the game applies to stat calculation);
+        // nature() reads the original nature byte
+        Nature statNature(void) const;
+        void statNature(Nature v);
         bool fatefulEncounter(void) const override;
         void fatefulEncounter(bool v) override;
         Gender gender(void) const override;

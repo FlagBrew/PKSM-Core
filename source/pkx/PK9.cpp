@@ -684,6 +684,16 @@ namespace pksm
         data[0x21] = u8(v);
     }
 
+    Nature PK9::statNature(void) const
+    {
+        return Nature{data[0x21]};
+    }
+
+    void PK9::statNature(Nature v)
+    {
+        data[0x21] = u8(v);
+    }
+
     bool PK9::fatefulEncounter(void) const
     {
         return (data[0x22] & 1) == 1;

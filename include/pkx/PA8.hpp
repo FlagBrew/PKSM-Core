@@ -98,6 +98,10 @@ namespace pksm
         void PID(u32 v) override;
         Nature nature(void) const override;
         void nature(Nature v) override;
+        // Stat nature ("minted" nature the game applies to stat calculation);
+        // nature() reads the original nature byte
+        Nature statNature(void) const;
+        void statNature(Nature v);
         bool fatefulEncounter(void) const override;
         void fatefulEncounter(bool v) override;
         Gender gender(void) const override;
@@ -133,6 +137,10 @@ namespace pksm
         void partyCurrHP(u16 v) override;
         u8 iv(Stat iv) const override;
         void iv(Stat iv, u8 v) override;
+        // Effort levels (Ganbaru values), 0-10 per stat; Legends: Arceus's
+        // replacement for EVs
+        u8 effortLevel(Stat stat) const;
+        void effortLevel(Stat stat, u8 v);
 
         bool egg(void) const override;
         void egg(bool v) override;
