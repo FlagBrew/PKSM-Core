@@ -510,7 +510,9 @@ namespace pksm
             }
             else
             {
-                std::ranges::copy(pk3->rawData(), &data[offset]);
+                // Bound to the box entry: party-format input would otherwise
+                // spill its stat block over the next slot
+                std::ranges::copy(pk3->rawData().subspan(0, PK3::BOX_LENGTH), &data[offset]);
             }
         }
     }
