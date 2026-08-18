@@ -67,6 +67,8 @@ namespace pksm
 
         void finishEditing(void) override;
 
+        [[nodiscard]] bool checksumsValid(void) const override;
+
         void beginEditing(void) override {}
 
         [[nodiscard]] u16 TID(void) const override;

@@ -66,6 +66,22 @@ namespace pksm
         }
     }
 
+    bool SavORAS::checksumsValid(void) const
+    {
+        static constexpr u8 blockCount = 58;
+        static constexpr u32 csoff     = 0x75E1A;
+
+        for (u8 i = 0; i < blockCount; i++)
+        {
+            if (LittleEndian::convertTo<u16>(&data[csoff + i * 8]) !=
+                pksm::crypto::ccitt16({&data[chkofs[i]], chklen[i]}))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     SmallVector<std::pair<Sav::Pouch, std::span<const int>>, 15> SavORAS::validItems() const
     {
         static constexpr std::array NormalItem = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,

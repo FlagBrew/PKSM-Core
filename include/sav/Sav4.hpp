@@ -69,12 +69,18 @@ namespace pksm
         [[nodiscard]] int cardAlbumSlot(int giftSlot) const;
         void dpSlotActive(int slot, bool v);
 
+        // start, end, chkoffset of the two checksummed regions (game-dependent),
+        // shared by resign and checksumsValid
+        void checksumRegions(int (&general)[3], int (&storage)[3]) const;
+
     public:
         Sav4(const std::shared_ptr<u8[]>& data, u32 length) : Sav(data, length) {}
 
         void resign(void);
 
         void finishEditing(void) override { resign(); }
+
+        [[nodiscard]] bool checksumsValid(void) const override;
 
         void beginEditing(void) override {}
 

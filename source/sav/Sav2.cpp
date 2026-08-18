@@ -283,6 +283,13 @@ namespace pksm
         originalCurrentBox = currentBox();
     }
 
+    bool Sav2::checksumsValid() const
+    {
+        // Primary checksum only; real carts routinely carry a stale secondary copy
+        u16 checksum = crypto::bytewiseSum16({&data[OFS_TID], OFS_CHECKSUM_END - OFS_TID + 1});
+        return LittleEndian::convertTo<u16>(&data[OFS_CHECKSUM_ONE]) == checksum;
+    }
+
     u16 Sav2::TID() const
     {
         return BigEndian::convertTo<u16>(&data[OFS_TID]);

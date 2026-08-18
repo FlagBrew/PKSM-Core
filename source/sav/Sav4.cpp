@@ -133,32 +133,45 @@ namespace pksm
         }
     }
 
+    void Sav4::checksumRegions(int (&general)[3], int (&storage)[3]) const
+    {
+        // start, end, chkoffset (shared by resign and checksumsValid)
+        general[0] = 0x0;
+        general[1] = game == Game::DP ? 0xC0EC : game == Game::Pt ? 0xCF18 : 0xF618;
+        general[2] = game == Game::DP ? 0xC0FE : game == Game::Pt ? 0xCF2A : 0xF626;
+        storage[0] = game == Game::DP ? 0xC100 : game == Game::Pt ? 0xCF2C : 0xF700;
+        storage[1] = game == Game::DP ? 0x1E2CC : game == Game::Pt ? 0x1F0FC : 0x21A00;
+        storage[2] = game == Game::DP ? 0x1E2DE : game == Game::Pt ? 0x1F10E : 0x21A0E;
+    }
+
     void Sav4::resign(void)
     {
         u16 cs;
-        // start, end, chkoffset
-        int general[3] = {0x0,
-            game == Game::DP   ? 0xC0EC
-            : game == Game::Pt ? 0xCF18
-                               : 0xF618,
-            game == Game::DP   ? 0xC0FE
-            : game == Game::Pt ? 0xCF2A
-                               : 0xF626};
-        int storage[3] = {game == Game::DP   ? 0xC100
-                          : game == Game::Pt ? 0xCF2C
-                                             : 0xF700,
-            game == Game::DP   ? 0x1E2CC
-            : game == Game::Pt ? 0x1F0FC
-                               : 0x21A00,
-            game == Game::DP   ? 0x1E2DE
-            : game == Game::Pt ? 0x1F10E
-                               : 0x21A0E};
+        int general[3], storage[3];
+        checksumRegions(general, storage);
 
         cs = pksm::crypto::ccitt16({&data[gbo + general[0]], (size_t)(general[1] - general[0])});
         LittleEndian::convertFrom<u16>(&data[gbo + general[2]], cs);
 
         cs = pksm::crypto::ccitt16({&data[sbo + storage[0]], (size_t)(storage[1] - storage[0])});
         LittleEndian::convertFrom<u16>(&data[sbo + storage[2]], cs);
+    }
+
+    bool Sav4::checksumsValid(void) const
+    {
+        // The same active-partition General + Storage regions resign rewrites
+        int general[3], storage[3];
+        checksumRegions(general, storage);
+
+        u16 cs =
+            pksm::crypto::ccitt16({&data[gbo + general[0]], (size_t)(general[1] - general[0])});
+        if (LittleEndian::convertTo<u16>(&data[gbo + general[2]]) != cs)
+        {
+            return false;
+        }
+
+        cs = pksm::crypto::ccitt16({&data[sbo + storage[0]], (size_t)(storage[1] - storage[0])});
+        return LittleEndian::convertTo<u16>(&data[sbo + storage[2]]) == cs;
     }
 
     u16 Sav4::TID(void) const

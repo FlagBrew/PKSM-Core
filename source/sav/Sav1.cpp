@@ -191,6 +191,12 @@ namespace pksm
         originalCurrentBox = currentBox();
     }
 
+    bool Sav1::checksumsValid() const
+    {
+        // Only the main data sum determines validity; the bank box sums are not part of it
+        return data[OFS_MAIN_DATA_SUM] == crypto::diff8({&data[0x2598], mainDataLength});
+    }
+
     u16 Sav1::TID() const
     {
         return BigEndian::convertTo<u16>(&data[OFS_TID]);

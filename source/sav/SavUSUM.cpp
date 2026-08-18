@@ -29,6 +29,7 @@
 #include "utils/crypto.hpp"
 #include "utils/endian.hpp"
 #include <algorithm>
+#include <vector>
 
 namespace pksm
 {
@@ -83,6 +84,34 @@ namespace pksm
         std::copy(hash.begin(), hash.end(), decryptedSignature);
 
         memecrypto_sign(decryptedSignature, &data[memecryptoOffset], 0x80);
+    }
+
+    bool SavUSUM::checksumsValid(void) const
+    {
+        static constexpr u8 blockCount = 39;
+        static constexpr u32 csoff     = 0x6CA1A;
+
+        for (u8 i = 0; i < blockCount; i++)
+        {
+            u16 cs;
+            if (LittleEndian::convertTo<u16>(&data[csoff + i * 8 - 2]) == 36 && chklen[i] >= 0x180)
+            {
+                // The game stores this block's CRC with the memecrypto signature
+                // region cleared (the same clearing resign applies in place)
+                std::vector<u8> block(&data[chkofs[i]], &data[chkofs[i]] + chklen[i]);
+                std::fill_n(block.begin() + 0x100, 0x80, 0);
+                cs = pksm::crypto::crc16(block);
+            }
+            else
+            {
+                cs = pksm::crypto::crc16({&data[chkofs[i]], chklen[i]});
+            }
+            if (LittleEndian::convertTo<u16>(&data[csoff + i * 8]) != cs)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     int SavUSUM::dexFormIndex(int species, int formct, int start) const
