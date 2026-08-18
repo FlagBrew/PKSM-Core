@@ -211,6 +211,45 @@ namespace pksm
         }
     }
 
+    bool Sav3::checksumsValid() const
+    {
+        for (int i = 0; i < BLOCK_COUNT; i++)
+        {
+            int ofs   = ABO() + (i * SIZE_BLOCK);
+            int index = blockOrder[i];
+            if (index == -1)
+            {
+                continue;
+            }
+            u16 chk = calculateChecksum({&data[ofs], chunkLength[index]});
+            if (LittleEndian::convertTo<u16>(&data[ofs + 0xFF6]) != chk)
+            {
+                return false;
+            }
+        }
+
+        // Extra sectors (Hall of Fame, e-Reader, battle recording) only carry a
+        // checksum once the game has used them; untouched ones are all 0/0xFF
+        for (int ofs : {0x1C000, 0x1D000, 0x1E000, 0x1F000})
+        {
+            bool initialized = false;
+            for (int i = 0; i < SIZE_BLOCK && !initialized; i++)
+            {
+                initialized = data[ofs + i] != 0 && data[ofs + i] != 0xFF;
+            }
+            if (!initialized)
+            {
+                continue;
+            }
+            u16 chk = calculateChecksum({&data[ofs], SIZE_BLOCK_USED});
+            if (LittleEndian::convertTo<u16>(&data[ofs + 0xFF4]) != chk)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     u32 Sav3::securityKey(void) const
     {
         switch (game)

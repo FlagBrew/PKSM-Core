@@ -59,6 +59,8 @@ namespace pksm
 
         void finishEditing(void) override { resign(); }
 
+        [[nodiscard]] bool checksumsValid(void) const override;
+
         void beginEditing(void) override {}
 
         [[nodiscard]] u16 boxedPkm(void) const;

@@ -110,6 +110,8 @@ namespace pksm
 
         void finishEditing(void) override { resign(); }
 
+        [[nodiscard]] bool checksumsValid(void) const override;
+
         void beginEditing(void) override {}
 
         [[nodiscard]] u8* getBlock(size_t blockNum) { return &data[blockOfs[blockNum]]; }

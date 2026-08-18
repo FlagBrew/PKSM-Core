@@ -77,6 +77,8 @@ namespace pksm
 
         void resign(void) override;
 
+        [[nodiscard]] bool checksumsValid(void) const override;
+
         [[nodiscard]] SmallVector<std::pair<Pouch, std::span<const int>>, 15> validItems(
             void) const override;
     };
