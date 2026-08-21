@@ -183,7 +183,7 @@
 0x00b6|Forbuissons
 0x00b7|Grotte Métamo (RFVF)
 0x00b8|Chambres Tanoby
-0x00b9|Route Île 3
+0x00b9|Chemin Île 3
 0x00ba|Clé Tanoby
 0x00bb|Ile Aurore (RFVF)
 0x00bc|Chambre Anémune

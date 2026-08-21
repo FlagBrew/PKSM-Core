@@ -126,7 +126,7 @@ Lettre Méca
 Lettre Bois
 Lettre Vague
 Lettre Bulle
-Lettre Ombre	
+Lettre Ombre
 Lettre Tropi
 Lettre Songe
 Lettre Cool
@@ -154,7 +154,7 @@ Baie Nanana
 Baie Grena
 Baie Alga
 Baie Qualot
-Baie Lomne
+Baie Lonme
 Baie Résin
 Baie Tamato
 Baie Siam
@@ -266,7 +266,7 @@ Méga Canne
 Passe Bateau
 Passeconcour
 ???
-Wailmerrosoir
+Seau Wailmer
 Pack Devon
 Sac à Suie
 Clé Sous-Sol

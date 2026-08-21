@@ -159,7 +159,7 @@ Masse Ball
 Lettre Fleur
 Niveau Ball
 Appât Ball
-Rapide Ball
+Speed Ball
 Teru-sama (20)
 Ballelumière
 Copain Ball

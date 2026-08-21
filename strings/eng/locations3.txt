@@ -127,8 +127,8 @@
 0x007e|Viridian Forest
 0x007f|Mt. Moon
 0x0080|S.S. Anne
-0x0081|Underground Path (Routes 5-6)
-0x0082|Underground Path (Routes 7-8)
+0x0081|Underground Path (Routes 5-6)
+0x0082|Underground Path (Routes 7-8)
 0x0083|Diglett's Cave
 0x0084|Victory Road (FRLG)
 0x0085|Rocket Hideout
