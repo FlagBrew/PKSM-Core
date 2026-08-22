@@ -433,8 +433,14 @@ namespace pksm
         if (wc.generation() == Generation::FIVE)
         {
             data[WondercardFlags + (wc.ID() / 8)] |= 0x1 << (wc.ID() & 7);
-            std::copy(wc.rawData(), wc.rawData() + PGF::length,
-                &data[WondercardData + pos * PGF::length]);
+            u8* card                               = &data[WondercardData + pos * PGF::length];
+            std::copy(wc.rawData(), wc.rawData() + PGF::length, card);
+            // Cards dumped from a save after the gift was picked up keep the used flag
+            // set, and the game then refuses to hand the gift over again. Bit 0 is the
+            // multi obtain flag and must be kept
+            static constexpr size_t FLAGS_OFFSET  = 0xB4;
+            static constexpr u8 MULTI_OBTAIN_FLAG = 0x1;
+            card[FLAGS_OFFSET]                   &= MULTI_OBTAIN_FLAG;
             pos = (pos + 1) % 12;
         }
     }

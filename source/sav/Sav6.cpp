@@ -673,8 +673,13 @@ namespace pksm
         if (wc.generation() == Generation::SIX)
         {
             data[WondercardFlags + wc.ID() / 8] |= 0x1 << (wc.ID() % 8);
-            std::copy(wc.rawData(), wc.rawData() + WC6::length,
-                &data[WondercardData + WC6::length * pos]);
+            u8* card                             = &data[WondercardData + WC6::length * pos];
+            std::copy(wc.rawData(), wc.rawData() + WC6::length, card);
+            // Cards dumped from a save after the gift was picked up keep the used flag
+            // set, and the game then refuses to hand the gift over again
+            static constexpr size_t FLAGS_OFFSET = 0x52;
+            static constexpr u8 USED_FLAG        = 0x2;
+            card[FLAGS_OFFSET]                  &= u8(~USED_FLAG);
             if (game == Game::ORAS && wc.ID() == 2048 && wc.object() == 726)
             {
                 static constexpr u32 EON_MAGIC = 0x225D73C2;
