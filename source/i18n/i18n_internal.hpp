@@ -33,7 +33,9 @@
 #include "utils/i18n.hpp"
 #include "utils/io.hpp"
 #include <atomic>
+#include <cstdlib>
 #include <functional>
+#include <string_view>
 #include <time.h>
 #include <unordered_map>
 
@@ -103,7 +105,6 @@ namespace i18n
                              ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
                              : _PKSMCORE_LANG_FOLDER + folder(pksm::Language::ENG) + name;
 
-        std::string tmp;
         FILE* values = fopen(path.c_str(), "rt");
         if (values)
         {
@@ -117,14 +118,22 @@ namespace i18n
             while (!feof(values) && !ferror(values))
             {
                 size = std::max(size, (size_t)128);
-                if (_PKSMCORE_GETLINE_FUNC(&data, &size, values) >= 0)
+                // One string per line: the view trims the line ending in place, and only
+                // the value half is ever allocated.
+                const auto read = _PKSMCORE_GETLINE_FUNC(&data, &size, values);
+                if (read >= 0)
                 {
-                    tmp = std::string(data);
-                    tmp = tmp.substr(0, tmp.find('\n'));
+                    std::string_view line(data, size_t(read));
+                    line               = line.substr(0, line.find_first_of("\r\n"));
+                    const size_t split = line.find('|');
+                    if (split == std::string_view::npos)
+                    {
+                        continue;
+                    }
                     // 0 automatically deduces the base: 0x prefix makes it hexadecimal, 0 prefix
-                    // makes it octal
-                    T val    = std::stoll(tmp.substr(0, tmp.find('|')), 0, 0);
-                    map[val] = tmp.substr(0, tmp.find('\r')).substr(tmp.find('|') + 1);
+                    // makes it octal. getline null-terminates, and strtoll stops at the '|'.
+                    const T val = T(std::strtoll(line.data(), nullptr, 0));
+                    map[val]    = line.substr(split + 1);
                 }
                 else
                 {

@@ -30,6 +30,7 @@
 #include <array>
 #include <functional>
 #include <list>
+#include <string_view>
 
 #define MAKE_MAP(lang) ret.emplace(pksm::Language::lang, LangState::UNINITIALIZED);
 #define TO_STRING_CASE(lang)                                                                       \
@@ -158,7 +159,6 @@ namespace i18n
                              ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
                              : _PKSMCORE_LANG_FOLDER + folder(pksm::Language::ENG) + name;
 
-        std::string tmp;
         FILE* values = fopen(path.c_str(), "rt");
         if (values)
         {
@@ -172,11 +172,13 @@ namespace i18n
             while (!feof(values) && !ferror(values))
             {
                 size = std::max(size, (size_t)128);
-                if (_PKSMCORE_GETLINE_FUNC(&data, &size, values) >= 0)
+                // One string per line: the view trims the line ending in place, and only
+                // the trimmed result is ever allocated.
+                const auto read = _PKSMCORE_GETLINE_FUNC(&data, &size, values);
+                if (read >= 0)
                 {
-                    tmp = std::string(data);
-                    tmp = tmp.substr(0, tmp.find('\n'));
-                    array.emplace_back(tmp.substr(0, tmp.find('\r')));
+                    const std::string_view line(data, size_t(read));
+                    array.emplace_back(line.substr(0, line.find_first_of("\r\n")));
                 }
                 else
                 {
