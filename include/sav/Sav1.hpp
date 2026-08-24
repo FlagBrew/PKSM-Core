@@ -60,6 +60,10 @@ namespace pksm
         Sav1(const std::shared_ptr<u8[]>& data, u32 length);
 
         [[nodiscard]] static Game getVersion(const std::shared_ptr<u8[]>& dt);
+        // Whether the buffer holds a Gen I save at all. The party and current-box lists
+        // sit at fixed offsets and are terminated by 0xFF, which no other save format
+        // reproduces by accident.
+        [[nodiscard]] static bool isValid(const std::shared_ptr<u8[]>& dt);
 
         void finishEditing(void) override;
 

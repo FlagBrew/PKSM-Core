@@ -101,6 +101,10 @@ namespace pksm
     public:
         static constexpr int SIZE_BLOCK = 0x1000;
         [[nodiscard]] static Game getVersion(const std::shared_ptr<u8[]>& dt);
+        // Whether the buffer holds a Gen III save at all. Every one of the fourteen
+        // sectors of a save slot carries its own index, so a slot that is missing one, or
+        // that reports an index the games never write, is not a save PKSM can read.
+        [[nodiscard]] static bool isValid(const std::shared_ptr<u8[]>& dt);
 
         void resign(void);
 

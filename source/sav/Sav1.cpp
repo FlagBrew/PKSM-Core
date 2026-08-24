@@ -89,6 +89,18 @@ namespace pksm
         }
     }
 
+    bool Sav1::isValid(const std::shared_ptr<u8[]>& dt)
+    {
+        // A list is a count, that many entries, then a 0xFF terminator. The Japanese
+        // games hold more per box and put their lists elsewhere, so either layout counts.
+        const auto validList = [&dt](size_t ofs, u8 maxCount)
+        { return dt[ofs] <= maxCount && dt[ofs + 1 + dt[ofs]] == 0xFF; };
+
+        const bool japanese      = validList(0x2ED5, 30) && validList(0x302D, 30);
+        const bool international = validList(0x2F2C, 20) && validList(0x30C0, 20);
+        return japanese || international;
+    }
+
     Sav::Game Sav1::getVersion(const std::shared_ptr<u8[]>& dt)
     {
         // for now it doesn't matter, the only difference is Pikachu's friendship and Pikachu surf

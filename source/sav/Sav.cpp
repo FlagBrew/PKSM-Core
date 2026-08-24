@@ -41,6 +41,7 @@
 #include "sav/SavBW.hpp"
 #include "sav/SavDP.hpp"
 #include "sav/SavE.hpp"
+#include "sav/SaveRecognition.hpp"
 #include "sav/SavFRLG.hpp"
 #include "sav/SavHGSS.hpp"
 #include "sav/SavLGPE.hpp"
@@ -59,43 +60,50 @@ namespace pksm
 {
     std::unique_ptr<Sav> Sav::getSave(const std::shared_ptr<u8[]>& dt, size_t length)
     {
-        std::unique_ptr<Sav> ret = nullptr;
+        if (auto ret = buildSave(dt, length))
+        {
+            ret->fullLength = length;
+            return ret;
+        }
+
+        // Nothing the games themselves write is this size, so the file came from an
+        // emulator, a flash cart or a dumper that wrapped the save. Parse what is inside
+        // the wrapper; the wrapper stays in the buffer and is written back untouched.
+        const SaveLayout layout = recognizeSaveLayout({dt.get(), length});
+        if (!layout || layout.dataOffset != 0 || layout.dataSize == length)
+        {
+            return nullptr;
+        }
+        if (auto ret = buildSave(dt, layout.dataSize))
+        {
+            ret->fullLength = length;
+            return ret;
+        }
+        return nullptr;
+    }
+
+    std::unique_ptr<Sav> Sav::buildSave(const std::shared_ptr<u8[]>& dt, size_t length)
+    {
         switch (length)
         {
             case 0x6CC00:
-                ret = std::make_unique<SavUSUM>(dt);
-                break;
+                return std::make_unique<SavUSUM>(dt);
             case 0x6BE00:
-                ret = std::make_unique<SavSUMO>(dt);
-                break;
+                return std::make_unique<SavSUMO>(dt);
             case 0x76000:
-                ret = std::make_unique<SavORAS>(dt);
-                break;
+                return std::make_unique<SavORAS>(dt);
             case 0x65600:
-                ret = std::make_unique<SavXY>(dt);
-                break;
-            case 0x80000:
-            case 0x8007A:
-                ret = checkDSType(dt);
-                break;
-            case 0x20000:
-            case 0x20010:
-                ret = checkGBAType(dt);
-                break;
-            case 0x8000:
-            case 0x10000:
-            // Gen II VC saves
-            case 0x8010:
-            case 0x10010:
-            // Emulator standard saves
-            case 0x8030:
-            case 0x10030:
-                ret = checkGBType(dt, length);
-                break;
+                return std::make_unique<SavXY>(dt);
+            case SaveSize::DS:
+                return checkDSType(dt);
+            case SaveSize::GBA:
+                return checkGBAType(dt);
+            case SaveSize::GB_INT:
+            case SaveSize::GB_JPN:
+                return checkGBType(dt, length);
             case 0xB8800:
             case 0x100000:
-                ret = std::make_unique<SavLGPE>(dt, length);
-                break;
+                return std::make_unique<SavLGPE>(dt, length);
             case SavSWSH::SIZE_G8SWSH:
             case SavSWSH::SIZE_G8SWSH_1:
             case SavSWSH::SIZE_G8SWSH_2:
@@ -104,19 +112,10 @@ namespace pksm
             case SavSWSH::SIZE_G8SWSH_3A:
             case SavSWSH::SIZE_G8SWSH_3B:
             case SavSWSH::SIZE_G8SWSH_3C:
-                ret = std::make_unique<SavSWSH>(dt, length);
-                break;
+                return std::make_unique<SavSWSH>(dt, length);
             default:
-                ret = std::unique_ptr<Sav>(nullptr);
-                break;
+                return nullptr;
         }
-
-        if (ret)
-        {
-            ret->fullLength = length;
-        }
-
-        return ret;
     }
 
     std::unique_ptr<Sav> Sav::checkGBType(const std::shared_ptr<u8[]>& dt, size_t length)
@@ -126,6 +125,13 @@ namespace pksm
         if (get<2>(versionAndLanguage))
         {
             return std::make_unique<Sav2>(dt, length, versionAndLanguage);
+        }
+
+        // Gen I stores no version marker, so the only thing separating a Gen I save from
+        // a file that merely happens to be the right size is its Pokemon lists.
+        if (!Sav1::isValid(dt))
+        {
+            return nullptr;
         }
 
         switch (Sav1::getVersion(dt))
@@ -141,6 +147,13 @@ namespace pksm
 
     std::unique_ptr<Sav> Sav::checkGBAType(const std::shared_ptr<u8[]>& dt)
     {
+        // Reading the block layout out of a buffer that holds something else lands the
+        // block offsets anywhere, so the sectors get checked before they are trusted.
+        if (!Sav3::isValid(dt))
+        {
+            return nullptr;
+        }
+
         switch (Sav3::getVersion(dt))
         {
             case Game::RS:
@@ -154,8 +167,13 @@ namespace pksm
         }
     }
 
-    bool Sav::isValidDSSave(const std::shared_ptr<u8[]>& dt)
+    bool Sav::isValidDSSave(const std::shared_ptr<u8[]>& dt, size_t length)
     {
+        if (length < SaveSize::DS)
+        {
+            return false;
+        }
+
         u16 chk1    = LittleEndian::convertTo<u16>(&dt[0x24000 - 0x100 + 0x8C + 0xE]);
         u16 actual1 = pksm::crypto::ccitt16({&dt[0x24000 - 0x100], 0x8C});
         if (chk1 == actual1)

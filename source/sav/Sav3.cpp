@@ -83,6 +83,30 @@ namespace pksm
         return count1 > count2 ? 0 : 1;
     }
 
+    bool Sav3::isValid(const std::shared_ptr<u8[]>& dt)
+    {
+        // The two save slots alternate on every save, so only one of them has to be
+        // complete for the file to be readable.
+        const auto slotIsComplete = [&dt](int slot)
+        {
+            const size_t start = size_t(slot) * SIZE_BLOCK * BLOCK_COUNT;
+            u16 sectorsSeen    = 0;
+            for (int sector = 0; sector < BLOCK_COUNT; sector++)
+            {
+                const s16 id =
+                    LittleEndian::convertTo<s16>(&dt[start + (sector * SIZE_BLOCK) + 0xFF4]);
+                if (id < 0 || id >= BLOCK_COUNT)
+                {
+                    return false;
+                }
+                sectorsSeen |= u16(1 << id);
+            }
+            return sectorsSeen == (1 << BLOCK_COUNT) - 1;
+        };
+
+        return slotIsComplete(0) || slotIsComplete(1);
+    }
+
     Sav::Game Sav3::getVersion(const std::shared_ptr<u8[]>& dt)
     {
         // Get block 0 offset

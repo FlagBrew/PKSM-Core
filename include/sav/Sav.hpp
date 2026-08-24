@@ -81,6 +81,11 @@ namespace pksm
         const std::shared_ptr<u8[]> data;
         const u32 length;
         u32 fullLength;
+        // Builds the save of exactly this size, or nothing when no game writes a save
+        // that size. Callers hand it the size of the save data, which is not the size of
+        // the file whenever a tool wrapped the save in something of its own.
+        [[nodiscard]] static std::unique_ptr<Sav> buildSave(
+            const std::shared_ptr<u8[]>& dt, size_t length);
         [[nodiscard]] static std::unique_ptr<Sav> checkGBType(
             const std::shared_ptr<u8[]>& dt, size_t length);
         [[nodiscard]] static std::unique_ptr<Sav> checkGBAType(const std::shared_ptr<u8[]>& dt);
@@ -131,7 +136,10 @@ namespace pksm
 
         [[nodiscard]] BadTransferReason invalidTransferReason(const PKX& pk) const;
         [[nodiscard]] std::unique_ptr<PKX> transfer(const PKX& pk);
-        [[nodiscard]] static bool isValidDSSave(const std::shared_ptr<u8[]>& dt);
+        // Whether a buffer read off a DS cartridge holds a save PKSM knows. The length
+        // is checked because the chip a cartridge reports is not always the 512KB the
+        // Pokemon games write, and the block identifiers live near the end of that.
+        [[nodiscard]] static bool isValidDSSave(const std::shared_ptr<u8[]>& dt, size_t length);
         [[nodiscard]] static std::unique_ptr<Sav> getSave(
             const std::shared_ptr<u8[]>& dt, size_t length);
 
