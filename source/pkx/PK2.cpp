@@ -88,6 +88,9 @@ namespace pksm
         pk1->iv(Stat::SPD, iv(Stat::SPD));
         pk1->iv(Stat::SPATK, iv(Stat::SPATK));
         pk1->otName(otName());
+        // Keep whatever is stored after the string terminator: the games do compare the whole
+        // OT name buffer in some cases, the Name Rater being the most notable one
+        pk1->otNameTrash(otNameTrash());
         pk1->nickname(nickname());
         pk1->catchRate(heldItem2());
 
@@ -354,6 +357,20 @@ namespace pksm
     void PK2::otName(const std::string_view& v)
     {
         StringUtils::setString2(shiftedData, v, 48, japanese ? 6 : 11, lang, japanese ? 6 : 11, 0);
+    }
+
+    std::span<const u8> PK2::otNameTrash() const
+    {
+        return {shiftedData + 48, japanese ? OT_LENGTH_JP : OT_LENGTH_INT};
+    }
+
+    void PK2::otNameTrash(std::span<const u8> v)
+    {
+        size_t len = japanese ? OT_LENGTH_JP : OT_LENGTH_INT;
+        if (v.size() == len)
+        {
+            std::copy(v.begin(), v.end(), shiftedData + 48);
+        }
     }
 
     std::string PK2::transferOT(Language newLang) const

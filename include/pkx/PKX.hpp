@@ -48,6 +48,7 @@
 #include "utils/genToPkx.hpp"
 #include <concepts>
 #include <memory>
+#include <span>
 #include <string>
 
 namespace pksm
@@ -279,6 +280,14 @@ namespace pksm
         virtual void otFriendship(u8 v)                      = 0;
         [[nodiscard]] virtual u8 htFriendship(void) const    = 0;
         virtual void htFriendship(u8 v)                      = 0;
+
+        // Raw OT name buffer, terminator and everything stored after it included. Only the
+        // GB games keep meaningful data past the terminator, so every other format returns
+        // an empty span and ignores writes. Writes are ignored as well if the given span
+        // doesn't have the exact size of the buffer.
+        [[nodiscard]] virtual std::span<const u8> otNameTrash(void) const { return {}; }
+
+        virtual void otNameTrash(std::span<const u8>) {}
 
         // Raw information handled in private functions
         [[nodiscard]] virtual Date eggDate(void) const

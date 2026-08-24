@@ -71,6 +71,9 @@ namespace pksm
         static constexpr size_t BOX_LENGTH   = 33;
         static constexpr size_t PARTY_LENGTH = 44;
 
+        static constexpr size_t OT_LENGTH_JP  = 6;
+        static constexpr size_t OT_LENGTH_INT = 11;
+
         static constexpr Species FORMAT_SPECIES_LIMIT = Species::Mew;
 
         PK1(PrivateConstructor, u8* dt, bool japanese = false, bool directAccess = false);
@@ -130,6 +133,8 @@ namespace pksm
         void language(Language v) override;
         [[nodiscard]] std::string otName(void) const override;
         void otName(const std::string_view& v) override;
+        [[nodiscard]] std::span<const u8> otNameTrash(void) const override;
+        void otNameTrash(std::span<const u8> v) override;
         [[nodiscard]] std::string transferOT(Language lang) const;
 
         [[nodiscard]] u16 markValue(void) const override { return 0; }

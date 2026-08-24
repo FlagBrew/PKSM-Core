@@ -91,6 +91,7 @@ namespace pksm
         void language(Language v) override;
         [[nodiscard]] std::string otName(void) const override;
         void otName(const std::string_view& v) override;
+        [[nodiscard]] std::span<const u8> otNameTrash(void) const override;
         [[nodiscard]] u32 money(void) const override;
         void money(u32 v) override;
 

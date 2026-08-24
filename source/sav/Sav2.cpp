@@ -359,6 +359,12 @@ namespace pksm
         StringUtils::setString2(data.get(), v, OFS_NAME, japanese ? 6 : (korean ? 11 : 8), lang);
     }
 
+    // The games reserve as many bytes for the player's name as a Pokemon's OT name field has
+    std::span<const u8> Sav2::otNameTrash() const
+    {
+        return {data.get() + OFS_NAME, japanese ? PK2::OT_LENGTH_JP : PK2::OT_LENGTH_INT};
+    }
+
     // yay, they stopped using BCD
     u32 Sav2::money() const
     {

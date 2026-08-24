@@ -44,6 +44,7 @@
 #include <map>
 #include <memory>
 #include <set>
+#include <span>
 #include <type_traits>
 #include <vector>
 
@@ -163,6 +164,11 @@ namespace pksm
         virtual void playedMinutes(u8 v)                      = 0;
         [[nodiscard]] virtual u8 playedSeconds(void) const    = 0;
         virtual void playedSeconds(u8 v)                      = 0;
+
+        // Raw trainer name buffer, terminator and everything stored after it included. Only
+        // the GB games keep meaningful data past the terminator, so every other format
+        // returns an empty span.
+        [[nodiscard]] virtual std::span<const u8> otNameTrash(void) const { return {}; }
 
         [[nodiscard]] u32 displayTID(void) const;
         [[nodiscard]] u32 displaySID(void) const;
