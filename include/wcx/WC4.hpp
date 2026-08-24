@@ -28,26 +28,19 @@
 #define WC4_HPP
 
 #include "utils/utils.hpp"
-#include "wcx/PGT.hpp"
+#include "wcx/PCD.hpp"
 
 namespace pksm
 {
-    class WC4 : public PGT
+    // Same layout as a PCD, only the file extension differs
+    class WC4 : public PCD
     {
     public:
         explicit WC4(u8* wc4);
 
         [[nodiscard]] std::string_view extension() const override { return ".wc4"; }
 
-        static constexpr int length = 856;
-
-        [[nodiscard]] std::string title(void) const override { return name; };
-
-        [[nodiscard]] u16 ID(void) const override { return id; }
-
-    private:
-        std::string name;
-        u16 id;
+        static constexpr int length = PCD::length;
     };
 }
 

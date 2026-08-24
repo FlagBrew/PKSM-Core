@@ -30,5 +30,6 @@
 
 pksm::PCD::PCD(u8* pcd) : PGT(pcd), name(StringUtils::getString4(pcd, 0x104, 0x24))
 {
-    id = LittleEndian::convertTo<u16>(data + 0x150);
+    std::copy(pcd, pcd + length, card.begin());
+    id = LittleEndian::convertTo<u16>(pcd + 0x150);
 }

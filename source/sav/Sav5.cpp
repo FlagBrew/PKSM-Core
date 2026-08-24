@@ -432,8 +432,14 @@ namespace pksm
     {
         if (wc.generation() == Generation::FIVE)
         {
-            data[WondercardFlags + (wc.ID() / 8)] |= 0x1 << (wc.ID() & 7);
-            u8* card                               = &data[WondercardData + pos * PGF::length];
+            // The received flags only cover card IDs below MAX_RECEIVED_FLAG, and
+            // the album starts right after them: a higher ID would corrupt slot 0
+            static constexpr u16 MAX_RECEIVED_FLAG = 2048;
+            if (wc.ID() < MAX_RECEIVED_FLAG)
+            {
+                data[WondercardFlags + (wc.ID() / 8)] |= 0x1 << (wc.ID() & 7);
+            }
+            u8* card = &data[WondercardData + pos * PGF::length];
             std::copy(wc.rawData(), wc.rawData() + PGF::length, card);
             // Cards dumped from a save after the gift was picked up keep the used flag
             // set, and the game then refuses to hand the gift over again. Bit 0 is the
@@ -441,7 +447,7 @@ namespace pksm
             static constexpr size_t FLAGS_OFFSET  = 0xB4;
             static constexpr u8 MULTI_OBTAIN_FLAG = 0x1;
             card[FLAGS_OFFSET]                   &= MULTI_OBTAIN_FLAG;
-            pos = (pos + 1) % 12;
+            pos                                   = (pos + 1) % 12;
         }
     }
 

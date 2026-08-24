@@ -62,6 +62,13 @@ namespace pksm
 
         [[nodiscard]] static CountType compareCounters(u32 c1, u32 c2);
 
+        [[nodiscard]] int albumSlotBase(void) const;
+        [[nodiscard]] u32 giftQueueOffset(int slot) const;
+        [[nodiscard]] u32 cardAlbumOffset(int slot) const;
+        // Album slot the gift in the given queue slot was delivered from, -1 if none
+        [[nodiscard]] int cardAlbumSlot(int giftSlot) const;
+        void dpSlotActive(int slot, bool v);
+
     public:
         Sav4(const std::shared_ptr<u8[]>& data, u32 length) : Sav(data, length) {}
 

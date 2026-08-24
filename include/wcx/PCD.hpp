@@ -29,9 +29,13 @@
 
 #include "utils/utils.hpp"
 #include "wcx/PGT.hpp"
+#include <algorithm>
+#include <array>
 
 namespace pksm
 {
+    // A PCD is the wonder card shown in the Mystery Gift menu: the PGT the
+    // delivery man hands over, followed by the card's title and artwork
     class PCD : public PGT
     {
     public:
@@ -45,7 +49,18 @@ namespace pksm
 
         [[nodiscard]] u16 ID(void) const override { return id; }
 
+        [[nodiscard]] int size(void) const override { return length; }
+
+        [[nodiscard]] const u8* rawData(void) const override
+        {
+            // The gift half lives in PGT and can be edited after construction,
+            // so fold it back in before handing out the whole card
+            std::copy(data, data + PGT::length, card.begin());
+            return card.data();
+        }
+
     private:
+        mutable std::array<u8, length> card;
         std::string name;
         u16 id;
     };

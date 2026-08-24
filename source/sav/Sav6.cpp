@@ -676,8 +676,15 @@ namespace pksm
     {
         if (wc.generation() == Generation::SIX)
         {
-            data[WondercardFlags + wc.ID() / 8] |= 0x1 << (wc.ID() % 8);
-            u8* card                             = &data[WondercardData + WC6::length * pos];
+            // The received flags only cover card IDs below MAX_RECEIVED_FLAG, and
+            // the album starts right after them: the Eon Ticket's 2048 would land
+            // on the first byte of slot 0
+            static constexpr u16 MAX_RECEIVED_FLAG = 2048;
+            if (wc.ID() < MAX_RECEIVED_FLAG)
+            {
+                data[WondercardFlags + wc.ID() / 8] |= 0x1 << (wc.ID() % 8);
+            }
+            u8* card = &data[WondercardData + WC6::length * pos];
             std::copy(wc.rawData(), wc.rawData() + WC6::length, card);
             // Cards dumped from a save after the gift was picked up keep the used flag
             // set, and the game then refuses to hand the gift over again

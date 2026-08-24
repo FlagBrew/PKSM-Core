@@ -30,7 +30,18 @@
 #include "utils/endian.hpp"
 #include "utils/i18n.hpp"
 #include "utils/utils.hpp"
+#include "wcx/PCD.hpp"
 #include "wcx/PGT.hpp"
+#include <algorithm>
+
+namespace
+{
+    // The mystery gift block holds two separate lists: a queue of gifts the
+    // delivery man hands over (PGT) and the album of wonder cards the Mystery
+    // Gift menu shows (PCD). A PCD embeds the PGT it delivers
+    constexpr int GIFT_QUEUE_SIZE = 8;
+    constexpr int CARD_ALBUM_SIZE = 3;
+}
 
 namespace pksm
 {
@@ -374,22 +385,109 @@ namespace pksm
         data[gbo + 72] |= v ? 1 : 0;
     }
 
+    int Sav4::albumSlotBase(void) const
+    {
+        // Byte 2 of a PGT is the album slot it was delivered from; one past the
+        // last valid slot means "no card". HG/SS numbers the album from 0, D/P/Pt
+        // from 1
+        return game == Game::HGSS ? 0 : 1;
+    }
+
+    u32 Sav4::giftQueueOffset(int slot) const
+    {
+        return WondercardData + slot * PGT::length;
+    }
+
+    u32 Sav4::cardAlbumOffset(int slot) const
+    {
+        return WondercardData + GIFT_QUEUE_SIZE * PGT::length + slot * PCD::length;
+    }
+
+    int Sav4::cardAlbumSlot(int giftSlot) const
+    {
+        const u32 gift = giftQueueOffset(giftSlot);
+        // An empty gift links to nothing: on HG/SS its zeroed byte 2 would
+        // otherwise read as a link to the first album slot
+        if (LittleEndian::convertTo<u16>(&data[gift]) == 0)
+        {
+            return -1;
+        }
+        const int slot = data[gift + 2] - albumSlotBase();
+        if (slot < 0 || slot >= CARD_ALBUM_SIZE)
+        {
+            return -1;
+        }
+        // An album slot only counts as linked if a card is actually sitting there
+        const u32 ofs = cardAlbumOffset(slot);
+        return std::any_of(&data[ofs], &data[ofs + PCD::length], [](u8 b) { return b != 0; }) ? slot
+                                                                                              : -1;
+    }
+
+    void Sav4::dpSlotActive(int slot, bool v)
+    {
+        // D/P alone keeps a sentinel per gift and album slot, right after the flags
+        if (game != Game::DP)
+        {
+            return;
+        }
+        static constexpr u32 DP_SLOT_ACTIVE = 0xEDB88320;
+        LittleEndian::convertFrom<u32>(
+            &data[WondercardFlags + 0x100 + 4 * slot], v ? DP_SLOT_ACTIVE : 0);
+    }
+
     void Sav4::mysteryGift(const WCX& wc, int& pos)
     {
-        if (wc.generation() == Generation::FOUR)
+        if (wc.generation() != Generation::FOUR)
         {
-            giftsMenuActivated(true);
-            data[WondercardFlags + (2047 >> 3)] = 0x80;
-            std::copy(wc.rawData(), wc.rawData() + PGT::length,
-                &data[WondercardData + pos * PGT::length]);
-            pos++;
-            if (game == Game::DP)
-            {
-                static constexpr u32 dpSlotActive = 0xEDB88320;
-                const int ofs                     = WondercardFlags + 0x100;
-                LittleEndian::convertFrom<u32>(&data[ofs + 4 * pos], dpSlotActive);
-            }
+            return;
         }
+
+        const int giftSlot = std::clamp(pos, 0, GIFT_QUEUE_SIZE - 1);
+        giftsMenuActivated(true);
+        data[WondercardFlags + (2047 >> 3)] |= 0x80;
+
+        // Anything shorter than a PCD is a bare gift with no wonder card behind it
+        int albumSlot = -1;
+        if (wc.size() >= PCD::length)
+        {
+            // Reuse the card this slot was already showing so overwriting a gift
+            // also replaces its card, otherwise take the first free album slot
+            albumSlot = cardAlbumSlot(giftSlot);
+            for (int i = 0; albumSlot < 0 && i < CARD_ALBUM_SIZE; i++)
+            {
+                const u32 ofs = cardAlbumOffset(i);
+                if (std::all_of(&data[ofs], &data[ofs + PCD::length], [](u8 b) { return b == 0; }))
+                {
+                    albumSlot = i;
+                }
+            }
+            // The album only holds three cards, so past that the oldest one goes
+            if (albumSlot < 0)
+            {
+                albumSlot = giftSlot % CARD_ALBUM_SIZE;
+            }
+
+            // Whatever gift was still showing the card we are about to replace
+            // loses its link, so the album never shows the wrong card for a gift
+            for (int i = 0; i < GIFT_QUEUE_SIZE; i++)
+            {
+                if (i != giftSlot && cardAlbumSlot(i) == albumSlot)
+                {
+                    data[giftQueueOffset(i) + 2] = u8(albumSlotBase() + CARD_ALBUM_SIZE);
+                }
+            }
+
+            std::copy(wc.rawData(), wc.rawData() + PCD::length, &data[cardAlbumOffset(albumSlot)]);
+            dpSlotActive(GIFT_QUEUE_SIZE + albumSlot, true);
+        }
+
+        u8* gift = &data[giftQueueOffset(giftSlot)];
+        std::copy(wc.rawData(), wc.rawData() + PGT::length, gift);
+        gift[2] = u8(albumSlotBase() +
+                     (albumSlot < 0 ? CARD_ALBUM_SIZE : albumSlot)); // one past the last = no card
+        dpSlotActive(giftSlot, true);
+
+        pos = giftSlot + 1;
     }
 
     std::string Sav4::boxName(u8 box) const
@@ -870,7 +968,7 @@ namespace pksm
             bool empty = true;
             for (u32 j = 0; j < PGT::length; j++)
             {
-                if (data[WondercardData + t * PGT::length + j] != 0)
+                if (data[giftQueueOffset(t) + j] != 0)
                 {
                     empty = false;
                     break;
@@ -887,7 +985,13 @@ namespace pksm
 
     std::unique_ptr<WCX> Sav4::mysteryGift(int pos) const
     {
-        return std::make_unique<PGT>(data.get() + WondercardData + pos * PGT::length);
+        // Prefer the wonder card the gift came from: it carries the card title
+        const int albumSlot = cardAlbumSlot(pos);
+        if (albumSlot >= 0)
+        {
+            return std::make_unique<PCD>(data.get() + cardAlbumOffset(albumSlot));
+        }
+        return std::make_unique<PGT>(data.get() + giftQueueOffset(pos));
     }
 
     void Sav4::item(const Item& item, Pouch pouch, u16 slot)
