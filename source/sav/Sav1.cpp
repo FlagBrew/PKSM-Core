@@ -69,6 +69,24 @@ namespace pksm
         OFS_BANK3_BOX_SUMS = 0x6000 + bankBoxesSize;
 
         originalCurrentBox = currentBox();
+        if (originalCurrentBox >= maxBoxes())
+        {
+            currentBox(0);
+            originalCurrentBox = 0;
+        }
+
+        // the game only starts keeping the stored boxes up to date once the current box has been
+        // flushed to them, so until that happens they hold uninitialized garbage
+        if (!boxesInitialized())
+        {
+            for (int box = 0; box < maxBoxes(); box++)
+            {
+                if (box != originalCurrentBox && !validBoxList(box))
+                {
+                    clearBox(box);
+                }
+            }
+        }
     }
 
     Sav::Game Sav1::getVersion(const std::shared_ptr<u8[]>& dt)
@@ -135,17 +153,23 @@ namespace pksm
             std::copy(&data[boxStart(currentBox())], &data[boxStart(currentBox())] + boxSize,
                 &data[OFS_CURRENT_BOX]);
         }
+        // the first time the game flushes the current box it wipes every stored box, throwing
+        // away anything written here, so tell it they're already initialized
+        if (!boxesInitialized() && storedBoxesHavePkm())
+        {
+            boxesInitialized(true);
+        }
         for (int box = 0; box < maxBoxes(); box++)
         {
             if (box < (maxBoxes() / 2))
             {
                 data[OFS_BANK2_BOX_SUMS + 1 + box] =
-                    crypto::diff8({&data[boxDataStart(box, false)], boxSize});
+                    crypto::diff8({&data[boxStart(box, false)], boxSize});
             }
             else
             {
                 data[OFS_BANK3_BOX_SUMS + 1 + (box - (maxBoxes() / 2))] =
-                    crypto::diff8({&data[boxDataStart(box, false)], boxSize});
+                    crypto::diff8({&data[boxStart(box, false)], boxSize});
             }
         }
         data[OFS_MAIN_DATA_SUM]  = crypto::diff8({&data[0x2598], mainDataLength});
@@ -255,6 +279,43 @@ namespace pksm
     void Sav1::currentBox(u8 v)
     {
         data[OFS_CURRENT_BOX_INDEX] = (data[OFS_CURRENT_BOX_INDEX] & 0x80) | (v & 0x7F);
+    }
+
+    bool Sav1::boxesInitialized() const
+    {
+        return (data[OFS_CURRENT_BOX_INDEX] & 0x80) != 0;
+    }
+
+    void Sav1::boxesInitialized(bool v)
+    {
+        data[OFS_CURRENT_BOX_INDEX] = (data[OFS_CURRENT_BOX_INDEX] & 0x7F) | (v ? 0x80 : 0);
+    }
+
+    // a box starts with a count, the species of every Pokemon in it and a terminator
+    bool Sav1::validBoxList(u8 box) const
+    {
+        u32 start = boxStart(box, false);
+        return data[start] <= maxPkmInBox && data[start + 1 + data[start]] == 0xFF;
+    }
+
+    void Sav1::clearBox(u8 box)
+    {
+        u32 start = boxStart(box, false);
+        std::fill_n(&data[start], boxSize, 0);
+        data[start + 1] = 0xFF;
+    }
+
+    bool Sav1::storedBoxesHavePkm() const
+    {
+        for (int box = 0; box < maxBoxes(); box++)
+        {
+            // the current box has its own copy, which the game never wipes
+            if (box != currentBox() && data[boxStart(box, false)] > 0)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     u32 Sav1::boxOffset(u8 box, u8 slot) const

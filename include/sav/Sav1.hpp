@@ -45,6 +45,11 @@ namespace pksm
             OFS_PARTY, OFS_CURRENT_BOX, OFS_MAIN_DATA_SUM, OFS_BANK2_BOX_SUMS, OFS_BANK3_BOX_SUMS;
 
         void fixBoxes(void);
+        [[nodiscard]] bool boxesInitialized(void) const;
+        void boxesInitialized(bool v);
+        [[nodiscard]] bool validBoxList(u8 box) const;
+        void clearBox(u8 box);
+        [[nodiscard]] bool storedBoxesHavePkm(void) const;
 
         [[nodiscard]] bool getCaught(Species species) const;
         void setCaught(Species species, bool caught);
