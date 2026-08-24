@@ -32,6 +32,22 @@
 #include "utils/utils.hpp"
 #include "wcx/WC6.hpp"
 
+namespace
+{
+    // Inserts a new country/region pair at the head of the geolocation history,
+    // pushing the existing entries down one slot and dropping the oldest one.
+    void tradeGeoLocation(pksm::PK6& pk6, u8 country, u8 region)
+    {
+        for (u8 i = 4; i > 0; i--)
+        {
+            pk6.geoCountry(i, pk6.geoCountry(i - 1));
+            pk6.geoRegion(i, pk6.geoRegion(i - 1));
+        }
+        pk6.geoCountry(0, country);
+        pk6.geoRegion(0, region);
+    }
+}
+
 namespace pksm
 {
     u16 Sav6::TID(void) const
@@ -273,13 +289,7 @@ namespace pksm
                 if (!pk6.untraded() &&
                     (country() != pk6.geoCountry(0) || subRegion() != pk6.geoRegion(0)))
                 {
-                    for (int i = 4; i > 0; i--)
-                    {
-                        pk6.geoCountry(pk6.geoCountry(i - 1), i);
-                        pk6.geoRegion(pk6.geoRegion(i - 1), i);
-                    }
-                    pk6.geoCountry(0, country());
-                    pk6.geoRegion(0, subRegion());
+                    tradeGeoLocation(pk6, country(), subRegion());
                 }
             }
             else
@@ -287,13 +297,7 @@ namespace pksm
                 if (otName() != pk6.htName() || gender() != pk6.htGender() ||
                     (pk6.geoCountry(0) == 0 && pk6.geoRegion(0) == 0 && !pk6.untradedEvent()))
                 {
-                    for (int i = 4; i > 0; i--)
-                    {
-                        pk6.geoCountry(pk6.geoCountry(i - 1), i);
-                        pk6.geoRegion(pk6.geoRegion(i - 1), i);
-                    }
-                    pk6.geoCountry(0, country());
-                    pk6.geoRegion(0, subRegion());
+                    tradeGeoLocation(pk6, country(), subRegion());
                 }
 
                 if (pk6.htName() != otName())
