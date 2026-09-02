@@ -131,6 +131,7 @@ namespace pksm::crypto
                 Double = 17,
             };
             u32 key() const;
+            size_t length() const { return dataLength; }
             // Nop if in proper state
             void encrypt();
             void decrypt();

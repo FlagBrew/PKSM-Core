@@ -1788,7 +1788,7 @@ namespace pksm
 
         // Try Kitakami block first (DLC 2.0.1+ — Paldea block is dummied out)
         auto blockKit = getBlock(KZukanT1);
-        if (blockKit)
+        if (blockKit && blockKit->length() != 0)
         {
             u8* entry = blockKit->decryptedData() + internal * DEX_ENTRY_SIZE_KIT;
 
@@ -1877,7 +1877,7 @@ namespace pksm
     {
         // Try Kitakami block first (DLC 2.0.1+)
         auto blockKit = getBlock(KZukanT1);
-        if (blockKit)
+        if (blockKit && blockKit->length() != 0)
         {
             u8* data  = blockKit->decryptedData();
             int count = 0;
@@ -1918,7 +1918,7 @@ namespace pksm
     {
         // Try Kitakami block first (DLC 2.0.1+)
         auto blockKit = getBlock(KZukanT1);
-        if (blockKit)
+        if (blockKit && blockKit->length() != 0)
         {
             u8* data  = blockKit->decryptedData();
             int count = 0;
