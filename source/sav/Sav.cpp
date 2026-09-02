@@ -108,9 +108,14 @@ namespace pksm
             case 0xB8800:
             case 0x100000:
                 return std::make_unique<SavLGPE>(dt, length);
+            // Switch-era saves: only construct when the whole-file hash is intact
             case SavPLA::SIZE_G8PLA:
             case SavPLA::SIZE_G8PLA_1:
-                return std::make_unique<SavPLA>(dt, length);
+                if (pksm::crypto::swsh::verify(dt, length))
+                {
+                    return std::make_unique<SavPLA>(dt, length);
+                }
+                return nullptr;
             // SV base game sizes
             case SavSV::SIZE_G9SV_0:
             case SavSV::SIZE_G9SV_0a:
@@ -138,12 +143,20 @@ namespace pksm
             case SavSV::SIZE_G9SV_DLC2_202_MIN ... SavSV::SIZE_G9SV_DLC2_202_END:
             case SavSV::SIZE_G9SV_DLC1_300_MIN ... SavSV::SIZE_G9SV_DLC1_300_END:
             case SavSV::SIZE_G9SV_DLC2_300_MIN ... SavSV::SIZE_G9SV_DLC2_300_END:
-                return std::make_unique<SavSV>(dt, length);
+                if (pksm::crypto::swsh::verify(dt, length))
+                {
+                    return std::make_unique<SavSV>(dt, length);
+                }
+                return nullptr;
             case SavZA::SIZE_G9ZA_100:
             case SavZA::SIZE_G9ZA_102:
             case SavZA::SIZE_G9ZA_200:
             case SavZA::SIZE_G9ZA_201:
-                return std::make_unique<SavZA>(dt, length);
+                if (pksm::crypto::swsh::verify(dt, length))
+                {
+                    return std::make_unique<SavZA>(dt, length);
+                }
+                return nullptr;
             case SavSWSH::SIZE_G8SWSH:
             case SavSWSH::SIZE_G8SWSH_1:
             case SavSWSH::SIZE_G8SWSH_2:
