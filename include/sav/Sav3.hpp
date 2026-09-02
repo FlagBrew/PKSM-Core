@@ -55,6 +55,7 @@ namespace pksm
         void loadBlocks();
         [[nodiscard]] static std::array<int, BLOCK_COUNT> getBlockOrder(
             const std::shared_ptr<u8[]>& dt, int ofs);
+        [[nodiscard]] static bool allBlocksPresent(const std::array<int, BLOCK_COUNT>& order);
         [[nodiscard]] static int getActiveSaveIndex(const std::shared_ptr<u8[]>& dt,
             std::array<int, BLOCK_COUNT>& blockOrder1, std::array<int, BLOCK_COUNT>& blockOrder2);
 
