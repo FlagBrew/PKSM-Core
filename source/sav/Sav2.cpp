@@ -221,7 +221,7 @@ namespace pksm
 
     bool Sav2::validList(const std::shared_ptr<u8[]>& dt, size_t ofs, u8 slot)
     {
-        return (dt[ofs] <= 30) && (dt[ofs + 1 + dt[ofs]] == 0xFF);
+        return (dt[ofs] <= slot) && (dt[ofs + 1 + dt[ofs]] == 0xFF);
     }
 
     // max length of string + terminator
