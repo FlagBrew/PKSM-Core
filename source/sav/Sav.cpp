@@ -112,7 +112,12 @@ namespace pksm
             case SavSWSH::SIZE_G8SWSH_3A:
             case SavSWSH::SIZE_G8SWSH_3B:
             case SavSWSH::SIZE_G8SWSH_3C:
-                return std::make_unique<SavSWSH>(dt, length);
+                // Only construct when the whole-file hash is intact
+                if (pksm::crypto::swsh::verify(dt, length))
+                {
+                    return std::make_unique<SavSWSH>(dt, length);
+                }
+                return nullptr;
             default:
                 return nullptr;
         }
