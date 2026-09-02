@@ -72,16 +72,16 @@ namespace pksm
                 if (pk.otName() != otName() || pk.TID() != TID() || pk.SID() != SID() ||
                     pk.gender() != gender())
                 {
-                    pk.currentHandler(PKXHandler::OT);
-                }
-                else
-                {
                     pk.currentHandler(PKXHandler::NonOT);
                     PK8& pk8 = static_cast<PK8&>(pk);
                     pk8.htName(otName());
                     pk8.currentFriendship(pk.baseFriendship());
                     pk8.htGender(gender());
                     pk8.htLanguage(language());
+                }
+                else
+                {
+                    pk.currentHandler(PKXHandler::OT);
                 }
             }
         }
