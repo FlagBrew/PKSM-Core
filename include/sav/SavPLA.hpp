@@ -41,6 +41,7 @@ namespace pksm
         static constexpr u32 KItems       = 0x9FE2790A;
         static constexpr u32 KItemsKey    = 0x59A4D0C3;
         static constexpr u32 KItemsStored = 0x8E434F0D;
+        static constexpr u32 KItemsRecipe = 0xF5D9F4A5;
         static constexpr u32 KBoxLayout   = 0x19722C89;
 
         static constexpr u32 KCurrentBox    = 0x017C3CBB;
