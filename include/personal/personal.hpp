@@ -145,6 +145,62 @@ namespace pksm
         [[nodiscard]] bool canLearnTR(u16 formSpecies, u8 trID);
     }
 
+    namespace PersonalPLA
+    {
+        [[nodiscard]] u8 baseHP(u16 formSpecies);
+        [[nodiscard]] u8 baseAtk(u16 formSpecies);
+        [[nodiscard]] u8 baseDef(u16 formSpecies);
+        [[nodiscard]] u8 baseSpe(u16 formSpecies);
+        [[nodiscard]] u8 baseSpa(u16 formSpecies);
+        [[nodiscard]] u8 baseSpd(u16 formSpecies);
+        [[nodiscard]] Type type1(u16 formSpecies);
+        [[nodiscard]] Type type2(u16 formSpecies);
+        [[nodiscard]] u8 gender(u16 formSpecies);
+        [[nodiscard]] u8 baseFriendship(u16 formSpecies);
+        [[nodiscard]] u8 expType(u16 formSpecies);
+        [[nodiscard]] Ability ability(u16 formSpecies, u8 n);
+        [[nodiscard]] u16 formStatIndex(u16 formSpecies);
+        [[nodiscard]] u8 formCount(u16 formSpecies);
+    }
+
+    namespace PersonalSV
+    {
+        [[nodiscard]] u8 baseHP(u16 formSpecies);
+        [[nodiscard]] u8 baseAtk(u16 formSpecies);
+        [[nodiscard]] u8 baseDef(u16 formSpecies);
+        [[nodiscard]] u8 baseSpe(u16 formSpecies);
+        [[nodiscard]] u8 baseSpa(u16 formSpecies);
+        [[nodiscard]] u8 baseSpd(u16 formSpecies);
+        [[nodiscard]] Type type1(u16 formSpecies);
+        [[nodiscard]] Type type2(u16 formSpecies);
+        [[nodiscard]] u8 gender(u16 formSpecies);
+        [[nodiscard]] u8 baseFriendship(u16 formSpecies);
+        [[nodiscard]] u8 expType(u16 formSpecies);
+        [[nodiscard]] Ability ability(u16 formSpecies, u8 n);
+        [[nodiscard]] u16 formStatIndex(u16 formSpecies);
+        [[nodiscard]] u8 formCount(u16 formSpecies);
+        [[nodiscard]] bool isPresentInGame(u16 formSpecies);
+    }
+
+    namespace PersonalZA
+    {
+        [[nodiscard]] u8 baseHP(u16 formSpecies);
+        [[nodiscard]] u8 baseAtk(u16 formSpecies);
+        [[nodiscard]] u8 baseDef(u16 formSpecies);
+        [[nodiscard]] u8 baseSpe(u16 formSpecies);
+        [[nodiscard]] u8 baseSpa(u16 formSpecies);
+        [[nodiscard]] u8 baseSpd(u16 formSpecies);
+        [[nodiscard]] Type type1(u16 formSpecies);
+        [[nodiscard]] Type type2(u16 formSpecies);
+        [[nodiscard]] u8 gender(u16 formSpecies);
+        [[nodiscard]] u8 baseFriendship(u16 formSpecies);
+        [[nodiscard]] u8 expType(u16 formSpecies);
+        [[nodiscard]] Ability ability(u16 formSpecies, u8 n);
+        [[nodiscard]] u16 formStatIndex(u16 formSpecies);
+        [[nodiscard]] u8 formCount(u16 formSpecies);
+        [[nodiscard]] bool isPresentInGame(u16 formSpecies);
+    }
+
     namespace PersonalRSFRLGE
     {
         [[nodiscard]] u8 baseHP(u16 formSpecies);

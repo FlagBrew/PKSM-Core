@@ -66,6 +66,9 @@ namespace pksm
             USUM,
             LGPE,
             SWSH,
+            PLA,
+            SV,
+            ZA,
             RS,
             E,
             FRLG,
@@ -109,7 +112,10 @@ namespace pksm
             Ingredient,
             PCItem,
             RotomPower,
-            CatchingItem
+            CatchingItem,
+            MegaStones,
+            Recipe,
+            Donut // Legends Z-A (Mega Dimension): not items, see SavZA::donuts()
         };
         enum class BadTransferReason
         {

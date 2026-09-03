@@ -25,6 +25,9 @@
  */
 
 #include "pkx/PK8.hpp"
+#include "pkx/PA9.hpp"
+#include "pkx/PK9.hpp"
+#include "sav/Sav.hpp"
 #include "utils/crypto.hpp"
 #include "utils/endian.hpp"
 #include "utils/flagUtil.hpp"
@@ -295,6 +298,200 @@ namespace pksm
     std::unique_ptr<PKX> PK8::clone(void) const
     {
         return PKX::getPKM<Generation::EIGHT>(data, isParty() ? PARTY_LENGTH : BOX_LENGTH);
+    }
+
+    std::unique_ptr<PKX> PK8::convertToG9(Sav& save) const
+    {
+        bool targetIsZA = (save.version() == GameVersion::ZA);
+
+        std::unique_ptr<PKX> pk9;
+        if (targetIsZA)
+        {
+            pk9 = PKX::getPKM<PA9>(nullptr, PA9::BOX_LENGTH);
+        }
+        else
+        {
+            pk9 = PKX::getPKM<PK9>(nullptr, PK9::BOX_LENGTH);
+        }
+
+        pk9->encryptionConstant(encryptionConstant());
+        pk9->species(species());
+        pk9->TID(TID());
+        pk9->SID(SID());
+        pk9->experience(experience());
+        pk9->PID(PID());
+
+        if (ability() == PersonalSWSH::ability(formSpecies(), abilityNumber() >> 1))
+        {
+            pk9->setAbility(abilityNumber() >> 1);
+        }
+        else
+        {
+            pk9->ability(ability());
+            pk9->abilityNumber(abilityNumber());
+        }
+
+        pk9->language(language());
+        pk9->heldItem(heldItem());
+        pk9->markValue(markValue());
+
+        for (Stat stat : {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPATK, Stat::SPDEF, Stat::SPD})
+        {
+            pk9->ev(stat, ev(stat));
+            pk9->iv(stat, iv(stat));
+            pk9->hyperTrain(stat, hyperTrain(stat));
+        }
+
+        for (size_t i = 0; i < 4; i++)
+        {
+            pk9->move(i, move(i));
+            pk9->PPUp(i, PPUp(i));
+            pk9->PP(i, PP(i));
+            pk9->relearnMove(i, relearnMove(i));
+        }
+
+        pk9->egg(egg());
+        pk9->nicknamed(nicknamed());
+        pk9->nickname(nickname());
+        pk9->fatefulEncounter(fatefulEncounter());
+        pk9->gender(gender());
+        pk9->otGender(otGender());
+        pk9->alternativeForm(alternativeForm());
+        pk9->nature(origNature());
+
+        pk9->version(version());
+        pk9->otName(otName());
+        pk9->otFriendship(otFriendship());
+        pk9->metDate(metDate());
+        pk9->eggDate(eggDate());
+        pk9->metLocation(metLocation());
+        pk9->eggLocation(eggLocation());
+        pk9->ball(ball());
+        pk9->metLevel(metLevel());
+        pk9->currentHandler(currentHandler());
+        pk9->htFriendship(htFriendship());
+
+        pk9->pkrsStrain(pkrsStrain());
+        pk9->pkrsDays(pkrsDays());
+
+        for (size_t i = 0; i < 6; i++)
+        {
+            pk9->contest(i, contest(i));
+        }
+
+        pk9->ribbon(Ribbon::ChampionKalos, ribbon(Ribbon::ChampionKalos));
+        pk9->ribbon(Ribbon::ChampionG3Hoenn, ribbon(Ribbon::ChampionG3Hoenn));
+        pk9->ribbon(Ribbon::ChampionSinnoh, ribbon(Ribbon::ChampionSinnoh));
+        pk9->ribbon(Ribbon::BestFriends, ribbon(Ribbon::BestFriends));
+        pk9->ribbon(Ribbon::Training, ribbon(Ribbon::Training));
+        pk9->ribbon(Ribbon::BattlerSkillful, ribbon(Ribbon::BattlerSkillful));
+        pk9->ribbon(Ribbon::BattlerExpert, ribbon(Ribbon::BattlerExpert));
+        pk9->ribbon(Ribbon::Effort, ribbon(Ribbon::Effort));
+        pk9->ribbon(Ribbon::Alert, ribbon(Ribbon::Alert));
+        pk9->ribbon(Ribbon::Shock, ribbon(Ribbon::Shock));
+        pk9->ribbon(Ribbon::Downcast, ribbon(Ribbon::Downcast));
+        pk9->ribbon(Ribbon::Careless, ribbon(Ribbon::Careless));
+        pk9->ribbon(Ribbon::Relax, ribbon(Ribbon::Relax));
+        pk9->ribbon(Ribbon::Snooze, ribbon(Ribbon::Snooze));
+        pk9->ribbon(Ribbon::Smile, ribbon(Ribbon::Smile));
+        pk9->ribbon(Ribbon::Gorgeous, ribbon(Ribbon::Gorgeous));
+        pk9->ribbon(Ribbon::Royal, ribbon(Ribbon::Royal));
+        pk9->ribbon(Ribbon::GorgeousRoyal, ribbon(Ribbon::GorgeousRoyal));
+        pk9->ribbon(Ribbon::Artist, ribbon(Ribbon::Artist));
+        pk9->ribbon(Ribbon::Footprint, ribbon(Ribbon::Footprint));
+        pk9->ribbon(Ribbon::Record, ribbon(Ribbon::Record));
+        pk9->ribbon(Ribbon::Legend, ribbon(Ribbon::Legend));
+        pk9->ribbon(Ribbon::Country, ribbon(Ribbon::Country));
+        pk9->ribbon(Ribbon::National, ribbon(Ribbon::National));
+        pk9->ribbon(Ribbon::Earth, ribbon(Ribbon::Earth));
+        pk9->ribbon(Ribbon::World, ribbon(Ribbon::World));
+        pk9->ribbon(Ribbon::Classic, ribbon(Ribbon::Classic));
+        pk9->ribbon(Ribbon::Premier, ribbon(Ribbon::Premier));
+        pk9->ribbon(Ribbon::Event, ribbon(Ribbon::Event));
+        pk9->ribbon(Ribbon::Birthday, ribbon(Ribbon::Birthday));
+        pk9->ribbon(Ribbon::Special, ribbon(Ribbon::Special));
+        pk9->ribbon(Ribbon::Souvenir, ribbon(Ribbon::Souvenir));
+        pk9->ribbon(Ribbon::Wishing, ribbon(Ribbon::Wishing));
+        pk9->ribbon(Ribbon::ChampionBattle, ribbon(Ribbon::ChampionBattle));
+        pk9->ribbon(Ribbon::ChampionRegional, ribbon(Ribbon::ChampionRegional));
+        pk9->ribbon(Ribbon::ChampionNational, ribbon(Ribbon::ChampionNational));
+        pk9->ribbon(Ribbon::ChampionWorld, ribbon(Ribbon::ChampionWorld));
+        pk9->ribbon(Ribbon::MemoryContest, ribbon(Ribbon::MemoryContest));
+        pk9->ribbon(Ribbon::MemoryBattle, ribbon(Ribbon::MemoryBattle));
+        pk9->ribbon(Ribbon::ChampionG6Hoenn, ribbon(Ribbon::ChampionG6Hoenn));
+        pk9->ribbon(Ribbon::ContestStar, ribbon(Ribbon::ContestStar));
+        pk9->ribbon(Ribbon::MasterCoolness, ribbon(Ribbon::MasterCoolness));
+        pk9->ribbon(Ribbon::MasterBeauty, ribbon(Ribbon::MasterBeauty));
+        pk9->ribbon(Ribbon::MasterCuteness, ribbon(Ribbon::MasterCuteness));
+        pk9->ribbon(Ribbon::MasterCleverness, ribbon(Ribbon::MasterCleverness));
+        pk9->ribbon(Ribbon::MasterToughness, ribbon(Ribbon::MasterToughness));
+        pk9->ribbon(Ribbon::ChampionAlola, ribbon(Ribbon::ChampionAlola));
+        pk9->ribbon(Ribbon::BattleRoyale, ribbon(Ribbon::BattleRoyale));
+        pk9->ribbon(Ribbon::BattleTreeGreat, ribbon(Ribbon::BattleTreeGreat));
+        pk9->ribbon(Ribbon::BattleTreeMaster, ribbon(Ribbon::BattleTreeMaster));
+        pk9->ribbon(Ribbon::ChampionGalar, ribbon(Ribbon::ChampionGalar));
+        pk9->ribbon(Ribbon::TowerMaster, ribbon(Ribbon::TowerMaster));
+        pk9->ribbon(Ribbon::MasterRank, ribbon(Ribbon::MasterRank));
+        pk9->ribbon(Ribbon::MarkLunchtime, ribbon(Ribbon::MarkLunchtime));
+        pk9->ribbon(Ribbon::MarkSleepyTime, ribbon(Ribbon::MarkSleepyTime));
+        pk9->ribbon(Ribbon::MarkDusk, ribbon(Ribbon::MarkDusk));
+        pk9->ribbon(Ribbon::MarkDawn, ribbon(Ribbon::MarkDawn));
+        pk9->ribbon(Ribbon::MarkCloudy, ribbon(Ribbon::MarkCloudy));
+        pk9->ribbon(Ribbon::MarkRainy, ribbon(Ribbon::MarkRainy));
+        pk9->ribbon(Ribbon::MarkStormy, ribbon(Ribbon::MarkStormy));
+        pk9->ribbon(Ribbon::MarkSnowy, ribbon(Ribbon::MarkSnowy));
+        pk9->ribbon(Ribbon::MarkBlizzard, ribbon(Ribbon::MarkBlizzard));
+        pk9->ribbon(Ribbon::MarkDry, ribbon(Ribbon::MarkDry));
+        pk9->ribbon(Ribbon::MarkSandstorm, ribbon(Ribbon::MarkSandstorm));
+        pk9->ribbon(Ribbon::MarkMisty, ribbon(Ribbon::MarkMisty));
+        pk9->ribbon(Ribbon::MarkDestiny, ribbon(Ribbon::MarkDestiny));
+        pk9->ribbon(Ribbon::MarkFishing, ribbon(Ribbon::MarkFishing));
+        pk9->ribbon(Ribbon::MarkCurry, ribbon(Ribbon::MarkCurry));
+        pk9->ribbon(Ribbon::MarkUncommon, ribbon(Ribbon::MarkUncommon));
+        pk9->ribbon(Ribbon::MarkRare, ribbon(Ribbon::MarkRare));
+        pk9->ribbon(Ribbon::MarkRowdy, ribbon(Ribbon::MarkRowdy));
+        pk9->ribbon(Ribbon::MarkAbsentMinded, ribbon(Ribbon::MarkAbsentMinded));
+        pk9->ribbon(Ribbon::MarkJittery, ribbon(Ribbon::MarkJittery));
+        pk9->ribbon(Ribbon::MarkExcited, ribbon(Ribbon::MarkExcited));
+        pk9->ribbon(Ribbon::MarkCharismatic, ribbon(Ribbon::MarkCharismatic));
+        pk9->ribbon(Ribbon::MarkCalmness, ribbon(Ribbon::MarkCalmness));
+        pk9->ribbon(Ribbon::MarkIntense, ribbon(Ribbon::MarkIntense));
+        pk9->ribbon(Ribbon::MarkZonedOut, ribbon(Ribbon::MarkZonedOut));
+        pk9->ribbon(Ribbon::MarkJoyful, ribbon(Ribbon::MarkJoyful));
+        pk9->ribbon(Ribbon::MarkAngry, ribbon(Ribbon::MarkAngry));
+        pk9->ribbon(Ribbon::MarkSmiley, ribbon(Ribbon::MarkSmiley));
+        pk9->ribbon(Ribbon::MarkTeary, ribbon(Ribbon::MarkTeary));
+        pk9->ribbon(Ribbon::MarkUpbeat, ribbon(Ribbon::MarkUpbeat));
+        pk9->ribbon(Ribbon::MarkPeeved, ribbon(Ribbon::MarkPeeved));
+        pk9->ribbon(Ribbon::MarkIntellectual, ribbon(Ribbon::MarkIntellectual));
+        pk9->ribbon(Ribbon::MarkFerocious, ribbon(Ribbon::MarkFerocious));
+        pk9->ribbon(Ribbon::MarkCrafty, ribbon(Ribbon::MarkCrafty));
+        pk9->ribbon(Ribbon::MarkScowling, ribbon(Ribbon::MarkScowling));
+        pk9->ribbon(Ribbon::MarkKindly, ribbon(Ribbon::MarkKindly));
+        pk9->ribbon(Ribbon::MarkFlustered, ribbon(Ribbon::MarkFlustered));
+        pk9->ribbon(Ribbon::MarkPumpedUp, ribbon(Ribbon::MarkPumpedUp));
+        pk9->ribbon(Ribbon::MarkZeroEnergy, ribbon(Ribbon::MarkZeroEnergy));
+        pk9->ribbon(Ribbon::MarkPrideful, ribbon(Ribbon::MarkPrideful));
+        pk9->ribbon(Ribbon::MarkUnsure, ribbon(Ribbon::MarkUnsure));
+        pk9->ribbon(Ribbon::MarkHumble, ribbon(Ribbon::MarkHumble));
+        pk9->ribbon(Ribbon::MarkThorny, ribbon(Ribbon::MarkThorny));
+        pk9->ribbon(Ribbon::MarkVigor, ribbon(Ribbon::MarkVigor));
+        pk9->ribbon(Ribbon::MarkSlump, ribbon(Ribbon::MarkSlump));
+
+        // PK9-specific: set TeraType from PersonalSV types
+        if (!targetIsZA)
+        {
+            auto* pk9sv = static_cast<PK9*>(pk9.get());
+            auto type1  = PersonalSV::type1(pk9->formSpecies());
+            u8 tera     = (type1 != Type::Normal) ? u8(type1)
+                                                  : u8(PersonalSV::type2(pk9->formSpecies()));
+            pk9sv->teraTypeOriginal(tera);
+            pk9sv->teraTypeOverride(tera);
+        }
+
+        pk9->refreshChecksum();
+
+        return pk9;
     }
 
     Generation PK8::generation(void) const

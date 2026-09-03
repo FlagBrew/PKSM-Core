@@ -825,3 +825,97 @@ Thunderous Kick
 Glacial Lance
 Astral Barrage
 Eerie Spell
+Dire Claw
+Psyshield Bash
+Power Shift
+Stone Axe
+Springtide Storm
+Mystical Power
+Raging Fury
+Wave Crash
+Chloroblast
+Mountain Gale
+Victory Dance
+Headlong Rush
+Barb Barrage
+Esper Wing
+Bitter Malice
+Shelter
+Triple Arrows
+Infernal Parade
+Ceaseless Edge
+Bleakwind Storm
+Wildbolt Storm
+Sandsear Storm
+Lunar Blessing
+Take Heart
+Tera Blast
+Silk Trap
+Axe Kick
+Last Respects
+Lumina Crash
+Order Up
+Jet Punch
+Spicy Extract
+Spin Out
+Population Bomb
+Ice Spinner
+Glaive Rush
+Revival Blessing
+Salt Cure
+Triple Dive
+Mortal Spin
+Doodle
+Fillet Away
+Kowtow Cleave
+Flower Trick
+Torch Song
+Aqua Step
+Raging Bull
+Make It Rain
+Psyblade
+Hydro Steam
+Ruination
+Collision Course
+Electro Drift
+Shed Tail
+Chilly Reception
+Tidy Up
+Snowscape
+Pounce
+Trailblaze
+Chilling Water
+Hyper Drill
+Twin Beam
+Rage Fist
+Armor Cannon
+Bitter Blade
+Double Shock
+Gigaton Hammer
+Comeuppance
+Aqua Cutter
+Blazing Torque
+Wicked Torque
+Noxious Torque
+Combat Torque
+Magical Torque
+Blood Moon
+Matcha Gotcha
+Syrup Bomb
+Ivy Cudgel
+Electro Shot
+Tera Starstorm
+Fickle Beam
+Burning Bulwark
+Thunderclap
+Mighty Cleave
+Tachyon Cutter
+Hard Press
+Dragon Cheer
+Alluring Voice
+Temper Flare
+Supercell Slam
+Psychic Noise
+Upper Hand
+Malignant Chain
+Nihil Light

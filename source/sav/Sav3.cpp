@@ -65,19 +65,33 @@ namespace pksm
         return order;
     }
 
+    bool Sav3::allBlocksPresent(const std::array<int, BLOCK_COUNT>& order)
+    {
+        unsigned int present = 0;
+        for (const auto& block : order)
+        {
+            if (block < 0 || block >= BLOCK_COUNT)
+            {
+                return false;
+            }
+            present |= 1u << block;
+        }
+        return present == (1u << BLOCK_COUNT) - 1;
+    }
+
     int Sav3::getActiveSaveIndex(const std::shared_ptr<u8[]>& dt,
         std::array<int, BLOCK_COUNT>& blockOrder1, std::array<int, BLOCK_COUNT>& blockOrder2)
     {
-        int zeroBlock1 = std::find(blockOrder1.begin(), blockOrder1.end(), 0) - blockOrder1.begin();
-        int zeroBlock2 = std::find(blockOrder2.begin(), blockOrder2.end(), 0) - blockOrder2.begin();
-        if (size_t(zeroBlock2) == blockOrder2.size())
+        if (!allBlocksPresent(blockOrder2))
         {
             return 0;
         }
-        if (size_t(zeroBlock1) == blockOrder1.size())
+        if (!allBlocksPresent(blockOrder1))
         {
             return 1;
         }
+        int zeroBlock1 = std::find(blockOrder1.begin(), blockOrder1.end(), 0) - blockOrder1.begin();
+        int zeroBlock2 = std::find(blockOrder2.begin(), blockOrder2.end(), 0) - blockOrder2.begin();
         u32 count1 = LittleEndian::convertTo<u32>(&dt[(zeroBlock1 * SIZE_BLOCK) + 0x0FFC]);
         u32 count2 = LittleEndian::convertTo<u32>(&dt[(zeroBlock2 * SIZE_BLOCK) + 0xEFFC]);
         return count1 > count2 ? 0 : 1;
@@ -510,7 +524,9 @@ namespace pksm
             }
             else
             {
-                std::ranges::copy(pk3->rawData(), &data[offset]);
+                // Bound to the box entry: party-format input would otherwise
+                // spill its stat block over the next slot
+                std::ranges::copy(pk3->rawData().subspan(0, PK3::BOX_LENGTH), &data[offset]);
             }
         }
     }

@@ -34,6 +34,7 @@
 #include "pkx/PK6.hpp"
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
+#include "pkx/PA9.hpp"
 #include "pkx/PKX.hpp"
 #include "sav/Sav1.hpp"
 #include "sav/Sav2.hpp"
@@ -46,6 +47,9 @@
 #include "sav/SavHGSS.hpp"
 #include "sav/SavLGPE.hpp"
 #include "sav/SavORAS.hpp"
+#include "sav/SavPLA.hpp"
+#include "sav/SavSV.hpp"
+#include "sav/SavZA.hpp"
 #include "sav/SavPT.hpp"
 #include "sav/SavRS.hpp"
 #include "sav/SavSUMO.hpp"
@@ -104,6 +108,55 @@ namespace pksm
             case 0xB8800:
             case 0x100000:
                 return std::make_unique<SavLGPE>(dt, length);
+            // Switch-era saves: only construct when the whole-file hash is intact
+            case SavPLA::SIZE_G8PLA:
+            case SavPLA::SIZE_G8PLA_1:
+                if (pksm::crypto::swsh::verify(dt, length))
+                {
+                    return std::make_unique<SavPLA>(dt, length);
+                }
+                return nullptr;
+            // SV base game sizes
+            case SavSV::SIZE_G9SV_0:
+            case SavSV::SIZE_G9SV_0a:
+            case SavSV::SIZE_G9SV_1:
+            case SavSV::SIZE_G9SV_1a:
+            case SavSV::SIZE_G9SV_1B:
+            case SavSV::SIZE_G9SV_3:
+            case SavSV::SIZE_G9SV_1A:
+            case SavSV::SIZE_G9SV_1Aa:
+            case SavSV::SIZE_G9SV_1Ab:
+            case SavSV::SIZE_G9SV_2:
+            // SV 1.2.0 sizes
+            case SavSV::SIZE_G9SV_3A1:
+            case SavSV::SIZE_G9SV_3B1:
+            case SavSV::SIZE_G9SV_3P1:
+            case SavSV::SIZE_G9SV_3G1:
+            case SavSV::SIZE_G9SV_3A0:
+            case SavSV::SIZE_G9SV_3B0:
+            case SavSV::SIZE_G9SV_3P0:
+            case SavSV::SIZE_G9SV_3G0:
+            // SV DLC sizes (GCC case range extension for variable-size ranges)
+            case SavSV::SIZE_G9SV_DLC1_MIN ... SavSV::SIZE_G9SV_DLC1_END:
+            case SavSV::SIZE_G9SV_DLC2_MIN ... SavSV::SIZE_G9SV_DLC2_END:
+            case SavSV::SIZE_G9SV_DLC1_202_MIN ... SavSV::SIZE_G9SV_DLC1_202_END:
+            case SavSV::SIZE_G9SV_DLC2_202_MIN ... SavSV::SIZE_G9SV_DLC2_202_END:
+            case SavSV::SIZE_G9SV_DLC1_300_MIN ... SavSV::SIZE_G9SV_DLC1_300_END:
+            case SavSV::SIZE_G9SV_DLC2_300_MIN ... SavSV::SIZE_G9SV_DLC2_300_END:
+                if (pksm::crypto::swsh::verify(dt, length))
+                {
+                    return std::make_unique<SavSV>(dt, length);
+                }
+                return nullptr;
+            case SavZA::SIZE_G9ZA_100:
+            case SavZA::SIZE_G9ZA_102:
+            case SavZA::SIZE_G9ZA_200:
+            case SavZA::SIZE_G9ZA_201:
+                if (pksm::crypto::swsh::verify(dt, length))
+                {
+                    return std::make_unique<SavZA>(dt, length);
+                }
+                return nullptr;
             case SavSWSH::SIZE_G8SWSH:
             case SavSWSH::SIZE_G8SWSH_1:
             case SavSWSH::SIZE_G8SWSH_2:
@@ -305,6 +358,8 @@ namespace pksm
                 return pk.convertToLGPE(*this);
             case Generation::EIGHT:
                 return pk.convertToG8(*this);
+            case Generation::NINE:
+                return pk.convertToG9(*this);
             case Generation::UNUSED:
                 return nullptr;
         }
@@ -349,6 +404,7 @@ namespace pksm
             case Generation::SEVEN:
             case Generation::LGPE:
             case Generation::EIGHT:
+            case Generation::NINE:
                 return u32(SID() << 16 | TID()) % 1000000;
             case Generation::UNUSED:
                 return 0;
@@ -368,6 +424,7 @@ namespace pksm
             case Generation::SEVEN:
             case Generation::LGPE:
             case Generation::EIGHT:
+            case Generation::NINE:
                 return u32(SID() << 16 | TID()) / 1000000;
             case Generation::UNUSED:
             case Generation::ONE:

@@ -68,6 +68,7 @@ namespace pksm
             case Generation::SEVEN:
             case Generation::LGPE:
             case Generation::EIGHT:
+            case Generation::NINE:
                 if (std::find(internal::G7Langs.begin(), internal::G7Langs.end(), orig) !=
                     internal::G7Langs.end())
                 {

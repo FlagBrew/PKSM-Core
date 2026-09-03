@@ -197,6 +197,21 @@ namespace pksm
                 MarkVigor,
                 MarkSlump,
 
+                // Gen 8a/9 ribbons
+                Hisui,
+                TwinklingStar,
+                ChampionPaldea,
+                MarkJumbo,
+                MarkMini,
+                MarkItemfinder,
+                MarkPartner,
+                MarkGourmand,
+                OnceInALifetime,
+                MarkAlpha,
+                MarkMightiest,
+                MarkTitan,
+                Partner,
+
                 INVALID [[maybe_unused]] =
                     std::numeric_limits<std::underlying_type_t<RibbonEnum>>::max()
             } v;
@@ -402,6 +417,19 @@ namespace pksm
         static constexpr internal::Ribbon_impl MarkThorny{EnumType::MarkThorny};
         static constexpr internal::Ribbon_impl MarkVigor{EnumType::MarkVigor};
         static constexpr internal::Ribbon_impl MarkSlump{EnumType::MarkSlump};
+        static constexpr internal::Ribbon_impl Hisui{EnumType::Hisui};
+        static constexpr internal::Ribbon_impl TwinklingStar{EnumType::TwinklingStar};
+        static constexpr internal::Ribbon_impl ChampionPaldea{EnumType::ChampionPaldea};
+        static constexpr internal::Ribbon_impl MarkJumbo{EnumType::MarkJumbo};
+        static constexpr internal::Ribbon_impl MarkMini{EnumType::MarkMini};
+        static constexpr internal::Ribbon_impl MarkItemfinder{EnumType::MarkItemfinder};
+        static constexpr internal::Ribbon_impl MarkPartner{EnumType::MarkPartner};
+        static constexpr internal::Ribbon_impl MarkGourmand{EnumType::MarkGourmand};
+        static constexpr internal::Ribbon_impl OnceInALifetime{EnumType::OnceInALifetime};
+        static constexpr internal::Ribbon_impl MarkAlpha{EnumType::MarkAlpha};
+        static constexpr internal::Ribbon_impl MarkMightiest{EnumType::MarkMightiest};
+        static constexpr internal::Ribbon_impl MarkTitan{EnumType::MarkTitan};
+        static constexpr internal::Ribbon_impl Partner{EnumType::Partner};
 
         // G4 aliases
         static constexpr internal::Ribbon_impl G4CoolGreat{EnumType::G4CoolSuper};

@@ -1469,6 +1469,15 @@ namespace pksm
         return nullptr;
     }
 
+    std::unique_ptr<PKX> PK6::convertToG9(Sav& save) const
+    {
+        if (auto pk8 = convertToG8(save))
+        {
+            return pk8->convertToG9(save);
+        }
+        return nullptr;
+    }
+
     void PK6::updatePartyData()
     {
         static constexpr Stat stats[] = {

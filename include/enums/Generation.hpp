@@ -56,6 +56,7 @@ namespace pksm
                 SEVEN = 3,
                 LGPE  = 4,
                 EIGHT = 5,
+                NINE  = 9,
 
                 UNUSED [[maybe_unused]] = 0xFFFFFFFF
             } v;
@@ -97,6 +98,8 @@ namespace pksm
                         return "7";
                     case EIGHT:
                         return "8";
+                    case NINE:
+                        return "9";
                     case UNUSED:
                         return "INVALID";
                 }
@@ -134,6 +137,7 @@ namespace pksm
                             case SEVEN:
                             case LGPE:
                             case EIGHT:
+                            case NINE:
                             case UNUSED:
                                 return std::strong_ordering::less;
                         }
@@ -152,6 +156,7 @@ namespace pksm
                             case SEVEN:
                             case LGPE:
                             case EIGHT:
+                            case NINE:
                             case UNUSED:
                                 return std::strong_ordering::less;
                         }
@@ -170,6 +175,7 @@ namespace pksm
                             case SEVEN:
                             case LGPE:
                             case EIGHT:
+                            case NINE:
                             case UNUSED:
                                 return std::strong_ordering::less;
                         }
@@ -188,6 +194,7 @@ namespace pksm
                             case SEVEN:
                             case LGPE:
                             case EIGHT:
+                            case NINE:
                             case UNUSED:
                                 return std::strong_ordering::less;
                         }
@@ -206,6 +213,7 @@ namespace pksm
                             case SEVEN:
                             case LGPE:
                             case EIGHT:
+                            case NINE:
                             case UNUSED:
                                 return std::strong_ordering::less;
                         }
@@ -224,6 +232,7 @@ namespace pksm
                             case SEVEN:
                             case LGPE:
                             case EIGHT:
+                            case NINE:
                             case UNUSED:
                                 return std::strong_ordering::less;
                         }
@@ -242,6 +251,7 @@ namespace pksm
                                 return std::strong_ordering::equal;
                             case LGPE:
                             case EIGHT:
+                            case NINE:
                             case UNUSED:
                                 return std::strong_ordering::less;
                         }
@@ -260,6 +270,7 @@ namespace pksm
                             case LGPE:
                                 return std::strong_ordering::equal;
                             case EIGHT:
+                            case NINE:
                             case UNUSED:
                                 return std::strong_ordering::less;
                         }
@@ -277,6 +288,26 @@ namespace pksm
                             case LGPE:
                                 return std::strong_ordering::greater;
                             case EIGHT:
+                                return std::strong_ordering::equal;
+                            case NINE:
+                            case UNUSED:
+                                return std::strong_ordering::less;
+                        }
+                        return std::strong_ordering::less;
+                    case NINE:
+                        switch (other.v)
+                        {
+                            case ONE:
+                            case TWO:
+                            case THREE:
+                            case FOUR:
+                            case FIVE:
+                            case SIX:
+                            case SEVEN:
+                            case LGPE:
+                            case EIGHT:
+                                return std::strong_ordering::greater;
+                            case NINE:
                                 return std::strong_ordering::equal;
                             case UNUSED:
                                 return std::strong_ordering::less;
@@ -375,6 +406,10 @@ namespace pksm
             {
                 return Generation::EIGHT;
             }
+            else if (str == "9")
+            {
+                return Generation::NINE;
+            }
             return Generation::UNUSED;
         }
 
@@ -387,6 +422,7 @@ namespace pksm
         static constexpr internal::Generation_impl SEVEN{EnumType::SEVEN};
         static constexpr internal::Generation_impl LGPE{EnumType::LGPE};
         static constexpr internal::Generation_impl EIGHT{EnumType::EIGHT};
+        static constexpr internal::Generation_impl NINE{EnumType::NINE};
         static constexpr internal::Generation_impl UNUSED{EnumType::UNUSED};
     };
 }

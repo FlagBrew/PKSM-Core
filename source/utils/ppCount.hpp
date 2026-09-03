@@ -34,7 +34,7 @@
 
 namespace pksm::internal
 {
-    constexpr std::array<u8, 827> PP_G8 = {
+    constexpr std::array<u8, 921> PP_G8 = {
         0,  // None
         35, // Pound
         25, // KarateChop
@@ -862,6 +862,101 @@ namespace pksm::internal
         5,  // GlacialLance
         5,  // AstralBarrage
         5,  // EerieSpell
+        // Gen 9 moves (PLA + SV + Z-A) from MoveInfo9a.cs
+        15, // DireClaw
+        10, // PsyshieldBash
+        10, // PowerShift
+        15, // StoneAxe
+        5,  // SpringtideStorm
+        10, // MysticalPower
+        10, // RagingFury
+        10, // WaveCrash
+        5,  // Chloroblast
+        10, // MountainGale
+        10, // VictoryDance
+        5,  // HeadlongRush
+        10, // BarbBarrage
+        10, // EsperWing
+        10, // BitterMalice
+        10, // Shelter
+        10, // TripleArrows
+        15, // InfernalParade
+        15, // CeaselessEdge
+        10, // BleakwindStorm
+        10, // WildboltStorm
+        10, // SandsearStorm
+        5,  // LunarBlessing
+        15, // TakeHeart
+        10, // TeraBlast
+        10, // SilkTrap
+        10, // AxeKick
+        10, // LastRespects
+        10, // LuminaCrash
+        10, // OrderUp
+        15, // JetPunch
+        15, // SpicyExtract
+        5,  // SpinOut
+        10, // PopulationBomb
+        15, // IceSpinner
+        5,  // GlaiveRush
+        1,  // RevivalBlessing
+        15, // SaltCure
+        10, // TripleDive
+        15, // MortalSpin
+        10, // Doodle
+        10, // FilletAway
+        10, // KowtowCleave
+        10, // FlowerTrick
+        10, // TorchSong
+        10, // AquaStep
+        10, // RagingBull
+        5,  // MakeItRain
+        35, // Psyblade
+        35, // HydroSteam
+        10, // Ruination
+        5,  // CollisionCourse
+        5,  // ElectroDrift
+        10, // ShedTail
+        10, // ChillyReception
+        10, // TidyUp
+        10, // Snowscape
+        20, // Pounce
+        20, // Trailblaze
+        20, // ChillingWater
+        5,  // HyperDrill
+        10, // TwinBeam
+        10, // RageFist
+        5,  // ArmorCannon
+        10, // BitterBlade
+        5,  // DoubleShock
+        5,  // GigatonHammer
+        10, // Comeuppance
+        20, // AquaCutter
+        10, // BlazingTorque
+        10, // WickedTorque
+        10, // NoxiousTorque
+        10, // CombatTorque
+        10, // MagicalTorque
+        5,  // BloodMoon
+        15, // MatchaGotcha
+        10, // SyrupBomb
+        10, // IvyCudgel
+        10, // ElectroShot
+        5,  // TeraStarstorm
+        5,  // FickleBeam
+        10, // BurningBulwark
+        5,  // Thunderclap
+        5,  // MightyCleave
+        10, // TachyonCutter
+        10, // HardPress
+        15, // DragonCheer
+        10, // AlluringVoice
+        10, // TemperFlare
+        15, // SupercellSlam
+        10, // PsychicNoise
+        15, // UpperHand
+        5,  // MalignantChain
+        10, // NihilLight
     };
 
     constexpr std::array<std::pair<pksm::Move, u8>, 9> PPDiff_LGPE = {

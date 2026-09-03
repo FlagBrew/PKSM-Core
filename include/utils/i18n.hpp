@@ -103,6 +103,11 @@ namespace i18n
     [[nodiscard]] const std::string& item(pksm::Language lang, u16 value);
     [[nodiscard]] const std::vector<std::string>& rawItems(pksm::Language lang);
 
+    // Legends Z-A donut names, indexed by SavZA::Donut::id
+    void initDonut(pksm::Language lang);
+    void exitDonut(pksm::Language lang);
+    [[nodiscard]] const std::string& donut(pksm::Language lang, u16 value);
+
     void initItem1(pksm::Language lang);
     void exitItem1(pksm::Language lang);
     [[nodiscard]] const std::string& item1(pksm::Language lang, u8 value);
