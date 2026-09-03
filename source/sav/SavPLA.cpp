@@ -458,6 +458,17 @@ namespace pksm
         1785,
     };
 
+    // Crafting recipes live in their own pouch as regular item ids
+    constexpr int recipeItems[] = {
+        1640, 1641, 1642, 1643, 1644, 1646, 1647, 1648, 1649,
+        1650, 1652, 1653, 1654, 1655, 1656, 1657, 1658, 1659,
+        1660, 1661, 1662, 1663, 1664, 1665, 1666, 1667, 1668, 1669,
+        1670, 1671, 1673, 1674, 1675, 1676, 1677,
+        1729, 1730, 1731,
+        1751, 1752, 1753,
+        1783, 1784,
+    };
+
     std::span<const int> itemListForPouch(pksm::Sav::Pouch pouch)
     {
         using P = pksm::Sav::Pouch;
@@ -632,6 +643,10 @@ namespace pksm
                 std::copy(
                     write.begin(), write.end(), getBlock(KItemsStored)->decryptedData() + 4 * slot);
                 break;
+            case Pouch::Recipe:
+                std::copy(
+                    write.begin(), write.end(), getBlock(KItemsRecipe)->decryptedData() + 4 * slot);
+                break;
             default:
                 break;
         }
@@ -647,6 +662,8 @@ namespace pksm
                 return std::make_unique<Item8a>(getBlock(KItemsKey)->decryptedData() + 4 * slot);
             case Pouch::PCItem:
                 return std::make_unique<Item8a>(getBlock(KItemsStored)->decryptedData() + 4 * slot);
+            case Pouch::Recipe:
+                return std::make_unique<Item8a>(getBlock(KItemsRecipe)->decryptedData() + 4 * slot);
             default:
                 return std::make_unique<Item8a>();
         }
@@ -658,6 +675,7 @@ namespace pksm
             std::pair{Pouch::NormalItem, 675},
             std::pair{Pouch::KeyItem,    100},
             std::pair{Pouch::PCItem,     180},
+            std::pair{Pouch::Recipe,     70 },
         };
     }
 
@@ -667,6 +685,7 @@ namespace pksm
             std::pair{Pouch::NormalItem, std::span<const int>(normalItems)},
             std::pair{Pouch::KeyItem,    std::span<const int>(keyItems)   },
             std::pair{Pouch::PCItem,     std::span<const int>(pcItems)    },
+            std::pair{Pouch::Recipe,     std::span<const int>(recipeItems)},
         };
     }
 

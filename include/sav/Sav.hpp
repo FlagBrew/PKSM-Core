@@ -113,7 +113,8 @@ namespace pksm
             PCItem,
             RotomPower,
             CatchingItem,
-            MegaStones
+            MegaStones,
+            Recipe
         };
         enum class BadTransferReason
         {
