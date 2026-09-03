@@ -114,7 +114,8 @@ namespace pksm
             RotomPower,
             CatchingItem,
             MegaStones,
-            Recipe
+            Recipe,
+            Donut // Legends Z-A (Mega Dimension): not items, see SavZA::donuts()
         };
         enum class BadTransferReason
         {

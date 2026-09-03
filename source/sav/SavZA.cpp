@@ -48,6 +48,7 @@ namespace
     constexpr int BOX_NAME_CHARS = BOX_NAME_BYTES / 2;
     // Item9a size
     constexpr int ITEM_SIZE = 16;
+    constexpr int DONUT_SIZE = 0x48;
 
     // PokeDexEntry9a: 0x84 bytes per species
     constexpr int DEX_ENTRY_SIZE_ZA = 0x84;
@@ -982,6 +983,34 @@ namespace pksm
         u8* blockData = getBlock(Items)->decryptedData();
         u32 offset    = itemId * ITEM_SIZE;
         return std::make_unique<Item9a>(blockData + offset, itemId);
+    }
+
+    // Donut slot: [Made:u64 ms since 1970][Stars:u8][LevelBoost:u8][Id:u16][Calories:u16]
+    // [NameBerry:u16][Berries:8 x u16][Made:u64 1900 epoch][Flavor hashes:3 x u64][Reserved:u64]
+    bool SavZA::hasDonuts(void) const
+    {
+        return getBlock(KDonuts) != nullptr;
+    }
+
+    std::vector<SavZA::Donut> SavZA::donuts(void) const
+    {
+        std::vector<Donut> ret;
+        auto block = getBlock(KDonuts);
+        if (!block)
+        {
+            return ret;
+        }
+        for (u16 slot = 0; slot < DONUT_SLOTS; slot++)
+        {
+            const u8* data = block->decryptedData() + slot * DONUT_SIZE;
+            if (LittleEndian::convertTo<u64>(data) == 0) // never made
+            {
+                continue;
+            }
+            ret.push_back({LittleEndian::convertTo<u16>(data + 0x0A), data[0x08], data[0x09],
+                LittleEndian::convertTo<u16>(data + 0x0C), LittleEndian::convertTo<u16>(data + 0x0E)});
+        }
+        return ret;
     }
 
     SmallVector<std::pair<Sav::Pouch, int>, 15> SavZA::pouches(void) const
