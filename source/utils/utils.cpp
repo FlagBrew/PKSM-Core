@@ -1256,7 +1256,7 @@ void StringUtils::setString2(u8* data, const std::string_view& v, int ofs, int l
         {
             u16 val =
                 pksm::internal::G2KORVals[std::distance(pksm::internal::G2KORChars.begin(), found)];
-            BigEndian::convertFrom<u16>(data + outPos, val);
+            BigEndian::convertFrom<u16>(data + ofs + outPos, val);
             outPos += 2; // needs to be incremented twice, not just once
         }
 
