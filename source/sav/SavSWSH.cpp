@@ -192,6 +192,7 @@ namespace pksm
         PokeDex        = 0x4716c404;
         ArmorDex       = 0x3F936BA9;
         CrownDex       = 0x3C9366F0;
+        FashionUnlock  = 0xd224f9ac;
         Items          = 0x1177c2c4;
         BoxLayout      = 0x19722c89;
         Misc           = 0x1b882b09;
@@ -898,11 +899,38 @@ namespace pksm
             }
             else if (wc8.BP())
             {
-                // TODO
+                BP(BP() + wc8.objectQuantity(0));
             }
             else if (wc8.clothing())
             {
-                // TODO
+                // FashionUnlock8 block: 15 regions x 0x80 bytes owned flags,
+                // then 15 regions x 0x80 bytes new flags. Total 0x1800 bytes.
+                // Each WC8 object encodes (region << 8) | bitIndex.
+                constexpr int FASHION_REGIONS    = 15;
+                constexpr int FASHION_ENTRY_SIZE = 0x80;
+
+                auto fashionBlock = getBlock(FashionUnlock);
+                if (fashionBlock)
+                {
+                    u8* fashionData = fashionBlock->decryptedData();
+                    for (int i = 0; i < wc8.items(); i++)
+                    {
+                        u16 ofs    = wc8.object(i);
+                        int region = ofs >> 8;
+                        int bit    = ofs & 0xFF;
+                        if (region >= FASHION_REGIONS || bit >= FASHION_ENTRY_SIZE * 8)
+                        {
+                            continue;
+                        }
+                        int byteOfs = bit >> 3;
+                        int bitOfs  = bit & 7;
+                        // Set owned flag
+                        fashionData[region * FASHION_ENTRY_SIZE + byteOfs] |= (1 << bitOfs);
+                        // Set new flag
+                        fashionData[(region + FASHION_REGIONS) * FASHION_ENTRY_SIZE + byteOfs] |=
+                            (1 << bitOfs);
+                    }
+                }
             }
         }
     }
