@@ -47,6 +47,7 @@ namespace pksm
         static constexpr u32 KPlayedSeconds      = 0xCE3AF8F2;
         static constexpr u32 KTicketPointsRoyale = 0x9A730DE1;
         static constexpr u32 KPokedex            = 0x2D87BE5C;
+        static constexpr u32 KDonuts             = 0xBE007476; // Mega Dimension only
 
     public:
         static constexpr size_t SIZE_G9ZA_100 = 0x2F3284; // v1.0.0
@@ -89,6 +90,20 @@ namespace pksm
         [[nodiscard]] SmallVector<std::pair<Pouch, int>, 15> pouches(void) const override;
         [[nodiscard]] SmallVector<std::pair<Pouch, std::span<const int>>, 15> validItems(
             void) const override;
+
+        // Mega Dimension donuts live outside the item pouches: 999 fixed slots that the
+        // DLC creates on first use, so pre-DLC saves have none
+        static constexpr u16 DONUT_SLOTS = 999;
+        struct Donut
+        {
+            u16 id;         // Index into i18n::donut
+            u8 stars;       // 0-5 quality
+            u8 levelBoost;  // Levels granted on eating
+            u16 calories;
+            u16 nameBerry;  // Item id of the berry that names it
+        };
+        [[nodiscard]] bool hasDonuts(void) const;
+        [[nodiscard]] std::vector<Donut> donuts(void) const; // Filled slots, in save order
 
         [[nodiscard]] u8 subRegion(void) const override { return 0; }
 
