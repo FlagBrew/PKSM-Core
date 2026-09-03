@@ -134,6 +134,10 @@ namespace pksm
         // Not necessary directly after construction
         virtual void beginEditing(void) = 0;
 
+        // Whether the save's own checksums match its contents; read-only mirror of
+        // what finishEditing writes. True for formats verified at construction.
+        [[nodiscard]] virtual bool checksumsValid(void) const { return true; }
+
         [[nodiscard]] BadTransferReason invalidTransferReason(const PKX& pk) const;
         [[nodiscard]] std::unique_ptr<PKX> transfer(const PKX& pk);
         // Whether a buffer read off a DS cartridge holds a save PKSM knows. The length

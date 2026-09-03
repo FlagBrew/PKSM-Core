@@ -103,6 +103,23 @@ namespace pksm
         }
     }
 
+    bool SavB2W2::checksumsValid(void) const
+    {
+        // Main blocks only; the Memory Link blocks that resign() also rewrites are not
+        // part of the check
+        const u8 blockCount = 74;
+
+        for (u8 i = 0; i < blockCount; i++)
+        {
+            u16 cs = pksm::crypto::ccitt16({&data[blockOfs[i]], lengths[i]});
+            if (LittleEndian::convertTo<u16>(&data[chkofs[i]]) != cs)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     SmallVector<std::pair<Sav::Pouch, std::span<const int>>, 15> SavB2W2::validItems() const
     {
         static constexpr std::array NormalItem = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
