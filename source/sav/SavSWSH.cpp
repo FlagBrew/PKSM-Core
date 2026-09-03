@@ -592,6 +592,8 @@ namespace pksm
                 trade(*pk8);
             }
 
+            // Box slots are stored encrypted; the game decrypts on read, so plaintext becomes a Bad Egg
+            pk8->encrypt();
             std::ranges::copy(
                 pk8->rawData(), getBlock(Box)->decryptedData() + boxOffset(box, slot));
         }

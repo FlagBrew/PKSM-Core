@@ -497,6 +497,9 @@ namespace pksm
                 trade(*pk3);
             }
 
+            // Gen 3 box data is stored encrypted; writing decrypted bytes causes in-game Bad Eggs.
+            pk3->encrypt();
+
             u32 offset = boxOffset(box, slot);
             // Is it split?
             if ((offset % 0x1000) + PK3::BOX_LENGTH > 0xF80)
