@@ -196,6 +196,10 @@ namespace pksm
         // Gen I Item IDs
         [[nodiscard]] SmallVector<std::pair<Pouch, std::span<const int>>, 15> validItems1(
             void) const;
+
+        // The count byte; entries past it are stale
+        [[nodiscard]] u8 pouchEntryCount(Pouch pouch) const;
+
         void fixItemLists(void);
     };
 }
