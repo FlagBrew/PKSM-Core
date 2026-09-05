@@ -677,6 +677,10 @@ namespace pksm
                 default:
                     return;
             }
+            if (slot >= pouchEntryCount(pouch))
+            {
+                data[pouch == Pouch::NormalItem ? OFS_BAG : OFS_PC_ITEMS] = slot + 1;
+            }
         }
     }
 
@@ -695,11 +699,24 @@ namespace pksm
                 return nullptr;
         }
         // 0xFF is a list terminator. In a normal game state it will be in an ID slot.
-        if (returnVal->id1() == 0xFF)
+        if (slot >= pouchEntryCount(pouch) || returnVal->id1() == 0xFF)
         {
             return std::make_unique<Item1>(nullptr);
         }
         return returnVal;
+    }
+
+    u8 Sav1::pouchEntryCount(Pouch pouch) const
+    {
+        switch (pouch)
+        {
+            case Pouch::NormalItem:
+                return data[OFS_BAG] > 20 ? 0 : data[OFS_BAG];
+            case Pouch::PCItem:
+                return data[OFS_PC_ITEMS] > 50 ? 0 : data[OFS_PC_ITEMS];
+            default:
+                return 0;
+        }
     }
 
     SmallVector<std::pair<Sav::Pouch, int>, 15> Sav1::pouches() const
