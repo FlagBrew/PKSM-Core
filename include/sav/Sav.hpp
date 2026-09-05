@@ -275,6 +275,12 @@ namespace pksm
         [[nodiscard]] virtual SmallVector<std::pair<Pouch, std::span<const int>>, 15> validItems(
             void) const = 0;
 
+        // Largest count the game keeps in one slot of the pouch
+        [[nodiscard]] virtual u16 maxCount(Pouch pouch) const
+        {
+            return pouch == Pouch::KeyItem ? 1 : 999;
+        }
+
         [[nodiscard]] u32 getLength() const { return length; }
 
         [[nodiscard]] u32 getEntireLengthIncludingFooter() const { return fullLength; }
