@@ -28,8 +28,13 @@
 
 namespace pksm
 {
+    // Same-format copies keep the ids the national table lacks (Gen 1 key items, Gen 3 HMs)
     Item::operator Item1() const
     {
+        if (generation() == Generation::ONE)
+        {
+            return *static_cast<const Item1*>(this);
+        }
         Item1 ret;
         ret.id(id());
         ret.count(count());
@@ -38,6 +43,10 @@ namespace pksm
 
     Item::operator Item2() const
     {
+        if (generation() == Generation::TWO)
+        {
+            return *static_cast<const Item2*>(this);
+        }
         Item2 ret;
         ret.id(id());
         ret.count(count());
@@ -46,13 +55,13 @@ namespace pksm
 
     Item::operator Item3() const
     {
+        if (generation() == Generation::THREE)
+        {
+            return *static_cast<const Item3*>(this);
+        }
         Item3 ret;
         ret.id(id());
         ret.count(count());
-        if (generation() == Generation::THREE)
-        {
-            ret.securityKey(static_cast<const Item3*>(this)->securityKey());
-        }
         return ret;
     }
 
