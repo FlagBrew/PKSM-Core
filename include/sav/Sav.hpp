@@ -281,6 +281,9 @@ namespace pksm
             return pouch == Pouch::KeyItem ? 1 : 999;
         }
 
+        // Slots are fixed per item rather than a packed list, so an emptied slot is not closed up
+        [[nodiscard]] virtual bool pouchIndexedByItem(Pouch) const { return false; }
+
         [[nodiscard]] u32 getLength() const { return length; }
 
         [[nodiscard]] u32 getEntireLengthIncludingFooter() const { return fullLength; }

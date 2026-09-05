@@ -94,6 +94,8 @@ namespace pksm
             return pouch == Pouch::TM || pouch == Pouch::MegaStones ? 1 : Sav::maxCount(pouch);
         }
 
+        [[nodiscard]] bool pouchIndexedByItem(Pouch) const override { return true; }
+
         [[nodiscard]] SmallVector<std::pair<Pouch, std::span<const int>>, 15> validItems(
             void) const override;
 
