@@ -837,6 +837,19 @@ namespace pksm
         };
     }
 
+    u16 Sav3::maxCount(Pouch pouch) const
+    {
+        switch (pouch)
+        {
+            case Pouch::NormalItem:
+            case Pouch::Ball:
+            case Pouch::TM:
+                return 99;
+            default:
+                return Sav::maxCount(pouch);
+        }
+    }
+
     u16 Sav3::rtcInitialDay(void) const
     {
         if (game == Game::FRLG)

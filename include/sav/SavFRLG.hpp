@@ -40,6 +40,9 @@ namespace pksm
             void) const override;
         [[nodiscard]] SmallVector<std::pair<Pouch, std::span<const int>>, 15> validItems3(
             void) const override;
+
+        // Stacks to 999 where Ruby/Sapphire/Emerald stop at 99
+        [[nodiscard]] u16 maxCount(Pouch pouch) const override { return Sav::maxCount(pouch); }
     };
 }
 
