@@ -34,15 +34,16 @@ namespace pksm
     class SavPLA : public Sav8
     {
     private:
-        static constexpr u32 KBox         = 0x47E1CEAB;
-        static constexpr u32 KParty       = 0x2985FE5D;
-        static constexpr u32 KStatus      = 0xF25C070E;
-        static constexpr u32 KZukan       = 0x02168706;
-        static constexpr u32 KItems       = 0x9FE2790A;
-        static constexpr u32 KItemsKey    = 0x59A4D0C3;
-        static constexpr u32 KItemsStored = 0x8E434F0D;
-        static constexpr u32 KItemsRecipe = 0xF5D9F4A5;
-        static constexpr u32 KBoxLayout   = 0x19722C89;
+        static constexpr u32 KBox             = 0x47E1CEAB;
+        static constexpr u32 KParty           = 0x2985FE5D;
+        static constexpr u32 KStatus          = 0xF25C070E;
+        static constexpr u32 KZukan           = 0x02168706;
+        static constexpr u32 KItems           = 0x9FE2790A;
+        static constexpr u32 KItemsKey        = 0x59A4D0C3;
+        static constexpr u32 KItemsStored     = 0x8E434F0D;
+        static constexpr u32 KItemsRecipe     = 0xF5D9F4A5;
+        static constexpr u32 KSatchelUpgrades = 0x75CE2CF6; // u32, upgrades bought
+        static constexpr u32 KBoxLayout       = 0x19722C89;
 
         static constexpr u32 KCurrentBox    = 0x017C3CBB;
         static constexpr u32 KBoxesUnlocked = 0x71825204;
