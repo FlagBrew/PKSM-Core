@@ -187,6 +187,12 @@ namespace pksm
             return pouch == Pouch::KeyItem ? 1 : 99;
         }
 
+        // TMs are a count per machine, not a list
+        [[nodiscard]] bool pouchIndexedByItem(Pouch pouch) const override
+        {
+            return pouch == Pouch::TM;
+        }
+
         [[nodiscard]] SmallVector<std::pair<Pouch, std::span<const int>>, 15> validItems(
             void) const override;
 
