@@ -47,7 +47,35 @@ namespace
     constexpr int BOX_NAME_BYTES = 0x22;
     constexpr int BOX_NAME_CHARS = BOX_NAME_BYTES / 2;
     // Item9a size
-    constexpr int ITEM_SIZE  = 16;
+    constexpr int ITEM_SIZE = 16;
+    constexpr u32 NO_POUCH  = 0xFFFFFFFF;
+
+    // Pouch field values, as the game numbers them
+    u32 pouchIndexZA(pksm::Sav::Pouch pouch)
+    {
+        switch (pouch)
+        {
+            case pksm::Sav::Pouch::Medicine:
+                return 0;
+            case pksm::Sav::Pouch::Ball:
+                return 1;
+            case pksm::Sav::Pouch::NormalItem:
+                return 2;
+            case pksm::Sav::Pouch::Treasure:
+                return 3;
+            case pksm::Sav::Pouch::KeyItem:
+                return 4;
+            case pksm::Sav::Pouch::Berry:
+                return 5;
+            case pksm::Sav::Pouch::TM:
+                return 6;
+            case pksm::Sav::Pouch::MegaStones:
+                return 7;
+            default:
+                return NO_POUCH;
+        }
+    }
+
     constexpr int DONUT_SIZE = 0x48;
 
     // PokeDexEntry9a: 0x84 bytes per species
@@ -970,6 +998,13 @@ namespace pksm
         u32 count     = item.count();
         // Write count at offset + 4
         LittleEndian::convertFrom<u32>(blockData + offset + 4, count);
+        // Flags: 1 new, 2 favourite, 4 notify, 8 new in shop, 0x10 held. The pouch is NO_POUCH
+        // until first obtained, and a pickup clears notify
+        if (count > 0 && LittleEndian::convertTo<u32>(blockData + offset) == NO_POUCH)
+        {
+            LittleEndian::convertFrom<u32>(blockData + offset, pouchIndexZA(pouch));
+            LittleEndian::convertFrom<u32>(blockData + offset + 8, 1 | 8);
+        }
     }
 
     std::unique_ptr<Item> SavZA::item(Pouch pouch, u16 slot) const
