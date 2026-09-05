@@ -45,6 +45,36 @@ namespace
     // Item9a size
     constexpr int ITEM_SIZE = 16;
 
+    // Pouch field values, as the game numbers them
+    u32 pouchIndexSV(pksm::Sav::Pouch pouch)
+    {
+        switch (pouch)
+        {
+            case pksm::Sav::Pouch::Medicine:
+                return 0;
+            case pksm::Sav::Pouch::Ball:
+                return 1;
+            case pksm::Sav::Pouch::Battle:
+                return 2;
+            case pksm::Sav::Pouch::Berry:
+                return 3;
+            case pksm::Sav::Pouch::NormalItem:
+                return 4;
+            case pksm::Sav::Pouch::TM:
+                return 5;
+            case pksm::Sav::Pouch::Treasure:
+                return 6;
+            case pksm::Sav::Pouch::Ingredient:
+                return 7;
+            case pksm::Sav::Pouch::KeyItem:
+                return 8;
+            case pksm::Sav::Pouch::Candy:
+                return 9;
+            default:
+                return 0xFFFFFFFF; // none
+        }
+    }
+
     // PokeDexEntry9Paldea: 0x18 bytes per species
     constexpr int DEX_ENTRY_SIZE = 0x18;
     // PokeDexEntry9Kitakami: 0x20 bytes per species (DLC 2.0.1+)
@@ -1578,6 +1608,13 @@ namespace pksm
         u32 offset    = itemId * ITEM_SIZE;
         u32 count     = item.count();
         LittleEndian::convertFrom<u32>(blockData + offset + 4, count);
+        // Flags: 1 new, 2 favourite, 4 obtained. The pouch is unset until first obtained
+        u32 flags = LittleEndian::convertTo<u32>(blockData + offset + 8);
+        if (count > 0 && !(flags & 4))
+        {
+            LittleEndian::convertFrom<u32>(blockData + offset, pouchIndexSV(pouch));
+            LittleEndian::convertFrom<u32>(blockData + offset + 8, flags | 4 | 1);
+        }
     }
 
     std::unique_ptr<Item> SavSV::item(Pouch pouch, u16 slot) const
