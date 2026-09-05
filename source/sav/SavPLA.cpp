@@ -707,11 +707,17 @@ namespace pksm
 
     SmallVector<std::pair<Sav::Pouch, int>, 15> SavPLA::pouches(void) const
     {
+        // The game shows 20 satchel slots plus one per upgrade, up to 675
+        int satchel = 675;
+        if (auto block = getBlock(KSatchelUpgrades))
+        {
+            satchel = std::min<int>(675, LittleEndian::convertTo<u32>(block->decryptedData()) + 20);
+        }
         return {
-            std::pair{Pouch::NormalItem, 675},
-            std::pair{Pouch::KeyItem,    100},
-            std::pair{Pouch::PCItem,     180},
-            std::pair{Pouch::Recipe,     70 },
+            std::pair{Pouch::NormalItem, satchel},
+            std::pair{Pouch::KeyItem,    100    },
+            std::pair{Pouch::PCItem,     180    },
+            std::pair{Pouch::Recipe,     70     },
         };
     }
 
