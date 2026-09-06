@@ -35,6 +35,10 @@
 
 namespace
 {
+    // Misc block caps, matching the values the games enforce
+    constexpr u32 MAX_MONEY = 9999999;
+    constexpr u32 MAX_BP    = 9999;
+
     struct DexEntry
     {
         u64 seenNonShinyMale       : 63;
@@ -279,27 +283,29 @@ namespace pksm
 
     u32 SavSWSH::money(void) const
     {
-        return LittleEndian::convertTo<u32>(getBlock(Misc)->decryptedData());
+        return LittleEndian::convertTo<u32>(getBlock(Misc)->decryptedData() + 0x4);
     }
 
     void SavSWSH::money(u32 v)
     {
-        LittleEndian::convertFrom<u32>(getBlock(Misc)->decryptedData(), v);
+        LittleEndian::convertFrom<u32>(
+            getBlock(Misc)->decryptedData() + 0x4, std::min(v, MAX_MONEY));
     }
 
     u32 SavSWSH::BP(void) const
     {
-        return LittleEndian::convertTo<u32>(getBlock(Misc)->decryptedData() + 4);
+        return LittleEndian::convertTo<u16>(getBlock(Misc)->decryptedData() + 0x11C);
     }
 
     void SavSWSH::BP(u32 v)
     {
-        LittleEndian::convertFrom<u32>(getBlock(Misc)->decryptedData() + 4, v);
+        LittleEndian::convertFrom<u16>(
+            getBlock(Misc)->decryptedData() + 0x11C, u16(std::min(v, MAX_BP)));
     }
 
     u8 SavSWSH::badges(void) const
     {
-        return getBlock(Misc)->decryptedData()[0x11C];
+        return getBlock(Misc)->decryptedData()[0x0];
     }
 
     u16 SavSWSH::playedHours(void) const
