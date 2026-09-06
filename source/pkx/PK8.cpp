@@ -282,8 +282,8 @@ namespace pksm
 
     bool PK8::isEncrypted() const
     {
-        return LittleEndian::convertTo<u16>(data + 0x70) != 0 &&
-               LittleEndian::convertTo<u16>(data + 0xC0) != 0;
+        return LittleEndian::convertTo<u16>(data + 0x70) != 0 ||
+               LittleEndian::convertTo<u16>(data + 0x110) != 0;
     }
 
     PK8::PK8(PrivateConstructor, u8* dt, bool party, bool direct)

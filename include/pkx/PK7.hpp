@@ -180,9 +180,8 @@ namespace pksm
         void fullness(u8 v);
         [[nodiscard]] u8 enjoyment(void) const;
         void enjoyment(u8 v);
-        // TODO
-        // u32 formDuration(void) const;
-        // void formDuration(u32 v);
+        [[nodiscard]] u32 formDuration(void) const;
+        void formDuration(u32 v);
 
         [[nodiscard]] std::string otName(void) const override;
         void otName(const std::string_view& v) override;

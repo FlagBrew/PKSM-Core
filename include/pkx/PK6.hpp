@@ -186,9 +186,8 @@ namespace pksm
         [[nodiscard]] u8 enjoyment(void) const;
         void enjoyment(u8 v);
 
-        // TODO
-        // u32 formDuration(void) const;
-        // void formDuration(u32 v);
+        [[nodiscard]] u32 formDuration(void) const;
+        void formDuration(u32 v);
 
         [[nodiscard]] bool hyperTrain(Stat) const override { return false; }
 

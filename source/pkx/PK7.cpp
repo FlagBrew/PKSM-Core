@@ -192,7 +192,7 @@ namespace pksm
 
     bool PK7::isEncrypted() const
     {
-        return LittleEndian::convertTo<u16>(data + 0xC8) != 0 &&
+        return LittleEndian::convertTo<u16>(data + 0xC8) != 0 ||
                LittleEndian::convertTo<u16>(data + 0x58) != 0;
     }
 
@@ -715,6 +715,16 @@ namespace pksm
     void PK7::enjoyment(u8 v)
     {
         data[0xAF] = v;
+    }
+
+    u32 PK7::formDuration(void) const
+    {
+        return LittleEndian::convertTo<u32>(data + 0x3C);
+    }
+
+    void PK7::formDuration(u32 v)
+    {
+        LittleEndian::convertFrom<u32>(data + 0x3C, v);
     }
 
     std::string PK7::otName(void) const
@@ -1303,11 +1313,23 @@ namespace pksm
         pk8->ball(ball());
         pk8->metLevel(metLevel());
 
-        // TODO from PKHeX: set proper memories
+        // OT memories: copy from source
         pk8->otMemory(otMemory());
         pk8->otTextVar(otTextVar());
         pk8->otFeeling(otFeeling());
         pk8->otIntensity(otIntensity());
+
+        // HT data: copy from source. Unlike the Bank transfer in convertToG6, HOME does not
+        // apply a link trade memory on the way to Generation 8, so an entity that was never
+        // traded must keep its HT memory cleared.
+        pk8->htName(htName());
+        pk8->htGender(htGender());
+        pk8->htFriendship(htFriendship());
+        pk8->currentHandler(currentHandler());
+        pk8->htMemory(htMemory());
+        pk8->htTextVar(htTextVar());
+        pk8->htIntensity(htIntensity());
+        pk8->htFeeling(htFeeling());
 
         pk8->pkrsStrain(pkrsStrain());
         pk8->pkrsDays(pkrsDays());
@@ -1371,8 +1393,52 @@ namespace pksm
 
         pk8->otFriendship(otFriendship());
         pk8->origNature(nature());
+        pk8->formDuration(formDuration());
 
-        // TODO: remove totem forms
+        // Remove totem forms (don't exist in Gen 8+)
+        {
+            Species spec = pk8->species();
+            u8 form      = pk8->alternativeForm();
+            if (form != 0)
+            {
+                bool isTotem = false;
+                u8 baseForm  = 0;
+                if (spec == Species::Mimikyu)
+                {
+                    // Totem forms (2/3) revert to Disguised (0)
+                    if (form == 2 || form == 3)
+                    {
+                        isTotem  = true;
+                        baseForm = 0;
+                    }
+                }
+                else if (spec == Species::Raticate || spec == Species::Marowak)
+                {
+                    // Alolan totem: form 2 -> form 1 (Alolan base)
+                    if (form == 2)
+                    {
+                        isTotem  = true;
+                        baseForm = 1;
+                    }
+                }
+                else if (spec == Species::Gumshoos || spec == Species::Vikavolt ||
+                         spec == Species::Ribombee || spec == Species::Araquanid ||
+                         spec == Species::Lurantis || spec == Species::Salazzle ||
+                         spec == Species::Togedemaru || spec == Species::Kommoo)
+                {
+                    // Totem form 1 -> base form 0
+                    if (form == 1)
+                    {
+                        isTotem  = true;
+                        baseForm = 0;
+                    }
+                }
+                if (isTotem)
+                {
+                    pk8->alternativeForm(baseForm);
+                }
+            }
+        }
 
         pk8->refreshChecksum();
 

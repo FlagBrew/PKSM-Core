@@ -35,6 +35,10 @@
 
 namespace
 {
+    // Misc block caps, matching the values the games enforce
+    constexpr u32 MAX_MONEY = 9999999;
+    constexpr u32 MAX_BP    = 9999;
+
     struct DexEntry
     {
         u64 seenNonShinyMale       : 63;
@@ -192,6 +196,7 @@ namespace pksm
         PokeDex        = 0x4716c404;
         ArmorDex       = 0x3F936BA9;
         CrownDex       = 0x3C9366F0;
+        FashionUnlock  = 0xd224f9ac;
         Items          = 0x1177c2c4;
         BoxLayout      = 0x19722c89;
         Misc           = 0x1b882b09;
@@ -278,27 +283,29 @@ namespace pksm
 
     u32 SavSWSH::money(void) const
     {
-        return LittleEndian::convertTo<u32>(getBlock(Misc)->decryptedData());
+        return LittleEndian::convertTo<u32>(getBlock(Misc)->decryptedData() + 0x4);
     }
 
     void SavSWSH::money(u32 v)
     {
-        LittleEndian::convertFrom<u32>(getBlock(Misc)->decryptedData(), v);
+        LittleEndian::convertFrom<u32>(
+            getBlock(Misc)->decryptedData() + 0x4, std::min(v, MAX_MONEY));
     }
 
     u32 SavSWSH::BP(void) const
     {
-        return LittleEndian::convertTo<u32>(getBlock(Misc)->decryptedData() + 4);
+        return LittleEndian::convertTo<u16>(getBlock(Misc)->decryptedData() + 0x11C);
     }
 
     void SavSWSH::BP(u32 v)
     {
-        LittleEndian::convertFrom<u32>(getBlock(Misc)->decryptedData() + 4, v);
+        LittleEndian::convertFrom<u16>(
+            getBlock(Misc)->decryptedData() + 0x11C, u16(std::min(v, MAX_BP)));
     }
 
     u8 SavSWSH::badges(void) const
     {
-        return getBlock(Misc)->decryptedData()[0x11C];
+        return getBlock(Misc)->decryptedData()[0x0];
     }
 
     u16 SavSWSH::playedHours(void) const
@@ -592,6 +599,8 @@ namespace pksm
                 trade(*pk8);
             }
 
+            // Box slots are stored encrypted; the game decrypts on read, so plaintext becomes a Bad Egg
+            pk8->encrypt();
             std::ranges::copy(
                 pk8->rawData(), getBlock(Box)->decryptedData() + boxOffset(box, slot));
         }
@@ -898,11 +907,39 @@ namespace pksm
             }
             else if (wc8.BP())
             {
-                // TODO
+                BP(BP() + wc8.objectQuantity(0));
             }
             else if (wc8.clothing())
             {
-                // TODO
+                // FashionUnlock8 block: 15 regions x 0x80 bytes owned flags,
+                // then 15 regions x 0x80 bytes new flags. Total 0x1800 bytes.
+                // Each WC8 object encodes (region << 8) | bitIndex.
+                constexpr int FASHION_REGIONS    = 15;
+                constexpr int FASHION_ENTRY_SIZE = 0x80;
+
+                auto fashionBlock = getBlock(FashionUnlock);
+                if (fashionBlock)
+                {
+                    u8* fashionData = fashionBlock->decryptedData();
+                    for (int i = 0; i < wc8.items(); i++)
+                    {
+                        u16 ofs    = wc8.object(i);
+                        int region = ofs >> 8;
+                        int bit    = ofs & 0xFF;
+                        // bit is at most 0xFF, so it always lands inside a region's 0x80 bytes
+                        if (region >= FASHION_REGIONS)
+                        {
+                            continue;
+                        }
+                        int byteOfs = bit >> 3;
+                        int bitOfs  = bit & 7;
+                        // Set owned flag
+                        fashionData[region * FASHION_ENTRY_SIZE + byteOfs] |= (1 << bitOfs);
+                        // Set new flag
+                        fashionData[(region + FASHION_REGIONS) * FASHION_ENTRY_SIZE + byteOfs] |=
+                            (1 << bitOfs);
+                    }
+                }
             }
         }
     }
