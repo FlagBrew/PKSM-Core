@@ -341,7 +341,8 @@ namespace pksm
                 trade(*pb7);
             }
 
-            // Box slots are stored encrypted; the game decrypts on read, so plaintext becomes a Bad Egg
+            // Box slots are stored encrypted; the game decrypts on read, so plaintext becomes a Bad
+            // Egg
             pb7->encrypt();
             std::ranges::copy(
                 pb7->rawData().subspan(0, PB7::PARTY_LENGTH), &data[boxOffset(box, slot)]);
@@ -875,7 +876,8 @@ namespace pksm
                     for (size_t pouch = 0; pouch < limits.size(); pouch++)
                     {
                         auto validPouch = std::ranges::find_if(valid,
-                            [&](const auto& i) {
+                            [&](const auto& i)
+                            {
                                 return i.first == limits[pouch].first;
                             })->second;
                         // Check this is the correct pouch

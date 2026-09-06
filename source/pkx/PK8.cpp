@@ -483,8 +483,8 @@ namespace pksm
         {
             auto* pk9sv = static_cast<PK9*>(pk9.get());
             auto type1  = PersonalSV::type1(pk9->formSpecies());
-            u8 tera     = (type1 != Type::Normal) ? u8(type1)
-                                                  : u8(PersonalSV::type2(pk9->formSpecies()));
+            u8 tera =
+                (type1 != Type::Normal) ? u8(type1) : u8(PersonalSV::type2(pk9->formSpecies()));
             pk9sv->teraTypeOriginal(tera);
             pk9sv->teraTypeOverride(tera);
         }

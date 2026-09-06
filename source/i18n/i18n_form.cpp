@@ -278,7 +278,8 @@ namespace i18n
 
     std::span<const size_t> formIndices(pksm::GameVersion version, pksm::Species species)
     {
-        // Note: Gigantamax uses the canGigantamax flag in PK8, not a form number, so no form names needed
+        // Note: Gigantamax uses the canGigantamax flag in PK8, not a form number, so no form names
+        // needed
         u8 forms = pksm::VersionTables::formCount(version, species);
 
         std::span<const size_t> ret = FA(Default);

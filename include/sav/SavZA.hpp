@@ -94,14 +94,16 @@ namespace pksm
         // Mega Dimension donuts live outside the item pouches: 999 fixed slots that the
         // DLC creates on first use, so pre-DLC saves have none
         static constexpr u16 DONUT_SLOTS = 999;
+
         struct Donut
         {
-            u16 id;         // Index into i18n::donut
-            u8 stars;       // 0-5 quality
-            u8 levelBoost;  // Levels granted on eating
+            u16 id;        // Index into i18n::donut
+            u8 stars;      // 0-5 quality
+            u8 levelBoost; // Levels granted on eating
             u16 calories;
-            u16 nameBerry;  // Item id of the berry that names it
+            u16 nameBerry; // Item id of the berry that names it
         };
+
         [[nodiscard]] bool hasDonuts(void) const;
         [[nodiscard]] std::vector<Donut> donuts(void) const; // Filled slots, in save order
 

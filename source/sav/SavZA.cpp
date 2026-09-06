@@ -47,7 +47,7 @@ namespace
     constexpr int BOX_NAME_BYTES = 0x22;
     constexpr int BOX_NAME_CHARS = BOX_NAME_BYTES / 2;
     // Item9a size
-    constexpr int ITEM_SIZE = 16;
+    constexpr int ITEM_SIZE  = 16;
     constexpr int DONUT_SIZE = 0x48;
 
     // PokeDexEntry9a: 0x84 bytes per species
@@ -1008,7 +1008,8 @@ namespace pksm
                 continue;
             }
             ret.push_back({LittleEndian::convertTo<u16>(data + 0x0A), data[0x08], data[0x09],
-                LittleEndian::convertTo<u16>(data + 0x0C), LittleEndian::convertTo<u16>(data + 0x0E)});
+                LittleEndian::convertTo<u16>(data + 0x0C),
+                LittleEndian::convertTo<u16>(data + 0x0E)});
         }
         return ret;
     }
@@ -1180,7 +1181,8 @@ namespace pksm
             {
                 trade(*pa9);
             }
-            // Box slots are stored encrypted; the game decrypts on read, so plaintext becomes a Bad Egg
+            // Box slots are stored encrypted; the game decrypts on read, so plaintext becomes a Bad
+            // Egg
             pa9->encrypt();
             std::ranges::copy(pa9->rawData().subspan(0, PA9::PARTY_LENGTH),
                 getBlock(Box)->decryptedData() + boxOffset(box, slot));

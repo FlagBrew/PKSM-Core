@@ -25,6 +25,7 @@
  */
 
 #include "sav/Sav.hpp"
+#include "pkx/PA9.hpp"
 #include "pkx/PB7.hpp"
 #include "pkx/PK1.hpp"
 #include "pkx/PK2.hpp"
@@ -34,7 +35,6 @@
 #include "pkx/PK6.hpp"
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
-#include "pkx/PA9.hpp"
 #include "pkx/PKX.hpp"
 #include "sav/Sav1.hpp"
 #include "sav/Sav2.hpp"
@@ -48,14 +48,14 @@
 #include "sav/SavLGPE.hpp"
 #include "sav/SavORAS.hpp"
 #include "sav/SavPLA.hpp"
-#include "sav/SavSV.hpp"
-#include "sav/SavZA.hpp"
 #include "sav/SavPT.hpp"
 #include "sav/SavRS.hpp"
 #include "sav/SavSUMO.hpp"
+#include "sav/SavSV.hpp"
 #include "sav/SavSWSH.hpp"
 #include "sav/SavUSUM.hpp"
 #include "sav/SavXY.hpp"
+#include "sav/SavZA.hpp"
 #include "utils/crypto.hpp"
 #include "utils/endian.hpp"
 #include "utils/ValueConverter.hpp"
@@ -137,12 +137,12 @@ namespace pksm
             case SavSV::SIZE_G9SV_3P0:
             case SavSV::SIZE_G9SV_3G0:
             // SV DLC sizes (GCC case range extension for variable-size ranges)
-            case SavSV::SIZE_G9SV_DLC1_MIN ... SavSV::SIZE_G9SV_DLC1_END:
-            case SavSV::SIZE_G9SV_DLC2_MIN ... SavSV::SIZE_G9SV_DLC2_END:
-            case SavSV::SIZE_G9SV_DLC1_202_MIN ... SavSV::SIZE_G9SV_DLC1_202_END:
-            case SavSV::SIZE_G9SV_DLC2_202_MIN ... SavSV::SIZE_G9SV_DLC2_202_END:
-            case SavSV::SIZE_G9SV_DLC1_300_MIN ... SavSV::SIZE_G9SV_DLC1_300_END:
-            case SavSV::SIZE_G9SV_DLC2_300_MIN ... SavSV::SIZE_G9SV_DLC2_300_END:
+            case SavSV::SIZE_G9SV_DLC1_MIN... SavSV::SIZE_G9SV_DLC1_END:
+            case SavSV::SIZE_G9SV_DLC2_MIN... SavSV::SIZE_G9SV_DLC2_END:
+            case SavSV::SIZE_G9SV_DLC1_202_MIN... SavSV::SIZE_G9SV_DLC1_202_END:
+            case SavSV::SIZE_G9SV_DLC2_202_MIN... SavSV::SIZE_G9SV_DLC2_202_END:
+            case SavSV::SIZE_G9SV_DLC1_300_MIN... SavSV::SIZE_G9SV_DLC1_300_END:
+            case SavSV::SIZE_G9SV_DLC2_300_MIN... SavSV::SIZE_G9SV_DLC2_300_END:
                 if (pksm::crypto::swsh::verify(dt, length))
                 {
                     return std::make_unique<SavSV>(dt, length);

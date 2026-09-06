@@ -50,14 +50,14 @@ namespace pksm
     class Item
     {
     public:
-        virtual ~Item()                                            = default;
-        [[nodiscard]] virtual Generation generation(void) const    = 0;
-        [[nodiscard]] virtual u16 maxCount(void) const             = 0;
-        [[nodiscard]] virtual u16 id(void) const                   = 0;
-        [[nodiscard]] virtual u16 count(void) const                = 0;
+        virtual ~Item()                                             = default;
+        [[nodiscard]] virtual Generation generation(void) const     = 0;
+        [[nodiscard]] virtual u16 maxCount(void) const              = 0;
+        [[nodiscard]] virtual u16 id(void) const                    = 0;
+        [[nodiscard]] virtual u16 count(void) const                 = 0;
         [[nodiscard]] virtual SmallVector<u8, 16> bytes(void) const = 0;
-        virtual void id(u16 id)                                    = 0;
-        virtual void count(u16 id)                                 = 0;
+        virtual void id(u16 id)                                     = 0;
+        virtual void count(u16 id)                                  = 0;
         [[nodiscard]] virtual operator Item1(void) const;
         [[nodiscard]] virtual operator Item2(void) const;
         [[nodiscard]] virtual operator Item3(void) const;
@@ -609,11 +609,12 @@ namespace pksm
         [[nodiscard]] operator Item7b(void) const override;
     };
 
-    // PLA stores inventory items as u16 id + u16 count (LE). SwSh-style Item8 bit packing does not apply.
+    // PLA stores inventory items as u16 id + u16 count (LE). SwSh-style Item8 bit packing does not
+    // apply.
     class Item8a : public Item
     {
     private:
-        u16 itemId = 0;
+        u16 itemId    = 0;
         u16 itemCount = 0;
 
     public:
@@ -621,16 +622,21 @@ namespace pksm
         {
             if (data)
             {
-                itemId = LittleEndian::convertTo<u16>(data);
+                itemId    = LittleEndian::convertTo<u16>(data);
                 itemCount = LittleEndian::convertTo<u16>(data + 2);
             }
         }
 
         [[nodiscard]] Generation generation(void) const override { return Generation::EIGHT; }
+
         [[nodiscard]] u16 maxCount(void) const override { return 0xFFFF; }
+
         [[nodiscard]] u16 id(void) const override { return itemId; }
+
         void id(u16 v) override { itemId = v; }
+
         [[nodiscard]] u16 count(void) const override { return itemCount; }
+
         void count(u16 v) override { itemCount = v; }
 
         [[nodiscard]] SmallVector<u8, 16> bytes(void) const override
@@ -698,10 +704,7 @@ namespace pksm
                 std::min(LittleEndian::convertTo<u32>(itemData.data() + 4), u32(0xFFFF)));
         }
 
-        void count(u16 v) override
-        {
-            LittleEndian::convertFrom<u32>(itemData.data() + 4, u32(v));
-        }
+        void count(u16 v) override { LittleEndian::convertFrom<u32>(itemData.data() + 4, u32(v)); }
 
         [[nodiscard]] SmallVector<u8, 16> bytes(void) const override
         {

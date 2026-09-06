@@ -373,7 +373,7 @@ namespace EndianTraits
                 });
             std::size_t current = 0;
             for (auto it = std::ranges::begin(range); it != std::ranges::end(range);
-                 ++it, current += sizeof(std::ranges::range_value_t<R>))
+                ++it, current += sizeof(std::ranges::range_value_t<R>))
             {
                 if constexpr (!requires { requires std::ranges::sized_range<R>; })
                 {

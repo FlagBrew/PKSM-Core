@@ -92,8 +92,7 @@ namespace pksm
                     // PA8 also reports Generation::EIGHT but stores its
                     // handler-trainer fields at different offsets
                     if (pk.generation() == Generation::EIGHT &&
-                        (pk.getLength() == PK8::BOX_LENGTH ||
-                            pk.getLength() == PK8::PARTY_LENGTH))
+                        (pk.getLength() == PK8::BOX_LENGTH || pk.getLength() == PK8::PARTY_LENGTH))
                     {
                         PK8& pk8 = static_cast<PK8&>(pk);
                         pk8.htName(otName());

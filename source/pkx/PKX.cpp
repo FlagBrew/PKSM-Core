@@ -25,6 +25,8 @@
  */
 
 #include "pkx/PKX.hpp"
+#include "pkx/PA8.hpp"
+#include "pkx/PA9.hpp"
 #include "pkx/PB7.hpp"
 #include "pkx/PK1.hpp"
 #include "pkx/PK2.hpp"
@@ -33,8 +35,6 @@
 #include "pkx/PK5.hpp"
 #include "pkx/PK6.hpp"
 #include "pkx/PK7.hpp"
-#include "pkx/PA8.hpp"
-#include "pkx/PA9.hpp"
 #include "pkx/PK8.hpp"
 #include "pkx/PK9.hpp"
 #include "pkx/PKFilter.hpp"

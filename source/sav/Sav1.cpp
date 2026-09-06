@@ -137,7 +137,7 @@ namespace pksm
                 {
                     pkm(*checkPKM, i, j - 1, false);
                     pkm(*prevPKM, i, j, false);
-                    j      = maxPkmInBox; // reset loop
+                    j = maxPkmInBox; // reset loop
                 }
             }
             fixBox(i);
