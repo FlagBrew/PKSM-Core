@@ -926,7 +926,8 @@ namespace pksm
                         u16 ofs    = wc8.object(i);
                         int region = ofs >> 8;
                         int bit    = ofs & 0xFF;
-                        if (region >= FASHION_REGIONS || bit >= FASHION_ENTRY_SIZE * 8)
+                        // bit is at most 0xFF, so it always lands inside a region's 0x80 bytes
+                        if (region >= FASHION_REGIONS)
                         {
                             continue;
                         }
