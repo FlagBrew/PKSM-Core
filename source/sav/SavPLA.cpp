@@ -665,7 +665,10 @@ namespace pksm
 
     void SavPLA::item(const Item& item, Pouch pouch, u16 slot)
     {
-        auto write = item.bytes();
+        Item8a item8a;
+        item8a.id(item.id());
+        item8a.count(item.count());
+        auto write = item8a.bytes();
         switch (pouch)
         {
             case Pouch::NormalItem:
