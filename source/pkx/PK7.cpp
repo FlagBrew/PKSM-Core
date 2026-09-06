@@ -1319,22 +1319,17 @@ namespace pksm
         pk8->otFeeling(otFeeling());
         pk8->otIntensity(otIntensity());
 
-        // HT data: copy from source, then set transfer memory if no HT memory exists
+        // HT data: copy from source. Unlike the Bank transfer in convertToG6, HOME does not
+        // apply a link trade memory on the way to Generation 8, so an entity that was never
+        // traded must keep its HT memory cleared.
         pk8->htName(htName());
+        pk8->htGender(htGender());
         pk8->htFriendship(htFriendship());
         pk8->currentHandler(currentHandler());
         pk8->htMemory(htMemory());
         pk8->htTextVar(htTextVar());
         pk8->htIntensity(htIntensity());
         pk8->htFeeling(htFeeling());
-        if (pk8->htMemory() == 0)
-        {
-            // Set a basic transfer memory (link trade to somewhere)
-            pk8->htMemory(4);
-            pk8->htTextVar(0);
-            pk8->htIntensity(1);
-            pk8->htFeeling(u8(pksm::randomNumber(0, 19)));
-        }
 
         pk8->pkrsStrain(pkrsStrain());
         pk8->pkrsDays(pkrsDays());
