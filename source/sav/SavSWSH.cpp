@@ -341,7 +341,7 @@ namespace pksm
     void SavSWSH::item(const Item& item, Pouch pouch, u16 slot)
     {
         Item8 item8 = static_cast<Item8>(item);
-        auto write  = item.bytes();
+        auto write  = item8.bytes();
         switch (pouch)
         {
             case Pouch::Medicine:

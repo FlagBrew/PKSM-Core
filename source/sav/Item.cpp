@@ -91,6 +91,10 @@ namespace pksm
 
     Item::operator Item7() const
     {
+        if (generation() == Generation::SEVEN)
+        {
+            return *static_cast<const Item7*>(this);
+        }
         Item7 ret;
         ret.id(std::min<u16>(id(), 0x3FF));
         ret.count(std::min<u16>(count(), 0x3FF));
@@ -102,6 +106,10 @@ namespace pksm
 
     Item::operator Item7b() const
     {
+        if (generation() == Generation::LGPE)
+        {
+            return *static_cast<const Item7b*>(this);
+        }
         Item7b ret;
         ret.id(std::min<u16>(id(), 0x7FFF));
         ret.count(std::min<u16>(count(), 0x7FFF));
