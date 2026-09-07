@@ -1046,9 +1046,27 @@ namespace pksm
             }
             ret.push_back({LittleEndian::convertTo<u16>(data + 0x0A), data[0x08], data[0x09],
                 LittleEndian::convertTo<u16>(data + 0x0C),
-                LittleEndian::convertTo<u16>(data + 0x0E)});
+                LittleEndian::convertTo<u16>(data + 0x0E), LittleEndian::convertTo<u64>(data)});
         }
         return ret;
+    }
+
+    std::optional<u8> SavZA::donutSort(void) const
+    {
+        auto block = getBlock(KDonutSort);
+        if (!block)
+        {
+            return std::nullopt;
+        }
+        return block->decryptedData()[0];
+    }
+
+    void SavZA::donutSort(u8 v)
+    {
+        if (auto block = getBlock(KDonutSort))
+        {
+            block->decryptedData()[0] = v;
+        }
     }
 
     SmallVector<std::pair<Sav::Pouch, int>, 15> SavZA::pouches(void) const

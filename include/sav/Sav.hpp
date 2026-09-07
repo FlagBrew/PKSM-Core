@@ -43,6 +43,7 @@
 #include "wcx/WCX.hpp"
 #include <map>
 #include <memory>
+#include <optional>
 #include <set>
 #include <span>
 #include <type_traits>
@@ -286,6 +287,12 @@ namespace pksm
 
         // The item's position in its pouch's type order, ties by id; the id where a game has none
         [[nodiscard]] virtual int itemSortOrder(u16 id) const { return id; }
+
+        // The sort the player chose for the whole bag: 1 type, 2 name, 3 newest first, 4 favourites
+        // first, 0 until chosen; nullopt where the game keeps none
+        [[nodiscard]] virtual std::optional<u8> bagSort(void) const { return std::nullopt; }
+
+        virtual void bagSort(u8) {}
 
         [[nodiscard]] u32 getLength() const { return length; }
 
