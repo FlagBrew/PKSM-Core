@@ -120,6 +120,11 @@ namespace pksm
 
     Item::operator Item8() const
     {
+        // Item8a answers EIGHT too, but overrides this
+        if (generation() == Generation::EIGHT)
+        {
+            return *static_cast<const Item8*>(this);
+        }
         Item8 ret;
         ret.id(std::min<u16>(id(), 0x7FFF));
         ret.count(std::min<u16>(count(), 0x7FFF));
@@ -195,6 +200,16 @@ namespace pksm
         ret.count(count());
         ret.newFlag(newFlag());
         ret.reserved(reserved());
+        return ret;
+    }
+
+    Item8a::operator Item8() const
+    {
+        Item8 ret;
+        ret.id(std::min<u16>(id(), 0x7FFF));
+        ret.count(std::min<u16>(count(), 0x7FFF));
+        ret.newFlag(false);
+        ret.reserved(false);
         return ret;
     }
 }

@@ -564,7 +564,7 @@ namespace pksm
             }
         }
 
-        [[nodiscard]] Generation generation(void) const override { return Generation::SEVEN; }
+        [[nodiscard]] Generation generation(void) const override { return Generation::EIGHT; }
 
         [[nodiscard]] u16 maxCount(void) const override { return 0x7FFF; }
 
@@ -655,7 +655,7 @@ namespace pksm
         using Item::operator Item6;
         using Item::operator Item7;
         using Item::operator Item7b;
-        using Item::operator Item8;
+        [[nodiscard]] operator Item8(void) const override;
         using Item::operator Item9a;
     };
 
