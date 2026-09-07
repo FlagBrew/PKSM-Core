@@ -33,6 +33,7 @@ namespace pksm
         game = Game::E;
 
         OFS_PCItem        = blockOfs[1] + 0x0498;
+        OFS_Registered    = OFS_PCItem - 2;
         OFS_PouchHeldItem = blockOfs[1] + 0x0560;
         OFS_PouchKeyItem  = blockOfs[1] + 0x05D8;
         OFS_PouchBalls    = blockOfs[1] + 0x0650;

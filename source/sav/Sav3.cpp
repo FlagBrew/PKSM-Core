@@ -825,6 +825,16 @@ namespace pksm
         }
     }
 
+    u16 Sav3::registeredItem(u8) const
+    {
+        return LittleEndian::convertTo<u16>(&data[OFS_Registered]);
+    }
+
+    void Sav3::registeredItem(u16 id, u8)
+    {
+        LittleEndian::convertFrom<u16>(&data[OFS_Registered], id);
+    }
+
     SmallVector<std::pair<Sav::Pouch, int>, 15> Sav3::pouches(void) const
     {
         return {

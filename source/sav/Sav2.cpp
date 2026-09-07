@@ -66,6 +66,7 @@ namespace pksm
             OFS_KEY_ITEMS         = 0x2441;
             OFS_BALLS             = 0x245C;
             OFS_PC_ITEMS          = 0x2476;
+            OFS_REGISTERED        = OFS_PC_ITEMS + 0x6A;
             OFS_CURRENT_BOX_INDEX = 0x26FC;
             OFS_BOX_NAMES         = 0x26FF;
             OFS_PARTY             = 0x28CC;
@@ -93,6 +94,7 @@ namespace pksm
                 OFS_KEY_ITEMS         = 0x242C;
                 OFS_BALLS             = 0x2447;
                 OFS_PC_ITEMS          = 0x2461;
+                OFS_REGISTERED        = OFS_PC_ITEMS + 0x6A;
                 OFS_CURRENT_BOX_INDEX = 0x26E2;
                 OFS_BOX_NAMES         = 0x26E5;
                 OFS_PARTY             = 0x281A;
@@ -110,6 +112,7 @@ namespace pksm
                 OFS_KEY_ITEMS         = 0x242A;
                 OFS_BALLS             = 0x2445;
                 OFS_PC_ITEMS          = 0x245F;
+                OFS_REGISTERED        = OFS_PC_ITEMS + 0x6A;
                 OFS_CURRENT_BOX_INDEX = 0x2705;
                 OFS_BOX_NAMES         = 0x2708;
                 OFS_PARTY             = 0x283E;
@@ -132,6 +135,7 @@ namespace pksm
                 OFS_KEY_ITEMS         = 0x244A;
                 OFS_BALLS             = 0x2465;
                 OFS_PC_ITEMS          = 0x247F;
+                OFS_REGISTERED        = OFS_PC_ITEMS + 0x6A;
                 OFS_CURRENT_BOX_INDEX = 0x2700;
                 OFS_BOX_NAMES         = 0x2703;
                 OFS_PARTY             = 0x2865;
@@ -154,6 +158,7 @@ namespace pksm
                 OFS_KEY_ITEMS         = 0x2449;
                 OFS_BALLS             = 0x2464;
                 OFS_PC_ITEMS          = 0x247E;
+                OFS_REGISTERED        = OFS_PC_ITEMS + 0x6A;
                 OFS_CURRENT_BOX_INDEX = 0x2724;
                 OFS_BOX_NAMES         = 0x2727;
                 OFS_PARTY             = 0x288A;
@@ -931,6 +936,28 @@ namespace pksm
         return returnVal;
     }
 
+    u16 Sav2::registeredItem(u8) const
+    {
+        return data[OFS_REGISTERED + 1];
+    }
+
+    void Sav2::registeredItem(u16 id, u8)
+    {
+        // The pocket and list number the game writes beside the id; SELECT only checks that a
+        // key item is still held
+        u8 which = 0;
+        for (u8 slot = 0; id && slot < pouchEntryCount(Pouch::KeyItem); slot++)
+        {
+            if (static_cast<Item2&>(*item(Pouch::KeyItem, slot)).id2() == id)
+            {
+                which = 0x80 | (slot + 1);
+                break;
+            }
+        }
+        data[OFS_REGISTERED]     = which;
+        data[OFS_REGISTERED + 1] = which ? u8(id) : 0;
+    }
+
     SmallVector<std::pair<Sav::Pouch, int>, 15> Sav2::pouches() const
     {
         return {
@@ -1095,6 +1122,10 @@ namespace pksm
         }
         pouchEntryCount(Pouch::KeyItem, count);
         data[OFS_KEY_ITEMS + 1 + count] = 0xFF;
+        if ((data[OFS_REGISTERED] & 0xC0) == 0x80)
+        {
+            registeredItem(registeredItem(0), 0);
+        }
 
         count = 0;
         while (count < 12 && item(Pouch::Ball, count)->id() != 0)

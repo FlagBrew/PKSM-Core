@@ -395,6 +395,61 @@ namespace pksm
         partyCount(numPkm);
     }
 
+    bool Sav::isRegistered(u16 id) const
+    {
+        for (u8 slot = 0; slot < registeredItemSlots(); slot++)
+        {
+            if (registeredItem(slot) == id)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool Sav::registerItem(u16 id)
+    {
+        if (isRegistered(id))
+        {
+            return true;
+        }
+        if (registeredItemSlots() == 1)
+        {
+            registeredItem(id, 0);
+            return true;
+        }
+        for (u8 slot = 0; slot < registeredItemSlots(); slot++)
+        {
+            if (registeredItem(slot) == 0)
+            {
+                registeredItem(id, slot);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void Sav::unregisterItem(u16 id)
+    {
+        u8 to = 0;
+        for (u8 from = 0; from < registeredItemSlots(); from++)
+        {
+            u16 held = registeredItem(from);
+            if (held != 0 && held != id)
+            {
+                if (to != from)
+                {
+                    registeredItem(held, to);
+                }
+                to++;
+            }
+        }
+        for (; to < registeredItemSlots(); to++)
+        {
+            registeredItem(0, to);
+        }
+    }
+
     u32 Sav::displayTID() const
     {
         switch (generation())
