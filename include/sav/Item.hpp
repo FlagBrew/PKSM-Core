@@ -551,7 +551,7 @@ namespace pksm
         // unsigned int id : 15;
         // unsigned int count : 15;
         // unsigned int newFlag : 1;
-        // unsigned int reserved : 1;
+        // unsigned int favoriteFlag : 1;
         // };
         u32 itemData = 0;
 
@@ -586,9 +586,9 @@ namespace pksm
 
         void newFlag(bool v) { itemData = (itemData & ~(1 << 30)) | (v ? 1 << 30 : 0); }
 
-        [[nodiscard]] bool reserved(void) const { return (itemData >> 31) & 1; }
+        [[nodiscard]] bool favoriteFlag(void) const { return (itemData >> 31) & 1; }
 
-        void reserved(bool v) { itemData = (itemData & ~(1u << 31)) | (v ? 1u << 31 : 0); }
+        void favoriteFlag(bool v) { itemData = (itemData & ~(1u << 31)) | (v ? 1u << 31 : 0); }
 
         [[nodiscard]] SmallVector<u8, 16> bytes(void) const override
         {
