@@ -25,6 +25,7 @@
  */
 
 #include "sav/SavSV.hpp"
+#include "itemorder9.hpp"
 #include "pkx/PK9.hpp"
 #include "sav/Item.hpp"
 #include "utils/endian.hpp"
@@ -1660,6 +1661,13 @@ namespace pksm
             std::pair{Pouch::KeyItem,    std::span<const int>(keyItems)     },
             std::pair{Pouch::Candy,      std::span<const int>(materialItems)},
         };
+    }
+
+    int SavSV::itemSortOrder(u16 id) const
+    {
+        auto entry = std::lower_bound(internal::itemOrder9.begin(), internal::itemOrder9.end(), id,
+            [](const std::pair<u16, u16>& order, u16 key) { return order.first < key; });
+        return entry != internal::itemOrder9.end() && entry->first == id ? entry->second : id;
     }
 
     u8 SavSV::currentBox() const
