@@ -706,6 +706,17 @@ namespace pksm
 
         void count(u16 v) override { LittleEndian::convertFrom<u32>(itemData.data() + 4, u32(v)); }
 
+        // Flags at +8: 1 new (red dot), 2 favourite
+        [[nodiscard]] bool newFlag(void) const
+        {
+            return LittleEndian::convertTo<u32>(itemData.data() + 8) & 1;
+        }
+
+        [[nodiscard]] bool favoriteFlag(void) const
+        {
+            return LittleEndian::convertTo<u32>(itemData.data() + 8) & 2;
+        }
+
         [[nodiscard]] SmallVector<u8, 16> bytes(void) const override
         {
             return {std::span(itemData)};
