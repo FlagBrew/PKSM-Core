@@ -1035,7 +1035,8 @@ namespace pksm
         {
             return ret;
         }
-        for (u16 slot = 0; slot < DONUT_SLOTS; slot++)
+        const size_t slots = std::min<size_t>(DONUT_SLOTS, block->length() / DONUT_SIZE);
+        for (size_t slot = 0; slot < slots; slot++)
         {
             const u8* data = block->decryptedData() + slot * DONUT_SIZE;
             if (LittleEndian::convertTo<u64>(data) == 0) // never made
