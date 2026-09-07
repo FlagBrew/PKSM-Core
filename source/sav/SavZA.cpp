@@ -25,6 +25,7 @@
  */
 
 #include "sav/SavZA.hpp"
+#include "itemorder9a.hpp"
 #include "pkx/PA9.hpp"
 #include "sav/Item.hpp"
 #include "utils/endian.hpp"
@@ -1076,6 +1077,13 @@ namespace pksm
             std::pair{Pouch::Treasure,   std::span<const int>(treasureItems) },
             std::pair{Pouch::KeyItem,    std::span<const int>(keyItems)      },
         };
+    }
+
+    int SavZA::itemSortOrder(u16 id) const
+    {
+        auto entry = std::lower_bound(internal::itemOrder9a.begin(), internal::itemOrder9a.end(),
+            id, [](const std::pair<u16, u16>& order, u16 key) { return order.first < key; });
+        return entry != internal::itemOrder9a.end() && entry->first == id ? entry->second : id;
     }
 
     u8 SavZA::currentBox() const
