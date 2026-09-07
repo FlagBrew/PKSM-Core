@@ -284,6 +284,9 @@ namespace pksm
         // Slots are fixed per item rather than a packed list, so an emptied slot is not closed up
         [[nodiscard]] virtual bool pouchIndexedByItem(Pouch) const { return false; }
 
+        // The item's position in its pouch's type order, ties by id; the id where a game has none
+        [[nodiscard]] virtual int itemSortOrder(u16 id) const { return id; }
+
         [[nodiscard]] u32 getLength() const { return length; }
 
         [[nodiscard]] u32 getEntireLengthIncludingFooter() const { return fullLength; }

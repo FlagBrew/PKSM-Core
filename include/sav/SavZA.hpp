@@ -96,6 +96,8 @@ namespace pksm
 
         [[nodiscard]] bool pouchIndexedByItem(Pouch) const override { return true; }
 
+        [[nodiscard]] int itemSortOrder(u16 id) const override;
+
         [[nodiscard]] SmallVector<std::pair<Pouch, std::span<const int>>, 15> validItems(
             void) const override;
 
