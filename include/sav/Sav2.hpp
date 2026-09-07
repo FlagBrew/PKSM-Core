@@ -43,8 +43,8 @@ namespace pksm
         u8 maxPkmInBox, originalCurrentBox;
         u32 boxSize, OFS_PARTY, OFS_PC_ITEMS, OFS_CURRENT_BOX, OFS_CURRENT_BOX_INDEX, OFS_GENDER,
             OFS_BADGES, OFS_POKEDEX_CAUGHT, OFS_POKEDEX_SEEN, OFS_BOX_NAMES, OFS_TM_POUCH,
-            OFS_ITEMS, OFS_KEY_ITEMS, OFS_BALLS, OFS_CHECKSUM_ONE, OFS_MONEY, OFS_CHECKSUM_TWO,
-            OFS_CHECKSUM_END, OFS_TIME_PLAYED, OFS_PALETTE, OFS_TID, OFS_NAME;
+            OFS_ITEMS, OFS_KEY_ITEMS, OFS_BALLS, OFS_REGISTERED, OFS_CHECKSUM_ONE, OFS_MONEY,
+            OFS_CHECKSUM_TWO, OFS_CHECKSUM_END, OFS_TIME_PLAYED, OFS_PALETTE, OFS_TID, OFS_NAME;
 
         void fixBoxes(void);
 
@@ -180,6 +180,11 @@ namespace pksm
 
         void item(const Item& tItem, Pouch pouch, u16 slot) override;
         [[nodiscard]] std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
+
+        [[nodiscard]] u8 registeredItemSlots(void) const override { return 1; }
+
+        [[nodiscard]] u16 registeredItem(u8 slot) const override;
+        void registeredItem(u16 id, u8 slot) override;
         [[nodiscard]] SmallVector<std::pair<Pouch, int>, 15> pouches(void) const override;
 
         [[nodiscard]] u16 maxCount(Pouch pouch) const override

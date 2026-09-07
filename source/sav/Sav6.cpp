@@ -797,6 +797,16 @@ namespace pksm
         }
     }
 
+    u16 Sav6::registeredItem(u8 slot) const
+    {
+        return LittleEndian::convertTo<u16>(&data[RegisteredItems + slot * 2]);
+    }
+
+    void Sav6::registeredItem(u16 id, u8 slot)
+    {
+        LittleEndian::convertFrom<u16>(&data[RegisteredItems + slot * 2], id);
+    }
+
     std::unique_ptr<Item> Sav6::item(Pouch pouch, u16 slot) const
     {
         switch (pouch)

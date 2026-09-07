@@ -294,6 +294,20 @@ namespace pksm
 
         virtual void bagSort(u8) {}
 
+        // Items the game's shortcut button reaches, in the save's own item numbering (Item2::id2,
+        // Item3::id3); 0 slots where it has none, 0 for an empty slot
+        [[nodiscard]] virtual u8 registeredItemSlots(void) const { return 0; }
+
+        [[nodiscard]] virtual u16 registeredItem(u8) const { return 0; }
+
+        virtual void registeredItem(u16, u8) {}
+
+        [[nodiscard]] bool isRegistered(u16 id) const;
+        // The first empty slot, or the only one; false when none is left
+        bool registerItem(u16 id);
+        // Later slots close up, as the games keep them
+        void unregisterItem(u16 id);
+
         [[nodiscard]] u32 getLength() const { return length; }
 
         [[nodiscard]] u32 getEntireLengthIncludingFooter() const { return fullLength; }

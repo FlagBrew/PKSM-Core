@@ -37,8 +37,8 @@ namespace pksm
     {
     protected:
         bool japanese;
-        int OFS_PCItem, OFS_PouchHeldItem, OFS_PouchKeyItem, OFS_PouchBalls, OFS_PouchTMHM,
-            OFS_PouchBerry, eventFlag;
+        int OFS_Registered, OFS_PCItem, OFS_PouchHeldItem, OFS_PouchKeyItem, OFS_PouchBalls,
+            OFS_PouchTMHM, OFS_PouchBerry, eventFlag;
 
         void initialize();
 
@@ -207,6 +207,11 @@ namespace pksm
 
         void item(const Item& item, Pouch pouch, u16 slot) override;
         [[nodiscard]] std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
+
+        [[nodiscard]] u8 registeredItemSlots(void) const override { return 1; }
+
+        [[nodiscard]] u16 registeredItem(u8 slot) const override;
+        void registeredItem(u16 id, u8 slot) override;
         [[nodiscard]] SmallVector<std::pair<Pouch, int>, 15> pouches(void) const override;
 
         [[nodiscard]] u16 maxCount(Pouch pouch) const override;

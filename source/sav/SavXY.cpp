@@ -49,6 +49,7 @@ namespace pksm
         LastViewedBox        = 0x483F;
         PouchHeldItem        = 0x400;
         PouchKeyItem         = 0xA40;
+        RegisteredItems      = 0x100A;
         PouchTMHM            = 0xBC0;
         PouchMedicine        = 0xD68;
         PouchBerry           = 0xE68;

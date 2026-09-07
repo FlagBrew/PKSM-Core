@@ -37,7 +37,7 @@ namespace pksm
     {
     protected:
         int Trainer1;
-        int MailItems, PouchBalls, BattleItems;
+        int MailItems, PouchBalls, BattleItems, RegisteredItems;
         int GBOOffset, SBOOffset;
         int PalPark;
 
@@ -173,6 +173,14 @@ namespace pksm
 
         void item(const Item& item, Pouch pouch, u16 slot) override;
         [[nodiscard]] std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
+
+        [[nodiscard]] u8 registeredItemSlots(void) const override
+        {
+            return game == Game::HGSS ? 2 : 1;
+        }
+
+        [[nodiscard]] u16 registeredItem(u8 slot) const override;
+        void registeredItem(u16 id, u8 slot) override;
 
         [[nodiscard]] u16 maxCount(Pouch pouch) const override
         {
