@@ -1490,6 +1490,24 @@ namespace pksm
         LittleEndian::convertFrom<u32>(getBlock(KMoney)->decryptedData(), v);
     }
 
+    std::optional<u8> SavSV::bagSort(void) const
+    {
+        auto block = getBlock(KBagSort);
+        if (!block)
+        {
+            return std::nullopt;
+        }
+        return u8(LittleEndian::convertTo<u32>(block->decryptedData()));
+    }
+
+    void SavSV::bagSort(u8 v)
+    {
+        if (auto block = getBlock(KBagSort))
+        {
+            LittleEndian::convertFrom<u32>(block->decryptedData(), u32(v));
+        }
+    }
+
     u32 SavSV::BP(void) const
     {
         auto block = getBlock(KLeaguePoints);

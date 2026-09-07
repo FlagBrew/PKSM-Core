@@ -44,6 +44,7 @@ namespace pksm
         static constexpr u32 KBoxesUnlocked = 0x71825204;
         static constexpr u32 KBoxWallpapers = 0x2EB1B190;
         static constexpr u32 KMoney         = 0x4F35D0DD;
+        static constexpr u32 KBagSort       = 0xEEAEB167; // WSYS_BAG_SORT
         static constexpr u32 KPlayTime      = 0xEDAFF794;
         static constexpr u32 KLeaguePoints  = 0xADB4FE17;
         static constexpr u32 KZukan         = 0x0DEAAEBD;
@@ -113,6 +114,8 @@ namespace pksm
         void language(Language v) override;
         [[nodiscard]] u32 money(void) const override;
         void money(u32 v) override;
+        [[nodiscard]] std::optional<u8> bagSort(void) const override;
+        void bagSort(u8 v) override;
         [[nodiscard]] u32 BP(void) const override;
         void BP(u32 v) override;
         [[nodiscard]] u8 badges(void) const override;

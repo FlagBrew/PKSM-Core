@@ -48,6 +48,7 @@ namespace pksm
         static constexpr u32 KTicketPointsRoyale = 0x9A730DE1;
         static constexpr u32 KPokedex            = 0x2D87BE5C;
         static constexpr u32 KDonuts             = 0xBE007476; // Mega Dimension only
+        static constexpr u32 KDonutSort          = 0x2A9871E9; // Mega Dimension only
 
     public:
         static constexpr size_t SIZE_G9ZA_100 = 0x2F3284; // v1.0.0
@@ -112,10 +113,15 @@ namespace pksm
             u8 levelBoost; // Levels granted on eating
             u16 calories;
             u16 nameBerry; // Item id of the berry that names it
+            u64 made;      // Milliseconds since 1970
         };
 
         [[nodiscard]] bool hasDonuts(void) const;
         [[nodiscard]] std::vector<Donut> donuts(void) const; // Filled slots, in save order
+
+        // 0 flavour score, 1 variety, 2 date made; the item pouches' order is not saved
+        [[nodiscard]] std::optional<u8> donutSort(void) const;
+        void donutSort(u8 v);
 
         [[nodiscard]] u8 subRegion(void) const override { return 0; }
 
