@@ -129,7 +129,7 @@ namespace pksm
         ret.id(std::min<u16>(id(), 0x7FFF));
         ret.count(std::min<u16>(count(), 0x7FFF));
         ret.newFlag(false);
-        ret.reserved(false);
+        ret.favoriteFlag(false);
         return ret;
     }
 
@@ -157,7 +157,7 @@ namespace pksm
         ret.id(id()); // Capped at 0x3FF, so no need to cap it at 0x7FFF
         ret.count(count());
         ret.newFlag(newFlag());
-        ret.reserved(reserved());
+        ret.favoriteFlag(reserved());
         return ret;
     }
 
@@ -178,7 +178,7 @@ namespace pksm
         ret.id(id());
         ret.count(count());
         ret.newFlag(newFlag());
-        ret.reserved(reserved());
+        ret.favoriteFlag(reserved());
         return ret;
     }
 
@@ -189,7 +189,7 @@ namespace pksm
         ret.count(std::min<u16>(count(), 0x3FF));
         ret.freeSpaceIndex(0);
         ret.newFlag(newFlag());
-        ret.reserved(reserved());
+        ret.reserved(favoriteFlag());
         return ret;
     }
 
@@ -199,7 +199,7 @@ namespace pksm
         ret.id(id());
         ret.count(count());
         ret.newFlag(newFlag());
-        ret.reserved(reserved());
+        ret.reserved(favoriteFlag());
         return ret;
     }
 
@@ -209,7 +209,7 @@ namespace pksm
         ret.id(std::min<u16>(id(), 0x7FFF));
         ret.count(std::min<u16>(count(), 0x7FFF));
         ret.newFlag(false);
-        ret.reserved(false);
+        ret.favoriteFlag(false);
         return ret;
     }
 }
