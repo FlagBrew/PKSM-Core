@@ -665,6 +665,12 @@ namespace pksm
         std::array<u8, 16> itemData;
         u16 itemId = 0;
 
+        void setFlag(u32 bit, bool v)
+        {
+            u32 flags = LittleEndian::convertTo<u32>(itemData.data() + 8);
+            LittleEndian::convertFrom<u32>(itemData.data() + 8, v ? flags | bit : flags & ~bit);
+        }
+
     public:
         Item9a(u8* data = nullptr, u16 id = 0)
         {
@@ -716,6 +722,10 @@ namespace pksm
         {
             return LittleEndian::convertTo<u32>(itemData.data() + 8) & 2;
         }
+
+        void newFlag(bool v) { setFlag(1, v); }
+
+        void favoriteFlag(bool v) { setFlag(2, v); }
 
         [[nodiscard]] SmallVector<u8, 16> bytes(void) const override
         {

@@ -1001,6 +1001,14 @@ namespace pksm
         LittleEndian::convertFrom<u32>(blockData + offset + 4, count);
         // Flags: 1 new, 2 favourite, 4 notify, 8 new in shop, 0x10 held. The pouch is NO_POUCH
         // until first obtained, and a pickup clears notify
+        if (item.generation() == Generation::NINE)
+        {
+            // The marks travel with the item; the rest of the word stays the record's
+            const auto& item9 = static_cast<const Item9a&>(item);
+            u32 flags         = LittleEndian::convertTo<u32>(blockData + offset + 8);
+            flags = (flags & ~3u) | (item9.newFlag() ? 1 : 0) | (item9.favoriteFlag() ? 2 : 0);
+            LittleEndian::convertFrom<u32>(blockData + offset + 8, flags);
+        }
         if (count > 0 && LittleEndian::convertTo<u32>(blockData + offset) == NO_POUCH)
         {
             LittleEndian::convertFrom<u32>(blockData + offset, pouchIndexZA(pouch));
